@@ -25,6 +25,7 @@ using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -74,8 +75,13 @@ namespace Songify_Slim.Util.Songify
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
         private PlaylistInfo playbackPlaylist = null;
 
-        private PearSong currentSong = null;
-        private TrackInfo tI = null;
+        private readonly SemaphoreSlim _pearWsProcessLock = new(1, 1);
+
+        /// <summary>Serializes <see cref="ApplyPearStateAsync"/> (HTTP bootstrap vs WebSocket <c>VIDEO_CHANGED</c>).</summary>
+        private readonly SemaphoreSlim _pearStateLock = new(1, 1);
+
+        private bool _pearWsHandlerRegistered;
+        private bool _pearColdHttpSynced;
 
         // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
         // Track the Pear queue's current item id so we can correlate requests reliably.
@@ -1331,120 +1337,292 @@ namespace Songify_Slim.Util.Songify
 
         public async Task FetchPear()
         {
+            await EnsurePearWebSocketAsync().ConfigureAwait(false);
+
             fetchCounter += 1;
-
-            PearResponse data = await PearApi.GetNowPlayingAsync();
-            if (data == null) return;
-
-            // 0) Correlate with Pear queue current item (canonical id)
-            // We prefer the Pear queue's selected item id over now-playing VideoId,
-            // because YouTube can swap the playback id while the queue item remains stable.
-            Song queueCurrent = null;
-            string queueCurrentId = null;
-            try
-            {
-                List<Song> pearQueue = await PearApi.GetQueueAsync();
-                queueCurrent = pearQueue?.FirstOrDefault(s => s.IsCurrent);
-                queueCurrentId = queueCurrent?.Id;
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(LogSource.Pear, "FetchPear: failed to read Pear queue for correlation", ex);
-            }
-
-            string canonicalId = !string.IsNullOrWhiteSpace(queueCurrentId) ? queueCurrentId : data.VideoId;
-
-            // song-info can lag behind the queue when the selection advances; keep SongId in sync with the queue
-            // but take artist/title/cover (and duration when known) from the current queue row so request matching
-            // does not attribute {{req}} to stale now-playing metadata.
-            string displayArtist = !string.IsNullOrWhiteSpace(queueCurrent?.Artist) ? queueCurrent.Artist : data.Artist;
-            string displayTitle = !string.IsNullOrWhiteSpace(queueCurrent?.Title) ? queueCurrent.Title : data.Title;
-            string displayCover = !string.IsNullOrWhiteSpace(queueCurrent?.CoverUrl) ? queueCurrent.CoverUrl : data.ImageSrc;
-
-            int songDurationSec = data.SongDuration;
-            if (queueCurrent != null && queueCurrent.Length > TimeSpan.Zero)
-                songDurationSec = (int)Math.Round(queueCurrent.Length.TotalSeconds);
-
-            // Correlation logging (helpful for diagnosing YouTube id swaps)
-            //if (!string.Equals(queueCurrentId, data.VideoId, StringComparison.Ordinal))
-            //{
-            //    Logger.Info(LogSource.Pear,
-            //        $"FetchPear correlation: nowPlayingVideoId='{data.VideoId}', queueCurrentId='{queueCurrentId ?? ""}', canonicalId='{canonicalId}'");
-            //}
-
-            // If queue selection changed, the previously-current queue item finished/skipped -> remove that request by id.
-            if (!string.IsNullOrWhiteSpace(_lastPearQueueCurrentId) &&
-                !string.Equals(_lastPearQueueCurrentId, canonicalId, StringComparison.Ordinal))
-            {
-                await RemoveRequestByTrackIdAsync(_lastPearQueueCurrentId);
-            }
-            _lastPearQueueCurrentId = canonicalId;
-
-            TrackInfo t = new()
-            {
-                Artists = displayArtist,
-                Title = displayTitle,
-                Albums =
-                [
-                    new Image { Url = displayCover, Width = 0, Height = 0 }
-                ],
-                SongId = canonicalId,
-                DurationMs = songDurationSec * 1000,
-                IsPlaying = !data.IsPaused,
-                Url = data.Url,
-                DurationPercentage = (int)(songDurationSec == 0 ? 0 :
-                    Math.Min(100.0, (double)data.ElapsedSeconds / songDurationSec * 100)),
-                DurationTotal = songDurationSec * 1000,
-                Progress = data.ElapsedSeconds * 1000,
-                Playlist = new PlaylistInfo
-                {
-                    Name = null,
-                    Id = null,
-                    Owner = null,
-                    Url = data.PlaylistId,
-                    Image = null
-                },
-                FullArtists =
-                [
-                    new SimpleArtist
-                    {
-                        ExternalUrls = new Dictionary<string, string>(),
-                        Href = string.Empty,
-                        Id = string.Empty,
-                        Name = displayArtist,
-                        Type = string.Empty,
-                        Uri = string.Empty
-                    }
-                ]
-            };
-
-            GlobalObjects.Canvas = null;
-
-            await UpdateWebServerResponse(t);
-
             if (fetchCounter >= 5)
             {
-                await TwitchHandler.EnsureOrderAsync();
+                await TwitchHandler.EnsureOrderAsync().ConfigureAwait(false);
                 fetchCounter = 0;
             }
 
-            // 2) If same song, nothing to do
-            if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == canonicalId)
-                return;
+            await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
+        }
 
-            if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
+        /// <summary>Disconnect Pear WebSocket and reset Pear-specific state when the user selects another player.</summary>
+        public async Task NotifyPearPlayerInactiveAsync()
+        {
+            _pearColdHttpSynced = false;
+            _pearWsHandlerRegistered = false;
+            _lastPearQueueCurrentId = null;
+            PearWebSocketClient.SetMessageHandler(null);
+            await PearWebSocketClient.DisconnectAsync().ConfigureAwait(false);
+        }
+
+        private async Task EnsurePearWebSocketAsync()
+        {
+            if (!_pearWsHandlerRegistered)
             {
-                // Terminate the poll because the song changed while poll was active
-                await TwitchHandler.TerminatePoll(GlobalObjects.CurrentSkipPoll);
+                PearWebSocketClient.SetMessageHandler(OnPearWebSocketMessageAsync);
+                _pearWsHandlerRegistered = true;
             }
 
-            // 3) Song changed -> previous finished: handled via Pear queue correlation above.
-            // Avoid fuzzy removal here to prevent false matches due to YouTube metadata quirks.
+            try
+            {
+                await PearWebSocketClient.ConnectAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Pear, "Pear WebSocket could not connect.", ex);
+                return;
+            }
 
-            // 4) Update current & UI
-            GlobalObjects.CurrentSong = t;
-            await WriteSongInfo(t, Enums.RequestPlayerType.Youtube);
-            await GlobalObjects.QueueUpdateQueueWindow();
+            // WS typically does not replay the current track on connect — pull song-info once (or until success).
+            await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Pear's WebSocket pushes deltas (e.g. <c>VIDEO_CHANGED</c> on track change), not the full current state on connect.
+        /// Use HTTP <c>song-info</c> (+ queue in <see cref="ApplyPearStateAsync"/>) until we have applied a meaningful snapshot.
+        /// </summary>
+        private async Task TryPearHttpBootstrapSnapshotAsync()
+        {
+            if (_pearColdHttpSynced)
+                return;
+
+            PearResponse seed = await PearApi.GetNowPlayingAsync().ConfigureAwait(false);
+            if (seed == null || !PearHttpResponseLooksLikeActiveTrack(seed))
+                return;
+
+            await ApplyPearStateAsync(seed).ConfigureAwait(false);
+            _pearColdHttpSynced = true;
+        }
+
+        private static bool PearHttpResponseLooksLikeActiveTrack(PearResponse s)
+        {
+            if (s == null)
+                return false;
+            if (!string.IsNullOrWhiteSpace(s.VideoId))
+                return true;
+            if (!string.IsNullOrWhiteSpace(s.Title))
+                return true;
+            if (s.SongDuration > 0)
+                return true;
+            return false;
+        }
+
+        private static PearResponse PearSongToPearResponse(PearSong s)
+        {
+            return new PearResponse
+            {
+                Title = s.Title,
+                AlternativeTitle = s.AlternativeTitle ?? string.Empty,
+                Artist = s.Artist,
+                Views = s.Views,
+                UploadDate = s.UploadDate,
+                ImageSrc = s.ImageSrc,
+                IsPaused = s.IsPaused,
+                SongDuration = s.SongDuration,
+                ElapsedSeconds = s.ElapsedSeconds,
+                Url = s.Url,
+                VideoId = s.VideoId,
+                PlaylistId = s.PlaylistId ?? string.Empty,
+                MediaType = s.MediaType ?? string.Empty
+            };
+        }
+
+        /// <summary>Apply Pear now-playing + queue correlation (HTTP song-info or WebSocket <c>VIDEO_CHANGED</c> payload).</summary>
+        private async Task ApplyPearStateAsync(PearResponse data)
+        {
+            await _pearStateLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                if (data == null)
+                    return;
+
+                // 0) Correlate with Pear queue current item (canonical id)
+                // We prefer the Pear queue's selected item id over now-playing VideoId,
+                // because YouTube can swap the playback id while the queue item remains stable.
+                Song queueCurrent = null;
+                string queueCurrentId = null;
+                try
+                {
+                    List<Song> pearQueue = await PearApi.GetQueueAsync().ConfigureAwait(false);
+                    queueCurrent = pearQueue?.FirstOrDefault(s => s.IsCurrent);
+                    queueCurrentId = queueCurrent?.Id;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(LogSource.Pear, "ApplyPearStateAsync: failed to read Pear queue for correlation", ex);
+                }
+
+                string canonicalId = !string.IsNullOrWhiteSpace(queueCurrentId) ? queueCurrentId : data.VideoId;
+
+                // song-info can lag behind the queue when the selection advances; keep SongId in sync with the queue
+                // but take artist/title/cover (and duration when known) from the current queue row so request matching
+                // does not attribute {{req}} to stale now-playing metadata.
+                string displayArtist = !string.IsNullOrWhiteSpace(queueCurrent?.Artist) ? queueCurrent.Artist : data.Artist;
+                string displayTitle = !string.IsNullOrWhiteSpace(queueCurrent?.Title) ? queueCurrent.Title : data.Title;
+                string displayCover = !string.IsNullOrWhiteSpace(queueCurrent?.CoverUrl) ? queueCurrent.CoverUrl : data.ImageSrc;
+
+                int songDurationSec = data.SongDuration;
+                if (queueCurrent != null && queueCurrent.Length > TimeSpan.Zero)
+                    songDurationSec = (int)Math.Round(queueCurrent.Length.TotalSeconds);
+
+                // If queue selection changed, the previously-current queue item finished/skipped -> remove that request by id.
+                if (!string.IsNullOrWhiteSpace(_lastPearQueueCurrentId) &&
+                    !string.Equals(_lastPearQueueCurrentId, canonicalId, StringComparison.Ordinal))
+                {
+                    await RemoveRequestByTrackIdAsync(_lastPearQueueCurrentId).ConfigureAwait(false);
+                }
+                _lastPearQueueCurrentId = canonicalId;
+
+                TrackInfo t = new()
+                {
+                    Artists = displayArtist,
+                    Title = displayTitle,
+                    Albums =
+                    [
+                        new Image { Url = displayCover, Width = 0, Height = 0 }
+                    ],
+                    SongId = canonicalId,
+                    DurationMs = songDurationSec * 1000,
+                    IsPlaying = !data.IsPaused,
+                    Url = data.Url,
+                    DurationPercentage = (int)(songDurationSec == 0 ? 0 :
+                        Math.Min(100.0, (double)data.ElapsedSeconds / songDurationSec * 100)),
+                    DurationTotal = songDurationSec * 1000,
+                    Progress = data.ElapsedSeconds * 1000,
+                    Playlist = new PlaylistInfo
+                    {
+                        Name = null,
+                        Id = null,
+                        Owner = null,
+                        Url = data.PlaylistId,
+                        Image = null
+                    },
+                    FullArtists =
+                    [
+                        new SimpleArtist
+                        {
+                            ExternalUrls = new Dictionary<string, string>(),
+                            Href = string.Empty,
+                            Id = string.Empty,
+                            Name = displayArtist,
+                            Type = string.Empty,
+                            Uri = string.Empty
+                        }
+                    ]
+                };
+
+                GlobalObjects.Canvas = null;
+
+                await UpdateWebServerResponse(t).ConfigureAwait(false);
+
+                // If same song, nothing more (web payload already refreshed above).
+                if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == canonicalId)
+                    return;
+
+                if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
+                {
+                    await TwitchHandler.TerminatePoll(GlobalObjects.CurrentSkipPoll).ConfigureAwait(false);
+                }
+
+                GlobalObjects.CurrentSong = t;
+                await WriteSongInfo(t, Enums.RequestPlayerType.Youtube).ConfigureAwait(false);
+                await GlobalObjects.QueueUpdateQueueWindow().ConfigureAwait(false);
+            }
+            finally
+            {
+                _pearStateLock.Release();
+            }
+        }
+
+        private async Task PatchPearPlaybackFromWebSocketAsync(double elapsedSeconds, bool? isPlaying)
+        {
+            TrackInfo cur = GlobalObjects.CurrentSong;
+            if (cur == null)
+                return;
+
+            int elapsedMs = (int)Math.Round(elapsedSeconds * 1000.0);
+            cur.Progress = elapsedMs;
+            if (isPlaying.HasValue)
+                cur.IsPlaying = isPlaying.Value;
+
+            int durMs = cur.DurationTotal > 0 ? cur.DurationTotal : cur.DurationMs;
+            cur.DurationPercentage = durMs <= 0
+                ? 0
+                : (int)Math.Min(100.0, elapsedMs / (double)durMs * 100.0);
+
+            await UpdateWebServerResponse(cur).ConfigureAwait(false);
+        }
+
+        private async Task OnPearWebSocketMessageAsync(string msg)
+        {
+            if (string.IsNullOrWhiteSpace(msg))
+                return;
+
+            await _pearWsProcessLock.WaitAsync().ConfigureAwait(false);
+            try
+            {
+                using JsonDocument doc = JsonDocument.Parse(msg);
+                JsonElement root = doc.RootElement;
+                if (!root.TryGetProperty("type", out JsonElement typeEl))
+                    return;
+
+                string type = typeEl.GetString();
+                switch (type)
+                {
+                    case "VIDEO_CHANGED":
+                        {
+                            VideoChangedMessage vc = System.Text.Json.JsonSerializer.Deserialize<VideoChangedMessage>(msg);
+                            if (vc?.Song == null)
+                                return;
+
+                            PearResponse pr = PearSongToPearResponse(vc.Song);
+                            await ApplyPearStateAsync(pr).ConfigureAwait(false);
+                            _pearColdHttpSynced = true;
+                            break;
+                        }
+
+                    case "PLAYER_STATE_CHANGED":
+                        {
+                            bool isPlaying = root.TryGetProperty("isPlaying", out JsonElement playEl) && playEl.GetBoolean();
+                            double elapsedSeconds;
+                            if (root.TryGetProperty("position", out JsonElement posEl))
+                                elapsedSeconds = posEl.ValueKind == JsonValueKind.Number ? posEl.GetDouble() : 0;
+                            else if (GlobalObjects.CurrentSong != null)
+                                elapsedSeconds = GlobalObjects.CurrentSong.Progress / 1000.0;
+                            else
+                                elapsedSeconds = 0;
+
+                            await PatchPearPlaybackFromWebSocketAsync(elapsedSeconds, isPlaying).ConfigureAwait(false);
+                            break;
+                        }
+
+                    case "POSITION_CHANGED":
+                        {
+                            PositionChangedMessage pc = System.Text.Json.JsonSerializer.Deserialize<PositionChangedMessage>(msg);
+                            if (pc == null)
+                                return;
+
+                            await PatchPearPlaybackFromWebSocketAsync(pc.Position, null).ConfigureAwait(false);
+                            break;
+                        }
+                }
+            }
+            catch (System.Text.Json.JsonException ex)
+            {
+                Logger.Error(LogSource.Pear, "Pear WebSocket JSON parse failed.", ex);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Pear, "Pear WebSocket message handling failed.", ex);
+            }
+            finally
+            {
+                _pearWsProcessLock.Release();
+            }
         }
 
         private static Task RemoveRequestByTrackIdAsync(string trackId)
@@ -1461,7 +1639,8 @@ namespace Songify_Slim.Util.Songify
 
                     // mark first occurrence
                     RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == trackId && r.Played == 0);
-                    first?.Played = 1;
+                    if (first != null)
+                        first.Played = 1;
 
                     // remove all occurrences
                     for (int i = GlobalObjects.ReqList.Count - 1; i >= 0; i--)
@@ -1510,7 +1689,8 @@ namespace Songify_Slim.Util.Songify
             {
                 // mark first occurrence as played (optional if you keep history somewhere)
                 RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == finishedId && r.Played == 0);
-                first?.Played = 1;
+                if (first != null)
+                    first.Played = 1;
 
                 // actually remove all entries for that id
                 for (int i = GlobalObjects.ReqList.Count - 1; i >= 0; i--)
@@ -1547,75 +1727,6 @@ namespace Songify_Slim.Util.Songify
                 : "";
 
             return $"{a}|{t}|{d}";
-        }
-
-        public async Task FetchPearWebsocket()
-        {
-            PearWebSocketClient.SetMessageHandler(async msg =>
-            {
-                string type = JsonDocument.Parse(msg)
-                               .RootElement
-                               .GetProperty("type")
-                               .GetString();
-
-                switch (type)
-                {
-                    case "PLAYER_STATE_CHANGED":
-                        {
-                            PlayerStateChangedMessage data = System.Text.Json.JsonSerializer.Deserialize<PlayerStateChangedMessage>(msg)!;
-                            break;
-                        }
-
-                    case "POSITION_CHANGED":
-                        {
-                            PositionChangedMessage data = System.Text.Json.JsonSerializer.Deserialize<PositionChangedMessage>(msg)!;
-                            // Handle event here
-                            if (tI != null)
-                            {
-                                tI.Progress = (int)data.Position;
-                                tI.DurationPercentage = (int)((data.Position / tI.DurationTotal) * 100);
-                                await UpdateWebServerResponse(tI);
-                            }
-                            break;
-                        }
-
-                    case "VIDEO_CHANGED":
-                        {
-                            VideoChangedMessage data = System.Text.Json.JsonSerializer.Deserialize<VideoChangedMessage>(msg)!;
-                            currentSong = data.Song;
-                            tI = new TrackInfo
-                            {
-                                Artists = currentSong.Artist,
-                                Title = currentSong.Title,
-                                Albums =
-                                [
-                                    new Image
-                                    {
-                                        Height = 720,
-                                        Width = 1280,
-                                        Url = currentSong.ImageSrc
-                                    }
-                                ],
-                                SongId = currentSong.PlaylistId,
-                                DurationMs = (int)TimeSpan.FromSeconds(currentSong.SongDuration).TotalMilliseconds,
-                                IsPlaying = !currentSong.IsPaused,
-                                Url = currentSong.Url,
-                                DurationPercentage = (currentSong.ElapsedSeconds / currentSong.SongDuration) * 100,
-                                DurationTotal = currentSong.SongDuration,
-                                Progress = currentSong.ElapsedSeconds,
-                                Playlist = null,
-                                FullArtists = null
-                            };
-                            await WriteSongInfo(tI, Enums.RequestPlayerType.Youtube);
-                            break;
-                        }
-
-                    default:
-                        break;
-                }
-            });
-
-            await PearWebSocketClient.ConnectAsync();
         }
     }
 }

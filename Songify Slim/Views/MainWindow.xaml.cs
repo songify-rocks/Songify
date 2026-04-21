@@ -305,7 +305,7 @@ namespace Songify_Slim.Views
             Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
         }
 
-        private void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (!IsLoaded)
                 return;
@@ -314,6 +314,18 @@ namespace Songify_Slim.Views
             {
                 _selectedSource = selected;
                 Settings.Player = selected;
+
+                if (selected != PlayerType.Pear)
+                {
+                    try
+                    {
+                        await Sf.NotifyPearPlayerInactiveAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.LogExc(ex);
+                    }
+                }
             }
 
             UpdateWindowsMediaSessionComboVisibility();
@@ -574,10 +586,6 @@ namespace Songify_Slim.Views
                     break;
 
                 case PlayerType.Pear:
-                    //if (true)
-                    //{
-                    //    await Sf.FetchPearWebsocket();
-                    //}
                     await Sf.FetchPear();
                     break;
 

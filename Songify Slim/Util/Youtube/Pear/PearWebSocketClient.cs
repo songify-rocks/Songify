@@ -6,6 +6,7 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Youtube.Pear
 {
@@ -18,20 +19,21 @@ namespace Songify_Slim.Util.Youtube.Pear
         private static readonly object _lock = new();
         private static bool _isConnecting;
 
-        // Internal event so we can fully control subscriptions
-        private static event Action<string> MessageReceivedInternal;
+        private static Func<string, Task> _messageHandler;
 
         public static bool IsConnected =>
             _socket is { State: WebSocketState.Open };
 
         /// <summary>
-        /// Set (replace) the message handler. This avoids multiple subscriptions.
+        /// Set (replace) the async message handler. This avoids multiple subscriptions.
         /// Pass null to clear.
         /// </summary>
-        public static void SetMessageHandler(Action<string> handler)
+        public static void SetMessageHandler(Func<string, Task> handler)
         {
-            // overwrite all previous handlers
-            MessageReceivedInternal = handler;
+            lock (_lock)
+            {
+                _messageHandler = handler;
+            }
         }
 
         /// <summary>
@@ -170,20 +172,36 @@ namespace Songify_Slim.Util.Youtube.Pear
 
                     string message = Encoding.UTF8.GetString(ms.ToArray());
 
-                    MessageReceivedInternal?.Invoke(message);
+                    Func<string, Task> handler;
+                    lock (_lock)
+                    {
+                        handler = _messageHandler;
+                    }
+
+                    if (handler != null)
+                    {
+                        try
+                        {
+                            await handler(message).ConfigureAwait(false);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.Error(LogSource.Pear, "Pear WebSocket message handler failed", ex);
+                        }
+                    }
                 }
             }
             catch (OperationCanceledException)
             {
-                // expected on disconnect
+                Logger.Debug(LogSource.Pear, "Pear WebSocket receive loop cancelled.");
             }
             catch (ObjectDisposedException)
             {
-                // socket disposed while loop running
+                Logger.Debug(LogSource.Pear, "Pear WebSocket receive loop ended (socket disposed).");
             }
             catch (Exception ex)
             {
-                // TODO: log ex if you have logging
+                Logger.Error(LogSource.Pear, "Pear WebSocket receive loop error", ex);
             }
         }
     }
