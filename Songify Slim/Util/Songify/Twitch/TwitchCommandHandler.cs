@@ -74,6 +74,9 @@ namespace Songify_Slim.Util.Songify.Twitch
         /// <summary>
         /// Executes a command based on the trigger or alias parsed from the chat message.
         /// </summary>
+        /// <returns>
+        /// Item1 (Executed): the handler ran. Item2 (KnownButDisabled): a registered command or alias matched the first token, but <see cref="TwitchCommand.IsEnabled"/> is false.
+        /// </returns>
         //public static bool TryExecuteCommand(ChatMessage message, TwitchCommandParams cmdParams)
         //{
         //    if (message == null || string.IsNullOrWhiteSpace(message.Message))
@@ -99,29 +102,33 @@ namespace Songify_Slim.Util.Songify.Twitch
         //    return true;
         //}
 
-        public static bool TryExecuteCommand(ChannelChatMessage msg, TwitchCommandParams cmdParams)
+        public static (bool Executed, bool KnownButDisabled) TryExecuteCommand(ChannelChatMessage msg, TwitchCommandParams cmdParams)
         {
             if (msg == null || string.IsNullOrEmpty(msg.Message.Text))
-                return false;
+                return (false, false);
 
             // Extract first token (e.g., "!sr params..." -> "sr")
             string firstToken = msg.Message.Text.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries)[0];
             string key = Normalize(firstToken);
-            if (string.IsNullOrEmpty(key)) return false;
+            if (string.IsNullOrEmpty(key))
+                return (false, false);
 
-            // Look up command by trigger OR alias
-            if (!CommandsByTrigger.TryGetValue(key, out TwitchCommand command) || command is not { IsEnabled: true })
-                return false;
+            if (!CommandsByTrigger.TryGetValue(key, out TwitchCommand command))
+                return (false, false);
+
+            if (!command.IsEnabled)
+                return (false, true);
 
             // Always resolve handler using the command's canonical trigger
             string canonical = Normalize(command.Trigger);
-            if (string.IsNullOrEmpty(canonical)) return false;
+            if (string.IsNullOrEmpty(canonical))
+                return (false, false);
 
             if (!CommandHandlers.TryGetValue(canonical, out CommandHandlerDelegate handler) || handler == null)
-                return false;
+                return (false, false);
 
             handler(msg, command, cmdParams);
-            return true;
+            return (true, false);
         }
 
         /// <summary>

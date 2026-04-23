@@ -1443,11 +1443,12 @@ namespace Songify_Slim.Util.Songify
                 // 0) Correlate with Pear queue current item (canonical id)
                 // We prefer the Pear queue's selected item id over now-playing VideoId,
                 // because YouTube can swap the playback id while the queue item remains stable.
+                List<Song> pearQueue = null;
                 Song queueCurrent = null;
                 string queueCurrentId = null;
                 try
                 {
-                    List<Song> pearQueue = await PearApi.GetQueueAsync().ConfigureAwait(false);
+                    pearQueue = await PearApi.GetQueueAsync().ConfigureAwait(false);
                     queueCurrent = pearQueue?.FirstOrDefault(s => s.IsCurrent);
                     queueCurrentId = queueCurrent?.Id;
                 }
@@ -1469,11 +1470,25 @@ namespace Songify_Slim.Util.Songify
                 if (queueCurrent != null && queueCurrent.Length > TimeSpan.Zero)
                     songDurationSec = (int)Math.Round(queueCurrent.Length.TotalSeconds);
 
-                // If queue selection changed, the previously-current queue item finished/skipped -> remove that request by id.
+                // If queue selection changed, the previously-current queue item finished/skipped -> remove requests
+                // for that id plus any Pear queue rows still listed above the new current (stale ReqList cleanup).
                 if (!string.IsNullOrWhiteSpace(_lastPearQueueCurrentId) &&
                     !string.Equals(_lastPearQueueCurrentId, canonicalId, StringComparison.Ordinal))
                 {
-                    await RemoveRequestByTrackIdAsync(_lastPearQueueCurrentId).ConfigureAwait(false);
+                    HashSet<string> idsToRemove = new(StringComparer.Ordinal)
+                    {
+                        _lastPearQueueCurrentId
+                    };
+                    if (queueCurrent != null && pearQueue is { Count: > 0 })
+                    {
+                        foreach (Song s in pearQueue)
+                        {
+                            if (!string.IsNullOrWhiteSpace(s.Id) && s.Pos < queueCurrent.Pos)
+                                idsToRemove.Add(s.Id);
+                        }
+                    }
+
+                    await RemoveRequestsByTrackIdsAsync(idsToRemove).ConfigureAwait(false);
                 }
                 _lastPearQueueCurrentId = canonicalId;
 
@@ -1625,9 +1640,20 @@ namespace Songify_Slim.Util.Songify
             }
         }
 
-        private static Task RemoveRequestByTrackIdAsync(string trackId)
+        /// <summary>Remove <see cref="RequestObject"/> rows whose <see cref="RequestObject.Trackid"/> is in <paramref name="trackIds"/> (Pear queue correlation).</summary>
+        private static Task RemoveRequestsByTrackIdsAsync(IEnumerable<string> trackIds)
         {
-            if (string.IsNullOrWhiteSpace(trackId))
+            if (trackIds == null)
+                return Task.CompletedTask;
+
+            HashSet<string> idSet = new(StringComparer.Ordinal);
+            foreach (string id in trackIds)
+            {
+                if (!string.IsNullOrWhiteSpace(id))
+                    idSet.Add(id);
+            }
+
+            if (idSet.Count == 0)
                 return Task.CompletedTask;
 
             // ReqList is an ObservableCollection; mutate it on the WPF Dispatcher.
@@ -1635,17 +1661,18 @@ namespace Songify_Slim.Util.Songify
             {
                 lock (_sync)
                 {
+                    foreach (string trackId in idSet)
+                    {
+                        RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r =>
+                            r.Trackid == trackId && r.Played == 0);
+                        if (first != null)
+                            first.Played = 1;
+                    }
+
                     int removed = 0;
-
-                    // mark first occurrence
-                    RequestObject first = GlobalObjects.ReqList.FirstOrDefault(r => r.Trackid == trackId && r.Played == 0);
-                    if (first != null)
-                        first.Played = 1;
-
-                    // remove all occurrences
                     for (int i = GlobalObjects.ReqList.Count - 1; i >= 0; i--)
                     {
-                        if (GlobalObjects.ReqList[i].Trackid == trackId)
+                        if (idSet.Contains(GlobalObjects.ReqList[i].Trackid))
                         {
                             GlobalObjects.ReqList.RemoveAt(i);
                             removed++;
@@ -1654,7 +1681,8 @@ namespace Songify_Slim.Util.Songify
 
                     if (removed > 0)
                     {
-                        Logger.Info(LogSource.Pear, $"FetchPear: removed {removed} request(s) for queueId='{trackId}' from ReqList.");
+                        Logger.Info(LogSource.Pear,
+                            $"FetchPear: removed {removed} request(s) across {idSet.Count} Pear track id(s) from ReqList.");
                     }
                 }
             }).Task;

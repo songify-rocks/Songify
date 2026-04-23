@@ -1008,7 +1008,8 @@ public static class TwitchHandler
                 existingUser.Update(msg.ChatterUserLogin, msg.ChatterUserName, userLevels, existingUser.IsFollowing != null && (bool)existingUser.IsFollowing, subtier);
             }
 
-            bool executed = TwitchCommandHandler.TryExecuteCommand(msg, new TwitchCommandParams
+            string commandToken = msg.Message.Text.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries)[0];
+            (bool executed, bool knownButDisabled) = TwitchCommandHandler.TryExecuteCommand(msg, new TwitchCommandParams
             {
                 Subtier = subtier,
                 ExistingUser = existingUser,
@@ -1017,11 +1018,18 @@ public static class TwitchHandler
 
             if (executed)
                 Logger.Info(LogSource.Twitch,
-                    $"Command \"{msg.Message.Text.Split(' ')[0]}\" by {msg.ChatterUserName}: Executed successfully.");
+                    $"Command \"{commandToken}\" by {msg.ChatterUserName}: Executed successfully.");
+            else if (knownButDisabled)
+            {
+                Logger.Warning(LogSource.Twitch,
+                    $"Command \"{commandToken}\" by {msg.ChatterUserName}: Not executed (registered but disabled).");
+                await SendChatMessage(
+                    $"@{msg.ChatterUserName} The command \"{commandToken}\" is not enabled.");
+            }
             else
             {
                 Logger.Warning(LogSource.Twitch,
-                    $"Command \"{msg.Message.Text.Split(' ')[0]}\" by {msg.ChatterUserName}: Not executed (not found or disabled).");
+                    $"Command \"{commandToken}\" by {msg.ChatterUserName}: Not executed (not a Songify command).");
             }
         }
         catch (Exception ex)
