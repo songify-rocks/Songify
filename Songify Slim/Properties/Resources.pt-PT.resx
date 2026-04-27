@@ -821,6 +821,9 @@
   <data name="param_user_description" xml:space="preserve">
     <value>O usuário que acionou o comando ou canalizou a recompensa</value>
   </data>
+  <data name="param_cmd_description" xml:space="preserve">
+    <value>The chat command token the user sent (first word of the message)</value>
+  </data>
   <data name="param_requester_description" xml:space="preserve">
     <value>O solicitante da música atual</value>
   </data>
@@ -1462,5 +1465,8 @@
   </data>
   <data name="window_main_windows_media_session_refresh_tooltip" xml:space="preserve">
     <value>Atualizar sessões de multimédia.</value>
+  </data>
+  <data name="window_botresponses_command_disabled" xml:space="preserve">
+    <value>Resposta de comando desativada</value>
   </data>
 </root>

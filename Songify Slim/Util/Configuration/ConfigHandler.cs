@@ -739,6 +739,8 @@ namespace Songify_Slim.Util.Configuration
         public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
         public string BotRespUserCooldown { get; set; } = "@{user} you have to wait {cd} before you can request a song again.";
 
+        public string BotRespCommandDisabled { get; set; } = "@{user} the command {cmd} is not enabled.";
+
         public string BotRespUserLevelTooLowCommand { get; set; } =
             "Sorry, only {userlevel} or higher can request songs using the command.";
 

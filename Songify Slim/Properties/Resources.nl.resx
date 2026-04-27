@@ -962,6 +962,9 @@
   <data name="param_user_description" xml:space="preserve">
     <value>De gebruiker die de opdracht of kanaalbeloning heeft geactiveerd</value>
   </data>
+  <data name="param_cmd_description" xml:space="preserve">
+    <value>The chat command token the user sent (first word of the message)</value>
+  </data>
   <data name="param_requester_description" xml:space="preserve">
     <value>De aanvrager van het huidige nummer</value>
   </data>
@@ -1516,5 +1519,8 @@
   </data>
   <data name="window_main_windows_media_session_refresh_tooltip" xml:space="preserve">
     <value>Mediasesies vernieuwen.</value>
+  </data>
+  <data name="window_botresponses_command_disabled" xml:space="preserve">
+    <value>Commando uitgeschakelde reactie</value>
   </data>
 </root>

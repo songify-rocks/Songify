@@ -52,6 +52,11 @@ namespace Songify_Slim.Views
                     "The user who triggered the command or channel reward",
                     "user chatter username name mention who command reward trigger"),
 
+                new ResponseParamEntry("{cmd}",
+                    Application.Current.TryFindResource("param_cmd_description") as string ??
+                    "The chat command token the user sent (first word of the message)",
+                    "command trigger token disabled"),
+
                 new ResponseParamEntry("{req}",
                     Application.Current.TryFindResource("param_requester_description") as string ??
                     "The requester of the current song",

@@ -39,6 +39,7 @@ namespace Songify_Slim.UserControls
             {"TbSuccess","{artist} - {title} requested by @{user} has been added to the queue."},
             {"TbVoteSkip","@{user} voted to skip the current song. ({votes})"},
             {"TbSrUserCooldown","@{user} you have to wait {cd} before you can request a song again."},
+            {"TbCommandDisabled","@{user} the command {cmd} is not enabled."},
         };
 
         public UcBotResponses()
@@ -74,6 +75,7 @@ namespace Songify_Slim.UserControls
                     { "{cd}", "5" },
                     { "{userlevel}", "subscribers" },
                     { "{ttp}", "1m 37s" },
+                    { "{cmd}", "!ssr" },
                 };
                 response = replacements.Aggregate(response, (current, pair) => current.Replace(pair.Key, pair.Value));
             }
@@ -195,6 +197,7 @@ namespace Songify_Slim.UserControls
             TbnoTrackFound.Text = Settings.BotRespNoTrackFound;
             TbSrUserCooldown.Text = Settings.BotRespUserCooldown;
             TbSrCommandUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowCommand;
+            TbCommandDisabled.Text = Settings.BotRespCommandDisabled;
             TbSrRewardUSerlevelTooLow.Text = Settings.BotRespUserlevelTooLowReward;
             TbSongBlocked.Text = Settings.BotRespBlacklistSong;
 
@@ -293,6 +296,12 @@ namespace Songify_Slim.UserControls
         private void Tb_UserLevelTooLowCommand_TextChanged(object sender, TextChangedEventArgs e)
         {
             Settings.BotRespUserlevelTooLowCommand = TbSrCommandUSerlevelTooLow.Text;
+            SetPreview(sender as TextBox);
+        }
+
+        private void Tb_CommandDisabled_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            Settings.BotRespCommandDisabled = TbCommandDisabled.Text;
             SetPreview(sender as TextBox);
         }
 

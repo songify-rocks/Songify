@@ -871,6 +871,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The chat command token the user sent (first word of the message).
+        /// </summary>
+        public static string param_cmd_description {
+            get {
+                return ResourceManager.GetString("param_cmd_description", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to List of all active commands.
         /// </summary>
         public static string param_commands_description {
@@ -1722,6 +1731,15 @@ namespace Songify_Slim.Properties {
         public static string window_botresponses_cmd_vol_ignore_mod {
             get {
                 return ResourceManager.GetString("window_botresponses_cmd_vol_ignore_mod", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Command disabled response.
+        /// </summary>
+        public static string window_botresponses_command_disabled {
+            get {
+                return ResourceManager.GetString("window_botresponses_command_disabled", resourceCulture);
             }
         }
         

@@ -1023,8 +1023,38 @@ public static class TwitchHandler
             {
                 Logger.Warning(LogSource.Twitch,
                     $"Command \"{commandToken}\" by {msg.ChatterUserName}: Not executed (registered but disabled).");
-                await SendChatMessage(
-                    $"@{msg.ChatterUserName} The command \"{commandToken}\" is not enabled.");
+                string disabledTemplate = Settings.BotRespCommandDisabled;
+                if (!string.IsNullOrWhiteSpace(disabledTemplate))
+                {
+                    Dictionary<string, string> disabledParams = new()
+                    {
+                        { "user", msg.ChatterUserName },
+                        { "cmd", commandToken },
+                        { "req", "" },
+                        { "artist", "" },
+                        { "single_artist", "" },
+                        { "title", "" },
+                        { "errormsg", "" },
+                        { "maxlength", Settings.MaxSongLength.ToString() },
+                        { "maxreq", Settings.TwSrMaxReq.ToString() },
+                        { "userreq", "" },
+                        { "song", "" },
+                        { "playlist_name", "" },
+                        { "playlist_url", "" },
+                        { "votes", "" },
+                        { "cd", "" },
+                        { "url", "" },
+                        { "queue", "" },
+                        { "commands", "" },
+                        { "userlevel", "" },
+                        { "ttp", "" },
+                        { "reason", "" },
+                        { "pos", "" },
+                        { "songs", "" },
+                    };
+                    string response = ReplaceParameters(disabledTemplate, disabledParams);
+                    await SendChatMessage(response);
+                }
             }
             else
             {

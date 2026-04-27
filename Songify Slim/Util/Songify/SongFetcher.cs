@@ -1472,6 +1472,8 @@ namespace Songify_Slim.Util.Songify
 
                 // If queue selection changed, the previously-current queue item finished/skipped -> remove requests
                 // for that id plus any Pear queue rows still listed above the new current (stale ReqList cleanup).
+                // Skip bulk ids that also appear *after* current: the same videoId can repeat (re-request) while an old
+                // row still sits above the playhead; removing by id would wipe the legitimate pending request.
                 if (!string.IsNullOrWhiteSpace(_lastPearQueueCurrentId) &&
                     !string.Equals(_lastPearQueueCurrentId, canonicalId, StringComparison.Ordinal))
                 {
@@ -1481,10 +1483,21 @@ namespace Songify_Slim.Util.Songify
                     };
                     if (queueCurrent != null && pearQueue is { Count: > 0 })
                     {
+                        HashSet<string> idsAlsoAfterCurrent = new(StringComparer.Ordinal);
                         foreach (Song s in pearQueue)
                         {
-                            if (!string.IsNullOrWhiteSpace(s.Id) && s.Pos < queueCurrent.Pos)
+                            if (!string.IsNullOrWhiteSpace(s.Id) && s.Pos > queueCurrent.Pos)
+                                idsAlsoAfterCurrent.Add(s.Id);
+                        }
+
+                        foreach (Song s in pearQueue)
+                        {
+                            if (!string.IsNullOrWhiteSpace(s.Id) &&
+                                s.Pos < queueCurrent.Pos &&
+                                !idsAlsoAfterCurrent.Contains(s.Id))
+                            {
                                 idsToRemove.Add(s.Id);
+                            }
                         }
                     }
 

@@ -851,6 +851,8 @@ namespace Songify_Slim.Util.Configuration
         public static string WebUserAgent => GetWebua();
         public static string YtmdToken { get => GetYtmdToken(); set => SetYtmdToken(value); }
         public static string BotCmdCommandsTrigger { get => GetBotCmdCommandsTrigger(); set => SetBotCmdCommandsTrigger(value); }
+        public static string BotRespCommandDisabled { get => GetBotRespCommandDisabled(); set => SetBotRespCommandDisabled(value); }
+
         public static string BotRespUserlevelTooLowCommand { get => GetBotRespUserlevelTooLowCommand(); set => SetBotRespUserlevelTooLowCommand(value); }
         public static bool ShowUserLevelBadges { get => GetShowUserLevelBadges(); set => SetShowUserLevelBadges(value); }
 
@@ -980,6 +982,18 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetShowUserLevelBadges()
         {
             return CurrentConfig.AppConfig.ShowUserLevelBadges;
+        }
+
+        private static void SetBotRespCommandDisabled(string value)
+        {
+            CurrentConfig.BotConfig.BotRespCommandDisabled = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetBotRespCommandDisabled()
+        {
+            return CurrentConfig.BotConfig.BotRespCommandDisabled
+                   ?? "@{user} the command {cmd} is not enabled.";
         }
 
         private static void SetBotRespUserlevelTooLowCommand(string value)
@@ -1121,6 +1135,7 @@ namespace Songify_Slim.Util.Configuration
                 BotRespSuccess = GetBot_Resp_Success(),
                 BotRespUnavailable = GetBot_Resp_SongUnavailable(),
                 BotRespUserCooldown = GetBotRespUserCooldown(),
+                BotRespCommandDisabled = GetBotRespCommandDisabled(),
                 BotRespUserLevelTooLowCommand = GetBotRespUserlevelTooLowCommand(),
                 BotRespUserLevelTooLowReward = GetBotRespUserlevelTooLowReward(),
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
