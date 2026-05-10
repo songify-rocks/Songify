@@ -148,12 +148,39 @@ public static class ApiCallMeter
                     }
                 }
 
+                try
+                {
+                    string title = retrySeconds > 300
+                        ? "Spotify daily quota"
+                        : "Spotify rate limited";
+                    string approxLocal = retryUntil.LocalDateTime.ToString("g", CultureInfo.CurrentCulture);
+                    string durationText = FormatApproximateWait(retrySeconds);
+                    string body =
+                        $"Songify will wait before retrying. About {durationText}, around {approxLocal}.";
+                    SpotifyUserNotifier.NotifyRateLimited(title, body, retryUntil);
+                }
+                catch (Exception notifyEx)
+                {
+                    Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                        "Rate limit user notification failed: " + notifyEx.Message);
+                }
+
                 // Loop continues and all requests will respect the cooldown
             }
             catch (APIUnauthorizedException ex)
             {
                 Logger.Error(LogSource.Spotify,
                     $"Spotify unauthorized on '{key}'. Access token may be invalid or expired. {FormatApiExceptionDetails(ex)}");
+                try
+                {
+                    SpotifyUserNotifier.NotifyUnauthorized(key);
+                }
+                catch (Exception notifyEx)
+                {
+                    Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                        "Unauthorized user notification failed: " + notifyEx.Message);
+                }
+
                 break;
             }
             catch (APIException ex)
@@ -162,13 +189,35 @@ public static class ApiCallMeter
                     Logger.Error(LogSource.Spotify,
                         $"Spotify API: Can't get public playlist Info. {FormatApiExceptionDetails(ex)}");
                 else
+                {
                     Logger.Error(LogSource.Spotify, $"Spotify API error on '{key}': {FormatApiExceptionDetails(ex)}");
+                    try
+                    {
+                        SpotifyUserNotifier.NotifyApiException(key, ex);
+                    }
+                    catch (Exception notifyEx)
+                    {
+                        Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                            "API error user notification failed: " + notifyEx.Message);
+                    }
+                }
+
                 break;
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Spotify, $"Unexpected error on Spotify request '{key}'.");
                 Logger.LogExc(ex);
+                try
+                {
+                    SpotifyUserNotifier.NotifyUnexpected(key, ex);
+                }
+                catch (Exception notifyEx)
+                {
+                    Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                        "Unexpected error user notification failed: " + notifyEx.Message);
+                }
+
                 break;
             }
         }
@@ -182,6 +231,8 @@ public static class ApiCallMeter
         {
             _globalRetryUntil = null;
         }
+
+        SpotifyUserNotifier.ClearRateLimitHint();
 
         Logger.Log(LogLevel.Info, LogSource.Spotify,
             "Spotify rate limit lock released");
@@ -222,22 +273,25 @@ public static class ApiCallMeter
             ? $"{(int)ex.Response.StatusCode} {ex.Response.StatusCode}"
             : "no response";
 
-        string body;
+        string body = "(no body)";
+
         if (ex.Response?.Body != null)
         {
-            try
-            {
-                body = JsonSerializer.Serialize(ex.Response.Body);
-            }
-            catch
-            {
-                body = ex.Response.Body.ToString();
-            }
+            body = ex.Response.Body is string bodyString
+                ? bodyString
+                : ex.Response.Body.ToString();
         }
-        else
-            body = "(no body)";
 
         return $"Status={status}, Message={ex.Message}, Body={body}";
+    }
+
+    private static string FormatApproximateWait(int retrySeconds)
+    {
+        if (retrySeconds >= 3600)
+            return $"{retrySeconds / 3600} hour(s)";
+        if (retrySeconds >= 60)
+            return $"{retrySeconds / 60} minute(s)";
+        return $"{retrySeconds} second(s)";
     }
 
     private static int GetRetryAfterSeconds(APITooManyRequestsException ex)

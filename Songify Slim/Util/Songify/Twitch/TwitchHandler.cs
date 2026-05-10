@@ -2083,7 +2083,10 @@ public static class TwitchHandler
 
             string response = cmd.Response;
             response = response.Replace("{song}", $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}");
-            response = response.Replace("{playlist}", Settings.SpotifyPlaylistCache.Find(o => o.Id == Settings.SpotifyPlaylistId.PlaylistId).Name);
+            if (Settings.SpotifyPlaylistId.PlaylistId == "-1")
+                response = response.Replace("{playlist}", "Liked Songs");
+            else
+                response = response.Replace("{playlist}", Settings.SpotifyPlaylistCache.Find(o => o.Id == Settings.SpotifyPlaylistId.PlaylistId).Name);
 
             SendOrAnnounceMessage(response, cmd);
         }

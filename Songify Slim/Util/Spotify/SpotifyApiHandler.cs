@@ -11,6 +11,9 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -47,6 +50,9 @@ namespace Songify_Slim.Util.Spotify
 
         private static string _state;
         private static string _codeVerifier;
+
+        private static CancellationTokenSource _pkceLoginWatchdogCts;
+        private static volatile bool _pkceLoginPending;
 
         private static readonly List<string> SpotifyScopes =
         [
@@ -98,6 +104,68 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
+        private static void CancelPkceLoginWatchdog()
+        {
+            _pkceLoginPending = false;
+            try
+            {
+                _pkceLoginWatchdogCts?.Cancel();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Cancel PKCE watchdog failed", ex);
+            }
+        }
+
+        private static void StartPkceLoginWatchdog()
+        {
+            try
+            {
+                _pkceLoginWatchdogCts?.Cancel();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Cancel PKCE watchdog (restart) failed", ex);
+            }
+
+            try
+            {
+                _pkceLoginWatchdogCts?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Dispose PKCE watchdog CTS failed", ex);
+            }
+
+            _pkceLoginWatchdogCts = new CancellationTokenSource();
+            CancellationToken token = _pkceLoginWatchdogCts.Token;
+            _pkceLoginPending = true;
+
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(TimeSpan.FromMinutes(3), token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    return;
+                }
+
+                if (!_pkceLoginPending)
+                    return;
+
+                if (!string.IsNullOrWhiteSpace(Settings.SpotifyAccessToken))
+                    return;
+
+                SpotifyUserNotifier.Notify(
+                    "Spotify login timed out",
+                    "Songify did not receive the login callback. Ensure port 4002 is free, Windows Firewall allows Songify, and your Spotify app Redirect URI is exactly http://127.0.0.1:4002/auth",
+                    "spotify:pkce:timeout",
+                    TimeSpan.FromHours(2));
+            }, token);
+        }
+
         private static async Task StartPkceLogin()
         {
             try
@@ -127,7 +195,21 @@ namespace Songify_Slim.Util.Spotify
                 _server.AuthorizationCodeReceived += OnAuthorizationCodeReceived;
                 _server.ErrorReceived += OnAuthError;
 
-                await _server.Start();
+                try
+                {
+                    await _server.Start();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, LogSource.Spotify,
+                        "OAuth callback server could not start on port 4002.", ex);
+                    SpotifyUserNotifier.Notify(
+                        "Spotify login server failed",
+                        "Songify could not listen on port 4002. Another program may be using it, or access was denied. Close other apps using that port or run Songify as administrator once to allow the firewall prompt.",
+                        "spotify:pkce:port",
+                        TimeSpan.FromMinutes(3));
+                    throw;
+                }
 
                 (string verifier, string challenge) = PKCEUtil.GenerateCodes();
                 _codeVerifier = verifier;
@@ -150,22 +232,32 @@ namespace Songify_Slim.Util.Spotify
                 {
                     await Task.Delay(300);
                     BrowserUtil.Open(uri);
+                    StartPkceLoginWatchdog();
                 }
                 catch (Exception ex)
                 {
                     Logger.LogExc(ex);
                     Logger.Error(LogSource.Spotify, $"Unable to open browser automatically. Please open manually: {uri}");
+                    CancelPkceLoginWatchdog();
+                    SpotifyUserNotifier.Notify(
+                        "Browser did not open",
+                        $"Open this link manually to sign in to Spotify:\n{uri}",
+                        "spotify:pkce:browser",
+                        TimeSpan.FromMinutes(5));
                 }
             }
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+                CancelPkceLoginWatchdog();
                 throw;
             }
         }
 
         private static Task OnAuthError(object sender, string error, string receivedState)
         {
+            CancelPkceLoginWatchdog();
+
             try
             {
                 Logger.Error(LogSource.Spotify, "Spotify authorization failed.");
@@ -175,6 +267,15 @@ namespace Songify_Slim.Util.Spotify
                 Logger.Error(LogSource.Spotify, $"ClientId: {Settings.ClientId}");
                 Logger.Error(LogSource.Spotify, $"RedirectUri: {_server?.BaseUri}");
                 Logger.Error(LogSource.Spotify, $"Requested scopes: {string.Join(", ", SpotifyScopes)}");
+
+                string detail = string.IsNullOrWhiteSpace(error)
+                    ? "Spotify declined authorization."
+                    : error;
+                SpotifyUserNotifier.Notify(
+                    "Spotify authorization denied",
+                    detail,
+                    "spotify:oauth:error:" + (error ?? "unknown"),
+                    TimeSpan.FromMinutes(3));
             }
             catch (Exception ex)
             {
@@ -224,8 +325,37 @@ namespace Songify_Slim.Util.Spotify
 
             Logger.Info(LogSource.Spotify, "Requesting refreshed PKCE token");
 
-            PKCETokenResponse refreshResponse =
-                await oauth.RequestToken(new PKCETokenRefreshRequest(Settings.ClientId, Settings.SpotifyRefreshToken));
+            PKCETokenResponse refreshResponse;
+            try
+            {
+                refreshResponse =
+                    await oauth.RequestToken(new PKCETokenRefreshRequest(Settings.ClientId,
+                        Settings.SpotifyRefreshToken));
+            }
+            catch (APIException ex)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Spotify,
+                    "Spotify token refresh failed (API). " + ApiCallMeter.FormatApiExceptionDetails(ex));
+                SpotifyUserNotifier.Notify(
+                    "Spotify session refresh failed",
+                    SpotifyUserNotifier.FormatApiErrorBody(ex) + " Try signing in again from Songify.",
+                    "spotify:refresh:api",
+                    TimeSpan.FromMinutes(5));
+                throw;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Spotify, "Spotify token refresh failed.", ex);
+                string msg = ex.Message;
+                if (msg.Length > 200)
+                    msg = msg.Substring(0, 197) + "...";
+                SpotifyUserNotifier.Notify(
+                    "Spotify session refresh failed",
+                    msg + " Check your network and try signing in again.",
+                    "spotify:refresh:net",
+                    TimeSpan.FromMinutes(5));
+                throw;
+            }
 
             if (string.IsNullOrWhiteSpace(refreshResponse.AccessToken))
                 throw new Exception("Spotify returned an empty access token during refresh.");
@@ -261,17 +391,35 @@ namespace Songify_Slim.Util.Spotify
 
                 Logger.Log(LogLevel.Debug, LogSource.Spotify, "Sending PKCE token request");
 
-                PKCETokenResponse tokenResponse = await oauth.RequestToken(
-                    new PKCETokenRequest(
-                        Settings.ClientId,
-                        response.Code,
-                        new Uri(_server.BaseUri.ToString()),
-                        _codeVerifier
-                    )
-                );
+                PKCETokenResponse tokenResponse;
+                try
+                {
+                    tokenResponse = await oauth.RequestToken(
+                        new PKCETokenRequest(
+                            Settings.ClientId,
+                            response.Code,
+                            new Uri(_server.BaseUri.ToString()),
+                            _codeVerifier
+                        )
+                    );
+                }
+                catch (APIException ex)
+                {
+                    Logger.Log(LogLevel.Error, LogSource.Spotify,
+                        "PKCE token exchange failed. " + ApiCallMeter.FormatApiExceptionDetails(ex));
+                    SpotifyUserNotifier.Notify(
+                        "Spotify login incomplete",
+                        SpotifyUserNotifier.FormatApiErrorBody(ex) +
+                        " Check your Client ID and Redirect URI in the Spotify Developer Dashboard.",
+                        "spotify:pkce:token:api",
+                        TimeSpan.FromMinutes(5));
+                    throw;
+                }
 
                 if (string.IsNullOrWhiteSpace(tokenResponse.AccessToken))
                     throw new Exception("Spotify returned an empty access token.");
+
+                CancelPkceLoginWatchdog();
 
                 Settings.SpotifyAccessToken = tokenResponse.AccessToken;
                 Settings.SpotifyRefreshToken = tokenResponse.RefreshToken;
@@ -286,9 +434,24 @@ namespace Songify_Slim.Util.Spotify
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
+                CancelPkceLoginWatchdog();
+
+                if (ex is not APIException)
+                {
+                    string msg = ex.Message;
+                    if (msg.Length > 220)
+                        msg = msg.Substring(0, 217) + "...";
+                    SpotifyUserNotifier.Notify(
+                        "Spotify login failed",
+                        msg,
+                        "spotify:pkce:generic:" + ex.GetType().Name,
+                        TimeSpan.FromMinutes(4));
+                }
             }
             finally
             {
+                CancelPkceLoginWatchdog();
+
                 try
                 {
                     if (_server != null)
@@ -758,12 +921,50 @@ namespace Songify_Slim.Util.Spotify
             return result;
         }
 
+        public static async Task<bool> SaveItemsToLibraryRawAsync(
+            IEnumerable<string> uris,
+            string accessToken,
+            CancellationToken ct = default)
+        {
+            List<string> cleanUris = uris
+                .Where(x => !string.IsNullOrWhiteSpace(x))
+                .Select(x => x.Trim())
+                .ToList();
+
+            if (cleanUris.Count == 0)
+                return false;
+
+            string encodedUris = string.Join(",", cleanUris.Select(WebUtility.UrlEncode));
+
+            using HttpClient http = new();
+
+            using HttpRequestMessage request = new(
+                HttpMethod.Put,
+                $"https://api.spotify.com/v1/me/library?uris={encodedUris}");
+
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+            request.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            using HttpResponseMessage response = await http.SendAsync(request, ct);
+
+            string responseBody = await response.Content.ReadAsStringAsync();
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Logger.Error(
+                    LogSource.Spotify,
+                    $"SaveItemsToLibraryRaw failed: Status={(int)response.StatusCode} {response.StatusCode}, Body={responseBody}");
+
+                return false;
+            }
+
+            return true;
+        }
+
         public static async Task<bool> AddToPlaylist(string trackId)
         {
             if (Client == null)
                 return false;
-
-            List<string> uris = EnsureTrackUris([trackId]);
 
             try
             {
@@ -773,15 +974,35 @@ namespace Songify_Slim.Util.Spotify
                 {
                     using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
-                    bool response = await ApiCallMeter.RunAsync("Library.SaveItems",
-                        () => Client.Library.SaveItems(new LibrarySaveItemsRequest(uris), cts.Token),
-                        softLimitPerMinute: SoftLimitPerminute, ct: cts.Token);
-                    return !response; // keep your existing semantics: false = success, true = error
-                }
+                    List<string> uris = EnsureTrackUris([trackId]);
 
+                    Logger.Log(LogLevel.Info, LogSource.Spotify,
+                        $"Library.SaveItems URIs: {string.Join(", ", uris)}");
+
+                    //bool response = await ApiCallMeter.RunAsync(
+                    //    "Library.SaveItems",
+                    //    () => Client.Library.SaveItems(
+                    //        new LibrarySaveItemsRequest(uris),
+                    //        cts.Token),
+                    //    softLimitPerMinute: SoftLimitPerminute,
+                    //    ct: cts.Token);
+
+
+                    bool response = await ApiCallMeter.RunAsync(
+                        "Library.SaveItemsRaw",
+                        () => SaveItemsToLibraryRawAsync(
+                            uris,
+                            Settings.SpotifyAccessToken,
+                            cts.Token),
+                        softLimitPerMinute: SoftLimitPerminute,
+                        ct: cts.Token);
+
+                    return !response;
+                }
                 // Make sure cache is filled once (try SpotifyAPI-NET first, fallback to raw if it breaks)
                 try
                 {
+                    List<string> uris = EnsureTrackUris([trackId]);
                     SnapshotResponse response = await ApiCallMeter.RunAsync("Playlists.AddPlaylistItems",
                         () => Client.Playlists.AddPlaylistItems(Settings.SpotifyPlaylistId.PlaylistId,
                             new PlaylistAddItemsRequest(uris)), softLimitPerMinute: SoftLimitPerminute);

@@ -2,7 +2,11 @@
 <head>
     <script>
         function getUrlParams(hash, start) {
-            const hashes = hash.slice(hash.indexOf(start) + 1).split("&");
+            const idx = hash.indexOf(start);
+            if (idx < 0) {
+                return undefined;
+            }
+            const hashes = hash.slice(idx + start.length).split("&");
 
             if (!hashes || hashes.length === 0 || hashes[0] === "") {
                 return undefined;
@@ -23,10 +27,9 @@
             }
             params.request_type = "token";
 
-            console.log("Sent request_type token to server", params);
             fetch("?" + new URLSearchParams(params).toString(), {
                 method: "POST",
-            });
+            }).catch(function () { /* server may still process redirect */ });
         }
         handleImplicitGrant();
 
@@ -37,10 +40,9 @@
             }
             params.request_type = "code";
 
-            console.log("Sent request_type code to server", params);
             fetch("?" + new URLSearchParams(params).toString(), {
                 method: "POST",
-            });
+            }).catch(function () { /* server may still process redirect */ });
         }
         handleAuthenticationCode();
 
@@ -50,8 +52,8 @@
             const params = new URLSearchParams(window.location.search);
 
             if (params.has("error")) {
-                errorContainer.classList.remove("hidden");
-            } else {
+                if (errorContainer) errorContainer.classList.remove("hidden");
+            } else if (successContainer) {
                 successContainer.classList.remove("hidden");
             }
         });
@@ -60,6 +62,10 @@
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
     @import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
+    .hidden {
+        display: none !important;
+    }
 
     body {
         text-align: center;
@@ -176,25 +182,40 @@
 </style>
 
 <body>
-<div class="card">
+<div id="error" class="card hidden">
     <div class="content">
         <img src="https://songify.rocks/api/images/logo.png" alt="Songify Logo"/>
         <span class="plus-sign">+</span>
-        <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green-300x300.png" alt="Twitch Logo"/>
+        <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green-300x300.png" alt="Spotify Logo"/>
+    </div>
+    <h1>Authorization issue</h1>
+    <p>Spotify reported an error during login. You can close this page and try again in Songify.</p>
+</div>
+
+<div id="success" class="card hidden">
+    <div class="content">
+        <img src="https://songify.rocks/api/images/logo.png" alt="Songify Logo"/>
+        <span class="plus-sign">+</span>
+        <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green-300x300.png" alt="Spotify Logo"/>
     </div>
     <h1>Success!</h1>
     <p><span class="songify-text">Songify</span> and Spotify are now connected!<br/>You can close this page.</p>
 </div>
 
 <script>
-        // Wait for logo to load before starting animations
         window.addEventListener('load', function () {
-            const songifyLogo = document.querySelector('img[src*="songify.rocks"]');
+            const songifyLogo = document.querySelector('#success img[src*="songify.rocks"], #error img[src*="songify.rocks"]');
+            if (!songifyLogo) return;
 
             function startAnimations() {
-                document.querySelector('.content').classList.add('animate');
-                document.querySelector('h1').classList.add('animate');
-                document.querySelector('p').classList.add('animate');
+                const root = songifyLogo.closest('.card');
+                if (!root) return;
+                const content = root.querySelector('.content');
+                const h1 = root.querySelector('h1');
+                const p = root.querySelector('p');
+                if (content) content.classList.add('animate');
+                if (h1) h1.classList.add('animate');
+                if (p) p.classList.add('animate');
             }
 
             if (songifyLogo.complete) {
@@ -203,27 +224,6 @@
                 songifyLogo.addEventListener('load', startAnimations);
             }
         });
-
-        let values = {
-            access_token: "TOKEN",
-            state: "STATE"
-        };
-
-        const url = new URLSearchParams("?" + window.location.hash.substring(1))
-        window.history.replaceState(null, '', '/');
-        values.access_token = url.get('access_token');
-        values.state = url.get('state');
-
-        jsonData = JSON.stringify(values);
-
-        fetch('VARIABLE_FETCHURI', {
-            method: "POST",
-            body: JSON.stringify(jsonData)
-        })
-
-        setTimeout(function () {
-            window.close();
-        }, 5000);
     </script>
 </body>
 </html>
