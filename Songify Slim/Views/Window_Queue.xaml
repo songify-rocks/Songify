@@ -284,8 +284,11 @@
                                                 <Button.Style>
                                                     <Style BasedOn="{StaticResource MahApps.Styles.Button.WindowCommands}" TargetType="Button">
                                                         <Style.Triggers>
-                                                            <!--  Only show if Playertype is Spotify  -->
+                                                            <!--  Only show if Playertype is Spotify or YouTube  -->
                                                             <DataTrigger Binding="{Binding PlayerType}" Value="Spotify">
+                                                                <Setter Property="IsEnabled" Value="True" />
+                                                            </DataTrigger>
+                                                            <DataTrigger Binding="{Binding PlayerType}" Value="YouTube">
                                                                 <Setter Property="IsEnabled" Value="True" />
                                                             </DataTrigger>
                                                             <!--  Hide if Requester is 'Skipping...'  -->

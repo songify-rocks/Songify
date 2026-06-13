@@ -455,8 +455,11 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            // gets the current playing song info
+            // Gets the currently playing song info from playback.
+            // When Spotify is paused, playback can lag behind UI selection changes,
+            // so we reconcile against queue.CurrentlyPlaying as a fallback.
             TrackInfo songInfo = await SpotifyApiHandler.GetSongInfo();
+            songInfo = await TryRefreshPausedTrackFromQueueAsync(songInfo);
 
             if (songInfo == null)
             {
@@ -588,6 +591,47 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogExc(e);
             }
+        }
+
+        private static async Task<TrackInfo> TryRefreshPausedTrackFromQueueAsync(TrackInfo playbackTrack)
+        {
+            // Only reconcile when paused (or playback couldn't provide track info).
+            if (playbackTrack != null && playbackTrack.IsPlaying)
+                return playbackTrack;
+
+            QueueResponse queueInfo = await SpotifyApiHandler.GetQueueInfo();
+            FullTrack queueTrack = queueInfo?.CurrentlyPlaying as FullTrack;
+            if (queueTrack == null || string.IsNullOrWhiteSpace(queueTrack.Id))
+                return playbackTrack;
+
+            if (playbackTrack != null &&
+                string.Equals(playbackTrack.SongId, queueTrack.Id, StringComparison.Ordinal))
+            {
+                return playbackTrack;
+            }
+
+            string artists = queueTrack.Artists != null
+                ? string.Join(", ", queueTrack.Artists.Where(a => a != null).Select(a => a.Name)
+                    .Where(n => !string.IsNullOrWhiteSpace(n)))
+                : string.Empty;
+
+            int durationTotal = Math.Max(0, queueTrack.DurationMs);
+
+            return new TrackInfo
+            {
+                Artists = artists,
+                Title = queueTrack.Name,
+                Albums = queueTrack.Album?.Images?.ToList() ?? new List<Image>(),
+                SongId = queueTrack.Id,
+                DurationMs = durationTotal,
+                IsPlaying = playbackTrack?.IsPlaying ?? false,
+                Url = "https://open.spotify.com/track/" + queueTrack.Id,
+                DurationPercentage = 0,
+                DurationTotal = durationTotal,
+                Progress = 0,
+                Playlist = playbackTrack?.Playlist,
+                FullArtists = queueTrack.Artists?.Where(a => a != null).ToList() ?? new List<SimpleArtist>()
+            };
         }
 
         public async Task FetchWindowsApi()
@@ -886,12 +930,26 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
+            // If no song info at all, bail out
+            if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
+            {
+                // We don't have any song info, so we can't write anything
+                return;
+            }
+
+            // If paused, handle pause behavior for file outputs and overlays, but still update MainWindow display
+            // if we have valid song info (unless PauseOption.Nothing was explicitly chosen AND we have a previous song).
+            bool shouldSkipUpdateDueToInitialPause = false;
             if (!songInfo.IsPlaying)
             {
                 switch (Settings.PauseOption)
                 {
                     case Enums.PauseOptions.Nothing:
-                        return;
+                        // Don't update file outputs, but still update MainWindow if we have song info
+                        // to show what's currently loaded in the player
+                        shouldSkipUpdateDueToInitialPause = GlobalObjects.CurrentSong != null && 
+                                                          GlobalObjects.CurrentSong.SongId == songInfo.SongId;
+                        break;
 
                     case Enums.PauseOptions.PauseText:
                         // read the text file
@@ -918,7 +976,15 @@ namespace Songify_Slim.Util.Songify
                             Enums.RequestPlayerType.Other,
                             null));
 
-                        break;
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MainWindow main = Application.Current.MainWindow as MainWindow;
+                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            {
+                                main.SetTextPreview(Settings.CustomPauseText);
+                            }));
+                        });
+                        return;
 
                     case Enums.PauseOptions.ClearAll:
                         if (!Settings.KeepAlbumCover)
@@ -941,43 +1007,20 @@ namespace Songify_Slim.Util.Songify
                             "",
                             Enums.RequestPlayerType.Other,
                             null));
-                        break;
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MainWindow main = Application.Current.MainWindow as MainWindow;
+                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            {
+                                main.SetTextPreview("");
+                            }));
+                        });
+                        return;
 
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MainWindow main = Application.Current.MainWindow as MainWindow;
-                    main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        switch (Settings.PauseOption)
-                        {
-                            case Enums.PauseOptions.PauseText:
-                                main.SetTextPreview(Settings.CustomPauseText);
-                                break;
-
-                            case Enums.PauseOptions.ClearAll:
-                                main.SetTextPreview("");
-                                break;
-
-                            case Enums.PauseOptions.Nothing:
-                                break;
-
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }));
-                });
-
-                return;
-            }
-
-            if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
-            {
-                // We don't have any song info, so we can't write anything
-                return;
             }
 
             string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
@@ -1337,6 +1380,9 @@ namespace Songify_Slim.Util.Songify
 
         public async Task FetchPear()
         {
+            if (!PearWebSocketClient.AutoConnectEnabled)
+                return;
+
             await EnsurePearWebSocketAsync().ConfigureAwait(false);
 
             fetchCounter += 1;

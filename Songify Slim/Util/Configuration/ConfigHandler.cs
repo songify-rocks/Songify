@@ -740,6 +740,7 @@ namespace Songify_Slim.Util.Configuration
         public string BotRespUserCooldown { get; set; } = "@{user} you have to wait {cd} before you can request a song again.";
 
         public string BotRespCommandDisabled { get; set; } = "@{user} the command {cmd} is not enabled.";
+        public string BotRespPlayerOwnershipDenied { get; set; } = "@{user} song requests are currently handled by {active_player}.";
 
         public string BotRespUserLevelTooLowCommand { get; set; } =
             "Sorry, only {userlevel} or higher can request songs using the command.";

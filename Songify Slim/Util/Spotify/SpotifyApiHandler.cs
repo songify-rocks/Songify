@@ -510,8 +510,8 @@ namespace Songify_Slim.Util.Spotify
                         {
                             case MainWindow mw:
                                 mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
-                                if (mw.TxtblockLiveoutput.Text == "Artist - Title")
-                                    mw.TxtblockLiveoutput.Text = "Play some music :)";
+                                if (Settings.Player == PlayerType.Spotify)
+                                    mw.SetIdleNowPlayingPromptIfPlaceholder();
                                 if (!Settings.BypassSpotifyFetchGate)
                                 {
                                     mw.SetBypassNotice();

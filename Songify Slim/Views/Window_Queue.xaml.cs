@@ -91,7 +91,11 @@ namespace Songify_Slim.Views
                     if (child.Tag.ToString() == queueWindowColumn.ToString())
                         child.IsChecked = true;
                 }
-                dgv_Queue.Columns[queueWindowColumn].Visibility = Visibility.Visible;
+
+                if (queueWindowColumn >= 0 && queueWindowColumn < dgv_Queue.Columns.Count)
+                {
+                    dgv_Queue.Columns[queueWindowColumn].Visibility = Visibility.Visible;
+                }
             }
 
             int fSize = MathUtils.Clamp(Settings.FontsizeQueue, 12, 72);
@@ -124,14 +128,36 @@ namespace Songify_Slim.Views
                 return;
 
             RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
-            if (req.Queueid == 0 || req.Requester == "Spotify") return;
-            dynamic payload = new
+
+            // Do not delete the currently playing row from the queue table action.
+            if (GlobalObjects.CurrentSong != null && req.Trackid == GlobalObjects.CurrentSong.SongId)
+                return;
+
+            switch (Settings.Player)
             {
-                uuid = Settings.Uuid,
-                key = Settings.AccessKey,
-                queueid = req.Queueid,
-            };
-            await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
+                case Enums.PlayerType.Spotify:
+                    if (req.Queueid == 0 || req.Requester == "Spotify")
+                        return;
+                    break;
+
+                case Enums.PlayerType.Pear:
+                    {
+                        int index = await PearApi.GetIndexAsync(req.Trackid);
+                        if (index != -1)
+                        {
+                            var result = await PearApi.RemoveQueueItem(index);
+                            if (!result.Ok)
+                                return;
+                        }
+                        break;
+                    }
+
+                default:
+                    return;
+            }
+
+            await PatchWebQueueIfNeeded(req);
+
             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 GlobalObjects.ReqList.Remove(req);
@@ -195,25 +221,49 @@ namespace Songify_Slim.Views
 
         private async void DgvButtonSkip_Click(object sender, RoutedEventArgs e)
         {
-            // This deletes the selected requestobject
-            if (dgv_Queue.SelectedItem == null)
+            RequestObject req = ResolveRequestFromSender(sender);
+            if (req == null)
                 return;
-            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
 
-            if (req.Trackid == GlobalObjects.CurrentSong.SongId)
+            if (GlobalObjects.CurrentSong != null && req.Trackid == GlobalObjects.CurrentSong.SongId)
             {
-                await SpotifyApiHandler.SkipSong();
+                switch (Settings.Player)
+                {
+                    case Enums.PlayerType.Spotify:
+                        await SpotifyApiHandler.SkipSong();
+                        break;
+                    case Enums.PlayerType.Pear:
+                        await PearApi.Next();
+                        break;
+                    default:
+                        return;
+                }
                 return;
             }
 
-            //if (req.Queueid == 0 || req.Requester == "Spotify") return;
-            dynamic payload = new
+            switch (Settings.Player)
             {
-                uuid = Settings.Uuid,
-                key = Settings.AccessKey,
-                queueid = req.Queueid,
-            };
-            await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
+                case Enums.PlayerType.Spotify:
+                    break;
+
+                case Enums.PlayerType.Pear:
+                    {
+                        int index = await PearApi.GetIndexAsync(req.Trackid);
+                        if (index != -1)
+                        {
+                            var result = await PearApi.RemoveQueueItem(index);
+                            if (!result.Ok)
+                                return;
+                        }
+                        break;
+                    }
+
+                default:
+                    return;
+            }
+
+            await PatchWebQueueIfNeeded(req);
+
             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 GlobalObjects.ReqList.Remove(req);
@@ -222,11 +272,34 @@ namespace Songify_Slim.Views
             await GlobalObjects.QueueUpdateQueueWindow();
         }
 
+        private RequestObject ResolveRequestFromSender(object sender)
+        {
+            if (sender is FrameworkElement fe && fe.DataContext is RequestObject reqFromSender)
+                return reqFromSender;
+
+            return dgv_Queue.SelectedItem as RequestObject;
+        }
+
+        private static async Task PatchWebQueueIfNeeded(RequestObject req)
+        {
+            if (req == null || req.Queueid <= 0)
+                return;
+
+            dynamic payload = new
+            {
+                uuid = Settings.Uuid,
+                key = Settings.AccessKey,
+                queueid = req.Queueid,
+            };
+
+            await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
+        }
+
         private async void DgvButtonAddToFav_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+                RequestObject req = ResolveRequestFromSender(sender);
                 if (req == null)
                     return;
                 await SpotifyApiHandler.AddToPlaylist(req.Trackid);

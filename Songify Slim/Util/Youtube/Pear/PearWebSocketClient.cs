@@ -21,8 +21,38 @@ namespace Songify_Slim.Util.Youtube.Pear
 
         private static Func<string, Task> _messageHandler;
 
+        public static event Action ConnectionStateChanged;
+
+        public static string Endpoint => PearUri.ToString();
+
+        /// <summary>
+        /// Controls whether the periodic Pear fetch path is allowed to auto-connect the WebSocket.
+        /// </summary>
+        /// <remarks>
+        /// This is runtime-only UI state (not persisted in settings).
+        /// <list type="bullet">
+        /// <item><description>Set to <c>true</c> when the user selects Pear as the active player source.</description></item>
+        /// <item><description>Set to <c>false</c> when switching away from Pear.</description></item>
+        /// <item><description>Temporarily set to <c>false</c> when the user clicks the Pear status indicator to disconnect while Pear remains selected.</description></item>
+        /// </list>
+        /// When <c>false</c>, <c>SongFetcher.FetchPear()</c> exits before calling <c>ConnectAsync()</c>,
+        /// preventing immediate re-connect loops after a manual disconnect.
+        /// </remarks>
+        public static bool AutoConnectEnabled { get; set; }
+
         public static bool IsConnected =>
             _socket is { State: WebSocketState.Open };
+
+        public static bool IsConnecting
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    return _isConnecting;
+                }
+            }
+        }
 
         /// <summary>
         /// Set (replace) the async message handler. This avoids multiple subscriptions.
@@ -60,6 +90,7 @@ namespace Songify_Slim.Util.Youtube.Pear
                 }
 
                 _isConnecting = true;
+                NotifyConnectionStateChanged();
 
                 socket = new ClientWebSocket();
                 cts = new CancellationTokenSource();
@@ -71,6 +102,7 @@ namespace Songify_Slim.Util.Youtube.Pear
             try
             {
                 await socket.ConnectAsync(PearUri, cts.Token).ConfigureAwait(false);
+                NotifyConnectionStateChanged();
 
                 // Start background receive loop for THIS socket/cts pair
                 _ = Task.Run(() => ReceiveLoop(socket, cts));
@@ -86,6 +118,8 @@ namespace Songify_Slim.Util.Youtube.Pear
                 {
                     _isConnecting = false;
                 }
+
+                NotifyConnectionStateChanged();
             }
         }
 
@@ -133,6 +167,8 @@ namespace Songify_Slim.Util.Youtube.Pear
                     socket.Dispose();
                 }
             }
+
+            NotifyConnectionStateChanged();
         }
 
         private static async Task ReceiveLoop(ClientWebSocket socket, CancellationTokenSource cts)
@@ -203,6 +239,15 @@ namespace Songify_Slim.Util.Youtube.Pear
             {
                 Logger.Error(LogSource.Pear, "Pear WebSocket receive loop error", ex);
             }
+            finally
+            {
+                NotifyConnectionStateChanged();
+            }
+        }
+
+        private static void NotifyConnectionStateChanged()
+        {
+            ConnectionStateChanged?.Invoke();
         }
     }
 }

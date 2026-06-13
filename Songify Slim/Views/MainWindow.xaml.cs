@@ -18,6 +18,7 @@ using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -45,6 +46,8 @@ using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Songify.Twitch;
+using Songify_Slim.Util.Youtube.Pear;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using TwitchLib.Api.Helix.Models.EventSub;
 using static Songify_Slim.Util.General.Enums;
 using Icon = System.Drawing.Icon;
@@ -132,6 +135,7 @@ namespace Songify_Slim.Views
             InitializeComponent();
             Timer.Elapsed += TelemetryTask;
             Timer.Start();
+            PearWebSocketClient.ConnectionStateChanged += OnPearConnectionStateChanged;
             DataContext = this;
         }
 
@@ -314,9 +318,18 @@ namespace Songify_Slim.Views
             {
                 _selectedSource = selected;
                 Settings.Player = selected;
+                await TwitchHandler.PurgeMismatchedRequestsForActivePlayerAsync();
+                await GlobalObjects.QueueUpdateQueueWindow();
+
+                if (selected == PlayerType.Pear)
+                {
+                    PearWebSocketClient.AutoConnectEnabled = true;
+                    UpdatePearStatusIndicator();
+                }
 
                 if (selected != PlayerType.Pear)
                 {
+                    PearWebSocketClient.AutoConnectEnabled = false;
                     try
                     {
                         await Sf.NotifyPearPlayerInactiveAsync();
@@ -641,6 +654,7 @@ namespace Songify_Slim.Views
         private void MetroWindow_Closed(object sender, EventArgs e)
         {
             StopWindowsMediaSessionListWatcher();
+            PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
         }
 
         private void MetroWindow_Closing(object sender, CancelEventArgs e)
@@ -1015,6 +1029,7 @@ namespace Songify_Slim.Views
             if (CbxSource.SelectedValue is PlayerType selected)
             {
                 _selectedSource = selected;
+                PearWebSocketClient.AutoConnectEnabled = selected == PlayerType.Pear;
             }
 
             CbxSource.SelectionChanged += Cbx_Source_SelectionChanged;
@@ -1044,7 +1059,10 @@ namespace Songify_Slim.Views
             {
                 if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) &&
                     string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
-                    TxtblockLiveoutput.Text = Properties.Resources.window_main_link_spotify;
+                {
+                    if (_selectedSource == PlayerType.Spotify)
+                        TxtblockLiveoutput.Text = Properties.Resources.window_main_link_spotify;
+                }
                 else
                     await SpotifyApiHandler.Auth();
 
@@ -1284,6 +1302,52 @@ namespace Songify_Slim.Views
             IconTwitchBot.Foreground = Brushes.IndianRed;
             IconWebSpotify.Foreground = Brushes.IndianRed;
             IconWebServer.Foreground = Brushes.Gray;
+            UpdatePearStatusIndicator();
+        }
+
+        private void OnPearConnectionStateChanged()
+        {
+            Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(UpdatePearStatusIndicator));
+        }
+
+        private void UpdatePearStatusIndicator()
+        {
+            if (IconPearDesktop == null)
+                return;
+
+            IconPearDesktop.Foreground = PearWebSocketClient.IsConnecting
+                ? Brushes.Gold
+                : PearWebSocketClient.IsConnected
+                    ? Brushes.GreenYellow
+                    : Brushes.IndianRed;
+        }
+
+        private List<(string Label, string Value)> BuildPearStatusRows()
+        {
+            string status = PearWebSocketClient.IsConnecting
+                ? "Connecting"
+                : PearWebSocketClient.IsConnected
+                    ? "Connected"
+                    : "Disconnected";
+
+            string action = PearWebSocketClient.IsConnecting
+                ? "Connection in progress"
+                : PearWebSocketClient.IsConnected
+                    ? "Click indicator to disconnect"
+                    : Settings.Player == PlayerType.Pear && PearWebSocketClient.AutoConnectEnabled
+                        ? "Click indicator to connect"
+                        : Settings.Player == PlayerType.Pear
+                            ? "Pear auto-connect paused"
+                        : "Click indicator to switch to Pear and connect";
+
+            return
+            [
+                ("Status", status),
+                ("Selected", Settings.Player == PlayerType.Pear ? "Yes" : "No"),
+                ("WebSocket", PearWebSocketClient.Endpoint),
+                ("HTTP API", YtmDesktopApi.Endpoint),
+                ("Action", action)
+            ];
         }
 
         private static void AutoUpdater_ApplicationExitEvent()
@@ -1693,7 +1757,25 @@ namespace Songify_Slim.Views
         public void SetTextPreview(string replace)
         {
             TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal,
-                new Action(() => { TxtblockLiveoutput.Text = replace; }));
+                new Action(() => {
+                    BindingOperations.ClearBinding(TxtblockLiveoutput, TextBlock.TextProperty);
+                    TxtblockLiveoutput.Text = replace;
+                }));
+        }
+
+        public void SetIdleNowPlayingPromptIfPlaceholder()
+        {
+            TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+            {
+                string current = TxtblockLiveoutput.Text?.Trim() ?? string.Empty;
+                string placeholder = Properties.Resources.common_now_playing_placeholder?.Trim() ?? string.Empty;
+
+                if (string.Equals(current, placeholder, StringComparison.OrdinalIgnoreCase) ||
+                    string.Equals(current, "Artist - Title", StringComparison.OrdinalIgnoreCase))
+                {
+                    TxtblockLiveoutput.Text = "Play some music :)";
+                }
+            }));
         }
 
         private void Mi_Update_OnClick(object sender, RoutedEventArgs e)
@@ -1856,6 +1938,12 @@ namespace Songify_Slim.Views
                         ];
                         break;
 
+                    case "PearDesktop":
+                        header = "Pear Desktop";
+                        icon.Kind = PackIconBoxIconsKind.BrandsYoutubeMusic;
+                        rows = BuildPearStatusRows();
+                        break;
+
                     default:
                         header = "WebServer";
                         icon.Kind = PackIconBoxIconsKind.SolidServer;
@@ -1871,7 +1959,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void ServiceIcon_Click(object sender, RoutedEventArgs e)
+        private async void ServiceIcon_Click(object sender, RoutedEventArgs e)
         {
             if (sender is not Button { Tag: string tag }) return;
             switch (tag)
@@ -1879,6 +1967,34 @@ namespace Songify_Slim.Views
                 case "TwitchBot":
                 case "TwitchAPI":
                 case "Spotify":
+                    break;
+
+                case "PearDesktop":
+                    if (PearWebSocketClient.IsConnecting)
+                        break;
+
+                    if (PearWebSocketClient.IsConnected)
+                    {
+                        PearWebSocketClient.AutoConnectEnabled = false;
+                        await Sf.NotifyPearPlayerInactiveAsync();
+                    }
+                    else
+                    {
+                        PearWebSocketClient.AutoConnectEnabled = true;
+                        if (Settings.Player != PlayerType.Pear)
+                            CbxSource.SelectedValue = PlayerType.Pear;
+
+                        try
+                        {
+                            await Sf.FetchPear();
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogExc(ex);
+                        }
+                    }
+
+                    UpdatePearStatusIndicator();
                     break;
 
                 case "WebServer":

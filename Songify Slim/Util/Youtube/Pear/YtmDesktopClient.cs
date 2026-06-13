@@ -15,6 +15,8 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
             private static readonly HttpClient Http = new();
             private const string BaseUrl = "http://127.0.0.1:26538";
 
+            public static string Endpoint => BaseUrl;
+
             // ---- READ ----
             public static Task<SongResponse> GetCurrentSongAsync() =>
                 GetAsync<SongResponse>("/api/v1/song");

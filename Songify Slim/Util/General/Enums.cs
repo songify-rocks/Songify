@@ -171,6 +171,7 @@ public static class Enums
     {
         UserLevelTooLow,
         UserBlocked,
+        WrongPlayerRequested,
         SpotifyNotConnected,
         SongUnavailable,
         ArtistBlocked,
