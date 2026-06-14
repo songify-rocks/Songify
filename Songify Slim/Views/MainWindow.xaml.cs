@@ -95,6 +95,7 @@ namespace Songify_Slim.Views
         public ApiMetricsVm ApiMetrics => GlobalObjects.ApiMetrics;
 
         private bool _forceSpotifyUpdate = false;
+        private DispatcherTimer _spotifyIssueEtaTimer;
 
         #endregion Variables
 
@@ -681,6 +682,7 @@ namespace Songify_Slim.Views
             CheckAndNotifyConfigurationIssues();
             SetupDisclaimer();
             SetupMotdTimer();
+            SetupSpotifyPersistentIssueBanner();
 
             if (!Settings.UseOwnApp)
             {
@@ -750,6 +752,221 @@ namespace Songify_Slim.Views
             Logger.Info(LogSource.Core, "Starting Final Setup");
             await FinalSetupAndUpdatesAsync();
             Logger.Info(LogSource.Core, "Final Setup done");
+        }
+
+        private void SetupSpotifyPersistentIssueBanner()
+        {
+            try
+            {
+                // Subscribe to changes raised by SpotifyUserNotifier (from API calls / auth).
+                SpotifyUserNotifier.PersistentIssuesChanged -= OnSpotifyPersistentIssuesChanged;
+                SpotifyUserNotifier.PersistentIssuesChanged += OnSpotifyPersistentIssuesChanged;
+
+                // Load existing persisted issue (if any) on startup.
+                UpdateSpotifyPersistentIssuesUi(Settings.SpotifyPersistentIssues);
+
+                _spotifyIssueEtaTimer ??= new DispatcherTimer
+                {
+                    Interval = TimeSpan.FromSeconds(1)
+                };
+                _spotifyIssueEtaTimer.Tick -= SpotifyIssueEtaTimerOnTick;
+                _spotifyIssueEtaTimer.Tick += SpotifyIssueEtaTimerOnTick;
+                _spotifyIssueEtaTimer.Start();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "SetupSpotifyPersistentIssueBanner failed: " + ex.Message);
+            }
+        }
+
+        private void SpotifyIssueEtaTimerOnTick(object sender, EventArgs e)
+        {
+            try
+            {
+                // Refresh ETA text every second for rate/quota cooldowns.
+                if (BrdSpotifyPersistentIssue.Visibility != Visibility.Visible)
+                    return;
+
+                UpdateSpotifyPersistentIssuesUi(Settings.SpotifyPersistentIssues, refreshOnly: true);
+            }
+            catch
+            {
+                // ignored
+            }
+        }
+
+        private void OnSpotifyPersistentIssuesChanged(IReadOnlyList<Models.Spotify.SpotifyPersistentIssue> issues)
+        {
+            try
+            {
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.BeginInvoke(DispatcherPriority.Normal,
+                        new Action(() => UpdateSpotifyPersistentIssuesUi(issues)));
+                    return;
+                }
+
+                UpdateSpotifyPersistentIssuesUi(issues);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "OnSpotifyPersistentIssuesChanged failed: " + ex.Message);
+            }
+        }
+
+        private void UpdateSpotifyPersistentIssuesUi(IReadOnlyList<Models.Spotify.SpotifyPersistentIssue> issues, bool refreshOnly = false)
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.Invoke(() => UpdateSpotifyPersistentIssuesUi(issues, refreshOnly));
+                return;
+            }
+
+            DateTime nowUtc = DateTime.UtcNow;
+
+            List<Models.Spotify.SpotifyPersistentIssue> list = (issues ?? Settings.SpotifyPersistentIssues ?? new List<Models.Spotify.SpotifyPersistentIssue>())
+                .Where(x => x != null && !x.IsStale(nowUtc))
+                .ToList();
+
+            // Persist cleanup if anything got filtered out.
+            if (list.Count != (Settings.SpotifyPersistentIssues?.Count ?? 0))
+                Settings.SpotifyPersistentIssues = list;
+
+            Models.Spotify.SpotifyPersistentIssue issue = list.FirstOrDefault();
+
+            if (issue == null)
+            {
+                if (!refreshOnly)
+                {
+                    BrdSpotifyPersistentIssue.Visibility = Visibility.Collapsed;
+                    TbSpotifyPersistentIssueTitle.Text = "";
+                    TbSpotifyPersistentIssueBody.Text = "";
+                    TbSpotifyPersistentIssueEta.Text = "";
+                    ExpSpotifyPersistentIssues.Header = "More…";
+                    ExpSpotifyPersistentIssues.IsExpanded = false;
+                    PnlSpotifyPersistentIssues.Children.Clear();
+                }
+                return;
+            }
+
+            BrdSpotifyPersistentIssue.Visibility = Visibility.Visible;
+
+            if (!refreshOnly)
+            {
+                TbSpotifyPersistentIssueTitle.Text = issue.Title ?? "Spotify issue";
+                TbSpotifyPersistentIssueBody.Text = issue.Body ?? "";
+            }
+
+            // ETA / cooldown text
+            if (issue.RetryUntilUtc is { } retryUtc)
+            {
+                TimeSpan remaining = retryUtc - nowUtc;
+                if (remaining < TimeSpan.Zero)
+                    remaining = TimeSpan.Zero;
+
+                string localTime = DateTime.SpecifyKind(retryUtc, DateTimeKind.Utc).ToLocalTime().ToString("g");
+                if (remaining > TimeSpan.Zero)
+                {
+                    string human = remaining.TotalHours >= 1
+                        ? $"{(int)Math.Ceiling(remaining.TotalHours)} hour(s)"
+                        : remaining.TotalMinutes >= 1
+                            ? $"{(int)Math.Ceiling(remaining.TotalMinutes)} minute(s)"
+                            : $"{Math.Max(1, (int)Math.Ceiling(remaining.TotalSeconds))} second(s)";
+
+                    TbSpotifyPersistentIssueEta.Text = $"Estimated: works again in about {human} (around {localTime}).";
+                }
+                else
+                {
+                    TbSpotifyPersistentIssueEta.Text = $"Estimated cooldown ended (around {localTime}). If it still fails, it may take a bit longer.";
+                }
+            }
+            else
+            {
+                // Show "when" the issue happened so users have context.
+                string whenLocal = DateTime.SpecifyKind(issue.CreatedAtUtc, DateTimeKind.Utc).ToLocalTime().ToString("g");
+                TbSpotifyPersistentIssueEta.Text = $"Seen at {whenLocal}.";
+            }
+
+            if (!refreshOnly)
+            {
+                int moreCount = Math.Max(0, list.Count - 1);
+                ExpSpotifyPersistentIssues.Header = moreCount > 0 ? $"More… ({moreCount})" : "More…";
+                PnlSpotifyPersistentIssues.Children.Clear();
+
+                // Render older items (exclude top)
+                foreach (Models.Spotify.SpotifyPersistentIssue it in list.Skip(1))
+                {
+                    var row = new DockPanel { LastChildFill = true, Margin = new Thickness(0, 4, 0, 0) };
+
+                    var dismiss = new Button
+                    {
+                        Content = "×",
+                        Width = 18,
+                        Height = 18,
+                        Padding = new Thickness(0),
+                        Margin = new Thickness(6, 0, 0, 0),
+                        Background = Brushes.Transparent,
+                        BorderBrush = null,
+                        Foreground = Brushes.White,
+                        ToolTip = "Dismiss",
+                        Tag = it.Id
+                    };
+                    dismiss.Click += BtnSpotifyPersistentIssueItemDismiss_Click;
+                    DockPanel.SetDock(dismiss, Dock.Right);
+                    row.Children.Add(dismiss);
+
+                    string whenLocal = DateTime.SpecifyKind(it.CreatedAtUtc, DateTimeKind.Utc).ToLocalTime().ToString("g");
+                    string text = $"{it.Title ?? "Spotify issue"} — {whenLocal}";
+                    var tb = new TextBlock
+                    {
+                        Text = text,
+                        Foreground = Brushes.White,
+                        Opacity = 0.92,
+                        TextWrapping = TextWrapping.Wrap
+                    };
+                    row.Children.Add(tb);
+
+                    PnlSpotifyPersistentIssues.Children.Add(row);
+                }
+
+                ExpSpotifyPersistentIssues.Visibility = list.Count > 1 ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private void BtnSpotifyPersistentIssueDismiss_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                var current = Settings.SpotifyPersistentIssues?.FirstOrDefault();
+                if (current != null)
+                    SpotifyUserNotifier.DismissPersistentIssue(current.Id);
+
+                BrdSpotifyPersistentIssue.Visibility = Visibility.Collapsed;
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Dismiss Spotify issue failed: " + ex.Message);
+            }
+        }
+
+        private void BtnSpotifyPersistentIssueItemDismiss_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                if (sender is not Button b)
+                    return;
+
+                string id = b.Tag as string;
+                if (string.IsNullOrWhiteSpace(id))
+                    return;
+
+                SpotifyUserNotifier.DismissPersistentIssue(id);
+                UpdateSpotifyPersistentIssuesUi(Settings.SpotifyPersistentIssues);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Dismiss Spotify issue item failed: " + ex.Message);
+            }
         }
 
         private static async Task<bool> WaitForInternetConnectionAsync()

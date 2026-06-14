@@ -905,6 +905,8 @@ namespace Songify_Slim.Util.Configuration
         public List<string> TwRewardSkipPoll { get; set; } = [];
         public bool SharedChatEnabled { get; set; } = false;
         public string SrForBitsKeyWord { get; set; }
+        public Songify_Slim.Models.Spotify.SpotifyPersistentIssue SpotifyPersistentIssue { get; set; }
+        public List<Songify_Slim.Models.Spotify.SpotifyPersistentIssue> SpotifyPersistentIssues { get; set; } = new();
 
         /// <summary>
         /// Empty = use OS current SMTC session; otherwise match SourceAppUserModelId from the Windows media session.

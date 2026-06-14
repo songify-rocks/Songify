@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using Microsoft.Toolkit.Uwp.Notifications;
 using SpotifyAPI.Web;
+using Songify_Slim.Models.Spotify;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Application = System.Windows.Application;
 
@@ -18,6 +21,11 @@ public static class SpotifyUserNotifier
 
     /// <summary>Fired when rate limit hint text changes; null or empty means cleared.</summary>
     public static event Action<string> RateLimitHintChanged;
+
+    /// <summary>
+    /// Fired when persistent Spotify issues list changes.
+    /// </summary>
+    public static event Action<IReadOnlyList<SpotifyPersistentIssue>> PersistentIssuesChanged;
 
     /// <summary>
     /// Shows a toast unless the same throttle key was shown within <paramref name="minInterval"/>.
@@ -64,11 +72,125 @@ public static class SpotifyUserNotifier
         string local = retryUntilUtc.LocalDateTime.ToString("g");
         RateLimitHintChanged?.Invoke(
             $"Spotify is limiting requests. Try again after about {local}.");
+
+        try
+        {
+            // Persist across restarts so the main UI can show a stable banner.
+            SpotifyPersistentIssue issue = new()
+            {
+                Kind = (retryUntilUtc - DateTimeOffset.UtcNow) > TimeSpan.FromMinutes(5) ? "quota" : "rate_limit",
+                Title = title,
+                Body = body,
+                CreatedAtUtc = DateTime.UtcNow,
+                RetryUntilUtc = retryUntilUtc.UtcDateTime,
+                // Keep it around a bit after cooldown so users see it even if they reopen slightly later.
+                ExpiresAtUtc = retryUntilUtc.UtcDateTime.AddHours(6),
+                Dismissed = false
+            };
+            AddOrUpdatePersistentIssue(issue);
+        }
+        catch (Exception ex)
+        {
+            Logger.Log(LogLevel.Debug, LogSource.Spotify, "Persisting rate limit issue failed: " + ex.Message);
+        }
     }
 
     public static void ClearRateLimitHint()
     {
         RateLimitHintChanged?.Invoke(null);
+        try
+        {
+            ClearPersistentIssuesByKind("rate_limit", "quota");
+        }
+        catch
+        {
+            // ignored
+        }
+    }
+
+    public static void AddOrUpdatePersistentIssue(SpotifyPersistentIssue issue)
+    {
+        if (issue == null)
+            return;
+
+        string dedup = ComputeDedupKey(issue);
+        issue.DedupKey = dedup;
+        if (string.IsNullOrWhiteSpace(issue.Id))
+            issue.Id = Guid.NewGuid().ToString("N");
+
+        List<SpotifyPersistentIssue> list = new(Settings.SpotifyPersistentIssues ?? new List<SpotifyPersistentIssue>());
+
+        DateTime nowUtc = DateTime.UtcNow;
+        list = list.Where(x => x != null && !x.IsStale(nowUtc)).ToList();
+
+        int existingIndex = list.FindIndex(x => string.Equals(x.DedupKey, dedup, StringComparison.Ordinal));
+        if (existingIndex >= 0)
+        {
+            SpotifyPersistentIssue existing = list[existingIndex];
+            existing.Title = issue.Title ?? existing.Title;
+            existing.Body = issue.Body ?? existing.Body;
+            existing.Kind = issue.Kind ?? existing.Kind;
+            existing.CreatedAtUtc = issue.CreatedAtUtc != default ? issue.CreatedAtUtc : existing.CreatedAtUtc;
+            existing.RetryUntilUtc = issue.RetryUntilUtc ?? existing.RetryUntilUtc;
+            existing.ExpiresAtUtc = issue.ExpiresAtUtc ?? existing.ExpiresAtUtc;
+            existing.Dismissed = false;
+            list[existingIndex] = existing;
+        }
+        else
+        {
+            list.Insert(0, issue);
+        }
+
+        const int max = 6;
+        if (list.Count > max)
+            list = list.Take(max).ToList();
+
+        Settings.SpotifyPersistentIssues = list;
+        PersistentIssuesChanged?.Invoke(list);
+    }
+
+    public static void DismissPersistentIssue(string issueId)
+    {
+        if (string.IsNullOrWhiteSpace(issueId))
+            return;
+
+        List<SpotifyPersistentIssue> list = new(Settings.SpotifyPersistentIssues ?? new List<SpotifyPersistentIssue>());
+        SpotifyPersistentIssue item = list.FirstOrDefault(x => x != null && x.Id == issueId);
+        if (item == null)
+            return;
+
+        item.Dismissed = true;
+        Settings.SpotifyPersistentIssues = list;
+        PersistentIssuesChanged?.Invoke(list);
+    }
+
+    public static void ClearPersistentIssuesByKind(params string[] kinds)
+    {
+        if (kinds == null || kinds.Length == 0)
+            return;
+
+        HashSet<string> set = new(kinds.Where(k => !string.IsNullOrWhiteSpace(k)), StringComparer.Ordinal);
+        if (set.Count == 0)
+            return;
+
+        List<SpotifyPersistentIssue> list = new(Settings.SpotifyPersistentIssues ?? new List<SpotifyPersistentIssue>());
+        DateTime nowUtc = DateTime.UtcNow;
+        list = list.Where(x => x != null && !x.IsStale(nowUtc) && !set.Contains(x.Kind ?? "")).ToList();
+        Settings.SpotifyPersistentIssues = list;
+        PersistentIssuesChanged?.Invoke(list);
+    }
+
+    private static string ComputeDedupKey(SpotifyPersistentIssue issue)
+    {
+        string kind = (issue.Kind ?? "").Trim();
+        string title = (issue.Title ?? "").Trim();
+        string body = (issue.Body ?? "").Trim();
+        string retry = issue.RetryUntilUtc.HasValue ? issue.RetryUntilUtc.Value.ToUniversalTime().ToString("O") : "";
+
+        if (kind is "rate_limit" or "quota")
+            return $"{kind}|{retry}";
+
+        return $"{kind}|{title}|{body}";
     }
 
     private static void ShowToastOnUiThread(string title, string body)
@@ -170,6 +292,25 @@ public static class SpotifyUserNotifier
             : $"{detail}\n(Request: {requestKey})";
 
         Notify(title, body, throttleKey, TimeSpan.FromMinutes(2));
+
+        try
+        {
+            SpotifyPersistentIssue issue = new()
+            {
+                Kind = "api_error",
+                Title = title,
+                Body = body,
+                CreatedAtUtc = DateTime.UtcNow,
+                // Don't keep generic errors forever; they get noisy.
+                ExpiresAtUtc = DateTime.UtcNow.AddHours(2),
+                Dismissed = false
+            };
+            AddOrUpdatePersistentIssue(issue);
+        }
+        catch
+        {
+            // ignored
+        }
     }
 
     internal static void NotifyUnauthorized(string requestKey)
@@ -179,6 +320,24 @@ public static class SpotifyUserNotifier
             "Your Spotify login is no longer valid. Use Link in Songify to sign in again.",
             "spotify:401:" + requestKey,
             TimeSpan.FromMinutes(5));
+
+        try
+        {
+            SpotifyPersistentIssue issue = new()
+            {
+                Kind = "unauthorized",
+                Title = "Spotify session expired",
+                Body = "Your Spotify login is no longer valid. Use Link in Songify to sign in again.",
+                CreatedAtUtc = DateTime.UtcNow,
+                ExpiresAtUtc = DateTime.UtcNow.AddHours(12),
+                Dismissed = false
+            };
+            AddOrUpdatePersistentIssue(issue);
+        }
+        catch
+        {
+            // ignored
+        }
     }
 
     internal static void NotifyUnexpected(string requestKey, Exception ex)
@@ -192,5 +351,23 @@ public static class SpotifyUserNotifier
             $"{msg}\n(Request: {requestKey})",
             "unexpected:" + requestKey,
             TimeSpan.FromMinutes(3));
+
+        try
+        {
+            SpotifyPersistentIssue issue = new()
+            {
+                Kind = "unexpected",
+                Title = "Spotify request failed",
+                Body = $"{msg}\n(Request: {requestKey})",
+                CreatedAtUtc = DateTime.UtcNow,
+                ExpiresAtUtc = DateTime.UtcNow.AddHours(1),
+                Dismissed = false
+            };
+            AddOrUpdatePersistentIssue(issue);
+        }
+        catch
+        {
+            // ignored
+        }
     }
 }
