@@ -405,6 +405,71 @@
                     ToolTip="Track JSON: http://localhost:PORT/ — WebSocket tester: http://localhost:PORT/ws-docs (replace PORT with your server port)." />
             </MenuItem>
         </Menu>
+
+        <!-- Persistent Spotify error banner (survives restarts for rate/quota) -->
+        <Border
+            x:Name="BrdSpotifyPersistentIssue"
+            Grid.Row="0"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0,26,0,0"
+            Padding="10,6"
+            Background="#FF3B2F2F"
+            BorderBrush="#FFAA4444"
+            BorderThickness="1"
+            CornerRadius="4"
+            Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueTitle"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueBody"
+                        Margin="0,2,0,0"
+                        Foreground="White"
+                        Opacity="0.95"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueEta"
+                        Margin="0,2,0,0"
+                        Foreground="White"
+                        Opacity="0.9"
+                        TextWrapping="Wrap" />
+
+                    <Expander
+                        x:Name="ExpSpotifyPersistentIssues"
+                        Margin="0,6,0,0"
+                        Foreground="White"
+                        Header="More…"
+                        IsExpanded="False">
+                        <ScrollViewer MaxHeight="140">
+                            <StackPanel x:Name="PnlSpotifyPersistentIssues" />
+                        </ScrollViewer>
+                    </Expander>
+                </StackPanel>
+                <Button
+                    Grid.Column="1"
+                    Width="24"
+                    Height="24"
+                    Margin="10,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Top"
+                    Click="BtnSpotifyPersistentIssueDismiss_Click"
+                    Content="×"
+                    FontSize="16"
+                    Background="Transparent"
+                    BorderBrush="{x:Null}"
+                    Foreground="White"
+                    ToolTip="Dismiss" />
+            </Grid>
+        </Border>
         <StackPanel
             Grid.Row="0"
             Grid.RowSpan="2"

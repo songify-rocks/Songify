@@ -419,7 +419,7 @@ public static class TwitchHandler
                 return "This player type does not support song requests via the API. Please use Spotify Web or YTM Desktop.";
 
             default:
-                return "No player selected. Go to Settings -> Player and select a player.";
+                return "No player selected. Please select a player on the main window.";
         }
     }
 
@@ -1401,7 +1401,7 @@ public static class TwitchHandler
             case Enums.PlayerType.Vlc:
             case Enums.PlayerType.BrowserCompanion:
             default:
-                await SendChatMessage("No player selected. Go to Settings -> Player and select a player.");
+                await SendChatMessage("No player selected. Please select a player on the main window.");
                 return;
         }
     }
@@ -2363,7 +2363,8 @@ public static class TwitchHandler
             case Enums.PlayerType.Vlc:
             case Enums.PlayerType.BrowserCompanion:
             default:
-                await SendChatMessage("No player selected. Go to Settings -> Player and select a player.");
+                // This should ideally never happen...
+                await SendChatMessage("No player selected. Please select a player on the main window.");
                 return;
         }
 

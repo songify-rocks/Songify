@@ -144,6 +144,9 @@ namespace Songify_Slim.Util.Configuration
         public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
         public static bool BypassSpotifyFetchGate { get => GetBypassSpotifyFetchGate(); set => SetBypassSpotifyFetchGate(value); }
         public static TwitchChatAccount TwitchChatAccount { get => GetTwitchChatAccount(); set => SetTwitchChatAccount(value); }
+        // Backward compatible: older configs stored a single issue, newer configs store a list.
+        public static SpotifyPersistentIssue SpotifyPersistentIssue { get => GetSpotifyPersistentIssue(); set => SetSpotifyPersistentIssue(value); }
+        public static List<SpotifyPersistentIssue> SpotifyPersistentIssues { get => GetSpotifyPersistentIssues(); set => SetSpotifyPersistentIssues(value); }
 
         private static TwitchChatAccount GetTwitchChatAccount()
         {
@@ -176,6 +179,43 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetBypassSpotifyFetchGate()
         {
             return CurrentConfig.AppConfig.BypassSpotifyFetchGate;
+        }
+
+        private static SpotifyPersistentIssue GetSpotifyPersistentIssue()
+        {
+            return CurrentConfig.AppConfig.SpotifyPersistentIssue;
+        }
+
+        private static void SetSpotifyPersistentIssue(SpotifyPersistentIssue value)
+        {
+            CurrentConfig.AppConfig.SpotifyPersistentIssue = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static List<SpotifyPersistentIssue> GetSpotifyPersistentIssues()
+        {
+            // Migrate single -> list once, then prefer the list.
+            List<SpotifyPersistentIssue> list = CurrentConfig.AppConfig.SpotifyPersistentIssues;
+            if (list == null)
+            {
+                list = new List<SpotifyPersistentIssue>();
+                CurrentConfig.AppConfig.SpotifyPersistentIssues = list;
+            }
+
+            if ((list.Count == 0) && CurrentConfig.AppConfig.SpotifyPersistentIssue != null)
+            {
+                list.Add(CurrentConfig.AppConfig.SpotifyPersistentIssue);
+                CurrentConfig.AppConfig.SpotifyPersistentIssue = null;
+                ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+            }
+
+            return list;
+        }
+
+        private static void SetSpotifyPersistentIssues(List<SpotifyPersistentIssue> value)
+        {
+            CurrentConfig.AppConfig.SpotifyPersistentIssues = value ?? new List<SpotifyPersistentIssue>();
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
         private static void SetSrForBits(bool value)
@@ -2653,7 +2693,7 @@ namespace Songify_Slim.Util.Configuration
 
         private static void SetTelemetry(bool value)
         {
-            CurrentConfig.AppConfig.Systray = value;
+            CurrentConfig.AppConfig.Telemetry = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

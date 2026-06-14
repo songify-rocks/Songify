@@ -162,6 +162,7 @@
     <Compile Include="Models\Spotify\SpotifyPlaylistCache.cs" />
     <Compile Include="Models\Spotify\SpotifyPlaylistItem.cs" />
     <Compile Include="Models\Spotify\SpotifySnapshotResponse.cs" />
+    <Compile Include="Models\Spotify\SpotifyPersistentIssue.cs" />
     <Compile Include="Models\Twitch\PollItem.cs" />
     <Compile Include="Models\Twitch\TwitchChatAccount.cs" />
     <Compile Include="Models\Twitch\TwitchPollSettings.cs" />
