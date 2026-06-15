@@ -78,7 +78,6 @@ namespace Songify_Slim.Views
         //public SocketIoClient IoClient;
         private bool _forceClose;
 
-        private CancellationTokenSource _sCts;
         private DispatcherTimer _disclaimerTimer = new();
         private readonly DispatcherTimer _motdTimer = new();
         private int _secondsRemaining = 4;
@@ -98,6 +97,7 @@ namespace Songify_Slim.Views
         public ApiMetricsVm ApiMetrics => GlobalObjects.ApiMetrics;
 
         private bool _forceSpotifyUpdate = false;
+        private bool _spotifyInitializationInProgress;
         private DispatcherTimer _spotifyIssueEtaTimer;
 
         #endregion Variables
@@ -319,14 +319,24 @@ namespace Songify_Slim.Views
             {
                 _selectedSource = selected;
                 Settings.Player = selected;
+
+                if (selected != PlayerType.Spotify)
+                    _spotifyInitializationInProgress = false;
+
+                // Reflect source switch immediately so indicators/tooltips do not lag behind async work.
+                UpdatePearStatusIndicator();
+                UpdateSpotifyStatusIndicator();
+
                 await TwitchHandler.PurgeMismatchedRequestsForActivePlayerAsync();
                 await GlobalObjects.QueueUpdateQueueWindow();
 
                 if (selected == PlayerType.Pear)
                 {
                     PearWebSocketClient.AutoConnectEnabled = true;
-                    UpdatePearStatusIndicator();
                 }
+
+                if (selected == PlayerType.Spotify)
+                    await HandleSpotifyInitializationAsync();
 
                 if (selected != PlayerType.Pear)
                 {
@@ -341,6 +351,9 @@ namespace Songify_Slim.Views
                     }
                 }
             }
+
+            UpdatePearStatusIndicator();
+            UpdateSpotifyStatusIndicator();
 
             UpdateWindowsMediaSessionComboVisibility();
             UpdateSpotifyTestModeControlsVisibility();
@@ -755,9 +768,17 @@ namespace Songify_Slim.Views
                 }
             }
 
-            Logger.Info(LogSource.Spotify, "Starting Spotify init");
-            await HandleSpotifyInitializationAsync();
-            Logger.Info(LogSource.Spotify, "Spotify init done");
+            if (_selectedSource == PlayerType.Spotify)
+            {
+                Logger.Info(LogSource.Spotify, "Starting Spotify init");
+                await HandleSpotifyInitializationAsync();
+                Logger.Info(LogSource.Spotify, "Spotify init done");
+            }
+            else
+            {
+                Logger.Info(LogSource.Spotify, "Skipping Spotify init because Spotify is not the active player");
+                UpdateSpotifyStatusIndicator();
+            }
 
             Logger.Info(LogSource.Twitch, "Starting Twitch init");
             await HandleTwitchInitializationAsync();
@@ -1249,6 +1270,9 @@ namespace Songify_Slim.Views
                 PearWebSocketClient.AutoConnectEnabled = selected == PlayerType.Pear;
             }
 
+            UpdatePearStatusIndicator();
+            UpdateSpotifyStatusIndicator();
+
             CbxSource.SelectionChanged += Cbx_Source_SelectionChanged;
 
             UpdateWindowsMediaSessionComboVisibility();
@@ -1274,14 +1298,25 @@ namespace Songify_Slim.Views
         {
             try
             {
-                if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) &&
-                    string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
+                if (_selectedSource == PlayerType.Spotify)
                 {
-                    if (_selectedSource == PlayerType.Spotify)
+                    if (string.IsNullOrEmpty(Settings.SpotifyAccessToken) &&
+                        string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
+                    {
+                        _spotifyInitializationInProgress = false;
                         TxtblockLiveoutput.Text = Properties.Resources.window_main_link_spotify;
+                    }
+                    else
+                    {
+                        _spotifyInitializationInProgress = true;
+                        UpdateSpotifyStatusIndicator();
+                        await SpotifyApiHandler.Auth();
+                    }
                 }
                 else
-                    await SpotifyApiHandler.Auth();
+                {
+                    _spotifyInitializationInProgress = false;
+                }
 
                 ImgCover.Visibility = Visibility.Visible;
             }
@@ -1289,12 +1324,18 @@ namespace Songify_Slim.Views
             {
                 Logger.LogExc(e);
             }
+            finally
+            {
+                _spotifyInitializationInProgress = false;
+            }
 
             ImgCover.Visibility =
                 _selectedSource is PlayerType.Spotify or PlayerType.BrowserCompanion or PlayerType.Pear
                     or PlayerType.WindowsPlayback
                     ? Visibility.Visible
                     : Visibility.Collapsed;
+
+            UpdateSpotifyStatusIndicator();
         }
 
         public void PlayVideoFromUrl(string url)
@@ -1517,9 +1558,9 @@ namespace Songify_Slim.Views
         {
             IconTwitchApi.Foreground = Brushes.IndianRed;
             IconTwitchBot.Foreground = Brushes.IndianRed;
-            IconWebSpotify.Foreground = Brushes.IndianRed;
             IconWebServer.Foreground = Brushes.Gray;
             UpdatePearStatusIndicator();
+            UpdateSpotifyStatusIndicator();
         }
 
         private void OnPearConnectionStateChanged()
@@ -1527,29 +1568,80 @@ namespace Songify_Slim.Views
             Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(UpdatePearStatusIndicator));
         }
 
+        private ServiceIndicatorState GetPearIndicatorState()
+        {
+            return new ServiceIndicatorState(
+                isSelected: Settings.Player == PlayerType.Pear,
+                isConnecting: PearWebSocketClient.IsConnecting,
+                isConnected: PearWebSocketClient.IsConnected,
+                showInactiveStatusWhenUnselected: false);
+        }
+
+        private ServiceIndicatorState GetSpotifyIndicatorState()
+        {
+            bool isPremium = string.Equals(Settings.SpotifyProfile?.Product, "premium", StringComparison.OrdinalIgnoreCase);
+
+            return new ServiceIndicatorState(
+                isSelected: Settings.Player == PlayerType.Spotify,
+                isConnecting: _spotifyInitializationInProgress,
+                isConnected: SpotifyApiHandler.Client != null,
+                connectedStatusText: isPremium ? "Connected (Premium)" : "Connected (Free)");
+        }
+
         private void UpdatePearStatusIndicator()
         {
             if (IconPearDesktop == null)
                 return;
 
-            IconPearDesktop.Foreground = PearWebSocketClient.IsConnecting
-                ? Brushes.Gold
-                : PearWebSocketClient.IsConnected
-                    ? Brushes.GreenYellow
-                    : Brushes.IndianRed;
+            IconPearDesktop.Foreground = GetPearIndicatorState().Foreground;
+        }
+
+        public void UpdateSpotifyStatusIndicator()
+        {
+            if (IconWebSpotify == null)
+                return;
+
+            IconWebSpotify.Foreground = GetSpotifyIndicatorState().Foreground;
+        }
+
+        private async Task<List<(string Label, string Value)>> BuildSpotifyStatusRowsAsync()
+        {
+            ServiceIndicatorState indicatorState = GetSpotifyIndicatorState();
+            bool hasTokens = !string.IsNullOrWhiteSpace(Settings.SpotifyAccessToken) ||
+                             !string.IsNullOrWhiteSpace(Settings.SpotifyRefreshToken);
+
+            string action = indicatorState.IsConnecting
+                ? "Connection in progress"
+                : !indicatorState.IsSelected
+                ? "Click indicator to switch to Spotify and connect"
+                : !indicatorState.IsConnected
+                    ? "Click indicator to connect"
+                    : "Click indicator to refresh Spotify status";
+
+            string deviceName;
+            try
+            {
+                deviceName = await SpotifyApiHandler.GetDeviceNameForId(Settings.SpotifyDeviceId);
+            }
+            catch
+            {
+                deviceName = "Unknown";
+            }
+
+            return indicatorState.BuildRows(
+                ("Linked", hasTokens ? "Yes" : "No"),
+                ("User", Settings.SpotifyProfile?.DisplayName ?? "Unknown"),
+                ("Device", string.IsNullOrWhiteSpace(deviceName) ? "Unknown" : deviceName),
+                ("Action", action));
         }
 
         private List<(string Label, string Value)> BuildPearStatusRows()
         {
-            string status = PearWebSocketClient.IsConnecting
-                ? "Connecting"
-                : PearWebSocketClient.IsConnected
-                    ? "Connected"
-                    : "Disconnected";
+            ServiceIndicatorState indicatorState = GetPearIndicatorState();
 
-            string action = PearWebSocketClient.IsConnecting
+            string action = indicatorState.IsConnecting
                 ? "Connection in progress"
-                : PearWebSocketClient.IsConnected
+                : indicatorState.IsConnected
                     ? "Click indicator to disconnect"
                     : Settings.Player == PlayerType.Pear && PearWebSocketClient.AutoConnectEnabled
                         ? "Click indicator to connect"
@@ -1557,14 +1649,10 @@ namespace Songify_Slim.Views
                             ? "Pear auto-connect paused"
                         : "Click indicator to switch to Pear and connect";
 
-            return
-            [
-                ("Status", status),
-                ("Selected", Settings.Player == PlayerType.Pear ? "Yes" : "No"),
+            return indicatorState.BuildRows(
                 ("WebSocket", PearWebSocketClient.Endpoint),
                 ("HTTP API", YtmDesktopApi.Endpoint),
-                ("Action", action)
-            ];
+                ("Action", action));
         }
 
         private static void AutoUpdater_ApplicationExitEvent()
@@ -1673,7 +1761,7 @@ namespace Songify_Slim.Views
             {
                 _timerFetcher.Enabled = false;
                 _timerFetcher.Elapsed -= OnTimedEvent;
-                _sCts = new CancellationTokenSource();
+                CancellationTokenSource _sCts = new CancellationTokenSource();
 
                 try
                 {
@@ -2144,15 +2232,8 @@ namespace Songify_Slim.Views
                     case "Spotify":
                         header = "Spotify";
                         icon.Kind = PackIconBoxIconsKind.BrandsSpotify;
-                        string status = IconWebSpotify.Foreground == Brushes.DarkOrange ? "Connected (Free)"
-                            : IconWebSpotify.Foreground == Brushes.GreenYellow ? "Connected (Premium)"
-                            : "Disconnected";
-                        rows =
-                        [
-                            ("Status", status),
-                            ("User", Settings.SpotifyProfile.DisplayName),
-                            ("Device", await SpotifyApiHandler.GetDeviceNameForId(Settings.SpotifyDeviceId))
-                        ];
+                        UpdateSpotifyStatusIndicator();
+                        rows = await BuildSpotifyStatusRowsAsync();
                         break;
 
                     case "PearDesktop":
@@ -2183,7 +2264,33 @@ namespace Songify_Slim.Views
             {
                 case "TwitchBot":
                 case "TwitchAPI":
+                    break;
+
                 case "Spotify":
+                    if (Settings.Player != PlayerType.Spotify)
+                    {
+                        _spotifyInitializationInProgress = true;
+                        UpdateSpotifyStatusIndicator();
+                        CbxSource.SelectedValue = PlayerType.Spotify;
+                        break;
+                    }
+
+                    await HandleSpotifyInitializationAsync();
+
+                    if (SpotifyApiHandler.Client != null)
+                    {
+                        _forceSpotifyUpdate = true;
+                        try
+                        {
+                            await Sf.FetchSpotifyWeb(true);
+                        }
+                        catch (Exception ex)
+                        {
+                            Logger.LogExc(ex);
+                        }
+                    }
+
+                    UpdateSpotifyStatusIndicator();
                     break;
 
                 case "PearDesktop":

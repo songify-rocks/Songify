@@ -497,9 +497,6 @@ namespace Songify_Slim.Util.Spotify
                     {
                         if (!Settings.HideSpotifyPremiumWarning)
                             await ShowPremiumRequiredDialogAsync();
-
-                        if (app.MainWindow is MainWindow mainWindow)
-                            mainWindow.IconWebSpotify.Foreground = Brushes.DarkOrange;
                     }
 
                     ApiCallMeter.ReleaseRateLimit();
@@ -509,7 +506,7 @@ namespace Songify_Slim.Util.Spotify
                         switch (window)
                         {
                             case MainWindow mw:
-                                mw.IconWebSpotify.Foreground = Brushes.GreenYellow;
+                                mw.UpdateSpotifyStatusIndicator();
                                 if (Settings.Player == PlayerType.Spotify)
                                     mw.SetIdleNowPlayingPromptIfPlaceholder();
                                 if (!Settings.BypassSpotifyFetchGate)
@@ -546,7 +543,7 @@ namespace Songify_Slim.Util.Spotify
                     AuthTimer.Stop();
 
                 if (Application.Current?.MainWindow is MainWindow mw)
-                    mw.IconWebSpotify.Foreground = Brushes.Gray;
+                    mw.UpdateSpotifyStatusIndicator();
             }
             catch (Exception ex)
             {

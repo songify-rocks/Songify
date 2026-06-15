@@ -937,7 +937,7 @@ public static class TwitchHandler
 
         // queue snapshot (once!)
         List<Song> queue = await PearApi.GetQueueAsync();
-        if (queue.Count == 0) return;
+        if (queue == null || queue.Count == 0) return;
 
         int currentIdx = queue.FindIndex(q => q.IsCurrent);
         if (currentIdx < 0) currentIdx = 0;
@@ -1212,12 +1212,18 @@ public static class TwitchHandler
             IsBroadcaster = false
         };
 
-        string bitsClassification = ClassifyRequestInput(userInput, out Enums.RequestPlayerType? requestedPlayerType);
-        Logger.Info(LogSource.Songrequest,
-            $"[Bits] Intake classified as '{bitsClassification}' (requestedPlayer={(requestedPlayerType?.ToString() ?? "none")}, activePlayer={Settings.Player}, user={userName})");
+        if (string.IsNullOrWhiteSpace(userInput))
+        {
+            await SendChatMessage("No query provided.");
+            return;
+        }
 
-        if (requestedPlayerType.HasValue &&
-            !await EnsureRequestOwnershipOrRespondAsync(user, requestedPlayerType.Value,
+        RequestInputClassification bitsClassification = ClassifyRequestInput(userInput);
+        Logger.Info(LogSource.Songrequest,
+            $"[Bits] Intake classified as '{bitsClassification.Label}' (confidence={bitsClassification.Confidence}, requestedPlayer={(bitsClassification.RequestedPlayerType?.ToString() ?? "none")}, activePlayer={Settings.Player}, user={userName})");
+
+        if (ShouldEnforceOwnership(bitsClassification) &&
+            !await EnsureRequestOwnershipOrRespondAsync(user, bitsClassification.RequestedPlayerType.Value,
                 Enums.SongRequestSource.Reward))
         {
             return;
@@ -1228,12 +1234,6 @@ public static class TwitchHandler
             case Enums.PlayerType.Spotify:
                 Logger.Info(LogSource.Songrequest,
                     $"[Bits] Dispatching request to Spotify handler (user={userName})");
-
-                if (!await EnsureRequestOwnershipOrRespondAsync(user, Enums.RequestPlayerType.Spotify,
-                        Enums.SongRequestSource.Reward))
-                {
-                    return;
-                }
 
                 if (SpotifyApiHandler.Client == null)
                 {
@@ -1247,12 +1247,6 @@ public static class TwitchHandler
             case Enums.PlayerType.Pear:
                 Logger.Info(LogSource.Songrequest,
                     $"[Bits] Dispatching request to Pear/YouTube handler (user={userName})");
-
-                if (!await EnsureRequestOwnershipOrRespondAsync(user, Enums.RequestPlayerType.Youtube,
-                        Enums.SongRequestSource.Reward))
-                {
-                    return;
-                }
 
                 await AddYtSong(userInput, user, Enums.SongRequestSource.Reward, existingUser);
                 break;
@@ -1348,12 +1342,22 @@ public static class TwitchHandler
             IsBroadcaster = isBroadcaster
         };
 
-        string rewardClassification = ClassifyRequestInput(userInput, out Enums.RequestPlayerType? requestedPlayerType);
-        Logger.Info(LogSource.Songrequest,
-            $"[Reward] Intake classified as '{rewardClassification}' (requestedPlayer={(requestedPlayerType?.ToString() ?? "none")}, activePlayer={Settings.Player}, user={userName})");
+        if (string.IsNullOrWhiteSpace(userInput))
+        {
+            await SendChatMessage("No query provided.");
+            if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.NoSongFound))
+            {
+                await RefundChannelPoints(rewardId, redemptionId, new TwitchRequestUser(channel, userName, userId, userInput, isBroadcaster), Enums.RefundCondition.NoSongFound);
+            }
+            return;
+        }
 
-        if (requestedPlayerType.HasValue &&
-            !await EnsureRequestOwnershipOrRespondAsync(user, requestedPlayerType.Value,
+        RequestInputClassification rewardClassification = ClassifyRequestInput(userInput);
+        Logger.Info(LogSource.Songrequest,
+            $"[Reward] Intake classified as '{rewardClassification.Label}' (confidence={rewardClassification.Confidence}, requestedPlayer={(rewardClassification.RequestedPlayerType?.ToString() ?? "none")}, activePlayer={Settings.Player}, user={userName})");
+
+        if (ShouldEnforceOwnership(rewardClassification) &&
+            !await EnsureRequestOwnershipOrRespondAsync(user, rewardClassification.RequestedPlayerType.Value,
                 Enums.SongRequestSource.Reward))
         {
             if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.WrongPlayerRequested))
@@ -1373,14 +1377,18 @@ public static class TwitchHandler
                 if (SpotifyApiHandler.Client == null)
                 {
                     await SendChatMessage("It seems that Spotify is not connected right now.");
+                    if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.NoSongFound))
+                    {
+                        await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.NoSongFound);
+                    }
                     return;
                 }
 
                 await AddSong(await GetTrackIdFromInput(userInput), user, Enums.SongRequestSource.Reward, existingUser, new RewardInfo
                 {
-                    RewardId = rewardId,
+                    Channel = channel,
                     RedemptionId = redemptionId,
-                    Channel = channel
+                    RewardId = rewardId
                 });
                 break;
 
@@ -1402,6 +1410,10 @@ public static class TwitchHandler
             case Enums.PlayerType.BrowserCompanion:
             default:
                 await SendChatMessage("No player selected. Please select a player on the main window.");
+                if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.NoSongFound))
+                {
+                    await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.NoSongFound);
+                }
                 return;
         }
     }
@@ -2274,7 +2286,11 @@ public static class TwitchHandler
             Logger.Error(LogSource.Twitch, "Error sending chat message \"The stream is not live right now.\"");
         }
 
-        if (message.Message.Text.Split(' ').Length <= 1)
+        string requestInput = message.Message.Text.Contains(' ')
+            ? message.Message.Text.Substring(message.Message.Text.IndexOf(' ') + 1).Trim()
+            : string.Empty;
+
+        if (string.IsNullOrWhiteSpace(requestInput))
         {
             await SendChatMessage("No query provided.");
             return;
@@ -2329,16 +2345,12 @@ public static class TwitchHandler
             return;
         }
 
-        string requestInput = message.Message.Text.Contains(' ')
-            ? message.Message.Text.Substring(message.Message.Text.IndexOf(' ') + 1).Trim()
-            : string.Empty;
-
-        string commandClassification = ClassifyRequestInput(requestInput, out Enums.RequestPlayerType? requestedPlayerType);
+        RequestInputClassification commandClassification = ClassifyRequestInput(requestInput);
         Logger.Info(LogSource.Songrequest,
-            $"[Command] Intake classified as '{commandClassification}' (requestedPlayer={(requestedPlayerType?.ToString() ?? "none")}, activePlayer={Settings.Player}, user={message.ChatterUserName})");
+            $"[Command] Intake classified as '{commandClassification.Label}' (confidence={commandClassification.Confidence}, requestedPlayer={(commandClassification.RequestedPlayerType?.ToString() ?? "none")}, activePlayer={Settings.Player}, user={message.ChatterUserName})");
 
-        if (requestedPlayerType.HasValue &&
-            !await EnsureRequestOwnershipOrRespondAsync(TwitchRequestUser.FromChatmessage(message), requestedPlayerType.Value,
+        if (ShouldEnforceOwnership(commandClassification) &&
+            !await EnsureRequestOwnershipOrRespondAsync(TwitchRequestUser.FromChatmessage(message), commandClassification.RequestedPlayerType.Value,
                 Enums.SongRequestSource.Command))
         {
             return;
@@ -3677,57 +3689,73 @@ public static class TwitchHandler
                && IsRequestPlayerOwnedByActivePlayer(parsed);
     }
 
-    private static Enums.RequestPlayerType? GetRequestedPlayerTypeFromInput(string input)
+    private enum RequestInputConfidence
     {
-        _ = ClassifyRequestInput(input, out Enums.RequestPlayerType? requestedPlayerType);
-        return requestedPlayerType;
+        None,
+        Candidate,
+        Explicit
     }
 
-    private static string ClassifyRequestInput(string input, out Enums.RequestPlayerType? requestedPlayerType)
+    private sealed class RequestInputClassification
+    {
+        public RequestInputClassification(string label, Enums.RequestPlayerType? requestedPlayerType,
+            RequestInputConfidence confidence)
+        {
+            Label = label;
+            RequestedPlayerType = requestedPlayerType;
+            Confidence = confidence;
+        }
+
+        public string Label { get; }
+
+        public Enums.RequestPlayerType? RequestedPlayerType { get; }
+
+        public RequestInputConfidence Confidence { get; }
+    }
+
+    private static RequestInputClassification ClassifyRequestInput(string input)
     {
         if (string.IsNullOrWhiteSpace(input))
         {
-            requestedPlayerType = null;
-            return "empty";
+            return new RequestInputClassification("empty", null, RequestInputConfidence.None);
         }
 
         string trimmedInput = input.Trim();
 
         if (IsExplicitSpotifyRequest(trimmedInput))
         {
-            requestedPlayerType = Enums.RequestPlayerType.Spotify;
-            return "spotify_explicit";
-        }
-
-        if (IsSpotifyBareTrackId(trimmedInput))
-        {
-            requestedPlayerType = Enums.RequestPlayerType.Spotify;
-            return "spotify_bare_id";
+            return new RequestInputClassification("spotify_explicit", Enums.RequestPlayerType.Spotify,
+                RequestInputConfidence.Explicit);
         }
 
         if (IsExplicitYoutubeRequest(trimmedInput))
         {
-            requestedPlayerType = Enums.RequestPlayerType.Youtube;
-            return "youtube_explicit";
+            return new RequestInputClassification("youtube_explicit", Enums.RequestPlayerType.Youtube,
+                RequestInputConfidence.Explicit);
+        }
+
+        if (ContainsWhitespace(trimmedInput))
+        {
+            return new RequestInputClassification("free_form", null, RequestInputConfidence.None);
+        }
+
+        if (IsSpotifyBareTrackId(trimmedInput))
+        {
+            return new RequestInputClassification("spotify_bare_id", Enums.RequestPlayerType.Spotify,
+                RequestInputConfidence.Candidate);
         }
 
         if (IsYoutubeBareVideoId(trimmedInput))
         {
-            requestedPlayerType = Enums.RequestPlayerType.Youtube;
-            return "youtube_bare_id";
+            return new RequestInputClassification("youtube_bare_id", Enums.RequestPlayerType.Youtube,
+                RequestInputConfidence.Candidate);
         }
 
-        requestedPlayerType = null;
-        return "free_form";
+        return new RequestInputClassification("free_form", null, RequestInputConfidence.None);
     }
 
     private static bool IsExplicitSpotifyRequest(string input)
     {
-        if (string.IsNullOrWhiteSpace(input))
-        {
-            return false;
-        }
-
         return input.StartsWith("spotify:track:", StringComparison.OrdinalIgnoreCase)
                || input.IndexOf("open.spotify.com/", StringComparison.OrdinalIgnoreCase) >= 0
                || input.IndexOf("spotify.link/", StringComparison.OrdinalIgnoreCase) >= 0;
@@ -3738,9 +3766,19 @@ public static class TwitchHandler
         return !string.IsNullOrWhiteSpace(ExtractYouTubeVideoIdFromText(input));
     }
 
+    private static bool ContainsWhitespace(string input)
+    {
+        return !string.IsNullOrEmpty(input) && input.Any(char.IsWhiteSpace);
+    }
+
+    private static bool ContainsUrlLikePunctuation(string input)
+    {
+        return !string.IsNullOrEmpty(input) && input.IndexOfAny(['/', '?', '=', '&', ':', '.']) >= 0;
+    }
+
     private static bool IsSpotifyBareTrackId(string input)
     {
-        if (string.IsNullOrWhiteSpace(input))
+      if (ContainsWhitespace(input) || ContainsUrlLikePunctuation(input))
         {
             return false;
         }
@@ -3750,12 +3788,18 @@ public static class TwitchHandler
 
     private static bool IsYoutubeBareVideoId(string input)
     {
-        if (string.IsNullOrWhiteSpace(input))
+        if (ContainsWhitespace(input) || ContainsUrlLikePunctuation(input))
         {
             return false;
         }
 
         return Regex.IsMatch(input, "^[A-Za-z0-9_-]{11}$", RegexOptions.CultureInvariant);
+    }
+
+    private static bool ShouldEnforceOwnership(RequestInputClassification classification)
+    {
+        return classification?.RequestedPlayerType != null &&
+               classification.Confidence == RequestInputConfidence.Explicit;
     }
 
     private static string GetReadableRequestPlayer(Enums.RequestPlayerType requestPlayerType)
@@ -4644,9 +4688,9 @@ public static class TwitchHandler
             }
             Logger.Info(LogSource.Twitch, "Skip poll passed, skipped song.");
         }
-        catch (Exception e)
+        catch (Exception ex)
         {
-            Logger.Log(LogLevel.Error, LogSource.Spotify, "Unable to skip song...");
+            Logger.Log(LogLevel.Error, LogSource.Spotify, "Unable to skip song...", ex);
         }
     }
 }

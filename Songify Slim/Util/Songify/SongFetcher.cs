@@ -82,6 +82,7 @@ namespace Songify_Slim.Util.Songify
 
         private bool _pearWsHandlerRegistered;
         private bool _pearColdHttpSynced;
+        private DateTimeOffset _pearWsConnectFailureNotifiedAt;
 
         // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
         // Track the Pear queue's current item id so we can correlate requests reliably.
@@ -938,17 +939,12 @@ namespace Songify_Slim.Util.Songify
             }
 
             // If paused, handle pause behavior for file outputs and overlays, but still update MainWindow display
-            // if we have valid song info (unless PauseOption.Nothing was explicitly chosen AND we have a previous song).
-            bool shouldSkipUpdateDueToInitialPause = false;
+            // if we have valid song info.
             if (!songInfo.IsPlaying)
             {
                 switch (Settings.PauseOption)
                 {
                     case Enums.PauseOptions.Nothing:
-                        // Don't update file outputs, but still update MainWindow if we have song info
-                        // to show what's currently loaded in the player
-                        shouldSkipUpdateDueToInitialPause = GlobalObjects.CurrentSong != null && 
-                                                          GlobalObjects.CurrentSong.SongId == songInfo.SongId;
                         break;
 
                     case Enums.PauseOptions.PauseText:
@@ -1385,6 +1381,10 @@ namespace Songify_Slim.Util.Songify
 
             await EnsurePearWebSocketAsync().ConfigureAwait(false);
 
+            // If Pear is still not reachable after the connect attempt, skip HTTP calls.
+            if (!PearWebSocketClient.IsConnected)
+                return;
+
             fetchCounter += 1;
             if (fetchCounter >= 5)
             {
@@ -1416,15 +1416,39 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 await PearWebSocketClient.ConnectAsync().ConfigureAwait(false);
+                // Clear the failure notification state on successful connect.
+                _pearWsConnectFailureNotifiedAt = default;
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Pear, "Pear WebSocket could not connect.", ex);
+                NotifyPearConnectionFailure(ex);
                 return;
             }
 
             // WS typically does not replay the current track on connect — pull song-info once (or until success).
             await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
+        }
+
+        private void NotifyPearConnectionFailure(Exception ex)
+        {
+            // Throttle: show at most one toast per 2 minutes for repeated connection failures.
+            TimeSpan throttleWindow = TimeSpan.FromMinutes(2);
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            if (now - _pearWsConnectFailureNotifiedAt < throttleWindow)
+                return;
+
+            _pearWsConnectFailureNotifiedAt = now;
+
+            string detail = ex?.Message ?? "Unknown error";
+            if (detail.Length > 160)
+                detail = detail.Substring(0, 157) + "...";
+
+            SpotifyUserNotifier.Notify(
+                "Pear (YouTube Music) not available",
+                $"Could not connect to the Pear WebSocket at {PearWebSocketClient.Endpoint}.\n{detail}\nMake sure Pear is running.",
+                "pear:ws:connect_failed",
+                throttleWindow);
         }
 
         /// <summary>
