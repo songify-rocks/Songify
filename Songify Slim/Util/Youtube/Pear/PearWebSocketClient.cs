@@ -247,7 +247,14 @@ namespace Songify_Slim.Util.Youtube.Pear
 
         private static void NotifyConnectionStateChanged()
         {
-            ConnectionStateChanged?.Invoke();
+            try
+            {
+                ConnectionStateChanged?.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Pear, "Pear ConnectionStateChanged subscriber failed", ex);
+            }
         }
     }
 }
