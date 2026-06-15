@@ -578,6 +578,9 @@
   <data name="window_settings_integration_refund_spotify_not_connected" xml:space="preserve">
     <value>Spotify is niet verbonden</value>
   </data>
+  <data name="window_settings_integration_refund_wrong_player_requested" xml:space="preserve">
+    <value>Het nummer is voor een andere speler.</value>
+  </data>
   <data name="window_settings_integration_refund_song_not_available" xml:space="preserve">
     <value>Nummer is niet beschikbaar in de regio</value>
   </data>

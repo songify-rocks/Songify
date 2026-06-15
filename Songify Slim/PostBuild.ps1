@@ -1,18 +1,12 @@
-# Only run post-build tasks for Release configuration
-if ($env:Configuration -ne "Release") {
-    exit 0
-}
-
 # Define paths
 $releaseDir = "$PSScriptRoot\bin\Release\app.publish"
 $runtimeDir = "$PSScriptRoot\bin\Release\runtimes"
 $zipFilePath = "$releaseDir\Songify.zip"
 $exeFilePath = "$releaseDir\Songify.exe"
 
-# Verify Release directory exists before proceeding
+# Only run post-build tasks when Release publish output exists
 if (-not (Test-Path -Path $releaseDir)) {
-    Write-Error "Release directory not found: $releaseDir"
-    exit 1
+    exit 0
 }
 
 # Copy runtimes folder to the release directory (if it exists)
@@ -25,8 +19,11 @@ if (Test-Path -Path $zipFilePath) {
     Remove-Item -Path $zipFilePath -Force
 }
 
-if (-not (Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipFilePath -ErrorAction SilentlyContinue)) {
-    Write-Error "Failed to create zip archive: $zipFilePath"
+try {
+    Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipFilePath -ErrorAction Stop
+}
+catch {
+    Write-Error "Failed to create zip archive: $zipFilePath. $($_.Exception.Message)"
     exit 1
 }
 

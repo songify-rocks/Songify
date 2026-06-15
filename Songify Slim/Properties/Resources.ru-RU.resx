@@ -432,6 +432,9 @@
   <data name="window_settings_integration_refund_spotify_not_connected" xml:space="preserve">
     <value>Spotify не подключен</value>
   </data>
+  <data name="window_settings_integration_refund_wrong_player_requested" xml:space="preserve">
+    <value>Песня предназначена для другого игрока.</value>
+  </data>
   <data name="window_settings_integration_refund_song_not_available" xml:space="preserve">
     <value>Песня недоступна в регионе</value>
   </data>

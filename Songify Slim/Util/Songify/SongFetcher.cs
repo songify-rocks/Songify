@@ -945,7 +945,7 @@ namespace Songify_Slim.Util.Songify
                 switch (Settings.PauseOption)
                 {
                     case Enums.PauseOptions.Nothing:
-                        break;
+                        return;
 
                     case Enums.PauseOptions.PauseText:
                         // read the text file

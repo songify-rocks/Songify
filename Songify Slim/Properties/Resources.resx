@@ -573,6 +573,10 @@
   <data name="window_settings_integration_refund_spotify_not_connected" xml:space="preserve">
     <value>Spotify is not connected</value>
   </data>
+  <data name="window_settings_integration_refund_wrong_player_requested" xml:space="preserve">
+    <value>Song is for a different player</value>
+    <comment>Label content for "Song Request for a non active player"</comment>
+  </data>
   <data name="window_settings_integration_refund_song_not_available" xml:space="preserve">
     <value>Song is not available in region</value>
   </data>

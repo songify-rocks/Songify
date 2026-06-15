@@ -2948,6 +2948,15 @@ namespace Songify_Slim.Properties {
                 return ResourceManager.GetString("window_settings_integration_refund_spotify_not_connected", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Requested song is for a different player.
+        /// </summary>
+        public static string window_settings_integration_refund_wrong_player_requested {
+            get {
+                return ResourceManager.GetString("window_settings_integration_refund_wrong_player_requested", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Track is explicit.
