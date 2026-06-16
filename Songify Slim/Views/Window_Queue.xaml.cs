@@ -124,10 +124,11 @@ namespace Songify_Slim.Views
         private async void DgvItemDelete_Click(object sender, RoutedEventArgs e)
         {
             // This deletes the selected requestobject
-            if (dgv_Queue.SelectedItem == null)
+            RequestObject req = ResolveRequestFromSender(sender);
+            if (req == null)
                 return;
 
-            RequestObject req = (RequestObject)dgv_Queue.SelectedItem;
+            RequestObject reqListMatch = ResolveReqListMatch(req);
 
             // Do not delete the currently playing row from the queue table action.
             if (GlobalObjects.CurrentSong != null && req.Trackid == GlobalObjects.CurrentSong.SongId)
@@ -156,12 +157,12 @@ namespace Songify_Slim.Views
                     return;
             }
 
-            await PatchWebQueueIfNeeded(req);
+            await PatchWebQueueIfNeeded(req, reqListMatch);
 
             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                GlobalObjects.ReqList.Remove(req);
-                GlobalObjects.SkipList.Add(req);
+                RequestObject removed = RemoveRequestFromReqList(req, reqListMatch);
+                GlobalObjects.SkipList.Add(removed ?? req);
             }));
             await GlobalObjects.QueueUpdateQueueWindow();
         }
@@ -225,6 +226,8 @@ namespace Songify_Slim.Views
             if (req == null)
                 return;
 
+            RequestObject reqListMatch = ResolveReqListMatch(req);
+
             if (GlobalObjects.CurrentSong != null && req.Trackid == GlobalObjects.CurrentSong.SongId)
             {
                 switch (Settings.Player)
@@ -262,34 +265,101 @@ namespace Songify_Slim.Views
                     return;
             }
 
-            await PatchWebQueueIfNeeded(req);
+            await PatchWebQueueIfNeeded(req, reqListMatch);
 
             await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                GlobalObjects.ReqList.Remove(req);
-                GlobalObjects.SkipList.Add(req);
+                RequestObject removed = RemoveRequestFromReqList(req, reqListMatch);
+                GlobalObjects.SkipList.Add(removed ?? req);
             }));
             await GlobalObjects.QueueUpdateQueueWindow();
         }
 
         private RequestObject ResolveRequestFromSender(object sender)
         {
-            if (sender is FrameworkElement fe && fe.DataContext is RequestObject reqFromSender)
-                return reqFromSender;
+            RequestObject req = null;
 
-            return dgv_Queue.SelectedItem as RequestObject;
+            if (sender is FrameworkElement fe && fe.DataContext is RequestObject reqFromSender)
+                req = reqFromSender;
+            else
+                req = dgv_Queue.SelectedItem as RequestObject;
+
+            if (req == null)
+                return null;
+
+            // Queue rows can be synthetic (e.g. Pear playback queue with Queueid=0).
+            // Resolve to the canonical ReqList instance when possible so downstream
+            // patch/remove operations target the real request list entry.
+            if (req.Queueid <= 0)
+                return ResolveReqListMatch(req) ?? req;
+
+            return req;
         }
 
-        private static async Task PatchWebQueueIfNeeded(RequestObject req)
+        private static RequestObject ResolveReqListMatch(RequestObject req)
         {
-            if (req == null || req.Queueid <= 0)
+            if (req == null)
+                return null;
+
+            if (req.Queueid > 0)
+            {
+                RequestObject byQueueId = GlobalObjects.ReqList.FirstOrDefault(r => r.Queueid == req.Queueid);
+                if (byQueueId != null)
+                    return byQueueId;
+            }
+
+            if (string.IsNullOrWhiteSpace(req.Trackid))
+                return null;
+
+            List<RequestObject> candidates = GlobalObjects.ReqList
+                .Where(r => string.Equals(r.Trackid, req.Trackid, StringComparison.Ordinal) && r.Played == 0)
+                .ToList();
+
+            if (candidates.Count == 0)
+            {
+                candidates = GlobalObjects.ReqList
+                    .Where(r => string.Equals(r.Trackid, req.Trackid, StringComparison.Ordinal))
+                    .ToList();
+            }
+
+            return candidates
+                .OrderByDescending(r => string.Equals(r.Requester, req.Requester, StringComparison.Ordinal))
+                .ThenByDescending(r => string.Equals(r.Title, req.Title, StringComparison.Ordinal))
+                .ThenByDescending(r => string.Equals(r.Artist, req.Artist, StringComparison.Ordinal))
+                .FirstOrDefault();
+        }
+
+        private static RequestObject RemoveRequestFromReqList(RequestObject req, RequestObject reqListMatch)
+        {
+            RequestObject target = reqListMatch ?? ResolveReqListMatch(req);
+
+            if (target != null && GlobalObjects.ReqList.Remove(target))
+                return target;
+
+            if (req != null && GlobalObjects.ReqList.Remove(req))
+                return req;
+
+            return null;
+        }
+
+        private static async Task PatchWebQueueIfNeeded(RequestObject req, RequestObject reqListMatch = null)
+        {
+            RequestObject patchTarget = reqListMatch;
+
+            if (patchTarget == null && req?.Queueid > 0)
+                patchTarget = req;
+
+            if (patchTarget == null)
+                patchTarget = ResolveReqListMatch(req);
+
+            if (patchTarget == null || patchTarget.Queueid <= 0)
                 return;
 
             dynamic payload = new
             {
                 uuid = Settings.Uuid,
                 key = Settings.AccessKey,
-                queueid = req.Queueid,
+                queueid = patchTarget.Queueid,
             };
 
             await SongifyApi.PatchQueueAsync(Json.Serialize(payload));

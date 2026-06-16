@@ -90,7 +90,6 @@ namespace Songify_Slim.Util.Youtube.Pear
                 }
 
                 _isConnecting = true;
-                NotifyConnectionStateChanged();
 
                 socket = new ClientWebSocket();
                 cts = new CancellationTokenSource();
@@ -98,6 +97,8 @@ namespace Songify_Slim.Util.Youtube.Pear
                 _socket = socket;
                 _cts = cts;
             }
+
+            NotifyConnectionStateChanged();
 
             try
             {
