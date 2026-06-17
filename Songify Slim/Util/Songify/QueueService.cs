@@ -97,7 +97,7 @@ namespace Songify_Slim.Util.Songify
         {
             if (!string.IsNullOrWhiteSpace(currentValue))
             {
-                return currentValue;
+                return NormalizePlayerType(currentValue);
             }
 
             try
@@ -110,7 +110,7 @@ namespace Songify_Slim.Util.Songify
 
                     if (!string.IsNullOrWhiteSpace(fromPayload))
                     {
-                        return fromPayload;
+                        return NormalizePlayerType(fromPayload);
                     }
                 }
             }
@@ -122,9 +122,29 @@ namespace Songify_Slim.Util.Songify
             return Settings.Player switch
             {
                 Enums.PlayerType.Spotify => nameof(Enums.RequestPlayerType.Spotify),
-                Enums.PlayerType.Pear => nameof(Enums.RequestPlayerType.Youtube),
+                Enums.PlayerType.Pear => nameof(Enums.RequestPlayerType.YouTube),
                 _ => currentValue
             };
+        }
+
+        private static string NormalizePlayerType(string playerType)
+        {
+            if (string.IsNullOrWhiteSpace(playerType))
+            {
+                return playerType;
+            }
+
+            if (string.Equals(playerType, nameof(Enums.RequestPlayerType.YouTube), StringComparison.OrdinalIgnoreCase))
+            {
+                return nameof(Enums.RequestPlayerType.YouTube);
+            }
+
+            if (string.Equals(playerType, nameof(Enums.RequestPlayerType.Spotify), StringComparison.OrdinalIgnoreCase))
+            {
+                return nameof(Enums.RequestPlayerType.Spotify);
+            }
+
+            return playerType;
         }
 
         public static async Task CleanupServerQueueAsync()

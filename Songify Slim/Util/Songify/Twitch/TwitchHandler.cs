@@ -392,7 +392,7 @@ public static class TwitchHandler
                     {
                         Uuid = Settings.Uuid,
                         Trackid = videoId,
-                        PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                        PlayerType = nameof(Enums.RequestPlayerType.YouTube),
                         Artist = "",
                         Title = title,
                         Length = "",
@@ -1422,7 +1422,7 @@ public static class TwitchHandler
     {
         try
         {
-            if (!await EnsureRequestOwnershipOrRespondAsync(e, Enums.RequestPlayerType.Youtube, source))
+            if (!await EnsureRequestOwnershipOrRespondAsync(e, Enums.RequestPlayerType.YouTube, source))
             {
                 return;
             }
@@ -1520,7 +1520,7 @@ public static class TwitchHandler
             RequestObject req = new()
             {
                 Trackid = sr.VideoId,
-                PlayerType = nameof(Enums.RequestPlayerType.Youtube),
+                PlayerType = nameof(Enums.RequestPlayerType.YouTube),
                 Artist = artists,
                 Title = sr.Title,
                 Length = length,
@@ -3639,7 +3639,7 @@ public static class TwitchHandler
         return Settings.Player switch
         {
             Enums.PlayerType.Spotify => Enums.RequestPlayerType.Spotify,
-            Enums.PlayerType.Pear => Enums.RequestPlayerType.Youtube,
+            Enums.PlayerType.Pear => Enums.RequestPlayerType.YouTube,
             _ => null
         };
     }
@@ -3730,7 +3730,7 @@ public static class TwitchHandler
 
         if (IsExplicitYoutubeRequest(trimmedInput))
         {
-            return new RequestInputClassification("youtube_explicit", Enums.RequestPlayerType.Youtube,
+            return new RequestInputClassification("youtube_explicit", Enums.RequestPlayerType.YouTube,
                 RequestInputConfidence.Explicit);
         }
 
@@ -3747,7 +3747,7 @@ public static class TwitchHandler
 
         if (IsYoutubeBareVideoId(trimmedInput))
         {
-            return new RequestInputClassification("youtube_bare_id", Enums.RequestPlayerType.Youtube,
+            return new RequestInputClassification("youtube_bare_id", Enums.RequestPlayerType.YouTube,
                 RequestInputConfidence.Candidate);
         }
 
@@ -3807,7 +3807,7 @@ public static class TwitchHandler
         return requestPlayerType switch
         {
             Enums.RequestPlayerType.Spotify => "Spotify",
-            Enums.RequestPlayerType.Youtube => "YouTube Music",
+            Enums.RequestPlayerType.YouTube => "YouTube Music",
             _ => "Unknown"
         };
     }

@@ -44,5 +44,5 @@ public class RequestObject
 public enum RequestPlayerType
 {
     Spotify,
-    Youtube
+    YouTube
 }

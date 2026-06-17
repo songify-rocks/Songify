@@ -1627,7 +1627,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 GlobalObjects.CurrentSong = t;
-                await WriteSongInfo(t, Enums.RequestPlayerType.Youtube).ConfigureAwait(false);
+                await WriteSongInfo(t, Enums.RequestPlayerType.YouTube).ConfigureAwait(false);
                 await GlobalObjects.QueueUpdateQueueWindow().ConfigureAwait(false);
             }
             finally

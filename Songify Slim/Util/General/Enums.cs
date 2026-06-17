@@ -111,7 +111,7 @@ public static class Enums
     public enum RequestPlayerType
     {
         Spotify,
-        Youtube,
+        YouTube,
         Other
     }
 
