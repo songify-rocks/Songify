@@ -228,6 +228,20 @@ namespace Songify_Slim.Util.General
                         QueueResponse queue = await SpotifyApiHandler.GetQueueInfo();
                         if (queue?.Queue == null || queue.Queue.Count == 0)
                         {
+                            await Application.Current.Dispatcher.InvokeAsync(() =>
+                            {
+                                QueueTracks.Clear();
+
+                                foreach (Window window in Application.Current.Windows)
+                                {
+                                    if (window is WindowQueue windowQueue)
+                                    {
+                                        if (windowQueue.dgv_Queue.ItemsSource != QueueTracks)
+                                            windowQueue.dgv_Queue.ItemsSource = QueueTracks;
+                                        windowQueue.UpdateQueueIcons();
+                                    }
+                                }
+                            });
                             return;
                         }
 
@@ -458,7 +472,10 @@ namespace Songify_Slim.Util.General
                         }).Where(x => x != null)
                     );
 
-                    tempQueueList2.First().Played = -1;
+                    if (tempQueueList2.Count > 0)
+                    {
+                        tempQueueList2.First().Played = -1;
+                    }
 
                     QueueTracks = new ObservableCollection<RequestObject>(tempQueueList2);
 
@@ -549,6 +566,7 @@ namespace Songify_Slim.Util.General
             {
                 { Enums.RefundCondition.UserLevelTooLow, Properties.Resources.window_settings_integration_refund_user_level_low },
                 { Enums.RefundCondition.UserBlocked, Properties.Resources.window_settings_integration_refund_user_blocked },
+                { Enums.RefundCondition.WrongPlayerRequested, Properties.Resources.window_settings_integration_refund_wrong_player_requested },
                 { Enums.RefundCondition.SpotifyNotConnected, Properties.Resources.window_settings_integration_refund_spotify_not_connected },
                 { Enums.RefundCondition.SongUnavailable, Properties.Resources.window_settings_integration_refund_song_not_available },
                 { Enums.RefundCondition.SongBlocked, Properties.Resources.window_settings_integration_refund_song_blocked },

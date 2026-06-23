@@ -111,7 +111,7 @@ public static class Enums
     public enum RequestPlayerType
     {
         Spotify,
-        Youtube,
+        YouTube,
         Other
     }
 
@@ -171,6 +171,7 @@ public static class Enums
     {
         UserLevelTooLow,
         UserBlocked,
+        WrongPlayerRequested,
         SpotifyNotConnected,
         SongUnavailable,
         ArtistBlocked,

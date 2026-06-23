@@ -875,6 +875,21 @@
                             </Button>
 
                             <Button
+                                    Margin="0,0,8,0"
+                                    Click="ServiceIcon_Click"
+                                    Style="{StaticResource IconOnlyButton}"
+                                    Tag="PearDesktop"
+                                    ToolTip=""
+                                    ToolTipOpening="ServiceToolTipOpening">
+                                    <iconPacks:PackIconBoxIcons
+                                        x:Name="IconPearDesktop"
+                                        Width="14"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="SolidCircle" />
+                                    </Button>
+
+                                    <Button
                                 Click="ServiceIcon_Click"
                                 Style="{StaticResource IconOnlyButton}"
                                 Tag="WebServer"

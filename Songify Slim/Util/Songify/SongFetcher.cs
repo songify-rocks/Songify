@@ -82,6 +82,7 @@ namespace Songify_Slim.Util.Songify
 
         private bool _pearWsHandlerRegistered;
         private bool _pearColdHttpSynced;
+        private DateTimeOffset _pearWsConnectFailureNotifiedAt;
 
         // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
         // Track the Pear queue's current item id so we can correlate requests reliably.
@@ -455,8 +456,11 @@ namespace Songify_Slim.Util.Songify
                 return;
             }
 
-            // gets the current playing song info
+            // Gets the currently playing song info from playback.
+            // When Spotify is paused, playback can lag behind UI selection changes,
+            // so we reconcile against queue.CurrentlyPlaying as a fallback.
             TrackInfo songInfo = await SpotifyApiHandler.GetSongInfo();
+            songInfo = await TryRefreshPausedTrackFromQueueAsync(songInfo);
 
             if (songInfo == null)
             {
@@ -588,6 +592,47 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogExc(e);
             }
+        }
+
+        private static async Task<TrackInfo> TryRefreshPausedTrackFromQueueAsync(TrackInfo playbackTrack)
+        {
+            // Only reconcile when paused (or playback couldn't provide track info).
+            if (playbackTrack != null && playbackTrack.IsPlaying)
+                return playbackTrack;
+
+            QueueResponse queueInfo = await SpotifyApiHandler.GetQueueInfo();
+            FullTrack queueTrack = queueInfo?.CurrentlyPlaying as FullTrack;
+            if (queueTrack == null || string.IsNullOrWhiteSpace(queueTrack.Id))
+                return playbackTrack;
+
+            if (playbackTrack != null &&
+                string.Equals(playbackTrack.SongId, queueTrack.Id, StringComparison.Ordinal))
+            {
+                return playbackTrack;
+            }
+
+            string artists = queueTrack.Artists != null
+                ? string.Join(", ", queueTrack.Artists.Where(a => a != null).Select(a => a.Name)
+                    .Where(n => !string.IsNullOrWhiteSpace(n)))
+                : string.Empty;
+
+            int durationTotal = Math.Max(0, queueTrack.DurationMs);
+
+            return new TrackInfo
+            {
+                Artists = artists,
+                Title = queueTrack.Name,
+                Albums = queueTrack.Album?.Images?.ToList() ?? new List<Image>(),
+                SongId = queueTrack.Id,
+                DurationMs = durationTotal,
+                IsPlaying = playbackTrack?.IsPlaying ?? false,
+                Url = "https://open.spotify.com/track/" + queueTrack.Id,
+                DurationPercentage = 0,
+                DurationTotal = durationTotal,
+                Progress = 0,
+                Playlist = playbackTrack?.Playlist,
+                FullArtists = queueTrack.Artists?.Where(a => a != null).ToList() ?? new List<SimpleArtist>()
+            };
         }
 
         public async Task FetchWindowsApi()
@@ -886,6 +931,15 @@ namespace Songify_Slim.Util.Songify
 
         private static async Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
+            // If no song info at all, bail out
+            if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
+            {
+                // We don't have any song info, so we can't write anything
+                return;
+            }
+
+            // If paused, handle pause behavior for file outputs and overlays, but still update MainWindow display
+            // if we have valid song info.
             if (!songInfo.IsPlaying)
             {
                 switch (Settings.PauseOption)
@@ -918,7 +972,15 @@ namespace Songify_Slim.Util.Songify
                             Enums.RequestPlayerType.Other,
                             null));
 
-                        break;
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MainWindow main = Application.Current.MainWindow as MainWindow;
+                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            {
+                                main.SetTextPreview(Settings.CustomPauseText);
+                            }));
+                        });
+                        return;
 
                     case Enums.PauseOptions.ClearAll:
                         if (!Settings.KeepAlbumCover)
@@ -941,43 +1003,20 @@ namespace Songify_Slim.Util.Songify
                             "",
                             Enums.RequestPlayerType.Other,
                             null));
-                        break;
+
+                        Application.Current.Dispatcher.Invoke(() =>
+                        {
+                            MainWindow main = Application.Current.MainWindow as MainWindow;
+                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            {
+                                main.SetTextPreview("");
+                            }));
+                        });
+                        return;
 
                     default:
                         throw new ArgumentOutOfRangeException();
                 }
-
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    MainWindow main = Application.Current.MainWindow as MainWindow;
-                    main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        switch (Settings.PauseOption)
-                        {
-                            case Enums.PauseOptions.PauseText:
-                                main.SetTextPreview(Settings.CustomPauseText);
-                                break;
-
-                            case Enums.PauseOptions.ClearAll:
-                                main.SetTextPreview("");
-                                break;
-
-                            case Enums.PauseOptions.Nothing:
-                                break;
-
-                            default:
-                                throw new ArgumentOutOfRangeException();
-                        }
-                    }));
-                });
-
-                return;
-            }
-
-            if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
-            {
-                // We don't have any song info, so we can't write anything
-                return;
             }
 
             string albumUrl = songInfo.Albums != null && songInfo.Albums.Count != 0 ? songInfo.Albums[0].Url : "";
@@ -1337,7 +1376,14 @@ namespace Songify_Slim.Util.Songify
 
         public async Task FetchPear()
         {
+            if (!PearWebSocketClient.AutoConnectEnabled)
+                return;
+
             await EnsurePearWebSocketAsync().ConfigureAwait(false);
+
+            // If Pear is still not reachable after the connect attempt, skip HTTP calls.
+            if (!PearWebSocketClient.IsConnected)
+                return;
 
             fetchCounter += 1;
             if (fetchCounter >= 5)
@@ -1370,15 +1416,39 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 await PearWebSocketClient.ConnectAsync().ConfigureAwait(false);
+                // Clear the failure notification state on successful connect.
+                _pearWsConnectFailureNotifiedAt = default;
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Pear, "Pear WebSocket could not connect.", ex);
+                NotifyPearConnectionFailure(ex);
                 return;
             }
 
             // WS typically does not replay the current track on connect — pull song-info once (or until success).
             await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
+        }
+
+        private void NotifyPearConnectionFailure(Exception ex)
+        {
+            // Throttle: show at most one toast per 2 minutes for repeated connection failures.
+            TimeSpan throttleWindow = TimeSpan.FromMinutes(2);
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            if (now - _pearWsConnectFailureNotifiedAt < throttleWindow)
+                return;
+
+            _pearWsConnectFailureNotifiedAt = now;
+
+            string detail = ex?.Message ?? "Unknown error";
+            if (detail.Length > 160)
+                detail = detail.Substring(0, 157) + "...";
+
+            SpotifyUserNotifier.Notify(
+                "Pear (YouTube Music) not available",
+                $"Could not connect to the Pear WebSocket at {PearWebSocketClient.Endpoint}.\n{detail}\nMake sure Pear is running.",
+                "pear:ws:connect_failed",
+                throttleWindow);
         }
 
         /// <summary>
@@ -1557,7 +1627,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 GlobalObjects.CurrentSong = t;
-                await WriteSongInfo(t, Enums.RequestPlayerType.Youtube).ConfigureAwait(false);
+                await WriteSongInfo(t, Enums.RequestPlayerType.YouTube).ConfigureAwait(false);
                 await GlobalObjects.QueueUpdateQueueWindow().ConfigureAwait(false);
             }
             finally

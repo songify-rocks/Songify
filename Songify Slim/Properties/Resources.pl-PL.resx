@@ -437,6 +437,9 @@
   <data name="window_settings_integration_refund_spotify_not_connected" xml:space="preserve">
     <value>Spotify nie jest połączone</value>
   </data>
+  <data name="window_settings_integration_refund_wrong_player_requested" xml:space="preserve">
+    <value>Piosenka jest dla innego gracza</value>
+  </data>
   <data name="window_settings_integration_refund_song_not_available" xml:space="preserve">
     <value>Utwór nie jest dostępny w regionie</value>
   </data>

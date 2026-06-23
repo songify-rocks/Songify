@@ -32,6 +32,7 @@ namespace Songify_Slim.Util.Songify
             {
                 RequestObject response = Json.Deserialize<RequestObject>(result);
                 response.FullRequester ??= ExtractFullRequester(payload);
+                response.PlayerType = ResolvePlayerType(response.PlayerType, payload);
 
                 await Application.Current.Dispatcher.InvokeAsync(() => { GlobalObjects.ReqList.Add(response); });
 
@@ -48,6 +49,10 @@ namespace Songify_Slim.Util.Songify
             if (string.IsNullOrEmpty(payload)) return;
 
             JObject x = JObject.Parse(payload);
+            string playerType = ResolvePlayerType(
+                (string)x["queueItem"]?["PlayerType"] ?? (string)x["queueItem"]?["playerType"],
+                payload);
+
             GlobalObjects.ReqList.Add(new RequestObject
             {
                 Queueid = GlobalObjects.ReqList.Count + 1,
@@ -59,6 +64,7 @@ namespace Songify_Slim.Util.Songify
                 Requester = (string)x["queueItem"]?["Requester"],
                 Played = 0,
                 Albumcover = (string)x["queueItem"]?["Albumcover"],
+                PlayerType = playerType,
                 FullRequester = x["queueItem"]?["FullRequester"]?.ToObject<SimpleTwitchUser>()
             });
 
@@ -85,6 +91,60 @@ namespace Songify_Slim.Util.Songify
             }
 
             return null;
+        }
+
+        private static string ResolvePlayerType(string currentValue, string payload)
+        {
+            if (!string.IsNullOrWhiteSpace(currentValue))
+            {
+                return NormalizePlayerType(currentValue);
+            }
+
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(payload))
+                {
+                    JObject payloadObject = JObject.Parse(payload);
+                    string fromPayload = (string)payloadObject["queueItem"]?["PlayerType"]
+                                        ?? (string)payloadObject["queueItem"]?["playerType"];
+
+                    if (!string.IsNullOrWhiteSpace(fromPayload))
+                    {
+                        return NormalizePlayerType(fromPayload);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Error(LogSource.Api, "Error extracting player type information.", e);
+            }
+
+            return Settings.Player switch
+            {
+                Enums.PlayerType.Spotify => nameof(Enums.RequestPlayerType.Spotify),
+                Enums.PlayerType.Pear => nameof(Enums.RequestPlayerType.YouTube),
+                _ => currentValue
+            };
+        }
+
+        private static string NormalizePlayerType(string playerType)
+        {
+            if (string.IsNullOrWhiteSpace(playerType))
+            {
+                return playerType;
+            }
+
+            if (string.Equals(playerType, nameof(Enums.RequestPlayerType.YouTube), StringComparison.OrdinalIgnoreCase))
+            {
+                return nameof(Enums.RequestPlayerType.YouTube);
+            }
+
+            if (string.Equals(playerType, nameof(Enums.RequestPlayerType.Spotify), StringComparison.OrdinalIgnoreCase))
+            {
+                return nameof(Enums.RequestPlayerType.Spotify);
+            }
+
+            return playerType;
         }
 
         public static async Task CleanupServerQueueAsync()

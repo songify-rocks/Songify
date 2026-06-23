@@ -85,7 +85,10 @@ namespace Songify_Slim.Views
                 Enums.RefundCondition.UserLevelTooLow,
                 Properties.Resources.window_settings_integration_refund_user_level_low
             },
-            { Enums.RefundCondition.UserBlocked, Properties.Resources.window_settings_integration_refund_user_blocked },
+            { 
+                Enums.RefundCondition.UserBlocked, 
+                Properties.Resources.window_settings_integration_refund_user_blocked 
+            },
             {
                 Enums.RefundCondition.SpotifyNotConnected,
                 Properties.Resources.window_settings_integration_refund_spotify_not_connected
@@ -94,13 +97,21 @@ namespace Songify_Slim.Views
                 Enums.RefundCondition.SongUnavailable,
                 Properties.Resources.window_settings_integration_refund_song_not_available
             },
-            { Enums.RefundCondition.SongBlocked, Properties.Resources.window_settings_integration_refund_song_blocked },
+            {
+                Enums.RefundCondition.WrongPlayerRequested,
+                Properties.Resources.window_settings_integration_refund_wrong_player_requested
+            },            
+            { 
+                Enums.RefundCondition.SongBlocked, 
+                Properties.Resources.window_settings_integration_refund_song_blocked 
+            },
             {
                 Enums.RefundCondition.ArtistBlocked,
                 Properties.Resources.window_settings_integration_refund_artist_blocked
             },
             {
-                Enums.RefundCondition.SongTooLong, Properties.Resources.window_settings_integration_refund_song_too_long
+                Enums.RefundCondition.SongTooLong, 
+                Properties.Resources.window_settings_integration_refund_song_too_long
             },
             {
                 Enums.RefundCondition.SongAlreadyInQueue,
@@ -111,7 +122,8 @@ namespace Songify_Slim.Views
                 Properties.Resources.window_settings_integration_refund_queue_limit
             },
             {
-                Enums.RefundCondition.NoSongFound, Properties.Resources.window_settings_integration_refund_no_song_found
+                Enums.RefundCondition.NoSongFound, 
+                Properties.Resources.window_settings_integration_refund_no_song_found
             },
             {
                 Enums.RefundCondition.SongAddedButError,
@@ -121,7 +133,10 @@ namespace Songify_Slim.Views
                 Enums.RefundCondition.TrackIsExplicit,
                 Properties.Resources.window_settings_integration_refund_track_explicit
             },
-            { Enums.RefundCondition.OnSuccess, Properties.Resources.window_settings_integration_refund_always },
+            { 
+                Enums.RefundCondition.OnSuccess, 
+                Properties.Resources.window_settings_integration_refund_always 
+            },
         };
 
         public Window_Settings()

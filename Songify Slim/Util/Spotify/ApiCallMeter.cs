@@ -204,6 +204,13 @@ public static class ApiCallMeter
 
                 break;
             }
+            catch (OperationCanceledException ex)
+            {
+                // HTTP request timed out or was cancelled (e.g. Spotify paused/no active device).
+                Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                    $"Spotify request '{key}' was cancelled or timed out — likely no active playback. Reason: {ex.Message}");
+                break;
+            }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Spotify, $"Unexpected error on Spotify request '{key}'.");

@@ -4,22 +4,46 @@ $runtimeDir = "$PSScriptRoot\bin\Release\runtimes"
 $zipFilePath = "$releaseDir\Songify.zip"
 $exeFilePath = "$releaseDir\Songify.exe"
 
-# Copy runtimes folder to the release directory
-Copy-Item -Path "$runtimeDir" -Destination "$releaseDir" -Recurse
+# Only run post-build tasks when Release publish output exists
+if (-not (Test-Path -Path $releaseDir)) {
+    exit 0
+}
+
+# Copy runtimes folder to the release directory (if it exists)
+if (Test-Path -Path $runtimeDir) {
+    Copy-Item -Path "$runtimeDir" -Destination "$releaseDir" -Recurse -ErrorAction SilentlyContinue
+}
 
 # Step 1: Zip the app.publish folder
 if (Test-Path -Path $zipFilePath) {
-    Remove-Item -Path $zipFilePath -Force  # Remove old zip file if it exists
+    Remove-Item -Path $zipFilePath -Force
 }
-    
-Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipFilePath
+
+try {
+    Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipFilePath -ErrorAction Stop
+}
+catch {
+    Write-Error "Failed to create zip archive: $zipFilePath. $($_.Exception.Message)"
+    exit 1
+}
+
+# Verify zip file was created before proceeding
+if (-not (Test-Path -Path $zipFilePath)) {
+    Write-Error "Zip file was not created: $zipFilePath"
+    exit 1
+}
 
 # Step 2: Calculate checksums for the zip file
 $zipMD5 = (Get-FileHash -Algorithm MD5 -Path $zipFilePath).Hash
 $zipSHA1 = (Get-FileHash -Algorithm SHA1 -Path $zipFilePath).Hash
 $zipSHA256 = (Get-FileHash -Algorithm SHA256 -Path $zipFilePath).Hash
 
-# Step 3: Calculate checksums for the exe file
+# Step 3: Calculate checksums for the exe file (if it exists)
+if (-not (Test-Path -Path $exeFilePath)) {
+    Write-Error "Executable not found: $exeFilePath"
+    exit 1
+}
+
 $exeMD5 = (Get-FileHash -Algorithm MD5 -Path $exeFilePath).Hash
 $exeSHA1 = (Get-FileHash -Algorithm SHA1 -Path $exeFilePath).Hash
 $exeSHA256 = (Get-FileHash -Algorithm SHA256 -Path $exeFilePath).Hash
@@ -39,7 +63,7 @@ SHA1:   $exeSHA1
 SHA256: $exeSHA256
 "@ | Set-Content -Path $checksumFilePath
 
-# Step 5: Extract version from exe (using File Version Info)
+# Step 5: Extract version from exe
 $exeVersion = (Get-Item $exeFilePath).VersionInfo.ProductVersion
 
 # Step 6: Create the update-beta.xml file

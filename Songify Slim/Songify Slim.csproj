@@ -231,6 +231,7 @@
     <Compile Include="Util\General\DurationHelper.cs" />
     <Compile Include="Util\i18n\Loc.cs" />
     <Compile Include="Util\General\PipeMessenger.cs" />
+    <Compile Include="Util\General\ServiceIndicatorState.cs" />
     <Compile Include="Util\General\ServiceToolTip.cs" />
     <Compile Include="Util\General\HttpClientPatchExtensions.cs" />
     <Compile Include="Util\General\CombineStringConverter.cs" />
