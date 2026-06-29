@@ -11,10 +11,13 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -197,15 +200,19 @@ namespace Songify_Slim.Util.Spotify
 
                 try
                 {
+                    EnsureExclusiveLoopbackPortAvailable(4002);
                     await _server.Start();
                 }
                 catch (Exception ex)
                 {
                     Logger.Log(LogLevel.Error, LogSource.Spotify,
                         "OAuth callback server could not start on port 4002.", ex);
+
+                    string ownerSummary = GetPortOwnerSummary(4002);
                     SpotifyUserNotifier.Notify(
                         "Spotify login server failed",
-                        "Songify could not listen on port 4002. Another program may be using it, or access was denied. Close other apps using that port or run Songify as administrator once to allow the firewall prompt.",
+                        "Songify could not listen on port 4002. Another program may be using it, or access was denied. " +
+                        ownerSummary + " Close other apps using that port or run Songify as administrator once to allow the firewall prompt.",
                         "spotify:pkce:port",
                         TimeSpan.FromMinutes(3));
                     throw;
@@ -252,6 +259,234 @@ namespace Songify_Slim.Util.Spotify
                 CancelPkceLoginWatchdog();
                 throw;
             }
+        }
+
+        private static void EnsureExclusiveLoopbackPortAvailable(int port)
+        {
+            var existingListeners = IPGlobalProperties.GetIPGlobalProperties()
+                .GetActiveTcpListeners()
+                .Where(ep => ep.Port == port)
+                .ToList();
+
+            if (existingListeners.Count > 0)
+            {
+                string endpoints = string.Join(", ", existingListeners.Select(ep => ep.Address + ":" + ep.Port));
+                string owners = GetPortOwnerSummary(port);
+                throw new InvalidOperationException(
+                    $"Port {port} is already in use by active listener(s): {endpoints}. {owners}");
+            }
+
+            ProbeExclusiveBind(IPAddress.Loopback, port);
+
+            if (Socket.OSSupportsIPv6)
+            {
+                try
+                {
+                    ProbeExclusiveBind(IPAddress.IPv6Loopback, port);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                        $"IPv6 loopback probe failed for port {port}; continuing with IPv4-only OAuth callback.", ex);
+                }
+            }
+        }
+
+        private static void ProbeExclusiveBind(IPAddress address, int port)
+        {
+            TcpListener probe = null;
+
+            try
+            {
+                probe = new TcpListener(address, port)
+                {
+                    ExclusiveAddressUse = true
+                };
+
+                probe.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, false);
+                probe.Start(1);
+            }
+            catch (SocketException ex)
+            {
+                string owners = GetPortOwnerSummary(port);
+                throw new InvalidOperationException(
+                    $"Port {port} cannot be reserved exclusively on {address}. {owners}", ex);
+            }
+            finally
+            {
+                try
+                {
+                    probe?.Stop();
+                }
+                catch
+                {
+                    // Best-effort cleanup for the probe socket.
+                }
+            }
+        }
+
+        private static string GetPortOwnerSummary(int port)
+        {
+            try
+            {
+                var owners = GetPortOwnersFromSystemTables(port);
+                if (owners.Count == 0)
+                    return "No owning process could be resolved.";
+
+                return "Likely owner(s): " + string.Join(", ", owners);
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Failed to resolve port owner information", ex);
+                return "Owning process could not be resolved.";
+            }
+        }
+
+        private static List<string> GetPortOwnersFromSystemTables(int port)
+        {
+            var ownerEntries = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+            foreach (int pid in GetListenerPidsForPort(port))
+            {
+                string procName;
+                try
+                {
+                    procName = System.Diagnostics.Process.GetProcessById(pid).ProcessName;
+                }
+                catch
+                {
+                    procName = "unknown";
+                }
+
+                ownerEntries.Add($"{procName} (PID {pid})");
+            }
+
+            return ownerEntries.ToList();
+        }
+
+        private static IEnumerable<int> GetListenerPidsForPort(int port)
+        {
+            var pids = new HashSet<int>();
+
+            foreach (MibTcpRowOwnerPid row in GetTcpListenerRowsV4())
+            {
+                if (ParsePort(row.LocalPort) == port)
+                    pids.Add((int)row.OwningPid);
+            }
+
+            foreach (MibTcp6RowOwnerPid row in GetTcpListenerRowsV6())
+            {
+                if (ParsePort(row.LocalPort) == port)
+                    pids.Add((int)row.OwningPid);
+            }
+
+            return pids;
+        }
+
+        private static List<MibTcpRowOwnerPid> GetTcpListenerRowsV4()
+        {
+            return ReadTcpTable<MibTcpRowOwnerPid>(AddressFamilyInterNetwork);
+        }
+
+        private static List<MibTcp6RowOwnerPid> GetTcpListenerRowsV6()
+        {
+            return ReadTcpTable<MibTcp6RowOwnerPid>(AddressFamilyInterNetworkV6);
+        }
+
+        private static List<T> ReadTcpTable<T>(int addressFamily) where T : struct
+        {
+            int size = 0;
+            uint result = GetExtendedTcpTable(IntPtr.Zero, ref size, true, addressFamily,
+                TcpTableClass.TcpTableOwnerPidListener, 0);
+
+            if (result != 0 && result != ErrorInsufficientBuffer)
+                return [];
+
+            IntPtr tablePtr = IntPtr.Zero;
+            try
+            {
+                tablePtr = Marshal.AllocHGlobal(size);
+                result = GetExtendedTcpTable(tablePtr, ref size, true, addressFamily,
+                    TcpTableClass.TcpTableOwnerPidListener, 0);
+
+                if (result != 0)
+                    return [];
+
+                int rowCount = Marshal.ReadInt32(tablePtr);
+                IntPtr rowPtr = tablePtr + sizeof(int);
+                int rowSize = Marshal.SizeOf(typeof(T));
+
+                var rows = new List<T>(rowCount);
+                for (int i = 0; i < rowCount; i++)
+                {
+                    rows.Add((T)Marshal.PtrToStructure(rowPtr, typeof(T)));
+                    rowPtr += rowSize;
+                }
+
+                return rows;
+            }
+            finally
+            {
+                if (tablePtr != IntPtr.Zero)
+                    Marshal.FreeHGlobal(tablePtr);
+            }
+        }
+
+        private static int ParsePort(byte[] localPortBytes)
+        {
+            if (localPortBytes == null || localPortBytes.Length < 2)
+                return -1;
+
+            // MIB local port bytes are stored in network order.
+            return (localPortBytes[0] << 8) + localPortBytes[1];
+        }
+
+        private const int ErrorInsufficientBuffer = 122;
+        private const int AddressFamilyInterNetwork = 2;
+        private const int AddressFamilyInterNetworkV6 = 23;
+
+        [DllImport("iphlpapi.dll", SetLastError = true)]
+        private static extern uint GetExtendedTcpTable(
+            IntPtr pTcpTable,
+            ref int dwOutBufLen,
+            bool sort,
+            int ipVersion,
+            TcpTableClass tblClass,
+            uint reserved);
+
+        private enum TcpTableClass
+        {
+            TcpTableOwnerPidListener = 3
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MibTcpRowOwnerPid
+        {
+            public uint State;
+            public uint LocalAddr;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] LocalPort;
+            public uint RemoteAddr;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] RemotePort;
+            public uint OwningPid;
+        }
+
+        [StructLayout(LayoutKind.Sequential)]
+        private struct MibTcp6RowOwnerPid
+        {
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] LocalAddr;
+            public uint LocalScopeId;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] LocalPort;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
+            public byte[] RemoteAddr;
+            public uint RemoteScopeId;
+            [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
+            public byte[] RemotePort;
+            public uint State;
+            public uint OwningPid;
         }
 
         private static Task OnAuthError(object sender, string error, string receivedState)
