@@ -430,9 +430,6 @@ namespace Songify_Slim.Util.General
 
                     break;
 
-                case Enums.PlayerType.FooBar2000:
-                case Enums.PlayerType.Vlc:
-                case Enums.PlayerType.BrowserCompanion:
                 case Enums.PlayerType.Pear:
                     List<Song> pearQueue = await PearApi.GetQueueAsync();
                     PearResponse pearResponse = await PearApi.GetNowPlayingAsync();
@@ -499,8 +496,18 @@ namespace Songify_Slim.Util.General
                     break;
 
                 case Enums.PlayerType.WindowsPlayback:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.BrowserCompanion:
+                case Enums.PlayerType.Qobuz:
+                    Logger.Warning(LogSource.Core,
+                        $"QueueUpdateQueueWindow unsupported player (explicit): {Settings.Player}");
+                    return;
+
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Logger.Warning(LogSource.Core,
+                        $"QueueUpdateQueueWindow unknown player enum value: {Settings.Player}");
+                    return;
             }
         }
 

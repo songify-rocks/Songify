@@ -741,6 +741,10 @@ namespace Songify_Slim.Util.Spotify
                 Logger.Error(LogSource.Spotify, "Couldn't fetch song info");
                 Logger.Error(LogSource.Spotify, ApiCallMeter.FormatApiExceptionDetails(apiEx));
             }
+            catch (OperationCanceledException)
+            {
+                Logger.Error(LogSource.Spotify, "Couldn't fetch song info (spotify api timeout)");
+            }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Spotify, "Couldn't fetch song info (unexpected)");

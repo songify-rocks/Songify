@@ -74,6 +74,10 @@ namespace Songify_Slim.Util.Songify
         private static Tuple<bool, string> _canvasResponse;
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
         private PlaylistInfo playbackPlaylist = null;
+        
+            
+            
+            
 
         private readonly SemaphoreSlim _pearWsProcessLock = new(1, 1);
 
@@ -87,6 +91,16 @@ namespace Songify_Slim.Util.Songify
         // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
         // Track the Pear queue's current item id so we can correlate requests reliably.
         private string _lastPearQueueCurrentId;
+
+        // Windows Playback metrics for performance instrumentation (PR 1 baseline)
+        private int _windowsPlaybackHeavyPathCount = 0;
+        private int _windowsPlaybackComRetryCount = 0;
+        private long _windowsPlaybackThumbnailBytesTotal = 0L;
+        private Stopwatch _windowsPlaybackLastMetricsReset = Stopwatch.StartNew();
+        private const int MetricsReportIntervalMs = 60000; // Report every 60 seconds
+
+        // Signature of the last thumbnail used, for change detection on track transitions.
+        private string _lastWindowsPlaybackThumbnailSig = null;
 
         /// <summary>
         ///     A method to fetch the song that's currently playing on Spotify.
@@ -712,12 +726,13 @@ namespace Songify_Slim.Util.Songify
             return mgr.GetCurrentSession();
         }
 
-        public static async Task<string> ThumbnailToDataUrlAsync(IRandomAccessStreamReference thumbRef)
+        public async Task<string> ThumbnailToDataUrlAsync(IRandomAccessStreamReference thumbRef)
         {
             if (thumbRef == null) return null;
 
             using IRandomAccessStreamWithContentType stream = await thumbRef.OpenReadAsync();
             byte[] bytes = new byte[stream.Size];
+            _windowsPlaybackThumbnailBytesTotal += (long)stream.Size;
             using (DataReader reader = new(stream))
             {
                 await reader.LoadAsync((uint)stream.Size);
@@ -730,6 +745,21 @@ namespace Songify_Slim.Util.Songify
             return $"data:image/png;base64,{base64}";
         }
 
+        /// <summary>
+        /// Quick signature for a thumbnail data URL used to detect when WinRT has updated
+        /// the thumbnail to match a new track. Uses first 128 chars of base64 data + total length.
+        /// </summary>
+        private static string ThumbnailSignature(string dataUrl)
+        {
+            if (dataUrl == null) return null;
+            // Skip the "data:image/png;base64," prefix (22 chars) for the content sample
+            int prefixLen = dataUrl.IndexOf(',') + 1;
+            string sample = prefixLen > 0 && dataUrl.Length > prefixLen
+                ? dataUrl.Substring(prefixLen, Math.Min(128, dataUrl.Length - prefixLen))
+                : dataUrl.Substring(0, Math.Min(128, dataUrl.Length));
+            return $"{dataUrl.Length}:{sample}";
+        }
+
         private async Task FetchWindowsApiCoreAsync(bool retried)
         {
             try
@@ -740,6 +770,7 @@ namespace Songify_Slim.Util.Songify
                 GlobalSystemMediaTransportControlsSession session = PickWindowsMediaSession(mgr, targetAumid);
                 if (session == null) { Console.WriteLine("No active media session."); return; }
 
+                _windowsPlaybackHeavyPathCount++;
                 GlobalSystemMediaTransportControlsSessionMediaProperties props = await session.TryGetMediaPropertiesAsync();
                 string title = props?.Title ?? "";
                 string artistFlat = props?.Artist ?? "";
@@ -748,7 +779,15 @@ namespace Songify_Slim.Util.Songify
                 int trackNo = props?.TrackNumber ?? 0;
                 string[] genres = props?.Genres?.ToArray() ?? [];
 
-                string thumbPath = await SaveThumbnailToTempAsync(props?.Thumbnail);
+                // Log fetch cycle metrics periodically
+                if (_windowsPlaybackLastMetricsReset.ElapsedMilliseconds > MetricsReportIntervalMs)
+                {
+                    Logger.Debug(LogSource.Core, $"Windows Playback fetch metrics: HeavyPathCount={_windowsPlaybackHeavyPathCount}, ComRetries={_windowsPlaybackComRetryCount}, ThumbnailBytesTotal={_windowsPlaybackThumbnailBytesTotal}");
+                    _windowsPlaybackHeavyPathCount = 0;
+                    _windowsPlaybackComRetryCount = 0;
+                    _windowsPlaybackThumbnailBytesTotal = 0L;
+                    _windowsPlaybackLastMetricsReset.Restart();
+                }
 
                 GlobalSystemMediaTransportControlsSessionPlaybackInfo playback = session.GetPlaybackInfo();
                 GlobalSystemMediaTransportControlsSessionTimelineProperties timeline = session.GetTimelineProperties();
@@ -770,12 +809,50 @@ namespace Songify_Slim.Util.Songify
 
                 List<SimpleArtist> fullArtists = SplitArtists(artistFlat);
 
+                // Detect track change by title/artist BEFORE reading thumbnail.
+                // WinRT often updates title/artist one tick ahead of the thumbnail stream,
+                // so we delay slightly and re-read props to get the correct cover art.
+                string candidateSongId = GenerateId(artistFlat, title);
+                bool isTrackChange = GlobalObjects.CurrentSong == null ||
+                    (GlobalObjects.CurrentSong.SongId != candidateSongId && candidateSongId != null) ||
+                    (candidateSongId == null && !string.IsNullOrEmpty(title));
+
+                string thumbUrl = null;
+                if (isTrackChange)
+                {
+                    // WinRT often updates title/artist before the thumbnail stream.
+                    // Poll until the thumbnail signature changes from the previous track (max ~1s).
+                    const int maxRetries = 5;
+                    const int retryDelayMs = 200;
+                    for (int attempt = 0; attempt <= maxRetries; attempt++)
+                    {
+                        if (attempt > 0)
+                        {
+                            await Task.Delay(retryDelayMs);
+                            props = await session.TryGetMediaPropertiesAsync();
+                        }
+                        thumbUrl = await ThumbnailToDataUrlAsync(props?.Thumbnail);
+                        string sig = ThumbnailSignature(thumbUrl);
+                        if (sig != _lastWindowsPlaybackThumbnailSig || attempt == maxRetries)
+                        {
+                            Logger.Debug(LogSource.Core, $"[WindowsPlayback] Track changed: \"{title}\" by {artistFlat} | Thumbnail: {(thumbUrl != null ? $"DataURL ({thumbUrl.Length} bytes)" : "null")} (attempt {attempt})");
+                            _lastWindowsPlaybackThumbnailSig = sig;
+                            break;
+                        }
+                        Logger.Debug(LogSource.Core, $"[WindowsPlayback] Thumbnail unchanged on attempt {attempt}, retrying...");
+                    }
+                }
+
                 TrackInfo tr = new()
                 {
                     Artists = artistFlat,
                     Title = title,
-                    Albums = [new Image { Url = await ThumbnailToDataUrlAsync(props?.Thumbnail) }],
-                    SongId = GenerateId(artistFlat, title),
+                    Albums = thumbUrl != null
+                        ? [new Image { Url = thumbUrl }]
+                        : (!isTrackChange 
+                            ? (GlobalObjects.CurrentSong?.Albums ?? [])
+                            : []),
+                    SongId = candidateSongId,
                     DurationMs = progress,
                     IsPlaying = isPlaying,
                     Url = null,
@@ -787,10 +864,7 @@ namespace Songify_Slim.Util.Songify
                 };
 
                 await UpdateWebServerResponse(tr);
-                tr.Albums = [new Image() { Url = thumbPath }];
-                if (GlobalObjects.CurrentSong == null ||
-                    (GlobalObjects.CurrentSong.SongId != tr.SongId && tr.SongId != null) ||
-                    (tr.SongId == null && !string.IsNullOrEmpty(tr.Title)))
+                if (isTrackChange)
                 {
                     GlobalObjects.CurrentSong = tr;
                     await WriteSongInfo(tr);
@@ -798,6 +872,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (COMException ex) when ((uint)ex.HResult == 0x80010108)
             {
+                _windowsPlaybackComRetryCount++;
                 if (!retried)
                 {
                     await FetchWindowsApiCoreAsync(retried: true);
@@ -834,29 +909,6 @@ namespace Songify_Slim.Util.Songify
                 >= int.MaxValue => int.MaxValue,
                 _ => (int)Math.Round(ms)
             };
-        }
-
-        /// <summary>
-        /// Save WinRT thumbnail stream to a temp PNG/JPEG file and return its absolute path (or null).
-        /// Must be called on the same STA thread where the WinRT object was obtained.
-        /// </summary>
-        private static async Task<string> SaveThumbnailToTempAsync(IRandomAccessStreamReference thumbRef)
-        {
-            if (thumbRef == null) return null;
-
-            string dir = Path.Combine(Path.GetTempPath(), "SongifySlim", "covers");
-            Directory.CreateDirectory(dir);
-            string path = Path.Combine(dir, $"cover_{Guid.NewGuid():N}.png");
-
-            using IRandomAccessStreamWithContentType stream = await thumbRef.OpenReadAsync();
-            byte[] bytes = new byte[stream.Size];
-            using (DataReader reader = new(stream))
-            {
-                await reader.LoadAsync((uint)stream.Size);
-                reader.ReadBytes(bytes);
-            }
-            File.WriteAllBytes(path, bytes);
-            return path;
         }
 
         /// <summary>
@@ -1239,11 +1291,13 @@ namespace Songify_Slim.Util.Songify
             // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
             if (Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
+                Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover (canvas mode): {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
                 IoManager.DownloadCanvas(_canvasResponse.Item2, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
                 await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
             else if (Settings.DownloadCover)
             {
+                Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover: {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
                 await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
 
@@ -1617,9 +1671,18 @@ namespace Songify_Slim.Util.Songify
 
                 await UpdateWebServerResponse(t).ConfigureAwait(false);
 
-                // If same song, nothing more (web payload already refreshed above).
-                if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == canonicalId)
+                bool isSameSongId = GlobalObjects.CurrentSong != null &&
+                                    GlobalObjects.CurrentSong.SongId == canonicalId;
+
+                // On the first Pear bootstrap sync after connect/player switch, we still need to
+                // run the full write path so MainWindow now-playing text gets refreshed even if
+                // the track id matches the previous in-memory song.
+                if (isSameSongId && _pearColdHttpSynced)
+                {
+                    GlobalObjects.CurrentSong = t;
+                    UpdatePearNowPlayingPreviewOnly(t);
                     return;
+                }
 
                 if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
                 {
@@ -1634,6 +1697,43 @@ namespace Songify_Slim.Util.Songify
             {
                 _pearStateLock.Release();
             }
+        }
+
+        /// <summary>
+        /// Refresh MainWindow now-playing text without executing full WriteSongInfo side effects
+        /// (history upload/chat announce/files). Used for Pear same-song state updates.
+        /// </summary>
+        private static void UpdatePearNowPlayingPreviewOnly(TrackInfo track)
+        {
+            if (track == null)
+                return;
+
+            string singleArtist = track.FullArtists?.FirstOrDefault()?.Name ?? track.Artists ?? "";
+            string output = Settings.OutputString;
+
+            int start = output.IndexOf("{{", StringComparison.Ordinal);
+            int end = output.LastIndexOf("}}", StringComparison.Ordinal) + 2;
+            if (start >= 0 && end > start)
+                output = output.Remove(start, end - start);
+
+            output = output.Format(
+                single_artist => singleArtist,
+                artist => track.Artists ?? "",
+                title => track.Title ?? "",
+                extra => "",
+                uri => track.SongId ?? "",
+                url => track.Url ?? ""
+            ).Format();
+
+            output = CleanFormatString(output);
+            if (string.IsNullOrWhiteSpace(output))
+                return;
+
+            Application.Current?.Dispatcher.Invoke(() =>
+            {
+                if (Application.Current.MainWindow is MainWindow main)
+                    main.SetTextPreview(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+            });
         }
 
         private async Task PatchPearPlaybackFromWebSocketAsync(double elapsedSeconds, bool? isPlaying)

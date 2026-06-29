@@ -62,10 +62,16 @@ namespace Songify_Slim.Views
                     break;
 
                 case Enums.PlayerType.Pear:
+                    SetButtonContent(!GlobalObjects.CurrentSong.IsPlaying);
+                    break;
+
+                case Enums.PlayerType.Qobuz:
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Logger.Warning(LogSource.Core,
+                        $"WindowQueue.Timer_Tick hit unsupported player: {Settings.Player}");
+                    break;
             }
         }
 
@@ -153,7 +159,18 @@ namespace Songify_Slim.Views
                         break;
                     }
 
+                case Enums.PlayerType.WindowsPlayback:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.BrowserCompanion:
+                case Enums.PlayerType.Qobuz:
+                    Logger.Warning(LogSource.Core,
+                        $"WindowQueue.DgvButtonDelete_Click unsupported player (explicit): {Settings.Player}");
+                    return;
+
                 default:
+                    Logger.Warning(LogSource.Core,
+                        $"WindowQueue.DgvButtonDelete_Click unknown player enum value: {Settings.Player}");
                     return;
             }
 
@@ -261,7 +278,18 @@ namespace Songify_Slim.Views
                         break;
                     }
 
+                case Enums.PlayerType.WindowsPlayback:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.BrowserCompanion:
+                case Enums.PlayerType.Qobuz:
+                    Logger.Warning(LogSource.Core,
+                        $"WindowQueue.DgvButtonSkip_Click unsupported player (explicit): {Settings.Player}");
+                    return;
+
                 default:
+                    Logger.Warning(LogSource.Core,
+                        $"WindowQueue.DgvButtonSkip_Click unknown player enum value: {Settings.Player}");
                     return;
             }
 
@@ -467,10 +495,13 @@ namespace Songify_Slim.Views
                     case Enums.PlayerType.FooBar2000:
                     case Enums.PlayerType.Vlc:
                     case Enums.PlayerType.BrowserCompanion:
+                    case Enums.PlayerType.Qobuz:
                         break;
 
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        Logger.Warning(LogSource.Core,
+                            $"WindowQueue.BtnBack_OnClick(quick) unsupported player: {Settings.Player}");
+                        break;
                 }
             }
             else
@@ -490,10 +521,13 @@ namespace Songify_Slim.Views
                     case Enums.PlayerType.FooBar2000:
                     case Enums.PlayerType.Vlc:
                     case Enums.PlayerType.BrowserCompanion:
+                    case Enums.PlayerType.Qobuz:
                         break;
 
                     default:
-                        throw new ArgumentOutOfRangeException();
+                        Logger.Warning(LogSource.Core,
+                            $"WindowQueue.BtnBack_OnClick(normal) unsupported player: {Settings.Player}");
+                        break;
                 }
                 // If not, restart the current track from the beginning
             }
@@ -518,10 +552,13 @@ namespace Songify_Slim.Views
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
                 case Enums.PlayerType.BrowserCompanion:
+                case Enums.PlayerType.Qobuz:
                     break;
 
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Logger.Warning(LogSource.Core,
+                        $"WindowQueue.BtnNext_OnClick unsupported player: {Settings.Player}");
+                    break;
             }
         }
 
@@ -535,10 +572,6 @@ namespace Songify_Slim.Views
                         SetButtonContent(!isPlaying);
                         break;
                     }
-                case Enums.PlayerType.WindowsPlayback:
-                case Enums.PlayerType.FooBar2000:
-                case Enums.PlayerType.Vlc:
-                case Enums.PlayerType.BrowserCompanion:
                 case Enums.PlayerType.Pear:
                     {
                         PearResponse nowPlaying = await PearApi.GetNowPlayingAsync();
@@ -552,8 +585,18 @@ namespace Songify_Slim.Views
                         SetButtonContent(isPlaying);
                         break;
                     }
+                case Enums.PlayerType.WindowsPlayback:
+                case Enums.PlayerType.FooBar2000:
+                case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.BrowserCompanion:
+                case Enums.PlayerType.Qobuz:
+                    {
+                        break;
+                    }
                 default:
-                    throw new ArgumentOutOfRangeException();
+                    Logger.Warning(LogSource.Core,
+                        $"WindowQueue.BtnPlayPause_OnClick unsupported player: {Settings.Player}");
+                    break;
             }
         }
 
