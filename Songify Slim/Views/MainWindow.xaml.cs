@@ -1982,7 +1982,7 @@ namespace Songify_Slim.Views
                     catch (Exception ex)
                     {
                         Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Attempt {i} failed: {ex.Message}, retrying...");
-                        //                        await Task.Delay(1000);
+                        await Task.Delay(delayOnRetry);
                         continue;
                     }
 
@@ -2011,7 +2011,7 @@ namespace Songify_Slim.Views
                 catch (Exception ex) when (i <= numberOfRetries)
                 {
                     Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Outer catch at attempt {i}: {ex.Message}");
-                    Thread.Sleep(delayOnRetry);
+                    await Task.Delay(delayOnRetry);
                 }
             }
         }
