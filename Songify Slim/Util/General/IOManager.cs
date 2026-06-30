@@ -188,6 +188,7 @@ namespace Songify_Slim.Util.General
         public static async Task DownloadCover(string cover, string coverPath)
         {
             string coverTemp = $"{GlobalObjects.RootDirectory}/tmp_{Path.GetFileName(coverPath)}";
+            Logger.Debug(LogSource.Core, $"[IOManager.DownloadCover] Started with cover: {cover?.Substring(0, Math.Min(80, cover?.Length ?? 0))}... => {coverPath}");
 
             try
             {
@@ -269,6 +270,7 @@ namespace Songify_Slim.Util.General
                         }
 
                         File.Move(coverTemp, coverPath);
+                        Logger.Debug(LogSource.Core, $"[IOManager.DownloadCover] Cover file written successfully to {coverPath}");
                     }
                     catch (Exception ex)
                     {
@@ -283,6 +285,7 @@ namespace Songify_Slim.Util.General
                 }
 
                 // Update the image in the UI
+                Logger.Debug(LogSource.Core, $"[IOManager.DownloadCover] Calling SetCoverImage with path: {coverPath}");
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     if (Application.Current.MainWindow is MainWindow main)

@@ -1762,6 +1762,7 @@ namespace Songify_Slim.Views
                 _timerFetcher.Enabled = false;
                 _timerFetcher.Elapsed -= OnTimedEvent;
                 CancellationTokenSource _sCts = new CancellationTokenSource();
+                Stopwatch fetchLoopStart = _selectedSource == PlayerType.WindowsPlayback ? Stopwatch.StartNew() : null;
 
                 try
                 {
@@ -1796,9 +1797,22 @@ namespace Songify_Slim.Views
                 {
                     _sCts.CancelAfter(3500);
                     await GetCurrentSongAsync();
+                    if (fetchLoopStart != null)
+                    {
+                        fetchLoopStart.Stop();
+                        if (fetchLoopStart.ElapsedMilliseconds > 100)
+                            Logger.Debug(LogSource.Core, $"Windows Playback fetch loop took {fetchLoopStart.ElapsedMilliseconds}ms");
+                    }
                 }
                 catch (TaskCanceledException ex)
                 {
+                    if (fetchLoopStart != null && fetchLoopStart.IsRunning)
+                    {
+                        fetchLoopStart.Stop();
+                        if (fetchLoopStart.ElapsedMilliseconds > 100)
+                            Logger.Debug(LogSource.Core, $"Windows Playback fetch loop canceled after {fetchLoopStart.ElapsedMilliseconds}ms");
+                    }
+
                     Logger.LogExc(ex);
                 }
                 finally
@@ -1946,6 +1960,7 @@ namespace Songify_Slim.Views
 
         public async void SetCoverImage(string coverPath)
         {
+            Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Called with path: {coverPath}");
             const int numberOfRetries = 5;
             const int delayOnRetry = 1000;
 
@@ -1962,10 +1977,12 @@ namespace Songify_Slim.Views
                         image.UriSource = new Uri(coverPath);
                         image.EndInit();
                         ImgCover.Source = image;
+                        Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Successfully loaded image from {coverPath}");
                     }
-                    catch (Exception)
+                    catch (Exception ex)
                     {
-                        //                        await Task.Delay(1000);
+                        Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Attempt {i} failed: {ex.Message}, retrying...");
+                        await Task.Delay(delayOnRetry);
                         continue;
                     }
 
@@ -1978,20 +1995,23 @@ namespace Songify_Slim.Views
                     {
                         ImgCover.Visibility = Visibility.Visible;
                         GrdCover.Visibility = Visibility.Visible;
+                        Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Image visible for {Settings.Player}");
                     }
                     else
                     {
                         ImgCover.Visibility = Visibility.Collapsed;
                         GrdCover.Visibility = Visibility.Collapsed;
+                        Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Image hidden (Player: {Settings.Player}, DownloadCover: {Settings.DownloadCover})");
                     }
 
                     CoverCanvas.Visibility = Visibility.Collapsed;
 
                     break;
                 }
-                catch (Exception) when (i <= numberOfRetries)
+                catch (Exception ex) when (i <= numberOfRetries)
                 {
-                    Thread.Sleep(delayOnRetry);
+                    Logger.Debug(LogSource.Core, $"[MainWindow.SetCoverImage] Outer catch at attempt {i}: {ex.Message}");
+                    await Task.Delay(delayOnRetry);
                 }
             }
         }
