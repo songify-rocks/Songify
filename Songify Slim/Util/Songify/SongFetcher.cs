@@ -731,11 +731,13 @@ namespace Songify_Slim.Util.Songify
             if (thumbRef == null) return null;
 
             using IRandomAccessStreamWithContentType stream = await thumbRef.OpenReadAsync();
-            byte[] bytes = new byte[stream.Size];
-            _windowsPlaybackThumbnailBytesTotal += (long)stream.Size;
+            int streamSize = checked((int)stream.Size);
+            uint streamSizeUInt32 = checked((uint)streamSize);
+            byte[] bytes = new byte[streamSize];
+            _windowsPlaybackThumbnailBytesTotal += streamSize;
             using (DataReader reader = new(stream))
             {
-                await reader.LoadAsync((uint)stream.Size);
+                await reader.LoadAsync(streamSizeUInt32);
                 reader.ReadBytes(bytes);
             }
 

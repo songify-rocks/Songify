@@ -23,8 +23,10 @@ public static class ThumbnailConverter
         byte[] bytes;
         using (DataReader reader = new(stream.GetInputStreamAt(0)))
         {
-            bytes = new byte[stream.Size];
-            await reader.LoadAsync((uint)stream.Size);
+            int streamSize = checked((int)stream.Size);
+            uint streamSizeUInt32 = checked((uint)streamSize);
+            bytes = new byte[streamSize];
+            await reader.LoadAsync(streamSizeUInt32);
             reader.ReadBytes(bytes);
         }
 
