@@ -165,12 +165,12 @@ namespace Songify_Slim.Views
                 case Enums.PlayerType.BrowserCompanion:
                 case Enums.PlayerType.Qobuz:
                     Logger.Warning(LogSource.Core,
-                        $"WindowQueue.DgvButtonDelete_Click unsupported player (explicit): {Settings.Player}");
+                        $"WindowQueue.DgvItemDelete_Click unsupported player (explicit): {Settings.Player}");
                     return;
 
                 default:
                     Logger.Warning(LogSource.Core,
-                        $"WindowQueue.DgvButtonDelete_Click unknown player enum value: {Settings.Player}");
+                        $"WindowQueue.DgvItemDelete_Click unknown player enum value: {Settings.Player}");
                     return;
             }
 
