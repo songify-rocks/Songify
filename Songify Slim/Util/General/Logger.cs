@@ -118,13 +118,13 @@ namespace Songify_Slim.Util.General
 
         // ------------- NEW, MORE STRUCTURED API -------------
 
-        public static void Trace(LogSource source, string message) =>
-            Log(LogLevel.Trace, source, message);
+        public static void Trace(LogSource source, string message, Exception? exception = null) =>
+            Log(LogLevel.Trace, source, message, exception);
 
-        public static void Debug(LogSource source, string message)
+        public static void Debug(LogSource source, string message, Exception? exception = null)
         {
             if (Settings.DebugLogging)
-                Log(LogLevel.Debug, source, message);
+                Log(LogLevel.Debug, source, message, exception);
         }
 
         public static void Info(LogSource source, string message) =>

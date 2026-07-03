@@ -1354,11 +1354,6 @@ namespace Songify_Slim.Views
         {
             if (Settings.AutoStartWebServer) GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
             if (Settings.OpenQueueOnStartup) OpenQueue();
-            if (Settings.TwAutoConnect)
-            {
-                TwitchHandler.ConnectTwitchChatClient();
-            }
-
             if (Settings.AutoClearQueue)
             {
                 GlobalObjects.ReqList.Clear();
@@ -1370,10 +1365,25 @@ namespace Songify_Slim.Views
                 await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
             }
 
+            // If the tokens exist we should initiatilize them first and then connect the chat client if auto connect is enabled.
+            Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Account init starting");
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
+            {
+                Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Initializing Main account");
                 await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
+            }
             if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
+            {
+                Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Initializing Bot account");
                 await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
+            }
+
+            Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Account init complete");
+            if (Settings.TwAutoConnect)
+            {
+                Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Auto-connecting chat");
+                TwitchHandler.ConnectTwitchChatClient();
+            }
         }
 
         private static void CheckAndNotifyConfigurationIssues()
@@ -1761,7 +1771,6 @@ namespace Songify_Slim.Views
             {
                 _timerFetcher.Enabled = false;
                 _timerFetcher.Elapsed -= OnTimedEvent;
-                CancellationTokenSource _sCts = new CancellationTokenSource();
                 Stopwatch fetchLoopStart = _selectedSource == PlayerType.WindowsPlayback ? Stopwatch.StartNew() : null;
 
                 try
@@ -1795,7 +1804,6 @@ namespace Songify_Slim.Views
 
                 try
                 {
-                    _sCts.CancelAfter(3500);
                     await GetCurrentSongAsync();
                     if (fetchLoopStart != null)
                     {
@@ -1840,7 +1848,6 @@ namespace Songify_Slim.Views
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    _sCts.Dispose();
                     _timerFetcher.Enabled = enable;
                     _timerFetcher.Elapsed += OnTimedEvent;
                 }

@@ -278,7 +278,7 @@ namespace Songify_Slim.Util.General
                                 {
                                     try
                                     {
-                                        if (item.Trackid == CurrentSong.SongId)
+                                        if (CurrentSong != null && item.Trackid == CurrentSong.SongId)
                                         {
                                             return;
                                         }
@@ -333,9 +333,12 @@ namespace Songify_Slim.Util.General
                                     ? isInLikedSongs.TryGetValue(fullTrack.Id, out bool boolValue) && boolValue
                                     : LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == fullTrack.Id);
 
-                                RequestObject reqObj = ReqList.FirstOrDefault(o =>
-                                    o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid) &&
-                                    fullTrack.Id != CurrentSong.SongId);
+                                // Exclude the currently playing track from queue matching — guard CurrentSong null.
+                                bool isCurrentSong = CurrentSong != null && fullTrack.Id == CurrentSong.SongId;
+                                RequestObject reqObj = isCurrentSong
+                                    ? null
+                                    : ReqList.FirstOrDefault(o =>
+                                        o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid));
 
                                 RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
 

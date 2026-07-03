@@ -116,7 +116,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Cancel PKCE watchdog failed", ex);
+                Logger.Debug(LogSource.Spotify, "Cancel PKCE watchdog failed", ex);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Cancel PKCE watchdog (restart) failed", ex);
+                Logger.Debug(LogSource.Spotify, "Cancel PKCE watchdog (restart) failed", ex);
             }
 
             try
@@ -137,7 +137,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Dispose PKCE watchdog CTS failed", ex);
+                Logger.Debug(LogSource.Spotify, "Dispose PKCE watchdog CTS failed", ex);
             }
 
             _pkceLoginWatchdogCts = new CancellationTokenSource();
@@ -181,7 +181,7 @@ namespace Songify_Slim.Util.Spotify
                     }
                     catch (Exception ex)
                     {
-                        Logger.Log(LogLevel.Error, LogSource.Spotify, "Unable to stop auth server", ex);
+                        Logger.Error(LogSource.Spotify, "Unable to stop auth server", ex);
                     }
 
                     _server.AuthorizationCodeReceived -= OnAuthorizationCodeReceived;
@@ -205,7 +205,7 @@ namespace Songify_Slim.Util.Spotify
                 }
                 catch (Exception ex)
                 {
-                    Logger.Log(LogLevel.Error, LogSource.Spotify,
+                    Logger.Error(LogSource.Spotify,
                         "OAuth callback server could not start on port 4002.", ex);
 
                     string ownerSummary = GetPortOwnerSummary(4002);
@@ -286,7 +286,7 @@ namespace Songify_Slim.Util.Spotify
                 }
                 catch (InvalidOperationException ex)
                 {
-                    Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                    Logger.Debug(LogSource.Spotify,
                         $"IPv6 loopback probe failed for port {port}; continuing with IPv4-only OAuth callback.", ex);
                 }
             }
@@ -337,7 +337,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Failed to resolve port owner information", ex);
+                Logger.Debug(LogSource.Spotify, "Failed to resolve port owner information", ex);
                 return "Owning process could not be resolved.";
             }
         }
@@ -569,7 +569,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (APIException ex)
             {
-                Logger.Log(LogLevel.Error, LogSource.Spotify,
+                Logger.Error(LogSource.Spotify,
                     "Spotify token refresh failed (API). " + ApiCallMeter.FormatApiExceptionDetails(ex));
                 SpotifyUserNotifier.Notify(
                     "Spotify session refresh failed",
@@ -580,7 +580,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, LogSource.Spotify, "Spotify token refresh failed.", ex);
+                Logger.Error(LogSource.Spotify, "Spotify token refresh failed.", ex);
                 string msg = ex.Message;
                 if (msg.Length > 200)
                     msg = msg.Substring(0, 197) + "...";
@@ -611,7 +611,7 @@ namespace Songify_Slim.Util.Spotify
         {
             try
             {
-                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Entered OnAuthorizationCodeReceived");
+                Logger.Debug(LogSource.Spotify, "Entered OnAuthorizationCodeReceived");
 
                 if (response == null)
                     throw new Exception("AuthorizationCodeResponse was null.");
@@ -624,7 +624,7 @@ namespace Songify_Slim.Util.Spotify
 
                 OAuthClient oauth = new();
 
-                Logger.Log(LogLevel.Debug, LogSource.Spotify, "Sending PKCE token request");
+                Logger.Debug(LogSource.Spotify, "Sending PKCE token request");
 
                 PKCETokenResponse tokenResponse;
                 try
@@ -640,7 +640,7 @@ namespace Songify_Slim.Util.Spotify
                 }
                 catch (APIException ex)
                 {
-                    Logger.Log(LogLevel.Error, LogSource.Spotify,
+                    Logger.Error(LogSource.Spotify,
                         "PKCE token exchange failed. " + ApiCallMeter.FormatApiExceptionDetails(ex));
                     SpotifyUserNotifier.Notify(
                         "Spotify login incomplete",
@@ -996,22 +996,82 @@ namespace Songify_Slim.Util.Spotify
             try
             {
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+                string configuredDeviceId = Settings.SpotifyDeviceId;
+                DeviceResponse devicesResponse = await ApiCallMeter.RunAsync(
+                    "Player.GetAvailableDevices",
+                    () => Client.Player.GetAvailableDevices(cts.Token),
+                    SoftLimitPerminute,
+                    cts.Token);
+
+                List<Device> devices = devicesResponse?.Devices?.Where(d => d != null).ToList() ?? new List<Device>();
+                Device matchedDevice = devices.FirstOrDefault(d => string.Equals(d.Id, configuredDeviceId, StringComparison.Ordinal));
+                Device activeDevice = devices.FirstOrDefault(d => d.IsActive);
+
+                Logger.Debug(
+                    LogSource.Spotify,
+                    $"Queue device detection: configuredDeviceId='{configuredDeviceId}', deviceCount={devices.Count}, matchedConfigured={(matchedDevice != null)}, activeDeviceId='{activeDevice?.Id}'");
+
+                if (devices.Count > 0)
+                {
+                    Logger.Debug(LogSource.Spotify, $"Queue device candidates: {FormatSpotifyDeviceList(devices)}");
+                }
+
+                // If the configured device is not in the current device list, fall back to the active device.
+                string requestDeviceId = configuredDeviceId;
+                if (matchedDevice == null && activeDevice != null)
+                {
+                    Logger.Warning(LogSource.Spotify,
+                        $"Configured deviceId '{configuredDeviceId}' not found in available devices. " +
+                        $"Falling back to active device '{activeDevice.Id}' ('{activeDevice.Name}'). " +
+                        "Updating stored device id.");
+                    requestDeviceId = activeDevice.Id;
+                    Settings.SpotifyDeviceId = activeDevice.Id;
+                }
+                else if (matchedDevice == null && activeDevice == null)
+                {
+                    Logger.Warning(LogSource.Spotify,
+                        $"Configured deviceId '{configuredDeviceId}' not found and no active device detected. " +
+                        "Player.AddToQueue will likely fail with 404 Device not found. " +
+                        "Ensure Spotify is open and playing on a device.");
+                }
+
+                Logger.Info(
+                    LogSource.Spotify,
+                    $"Queue device selected for Player.AddToQueue: requestDeviceId='{requestDeviceId}', selectedDeviceName='{matchedDevice?.Name ?? activeDevice?.Name ?? "Unknown"}', songUri='{songUri}'");
+
                 await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
                     new PlayerAddToQueueRequest(songUri)
                     {
-                        DeviceId = Settings.SpotifyDeviceId
+                        DeviceId = requestDeviceId
                     }, cts.Token), softLimitPerMinute: SoftLimitPerminute, ct: cts.Token);
                 return true;
             }
             catch (APIException ex)
             {
-                Logger.Log(LogLevel.Error, LogSource.Spotify, "Error Adding song to queue", ex);
-                if (ex.Response == null || (int)ex.Response.StatusCode != 503) return false;
+                Logger.Error(LogSource.Spotify, "Error Adding song to queue", ex);
+
+                int statusCode = ex.Response != null ? (int)ex.Response.StatusCode : 0;
+
+                // 404 = no active/found device. Clear the stale device id so next playback tick re-detects it.
+                if (statusCode == 404)
+                {
+                    Logger.Warning(LogSource.Spotify,
+                        $"Player.AddToQueue received 404 Device not found for deviceId='{Settings.SpotifyDeviceId}'. " +
+                        "Clearing stored device id so it will be re-detected on next playback update. " +
+                        "Ensure Spotify is open and active on a device before requesting songs.");
+                    Settings.SpotifyDeviceId = string.Empty;
+                    return false;
+                }
+
+                if (statusCode != 503) return false;
                 for (int i = 0; i < 5; i++)
                 {
                     await Task.Delay(1000);
                     try
                     {
+                        Logger.Info(
+                            LogSource.Spotify,
+                            $"Retrying Player.AddToQueue after 503 (attempt {i + 1}/5) with deviceId='{Settings.SpotifyDeviceId}' and songUri='{songUri}'");
                         await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
                             new PlayerAddToQueueRequest(songUri)
                             {
@@ -1212,7 +1272,7 @@ namespace Songify_Slim.Util.Spotify
 
                     List<string> uris = EnsureTrackUris([trackId]);
 
-                    Logger.Log(LogLevel.Info, LogSource.Spotify,
+                    Logger.Info(LogSource.Spotify,
                         $"Library.SaveItems URIs: {string.Join(", ", uris)}");
 
                     //bool response = await ApiCallMeter.RunAsync(
@@ -1249,7 +1309,7 @@ namespace Songify_Slim.Util.Spotify
                 }
                 catch (Exception cacheEx)
                 {
-                    Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                    Logger.Warning(LogSource.Spotify,
                         "EnsurePlaylistCacheAsync failed, falling back to raw playlist fetch", cacheEx);
                 }
             }
@@ -1495,7 +1555,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (OperationCanceledException)
             {
-                Logger.Log(LogLevel.Warning, LogSource.Spotify, "Spotify GetUser was cancelled.");
+                Logger.Warning(LogSource.Spotify, "Spotify GetUser was cancelled.");
                 return null;
             }
             catch (Exception ex)
@@ -1534,7 +1594,16 @@ namespace Songify_Slim.Util.Spotify
 
                 DeviceResponse x = await ApiCallMeter.RunAsync("Player.GetAvailableDevices",
                     () => Client.Player.GetAvailableDevices(cts.Token), SoftLimitPerminute, cts.Token);
-                return x.Devices.FirstOrDefault(d => d.IsActive)?.Name;
+
+                List<Device> devices = x?.Devices?.Where(d => d != null).ToList() ?? new List<Device>();
+                Device matchedDevice = devices.FirstOrDefault(d => string.Equals(d.Id, spotifyDeviceId, StringComparison.Ordinal));
+                Device activeDevice = devices.FirstOrDefault(d => d.IsActive);
+
+                Logger.Info(
+                    LogSource.Spotify,
+                    $"Device lookup: requestedDeviceId='{spotifyDeviceId}', deviceCount={devices.Count}, matchedConfigured={(matchedDevice != null)}, activeDeviceId='{activeDevice?.Id}'");
+
+                return matchedDevice?.Name ?? activeDevice?.Name;
             }
             catch (Exception e)
             {
@@ -1652,6 +1721,20 @@ namespace Songify_Slim.Util.Spotify
 
             int idx = s.LastIndexOf(separator);
             return (idx >= 0 && idx < s.Length - 1) ? s.Substring(idx + 1) : s;
+        }
+
+        private static string FormatSpotifyDeviceList(IEnumerable<Device> devices)
+        {
+            if (devices == null)
+                return "[]";
+
+            List<string> formatted = devices
+                .Where(d => d != null)
+                .Select(d =>
+                    $"{{id='{d.Id}', name='{d.Name}', type='{d.Type}', active={d.IsActive}, restricted={d.IsRestricted}}}")
+                .ToList();
+
+            return formatted.Count == 0 ? "[]" : string.Join(", ", formatted);
         }
 
         public static async Task SetShuffle(bool b)
@@ -1891,7 +1974,7 @@ namespace Songify_Slim.Util.Spotify
             }
             catch (Exception e)
             {
-                Logger.Log(LogLevel.Error, LogSource.Spotify, "Error checking if IDs are already in Library.", e);
+                Logger.Error(LogSource.Spotify, "Error checking if IDs are already in Library.", e);
                 return null;
             }
         }
