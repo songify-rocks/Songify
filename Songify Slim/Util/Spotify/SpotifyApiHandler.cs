@@ -997,47 +997,48 @@ namespace Songify_Slim.Util.Spotify
             {
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
                 string configuredDeviceId = Settings.SpotifyDeviceId;
-                DeviceResponse devicesResponse = await ApiCallMeter.RunAsync(
-                    "Player.GetAvailableDevices",
-                    () => Client.Player.GetAvailableDevices(cts.Token),
-                    SoftLimitPerminute,
-                    cts.Token);
 
-                List<Device> devices = devicesResponse?.Devices?.Where(d => d != null).ToList() ?? new List<Device>();
-                Device matchedDevice = devices.FirstOrDefault(d => string.Equals(d.Id, configuredDeviceId, StringComparison.Ordinal));
-                Device activeDevice = devices.FirstOrDefault(d => d.IsActive);
-
-                Logger.Debug(
-                    LogSource.Spotify,
-                    $"Queue device detection: configuredDeviceId='{configuredDeviceId}', deviceCount={devices.Count}, matchedConfigured={(matchedDevice != null)}, activeDeviceId='{activeDevice?.Id}'");
-
-                if (devices.Count > 0)
-                {
-                    Logger.Debug(LogSource.Spotify, $"Queue device candidates: {FormatSpotifyDeviceList(devices)}");
-                }
-
-                // If the configured device is not in the current device list, fall back to the active device.
+                // Only query available devices when no device id has been stored yet.
+                // GetSongInfo updates Settings.SpotifyDeviceId on every playback tick, so
+                // the stored id is authoritative once any playback has been detected.
                 string requestDeviceId = configuredDeviceId;
-                if (matchedDevice == null && activeDevice != null)
+                if (string.IsNullOrWhiteSpace(configuredDeviceId))
                 {
-                    Logger.Warning(LogSource.Spotify,
-                        $"Configured deviceId '{configuredDeviceId}' not found in available devices. " +
-                        $"Falling back to active device '{activeDevice.Id}' ('{activeDevice.Name}'). " +
-                        "Updating stored device id.");
-                    requestDeviceId = activeDevice.Id;
-                    Settings.SpotifyDeviceId = activeDevice.Id;
-                }
-                else if (matchedDevice == null && activeDevice == null)
-                {
-                    Logger.Warning(LogSource.Spotify,
-                        $"Configured deviceId '{configuredDeviceId}' not found and no active device detected. " +
-                        "Player.AddToQueue will likely fail with 404 Device not found. " +
-                        "Ensure Spotify is open and playing on a device.");
+                    DeviceResponse devicesResponse = await ApiCallMeter.RunAsync(
+                        "Player.GetAvailableDevices",
+                        () => Client.Player.GetAvailableDevices(cts.Token),
+                        SoftLimitPerminute,
+                        cts.Token);
+
+                    List<Device> devices = devicesResponse?.Devices?.Where(d => d != null).ToList() ?? new List<Device>();
+                    Device activeDevice = devices.FirstOrDefault(d => d.IsActive);
+
+                    Logger.Debug(
+                        LogSource.Spotify,
+                        $"Queue device detection (no stored id): deviceCount={devices.Count}, activeDeviceId='{activeDevice?.Id}'");
+
+                    if (devices.Count > 0)
+                        Logger.Debug(LogSource.Spotify, $"Queue device candidates: {FormatSpotifyDeviceList(devices)}");
+
+                    if (activeDevice != null)
+                    {
+                        requestDeviceId = activeDevice.Id;
+                        Settings.SpotifyDeviceId = activeDevice.Id;
+                        Logger.Info(LogSource.Spotify,
+                            $"No stored device id. Using active device '{activeDevice.Id}' ('{activeDevice.Name}').");
+                    }
+                    else
+                    {
+                        Logger.Warning(LogSource.Spotify,
+                            "No stored device id and no active device detected. " +
+                            "Player.AddToQueue will likely fail with 404 Device not found. " +
+                            "Ensure Spotify is open and playing on a device.");
+                    }
                 }
 
                 Logger.Info(
                     LogSource.Spotify,
-                    $"Queue device selected for Player.AddToQueue: requestDeviceId='{requestDeviceId}', selectedDeviceName='{matchedDevice?.Name ?? activeDevice?.Name ?? "Unknown"}', songUri='{songUri}'");
+                    $"Queue device selected for Player.AddToQueue: requestDeviceId='{requestDeviceId}', songUri='{songUri}'");
 
                 await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
                     new PlayerAddToQueueRequest(songUri)
