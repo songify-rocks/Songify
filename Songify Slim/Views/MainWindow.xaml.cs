@@ -1650,13 +1650,13 @@ namespace Songify_Slim.Views
             ServiceIndicatorState indicatorState = GetPearIndicatorState();
 
             string action = indicatorState.IsConnecting
-                ? "Connection in progress"
+                ? "Click indicator to stop and pause auto-connect"
                 : indicatorState.IsConnected
                     ? "Click indicator to disconnect"
                     : Settings.Player == PlayerType.Pear && PearWebSocketClient.AutoConnectEnabled
-                        ? "Click indicator to connect"
+                        ? "Click indicator to pause auto-connect"
                         : Settings.Player == PlayerType.Pear
-                            ? "Pear auto-connect paused"
+                            ? "Click indicator to resume auto-connect"
                         : "Click indicator to switch to Pear and connect";
 
             return indicatorState.BuildRows(
@@ -2322,7 +2322,12 @@ namespace Songify_Slim.Views
 
                 case "PearDesktop":
                     if (PearWebSocketClient.IsConnecting)
+                    {
+                        PearWebSocketClient.AutoConnectEnabled = false;
+                        await Sf.NotifyPearPlayerInactiveAsync();
+                        UpdatePearStatusIndicator();
                         break;
+                    }
 
                     if (PearWebSocketClient.IsConnected)
                     {
@@ -2331,17 +2336,30 @@ namespace Songify_Slim.Views
                     }
                     else
                     {
-                        PearWebSocketClient.AutoConnectEnabled = true;
-                        if (Settings.Player != PlayerType.Pear)
-                            CbxSource.SelectedValue = PlayerType.Pear;
-
-                        try
+                        if (Settings.Player == PlayerType.Pear)
                         {
-                            await Sf.FetchPear();
+                            if (PearWebSocketClient.AutoConnectEnabled)
+                            {
+                                PearWebSocketClient.AutoConnectEnabled = false;
+                                await Sf.NotifyPearPlayerInactiveAsync();
+                            }
+                            else
+                            {
+                                PearWebSocketClient.AutoConnectEnabled = true;
+                                try
+                                {
+                                    await Sf.FetchPear();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogExc(ex);
+                                }
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Logger.LogExc(ex);
+                            PearWebSocketClient.AutoConnectEnabled = true;
+                            CbxSource.SelectedValue = PlayerType.Pear;
                         }
                     }
 
