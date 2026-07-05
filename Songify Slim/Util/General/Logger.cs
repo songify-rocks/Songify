@@ -4,6 +4,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Documents;
 using System.Windows.Media;
@@ -135,6 +136,22 @@ namespace Songify_Slim.Util.General
 
         public static void Error(LogSource source, string message, Exception? exception = null) =>
             Log(LogLevel.Error, source, message, exception);
+
+        /// <summary>
+        /// Logs a JSON parse exception with contextual payload preview centered around the parse error.
+        /// </summary>
+        public static void ErrorJsonParse(LogSource source, string message, string rawJson, JsonException exception,
+            int contextChars = 120)
+        {
+            if (exception == null)
+            {
+                Log(LogLevel.Error, source, message);
+                return;
+            }
+
+            string enriched = BuildJsonParseErrorMessage(message, rawJson, exception, contextChars);
+            Log(LogLevel.Error, source, enriched, exception);
+        }
 
         public static void Fatal(LogSource source, string message, Exception? exception = null) =>
             Log(LogLevel.Fatal, source, message, exception);
@@ -269,6 +286,75 @@ namespace Songify_Slim.Util.General
         private static Color GetForegroundColor(LogSource source)
         {
             return ColorMappings.First(o => o.Key == source).Value;
+        }
+
+        private static string BuildJsonParseErrorMessage(string message, string rawJson, JsonException exception,
+            int contextChars)
+        {
+            string path = string.IsNullOrWhiteSpace(exception.Path) ? "<unknown>" : exception.Path;
+            string line = exception.LineNumber?.ToString() ?? "<unknown>";
+            string bytePos = exception.BytePositionInLine?.ToString() ?? "<unknown>";
+            int payloadLength = rawJson?.Length ?? 0;
+
+            int? errorIndex = TryGetApproximateJsonErrorIndex(rawJson, exception);
+            string preview = BuildJsonPreview(rawJson, errorIndex, contextChars);
+
+            return $"{message} Path={path}, Line={line}, Byte={bytePos}, PayloadLength={payloadLength}, Preview={preview}";
+        }
+
+        private static int? TryGetApproximateJsonErrorIndex(string rawJson, JsonException exception)
+        {
+            if (string.IsNullOrEmpty(rawJson) || exception == null)
+                return null;
+
+            long? lineNumber = exception.LineNumber;
+            long? bytePositionInLine = exception.BytePositionInLine;
+            if (!lineNumber.HasValue || !bytePositionInLine.HasValue)
+                return null;
+
+            if (lineNumber.Value < 0 || bytePositionInLine.Value < 0)
+                return null;
+
+            int lineStart = 0;
+            for (long i = 0; i < lineNumber.Value; i++)
+            {
+                int newlineIdx = rawJson.IndexOf('\n', lineStart);
+                if (newlineIdx < 0)
+                    return null;
+
+                lineStart = newlineIdx + 1;
+            }
+
+            long absoluteIndex = lineStart + bytePositionInLine.Value;
+            if (absoluteIndex < 0)
+                return null;
+
+            if (absoluteIndex >= rawJson.Length)
+                return rawJson.Length == 0 ? 0 : rawJson.Length - 1;
+
+            return (int)absoluteIndex;
+        }
+
+        private static string BuildJsonPreview(string rawJson, int? errorIndex, int contextChars)
+        {
+            if (string.IsNullOrWhiteSpace(rawJson))
+                return "<empty>";
+
+            int length = rawJson.Length;
+            int safeContext = Math.Max(0, contextChars);
+            int center = errorIndex.HasValue
+                ? Math.Max(0, Math.Min(length - 1, errorIndex.Value))
+                : Math.Min(length - 1, safeContext);
+
+            int start = Math.Max(0, center - safeContext);
+            int endExclusive = Math.Min(length, center + safeContext);
+            if (endExclusive <= start)
+                return "<empty>";
+
+            string snippet = rawJson.Substring(start, endExclusive - start);
+            string prefix = start > 0 ? "..." : "";
+            string suffix = endExclusive < length ? "..." : "";
+            return $"{prefix}{snippet}{suffix} (start={start})";
         }
 
         // ------------- HELPER: infer source from message for old API -------------
