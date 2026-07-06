@@ -86,7 +86,12 @@ namespace Songify_Slim.Util.Songify
 
         private bool _pearWsHandlerRegistered;
         private bool _pearColdHttpSynced;
-        private DateTimeOffset _pearWsConnectFailureNotifiedAt;
+        /// <summary>True after the first connection failure; prevents further toasts until a successful connect resets this.</summary>
+        private bool _pearWsConnectFailureNotified;
+        /// <summary>Consecutive failed connection attempts since the last successful connect or manual disconnect.</summary>
+        private int _pearWsConnectFailureCount;
+        /// <summary>Earliest time at which <see cref="FetchPear"/> will attempt the next WebSocket connect.</summary>
+        private DateTimeOffset _pearWsNextConnectAttemptAt;
 
         // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
         // Track the Pear queue's current item id so we can correlate requests reliably.
@@ -1430,9 +1435,13 @@ namespace Songify_Slim.Util.Songify
             await GlobalObjects.WebServer.BroadcastToChannelAsync("/ws/data", updatedJson);
         }
 
-        public async Task FetchPear()
+        public async Task FetchPear(bool forceNow = false)
         {
             if (!PearWebSocketClient.AutoConnectEnabled)
+                return;
+
+            // Respect exponential backoff for automatic checks; explicit user checks can bypass it.
+            if (!forceNow && DateTimeOffset.UtcNow < _pearWsNextConnectAttemptAt)
                 return;
 
             await EnsurePearWebSocketAsync().ConfigureAwait(false);
@@ -1457,8 +1466,22 @@ namespace Songify_Slim.Util.Songify
             _pearColdHttpSynced = false;
             _pearWsHandlerRegistered = false;
             _lastPearQueueCurrentId = null;
+            ResetPearConnectionState();
             PearWebSocketClient.SetMessageHandler(null);
             await PearWebSocketClient.DisconnectAsync().ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Returns the remaining backoff before the next automatic Pear connect attempt.
+        /// <c>null</c> means no backoff is currently active.
+        /// </summary>
+        public TimeSpan? GetPearConnectBackoffRemaining()
+        {
+            DateTimeOffset now = DateTimeOffset.UtcNow;
+            if (_pearWsNextConnectAttemptAt <= now)
+                return null;
+
+            return _pearWsNextConnectAttemptAt - now;
         }
 
         private async Task EnsurePearWebSocketAsync()
@@ -1472,12 +1495,14 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 await PearWebSocketClient.ConnectAsync().ConfigureAwait(false);
-                // Clear the failure notification state on successful connect.
-                _pearWsConnectFailureNotifiedAt = default;
+                // Successful connect — reset all failure/backoff state so the next failure cycle starts fresh.
+                ResetPearConnectionState();
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Pear, "Pear WebSocket could not connect.", ex);
+                _pearWsConnectFailureCount++;
+                _pearWsNextConnectAttemptAt = DateTimeOffset.UtcNow + GetPearConnectBackoffDelay(_pearWsConnectFailureCount);
                 NotifyPearConnectionFailure(ex);
                 return;
             }
@@ -1488,13 +1513,12 @@ namespace Songify_Slim.Util.Songify
 
         private void NotifyPearConnectionFailure(Exception ex)
         {
-            // Throttle: show at most one toast per 2 minutes for repeated connection failures.
-            TimeSpan throttleWindow = TimeSpan.FromMinutes(2);
-            DateTimeOffset now = DateTimeOffset.UtcNow;
-            if (now - _pearWsConnectFailureNotifiedAt < throttleWindow)
+            // Only notify once per failure run; subsequent attempts fail silently.
+            // ResetPearConnectionState() re-arms this when a connect succeeds.
+            if (_pearWsConnectFailureNotified)
                 return;
 
-            _pearWsConnectFailureNotifiedAt = now;
+            _pearWsConnectFailureNotified = true;
 
             string detail = ex?.Message ?? "Unknown error";
             if (detail.Length > 160)
@@ -1503,8 +1527,21 @@ namespace Songify_Slim.Util.Songify
             SpotifyUserNotifier.Notify(
                 "Pear (YouTube Music) not available",
                 $"Could not connect to the Pear WebSocket at {PearWebSocketClient.Endpoint}.\n{detail}\nMake sure Pear is running.",
-                "pear:ws:connect_failed",
-                throttleWindow);
+                "pear:ws:connect_failed");
+        }
+
+        private void ResetPearConnectionState()
+        {
+            _pearWsConnectFailureNotified = false;
+            _pearWsConnectFailureCount = 0;
+            _pearWsNextConnectAttemptAt = default;
+        }
+
+        /// <summary>5 s base, doubles per failure, capped at 5 minutes.</summary>
+        private static TimeSpan GetPearConnectBackoffDelay(int failureCount)
+        {
+            double seconds = Math.Min(5.0 * Math.Pow(2.0, failureCount - 1), 300.0);
+            return TimeSpan.FromSeconds(seconds);
         }
 
         /// <summary>
