@@ -612,8 +612,40 @@ public static class TwitchHandler
         });
     }
 
+    /// <summary>
+    /// Logs diagnostic information about Twitch account initialization state.
+    /// Used for troubleshooting timing-dependent initialization issues.
+    /// </summary>
+    private static void LogTwitchAccountDiagnostics(string context)
+    {
+        try
+        {
+            string twAccEmpty = string.IsNullOrEmpty(Settings.TwAcc) ? "TRUE" : $"false ('{Settings.TwAcc}')";
+            string mainUserPresent = Settings.TwitchUser != null ? $"TRUE ('{Settings.TwitchUser.Login}')" : "FALSE";
+            string botUserPresent = Settings.TwitchBotUser != null ? $"TRUE ('{Settings.TwitchBotUser.Login}')" : "FALSE";
+            string mainTokenPresent = !string.IsNullOrWhiteSpace(Settings.TwitchAccessToken) ? $"TRUE ({Settings.TwitchAccessToken.Length} chars)" : "FALSE";
+            string botTokenPresent = !string.IsNullOrWhiteSpace(Settings.TwitchBotToken) ? $"TRUE ({Settings.TwitchBotToken.Length} chars)" : "FALSE";
+
+            Logger.Debug(LogSource.Twitch, 
+                $"[{context}] Twitch Account Diagnostics: " +
+                $"TwAccEmpty={twAccEmpty}, " +
+                $"MainUserPresent={mainUserPresent}, " +
+                $"BotUserPresent={botUserPresent}, " +
+                $"MainTokenPresent={mainTokenPresent}, " +
+                $"BotTokenPresent={botTokenPresent}");
+        }
+        catch (Exception ex)
+        {
+            Logger.Warning(LogSource.Twitch, $"[{context}] Failed to log diagnostics: {ex.Message}");
+        }
+    }
+
     public static bool RefreshSelectedChatAccount()
     {
+        // Log startup diagnostics for troubleshooting initialization order issues
+        LogTwitchAccountDiagnostics("RefreshSelectedChatAccount");
+
+        // Scenario 1: TwAcc matches main user (or is empty and main exists)
         if (Settings.TwitchUser != null &&
             (string.Equals(Settings.TwAcc, Settings.TwitchUser.Login, StringComparison.OrdinalIgnoreCase) ||
              string.IsNullOrEmpty(Settings.TwAcc)))
@@ -626,10 +658,15 @@ public static class TwitchHandler
                 Token = Settings.TwOAuth
             };
             if (string.IsNullOrEmpty(Settings.TwAcc))
+            {
                 Settings.TwAcc = Settings.TwitchUser.Login;
+                Logger.Info(LogSource.Twitch, $"RefreshSelectedChatAccount: TwAcc was empty, auto-populated with main user '{Settings.TwitchUser.Login}'");
+            }
+            Logger.Info(LogSource.Twitch, $"RefreshSelectedChatAccount: Selected main user '{Settings.TwitchUser.Login}' for chat");
             return true;
         }
 
+        // Scenario 2: TwAcc matches bot user explicitly
         if (Settings.TwitchBotUser != null &&
             string.Equals(Settings.TwAcc, Settings.TwitchBotUser.Login, StringComparison.OrdinalIgnoreCase))
         {
@@ -640,11 +677,28 @@ public static class TwitchHandler
                 Name = Settings.TwitchBotUser.Login,
                 Token = Settings.TwOAuth
             };
+            Logger.Info(LogSource.Twitch, $"RefreshSelectedChatAccount: Selected bot user '{Settings.TwitchBotUser.Login}' for chat");
             return true;
         }
 
+        // Fallback 1: TwAcc is empty and no explicit match, but bot user exists -> use bot as fallback
+        if (string.IsNullOrEmpty(Settings.TwAcc) && Settings.TwitchBotUser != null)
+        {
+            Settings.TwOAuth = $"oauth:{Settings.TwitchBotToken}";
+            Settings.TwitchChatAccount = new TwitchChatAccount
+            {
+                Id = Settings.TwitchBotUser.Id,
+                Name = Settings.TwitchBotUser.Login,
+                Token = Settings.TwOAuth
+            };
+            Settings.TwAcc = Settings.TwitchBotUser.Login;
+            Logger.Info(LogSource.Twitch, $"RefreshSelectedChatAccount: TwAcc empty, fell back to bot user '{Settings.TwitchBotUser.Login}' for chat");
+            return true;
+        }
+
+        // No valid chat account available
         Settings.TwitchChatAccount = null;
-        Logger.Warning(LogSource.Twitch, $"No matching Twitch chat account found for TwAcc='{Settings.TwAcc}'.");
+        Logger.Warning(LogSource.Twitch, $"RefreshSelectedChatAccount: No matching Twitch chat account. TwAcc='{Settings.TwAcc}', MainUser={Settings.TwitchUser?.Login ?? "null"}, BotUser={Settings.TwitchBotUser?.Login ?? "null"}");
         return false;
     }
 
@@ -2708,9 +2762,22 @@ public static class TwitchHandler
                     // Clear persisted bot account credentials/state
                     Settings.TwitchBotToken = "";
                     Settings.TwitchBotUser = null;
-                    Settings.TwAcc = "";
-                    Settings.TwOAuth = "";
                     Settings.BotAccessTokenExpiryDate = DateTime.MinValue;
+
+                    // Safe TwAcc handling: fallback to main user if available instead of clearing
+                    if (Settings.TwitchUser != null && !string.IsNullOrEmpty(Settings.TwitchUser.Login))
+                    {
+                        Settings.TwAcc = Settings.TwitchUser.Login;
+                        Logger.Info(LogSource.Twitch, $"Bot account reset: TwAcc fell back to main user '{Settings.TwitchUser.Login}'");
+                    }
+                    else
+                    {
+                        Settings.TwAcc = "";
+                        Logger.Info(LogSource.Twitch, "Bot account reset: TwAcc cleared (no main user available)");
+                    }
+
+                    // Clear OAuth token regardless
+                    Settings.TwOAuth = "";
 
                     // Clear runtime objects
                     BotTokenCheck = null;

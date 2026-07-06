@@ -1354,11 +1354,6 @@ namespace Songify_Slim.Views
         {
             if (Settings.AutoStartWebServer) GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
             if (Settings.OpenQueueOnStartup) OpenQueue();
-            if (Settings.TwAutoConnect)
-            {
-                TwitchHandler.ConnectTwitchChatClient();
-            }
-
             if (Settings.AutoClearQueue)
             {
                 GlobalObjects.ReqList.Clear();
@@ -1370,10 +1365,25 @@ namespace Songify_Slim.Views
                 await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
             }
 
+            // If the tokens exist we should initiatilize them first and then connect the chat client if auto connect is enabled.
+            Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Account init starting");
             if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
+            {
+                Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Initializing Main account");
                 await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
+            }
             if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
+            {
+                Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Initializing Bot account");
                 await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
+            }
+
+            Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Account init complete");
+            if (Settings.TwAutoConnect)
+            {
+                Logger.Debug(LogSource.Twitch, "HandleTwitchInitializationAsync: Auto-connecting chat");
+                TwitchHandler.ConnectTwitchChatClient();
+            }
         }
 
         private static void CheckAndNotifyConfigurationIssues()
@@ -1640,13 +1650,13 @@ namespace Songify_Slim.Views
             ServiceIndicatorState indicatorState = GetPearIndicatorState();
 
             string action = indicatorState.IsConnecting
-                ? "Connection in progress"
+                ? "Click indicator to stop and pause auto-connect"
                 : indicatorState.IsConnected
                     ? "Click indicator to disconnect"
                     : Settings.Player == PlayerType.Pear && PearWebSocketClient.AutoConnectEnabled
-                        ? "Click indicator to connect"
+                        ? "Click indicator to pause auto-connect"
                         : Settings.Player == PlayerType.Pear
-                            ? "Pear auto-connect paused"
+                            ? "Click indicator to resume auto-connect"
                         : "Click indicator to switch to Pear and connect";
 
             return indicatorState.BuildRows(
@@ -1761,7 +1771,6 @@ namespace Songify_Slim.Views
             {
                 _timerFetcher.Enabled = false;
                 _timerFetcher.Elapsed -= OnTimedEvent;
-                CancellationTokenSource _sCts = new CancellationTokenSource();
                 Stopwatch fetchLoopStart = _selectedSource == PlayerType.WindowsPlayback ? Stopwatch.StartNew() : null;
 
                 try
@@ -1795,7 +1804,6 @@ namespace Songify_Slim.Views
 
                 try
                 {
-                    _sCts.CancelAfter(3500);
                     await GetCurrentSongAsync();
                     if (fetchLoopStart != null)
                     {
@@ -1840,7 +1848,6 @@ namespace Songify_Slim.Views
                             throw new ArgumentOutOfRangeException();
                     }
 
-                    _sCts.Dispose();
                     _timerFetcher.Enabled = enable;
                     _timerFetcher.Elapsed += OnTimedEvent;
                 }
@@ -2315,7 +2322,12 @@ namespace Songify_Slim.Views
 
                 case "PearDesktop":
                     if (PearWebSocketClient.IsConnecting)
+                    {
+                        PearWebSocketClient.AutoConnectEnabled = false;
+                        await Sf.NotifyPearPlayerInactiveAsync();
+                        UpdatePearStatusIndicator();
                         break;
+                    }
 
                     if (PearWebSocketClient.IsConnected)
                     {
@@ -2324,17 +2336,30 @@ namespace Songify_Slim.Views
                     }
                     else
                     {
-                        PearWebSocketClient.AutoConnectEnabled = true;
-                        if (Settings.Player != PlayerType.Pear)
-                            CbxSource.SelectedValue = PlayerType.Pear;
-
-                        try
+                        if (Settings.Player == PlayerType.Pear)
                         {
-                            await Sf.FetchPear();
+                            if (PearWebSocketClient.AutoConnectEnabled)
+                            {
+                                PearWebSocketClient.AutoConnectEnabled = false;
+                                await Sf.NotifyPearPlayerInactiveAsync();
+                            }
+                            else
+                            {
+                                PearWebSocketClient.AutoConnectEnabled = true;
+                                try
+                                {
+                                    await Sf.FetchPear();
+                                }
+                                catch (Exception ex)
+                                {
+                                    Logger.LogExc(ex);
+                                }
+                            }
                         }
-                        catch (Exception ex)
+                        else
                         {
-                            Logger.LogExc(ex);
+                            PearWebSocketClient.AutoConnectEnabled = true;
+                            CbxSource.SelectedValue = PlayerType.Pear;
                         }
                     }
 

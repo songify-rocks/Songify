@@ -1813,7 +1813,7 @@ namespace Songify_Slim.Util.Songify
             }
             catch (System.Text.Json.JsonException ex)
             {
-                Logger.Error(LogSource.Pear, "Pear WebSocket JSON parse failed.", ex);
+                Logger.ErrorJsonParse(LogSource.Pear, "Pear WebSocket JSON parse failed.", msg, ex);
             }
             catch (Exception ex)
             {
