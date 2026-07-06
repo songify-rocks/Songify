@@ -4148,10 +4148,14 @@ public static class TwitchHandler
 
     private static bool IsInQueue(string id)
     {
-        // Checks if the song ID is already in the internal queue (Mainwindow reqList)
-        List<RequestObject> temp = GlobalObjects.ReqList.Where(x => x.Trackid == id).ToList();
+        // Treat now-playing as in-queue so the same song cannot be requested while playing.
+        if (GlobalObjects.CurrentSong != null && GlobalObjects.CurrentSong.SongId == id)
+        {
+            return true;
+        }
 
-        return temp.Count > 0;
+        // Check if the song ID is already in the internal request queue.
+        return GlobalObjects.ReqList.Any(x => x.Trackid == id);
     }
 
     private static Task<(bool IsBlacklisted, string Response)> IsSongBlacklisted(string trackId)
