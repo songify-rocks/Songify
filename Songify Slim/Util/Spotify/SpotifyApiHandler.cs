@@ -464,11 +464,15 @@ namespace Songify_Slim.Util.Spotify
         {
             public uint State;
             public uint LocalAddr;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             public byte[] LocalPort;
+
             public uint RemoteAddr;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             public byte[] RemotePort;
+
             public uint OwningPid;
         }
 
@@ -477,14 +481,20 @@ namespace Songify_Slim.Util.Spotify
         {
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             public byte[] LocalAddr;
+
             public uint LocalScopeId;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             public byte[] LocalPort;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
             public byte[] RemoteAddr;
+
             public uint RemoteScopeId;
+
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
             public byte[] RemotePort;
+
             public uint State;
             public uint OwningPid;
         }
@@ -1284,7 +1294,6 @@ namespace Songify_Slim.Util.Spotify
                     //    softLimitPerMinute: SoftLimitPerminute,
                     //    ct: cts.Token);
 
-
                     bool response = await ApiCallMeter.RunAsync(
                         "Library.SaveItemsRaw",
                         () => SaveItemsToLibraryRawAsync(
@@ -1570,13 +1579,53 @@ namespace Songify_Slim.Util.Spotify
         {
             if (Client == null)
                 return null;
+
             try
             {
-                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+                const int limit = 50;
+                int offset = 0;
 
-                Paging<FullPlaylist> playlists = await ApiCallMeter.RunAsync("Playlists.CurrentUsers",
-                    () => Client.Playlists.CurrentUsers(cts.Token), SoftLimitPerminute, cts.Token);
-                return playlists;
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(30));
+
+                Paging<FullPlaylist> result = null;
+
+                do
+                {
+                    Paging<FullPlaylist> page = await ApiCallMeter.RunAsync(
+                        "Playlists.CurrentUsers",
+                        () => Client.Playlists.CurrentUsers(
+                            new PlaylistCurrentUsersRequest
+                            {
+                                Limit = limit,
+                                Offset = offset
+                            },
+                            cts.Token),
+                        SoftLimitPerminute,
+                        cts.Token);
+
+                    if (page == null)
+                        break;
+
+                    if (result == null)
+                    {
+                        result = page;
+                    }
+                    else
+                    {
+                        result.Items.AddRange(page.Items);
+                        result.Next = page.Next;
+                        result.Total = page.Total;
+                        result.Limit = page.Limit;
+                        result.Offset = page.Offset;
+                    }
+
+                    if (page.Items == null || page.Items.Count == 0)
+                        break;
+
+                    offset += limit;
+                } while (result.Next != null && result.Items.Count < result.Total);
+
+                return result;
             }
             catch (Exception ex)
             {
