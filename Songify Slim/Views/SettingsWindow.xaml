@@ -2649,6 +2649,7 @@
                                 Margin="0,0,6,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Top"
+                                MaxDropDownHeight="300"
                                 SelectionChanged="Cb_SpotifyPlaylist_SelectionChanged" />
                             <Button
                                 x:Name="BtnReloadPlaylists"
