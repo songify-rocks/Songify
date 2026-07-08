@@ -2701,6 +2701,7 @@
                                 Margin="0,0,6,0"
                                 HorizontalAlignment="Right"
                                 VerticalAlignment="Center"
+                                MaxDropDownHeight="300"
                                 SelectionChanged="CbSpotifySongLimitPlaylist_SelectionChanged" />
                             <controls:ToggleSwitch
                                 x:Name="TglLimitSrPlaylist"
