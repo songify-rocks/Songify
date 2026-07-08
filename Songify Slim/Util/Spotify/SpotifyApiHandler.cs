@@ -1491,24 +1491,26 @@ namespace Songify_Slim.Util.Spotify
             }
         }
 
-        public static async Task<FullPlaylist> GetPlaylist(string spotifyPlaylistId)
-        {
-            if (Client == null)
-                return null;
-            try
-            {
-                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+        // Leaving this in for now, who knows maybe Spotify decides to be decent again
 
-                FullPlaylist playlist = await ApiCallMeter.RunAsync("Playlists.Get",
-                    () => Client.Playlists.Get(spotifyPlaylistId, cts.Token), SoftLimitPerminute, cts.Token);
-                return playlist;
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-                return null;
-            }
-        }
+        //public static async Task<FullPlaylist> GetPlaylist(string spotifyPlaylistId)
+        //{
+        //    if (Client == null)
+        //        return null;
+        //    try
+        //    {
+        //        using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+        //        FullPlaylist playlist = await ApiCallMeter.RunAsync("Playlists.Get",
+        //            () => Client.Playlists.Get(spotifyPlaylistId, cts.Token), SoftLimitPerminute, cts.Token);
+        //        return playlist;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Logger.LogExc(ex);
+        //        return null;
+        //    }
+        //}
 
         public static async Task<bool> SetVolume(int vol)
         {
