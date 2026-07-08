@@ -2685,33 +2685,6 @@
                                 Toggled="TglAddToPlaylist_Toggled" />
                         </StackPanel>
                         <TextBlock
-                            Grid.Row="6"
-                            Width="250"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            d:Text="{x:Static local:Resources.window_settings_spotify_only_allow_from_playlist}"
-                            Text="{DynamicResource window_settings_spotify_only_allow_from_playlist}" />
-                        <StackPanel
-                            Grid.Row="6"
-                            HorizontalAlignment="Right"
-                            Orientation="Horizontal">
-                            <ComboBox
-                                x:Name="CbSpotifySongLimitPlaylist"
-                                Width="217"
-                                Margin="0,0,6,0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                MaxDropDownHeight="300"
-                                SelectionChanged="CbSpotifySongLimitPlaylist_SelectionChanged" />
-                            <controls:ToggleSwitch
-                                x:Name="TglLimitSrPlaylist"
-                                Width="46"
-                                MinWidth="46"
-                                OffContent=""
-                                OnContent=""
-                                Toggled="TglLimitSrPlaylist_Toggled" />
-                        </StackPanel>
-                        <TextBlock
                             Grid.Row="7"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"

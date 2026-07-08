@@ -85,9 +85,9 @@ namespace Songify_Slim.Views
                 Enums.RefundCondition.UserLevelTooLow,
                 Properties.Resources.window_settings_integration_refund_user_level_low
             },
-            { 
-                Enums.RefundCondition.UserBlocked, 
-                Properties.Resources.window_settings_integration_refund_user_blocked 
+            {
+                Enums.RefundCondition.UserBlocked,
+                Properties.Resources.window_settings_integration_refund_user_blocked
             },
             {
                 Enums.RefundCondition.SpotifyNotConnected,
@@ -100,17 +100,17 @@ namespace Songify_Slim.Views
             {
                 Enums.RefundCondition.WrongPlayerRequested,
                 Properties.Resources.window_settings_integration_refund_wrong_player_requested
-            },            
-            { 
-                Enums.RefundCondition.SongBlocked, 
-                Properties.Resources.window_settings_integration_refund_song_blocked 
+            },
+            {
+                Enums.RefundCondition.SongBlocked,
+                Properties.Resources.window_settings_integration_refund_song_blocked
             },
             {
                 Enums.RefundCondition.ArtistBlocked,
                 Properties.Resources.window_settings_integration_refund_artist_blocked
             },
             {
-                Enums.RefundCondition.SongTooLong, 
+                Enums.RefundCondition.SongTooLong,
                 Properties.Resources.window_settings_integration_refund_song_too_long
             },
             {
@@ -122,7 +122,7 @@ namespace Songify_Slim.Views
                 Properties.Resources.window_settings_integration_refund_queue_limit
             },
             {
-                Enums.RefundCondition.NoSongFound, 
+                Enums.RefundCondition.NoSongFound,
                 Properties.Resources.window_settings_integration_refund_no_song_found
             },
             {
@@ -133,9 +133,9 @@ namespace Songify_Slim.Views
                 Enums.RefundCondition.TrackIsExplicit,
                 Properties.Resources.window_settings_integration_refund_track_explicit
             },
-            { 
-                Enums.RefundCondition.OnSuccess, 
-                Properties.Resources.window_settings_integration_refund_always 
+            {
+                Enums.RefundCondition.OnSuccess,
+                Properties.Resources.window_settings_integration_refund_always
             },
         };
 
@@ -341,8 +341,6 @@ namespace Songify_Slim.Views
             TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
             TglDebugLogging.IsOn = Settings.DebugLogging;
             TglOnlySkipNonSrRewards.IsOn = Settings.SkipOnlyNonSrSongs;
-            TglLimitSrPlaylist.IsOn = Settings.LimitSrToPlaylist;
-            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
 
             BtnWebserverStart.Content = GlobalObjects.WebServer.Run
                 ? Properties.Resources.window_settings_webserver_stop
@@ -1611,7 +1609,6 @@ namespace Songify_Slim.Views
                         if (GlobalObjects.SpotifyProfile == null) return;
 
                         CbSpotifyPlaylist.Items.Clear();
-                        CbSpotifySongLimitPlaylist.Items.Clear();
 
                         CbSpotifyPlaylist.Items.Add(new ComboBoxItem
                         {
@@ -1649,9 +1646,7 @@ namespace Songify_Slim.Views
                                 Items = null
                             };
                             CbSpotifyPlaylist.Items.Add(new ComboBoxItem
-                                { Content = new UcPlaylistItem(cache) });
-                            CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem
-                                { Content = new UcPlaylistItem(cache) });
+                            { Content = new UcPlaylistItem(cache) });
                             playlistCache.Add(cache);
                             Thread.Sleep(100);
                         }
@@ -1665,11 +1660,6 @@ namespace Songify_Slim.Views
                                     ((UcPlaylistItem)item.Content).Playlist != null &&
                                     ((UcPlaylistItem)item.Content).Playlist.Id ==
                                     Settings.SpotifyPlaylistId.PlaylistId);
-                        if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
-                            CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items
-                                .Cast<ComboBoxItem>().FirstOrDefault(item =>
-                                    ((UcPlaylistItem)item.Content).Playlist != null &&
-                                    ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
                     }
                     catch (Exception ex)
                     {
@@ -1680,7 +1670,6 @@ namespace Songify_Slim.Views
                 {
                     if (Settings.SpotifyPlaylistCache.Count > 0)
                     {
-                        CbSpotifySongLimitPlaylist.Items.Clear();
                         CbSpotifyPlaylist.Items.Add(new ComboBoxItem
                         {
                             Content = new UcPlaylistItem(new SpotifyPlaylistCache
@@ -1697,8 +1686,6 @@ namespace Songify_Slim.Views
                         foreach (SpotifyPlaylistCache playlist in Settings.SpotifyPlaylistCache)
                         {
                             CbSpotifyPlaylist.Items.Add(new ComboBoxItem { Content = new UcPlaylistItem(playlist) });
-                            CbSpotifySongLimitPlaylist.Items.Add(new ComboBoxItem
-                                { Content = new UcPlaylistItem(playlist) });
                         }
 
                         if (!string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
@@ -1707,11 +1694,6 @@ namespace Songify_Slim.Views
                                     ((UcPlaylistItem)item.Content).Playlist != null &&
                                     ((UcPlaylistItem)item.Content).Playlist.Id ==
                                     Settings.SpotifyPlaylistId.PlaylistId);
-                        if (!string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
-                            CbSpotifySongLimitPlaylist.SelectedItem = CbSpotifySongLimitPlaylist.Items
-                                .Cast<ComboBoxItem>().FirstOrDefault(item =>
-                                    ((UcPlaylistItem)item.Content).Playlist != null &&
-                                    ((UcPlaylistItem)item.Content).Playlist.Id == Settings.SpotifySongLimitPlaylist);
                     }
                     else
                     {
@@ -1722,21 +1704,6 @@ namespace Songify_Slim.Views
 
                 break;
             }
-        }
-
-        private void TglLimitSrPlaylist_Toggled(object sender, RoutedEventArgs e)
-        {
-            Settings.LimitSrToPlaylist = ((ToggleSwitch)sender).IsOn;
-            CbSpotifySongLimitPlaylist.IsEnabled = Settings.LimitSrToPlaylist;
-        }
-
-        private void CbSpotifySongLimitPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (!IsLoaded || _isSettingControls)
-                return;
-            if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item)
-                return;
-            Settings.SpotifySongLimitPlaylist = item.Playlist.Id;
         }
 
         private void Chbx_BlockAllExplicit_Checked(object sender, RoutedEventArgs e)
@@ -1843,18 +1810,6 @@ namespace Songify_Slim.Views
             if (!IsLoaded || _isSettingControls)
                 return;
             Settings.DownloadCanvas = ((ToggleSwitch)sender).IsOn;
-        }
-
-        public static string FormatAppVersion(string appVersion)
-        {
-            if (string.IsNullOrWhiteSpace(appVersion))
-                throw new ArgumentException("App version cannot be null or empty.");
-
-            string[] parts = appVersion.Split('.'); // Split by dots
-            if (parts.Length < 3)
-                throw new ArgumentException("App version must have at least three components.");
-
-            return string.Join(".", parts[0], parts[1], parts[2]); // Join the first three parts
         }
 
         private void BtnResponseParams_OnClick(object sender, RoutedEventArgs e)
@@ -2052,7 +2007,7 @@ namespace Songify_Slim.Views
             for (int i = 0; i < columns; i++)
             {
                 RefundSwitchesPanel.ColumnDefinitions.Add(new ColumnDefinition
-                    { Width = new GridLength(1, GridUnitType.Star) });
+                { Width = new GridLength(1, GridUnitType.Star) });
             }
 
             // Add rows

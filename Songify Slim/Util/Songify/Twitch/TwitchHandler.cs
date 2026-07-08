@@ -62,6 +62,7 @@ using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets.Extensions;
+using Image = SpotifyAPI.Web.Image;
 using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 using Timer = System.Timers.Timer;
@@ -142,17 +143,6 @@ public static class TwitchHandler
             FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
 
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Found track ID after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
-
-            if (Settings.LimitSrToPlaylist &&
-                !string.IsNullOrEmpty(Settings.SpotifySongLimitPlaylist))
-            {
-                Tuple<bool, string> result = await IsInAllowedPlaylist(trackId);
-                if (!result.Item1)
-                {
-                    await SendChatMessage(result.Item2);
-                    return;
-                }
-            }
 
             (bool isBlacklisted, string response) = await IsSongBlacklisted(trackId);
             if (isBlacklisted)
@@ -626,7 +616,7 @@ public static class TwitchHandler
             string mainTokenPresent = !string.IsNullOrWhiteSpace(Settings.TwitchAccessToken) ? $"TRUE ({Settings.TwitchAccessToken.Length} chars)" : "FALSE";
             string botTokenPresent = !string.IsNullOrWhiteSpace(Settings.TwitchBotToken) ? $"TRUE ({Settings.TwitchBotToken.Length} chars)" : "FALSE";
 
-            Logger.Debug(LogSource.Twitch, 
+            Logger.Debug(LogSource.Twitch,
                 $"[{context}] Twitch Account Diagnostics: " +
                 $"TwAccEmpty={twAccEmpty}, " +
                 $"MainUserPresent={mainUserPresent}, " +
@@ -3233,32 +3223,6 @@ public static class TwitchHandler
         }
     }
 
-    private static async Task<Tuple<bool, FullPlaylist>> CheckIsSongAllowed(string trackId,
-        string spotifySongLimitPlaylist)
-    {
-        FullPlaylist playlist = await SpotifyApiHandler.GetPlaylist(spotifySongLimitPlaylist);
-        Paging<PlaylistTrack<IPlayableItem>> tracks = await SpotifyApiHandler.GetPlaylistTracks(spotifySongLimitPlaylist);
-        while (tracks is { Items: not null })
-        {
-            // Check if any track matches the given ID
-            if (tracks.Items.Any(t => t.Track.Type == ItemType.Track && ((FullTrack)t.Track).Id == trackId))
-            {
-                return new Tuple<bool, FullPlaylist>(true, playlist);
-            }
-
-            // Check if there are more pages, if not, exit the loop
-            if (tracks.Next == null)
-            {
-                break;
-            }
-
-            // Fetch the next page of tracks
-            //tracks = await SpotifyApiHandler.Spotify.GetPlaylistTracksAsync(Settings.Settings.SpotifyPlaylistId, "", 100, tracks.Offset + tracks.Limit);
-        }
-
-        return new Tuple<bool, FullPlaylist>(false, playlist);
-    }
-
     private static bool CheckLiveStatus()
     {
         if (Settings.IsLive)
@@ -3845,7 +3809,7 @@ public static class TwitchHandler
 
     private static bool IsSpotifyBareTrackId(string input)
     {
-      if (ContainsWhitespace(input) || ContainsUrlLikePunctuation(input))
+        if (ContainsWhitespace(input) || ContainsUrlLikePunctuation(input))
         {
             return false;
         }
@@ -4129,21 +4093,6 @@ public static class TwitchHandler
         }
 
         return false;
-    }
-
-    private static async Task<Tuple<bool, string>> IsInAllowedPlaylist(string trackId)
-    {
-        string response = string.Empty;
-        Tuple<bool, FullPlaylist> isAllowedSong =
-            await CheckIsSongAllowed(trackId, Settings.SpotifySongLimitPlaylist);
-        if (isAllowedSong.Item1) return Tuple.Create(true, response);
-        response = Settings.BotRespPlaylist;
-        response = response.Replace("{playlist_name}", isAllowedSong.Item2.Name);
-        response = response.Replace("{playlist_url}",
-            $"https://open.spotify.com/playlist/{isAllowedSong.Item2.Id}");
-        GlobalObjects.AllowedPlaylistName = isAllowedSong.Item2.Name;
-        GlobalObjects.AllowedPlaylistUrl = $"https://open.spotify.com/playlist/{isAllowedSong.Item2.Id}";
-        return Tuple.Create(false, response);
     }
 
     private static bool IsInQueue(string id)
