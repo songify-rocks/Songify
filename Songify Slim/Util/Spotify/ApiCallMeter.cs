@@ -156,7 +156,7 @@ public static class ApiCallMeter
                     string approxLocal = retryUntil.LocalDateTime.ToString("g", CultureInfo.CurrentCulture);
                     string durationText = FormatApproximateWait(retrySeconds);
                     string body =
-                        $"Songify will wait before retrying. About {durationText}, around {approxLocal}.";
+                        $"Songify will wait before retrying. About {durationText}, until around {approxLocal}.";
                     SpotifyUserNotifier.NotifyRateLimited(title, body, retryUntil);
                 }
                 catch (Exception notifyEx)

@@ -406,20 +406,21 @@
             </MenuItem>
         </Menu>
 
-        <!-- Persistent Spotify error banner (survives restarts for rate/quota) -->
+        <!--  Persistent Spotify error banner (survives restarts for rate/quota)  -->
         <Border
             x:Name="BrdSpotifyPersistentIssue"
             Grid.Row="0"
+            Grid.RowSpan="2"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Margin="0,26,0,0"
+            Margin="0,36,0,0"
             Padding="10,6"
             Background="#FF3B2F2F"
             BorderBrush="#FFAA4444"
             BorderThickness="1"
             CornerRadius="4"
             Visibility="Collapsed">
-            <Grid>
+            <Grid ZIndex="100000">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -442,7 +443,6 @@
                         Foreground="White"
                         Opacity="0.9"
                         TextWrapping="Wrap" />
-
                     <Expander
                         x:Name="ExpSpotifyPersistentIssues"
                         Margin="0,6,0,0"
@@ -461,11 +461,11 @@
                     Margin="10,0,0,0"
                     Padding="0"
                     VerticalAlignment="Top"
+                    Background="Transparent"
+                    BorderBrush="{x:Null}"
                     Click="BtnSpotifyPersistentIssueDismiss_Click"
                     Content="×"
                     FontSize="16"
-                    Background="Transparent"
-                    BorderBrush="{x:Null}"
                     Foreground="White"
                     ToolTip="Dismiss" />
             </Grid>
@@ -875,21 +875,21 @@
                             </Button>
 
                             <Button
-                                    Margin="0,0,8,0"
-                                    Click="ServiceIcon_Click"
-                                    Style="{StaticResource IconOnlyButton}"
-                                    Tag="PearDesktop"
-                                    ToolTip=""
-                                    ToolTipOpening="ServiceToolTipOpening">
-                                    <iconPacks:PackIconBoxIcons
-                                        x:Name="IconPearDesktop"
-                                        Width="14"
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        Kind="SolidCircle" />
-                                    </Button>
+                                Margin="0,0,8,0"
+                                Click="ServiceIcon_Click"
+                                Style="{StaticResource IconOnlyButton}"
+                                Tag="PearDesktop"
+                                ToolTip=""
+                                ToolTipOpening="ServiceToolTipOpening">
+                                <iconPacks:PackIconBoxIcons
+                                    x:Name="IconPearDesktop"
+                                    Width="14"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Kind="SolidCircle" />
+                            </Button>
 
-                                    <Button
+                            <Button
                                 Click="ServiceIcon_Click"
                                 Style="{StaticResource IconOnlyButton}"
                                 Tag="WebServer"
