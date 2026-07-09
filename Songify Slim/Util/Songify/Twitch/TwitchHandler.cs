@@ -1869,6 +1869,7 @@ public static class TwitchHandler
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            SendOrAnnounceMessage(cmd.Response, cmd);
         }
         catch
         {
@@ -1901,6 +1902,7 @@ public static class TwitchHandler
                 default:
                     throw new ArgumentOutOfRangeException();
             }
+            SendOrAnnounceMessage(cmd.Response, cmd);
         }
         catch
         {
