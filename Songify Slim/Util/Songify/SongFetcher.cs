@@ -74,10 +74,10 @@ namespace Songify_Slim.Util.Songify
         private static Tuple<bool, string> _canvasResponse;
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
         private PlaylistInfo playbackPlaylist = null;
-        
-            
-            
-            
+
+
+
+
 
         private readonly SemaphoreSlim _pearWsProcessLock = new(1, 1);
 
@@ -479,7 +479,11 @@ namespace Songify_Slim.Util.Songify
             // When Spotify is paused, playback can lag behind UI selection changes,
             // so we reconcile against queue.CurrentlyPlaying as a fallback.
             TrackInfo songInfo = await SpotifyApiHandler.GetSongInfo();
-            songInfo = await TryRefreshPausedTrackFromQueueAsync(songInfo);
+            
+            
+            
+            // Commented out because this seems to mess with isPlaying where it's set differently than the last state. Causing to send the track over and over again
+            //  songInfo = await TryRefreshPausedTrackFromQueueAsync(songInfo);
 
             if (songInfo == null)
             {
@@ -856,7 +860,7 @@ namespace Songify_Slim.Util.Songify
                     Title = title,
                     Albums = thumbUrl != null
                         ? [new Image { Url = thumbUrl }]
-                        : (!isTrackChange 
+                        : (!isTrackChange
                             ? (GlobalObjects.CurrentSong?.Albums ?? [])
                             : []),
                     SongId = candidateSongId,
