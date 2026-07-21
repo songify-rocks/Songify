@@ -900,6 +900,13 @@ namespace Songify_Slim.Util.Configuration
         /// unnecessary calls and the risk of rate limiting while Songify runs in the background.
         /// </remarks>
         public bool BypassSpotifyFetchGate { get; set; }
+
+        /// <summary>
+        /// When false, Windows toast popups for Spotify errors/rate limits are suppressed.
+        /// The in-app persistent issue banner is unaffected.
+        /// </summary>
+        public bool ShowSpotifyToasts { get; set; } = true;
+
         public bool DebugLogging { get; set; } = false;
         public string YoutubeApiKey { get; set; }
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();

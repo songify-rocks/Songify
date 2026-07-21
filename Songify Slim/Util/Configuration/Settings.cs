@@ -143,6 +143,7 @@ namespace Songify_Slim.Util.Configuration
 
         public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
         public static bool BypassSpotifyFetchGate { get => GetBypassSpotifyFetchGate(); set => SetBypassSpotifyFetchGate(value); }
+        public static bool ShowSpotifyToasts { get => GetShowSpotifyToasts(); set => SetShowSpotifyToasts(value); }
         public static TwitchChatAccount TwitchChatAccount { get => GetTwitchChatAccount(); set => SetTwitchChatAccount(value); }
         // Backward compatible: older configs stored a single issue, newer configs store a list.
         public static SpotifyPersistentIssue SpotifyPersistentIssue { get => GetSpotifyPersistentIssue(); set => SetSpotifyPersistentIssue(value); }
@@ -179,6 +180,17 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetBypassSpotifyFetchGate()
         {
             return CurrentConfig.AppConfig.BypassSpotifyFetchGate;
+        }
+
+        private static void SetShowSpotifyToasts(bool value)
+        {
+            CurrentConfig.AppConfig.ShowSpotifyToasts = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetShowSpotifyToasts()
+        {
+            return CurrentConfig.AppConfig.ShowSpotifyToasts;
         }
 
         private static SpotifyPersistentIssue GetSpotifyPersistentIssue()
@@ -1259,6 +1271,7 @@ namespace Songify_Slim.Util.Configuration
                 SrForBits = GetSrForBits(),
                 SpotifyFetchRate = GetSpotifyFetchRate(),
                 BypassSpotifyFetchGate = GetBypassSpotifyFetchGate(),
+                ShowSpotifyToasts = GetShowSpotifyToasts(),
                 DebugLogging = GetDebugLogging(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),

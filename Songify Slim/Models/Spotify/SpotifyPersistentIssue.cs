@@ -40,6 +40,12 @@ namespace Songify_Slim.Models.Spotify
         /// </summary>
         public string DedupKey { get; set; }
 
+        /// <summary>How many times this issue was observed (toast may be suppressed after the first).</summary>
+        public int OccurrenceCount { get; set; } = 1;
+
+        /// <summary>Most recent observation time (UTC).</summary>
+        public DateTime LastSeenAtUtc { get; set; }
+
         public bool IsStale(DateTime utcNow)
         {
             if (Dismissed)

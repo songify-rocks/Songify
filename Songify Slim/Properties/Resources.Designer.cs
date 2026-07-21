@@ -3436,6 +3436,24 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show Spotify toast notifications.
+        /// </summary>
+        public static string window_settings_spotify_show_toasts {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_show_toasts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Windows toast popups for Spotify rate limits, login problems, and API errors. The in-app banner still appears when this is off..
+        /// </summary>
+        public static string window_settings_spotify_show_toasts_tooltip {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_show_toasts_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Spotify fetch rate (seconds).
         /// </summary>
         public static string window_settings_spotify_fetch_rate {

@@ -1473,4 +1473,10 @@
   <data name="window_botresponses_command_disabled" xml:space="preserve">
     <value>Befehl deaktivierte Antwort</value>
   </data>
+  <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
+    <value>Windows-Benachrichtigungen für Spotify Rate-Limit, Anmeldeprobleme und API-Fehler werden angezeigt. Das In-App-Banner wird weiterhin angezeigt, auch wenn diese Option deaktiviert ist.</value>
+  </data>
+  <data name="window_settings_spotify_show_toasts" xml:space="preserve">
+    <value>Windows-Benachrichtigungen für Spotify-Fehler deaktivieren.</value>
+  </data>
 </root>

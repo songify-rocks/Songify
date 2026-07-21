@@ -1526,4 +1526,10 @@
   <data name="window_botresponses_command_disabled" xml:space="preserve">
     <value>Commando uitgeschakelde reactie</value>
   </data>
+  <data name="window_settings_spotify_show_toasts" xml:space="preserve">
+    <value>Schakel Windows-meldingen voor Spotify-fouten uit.</value>
+  </data>
+  <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
+    <value>Windows-meldingen verschijnen voor Spotify-gebruikslimieten, inlogproblemen en API-fouten. De banner in de app blijft wel zichtbaar, zelfs als deze functie is uitgeschakeld.</value>
+  </data>
 </root>

@@ -1473,4 +1473,10 @@
   <data name="window_botresponses_command_disabled" xml:space="preserve">
     <value>Réponse de commande désactivée</value>
   </data>
+  <data name="window_settings_spotify_show_toasts" xml:space="preserve">
+    <value>Désactiver les notifications Windows pour les erreurs Spotify.</value>
+  </data>
+  <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
+    <value>Des notifications Windows s'affichent pour les limitations de débit de Spotify, les problèmes de connexion et les erreurs d'API. La bannière intégrée à l'application reste visible même lorsque cette option est désactivée.</value>
+  </data>
 </root>

@@ -1654,4 +1654,10 @@
   <data name="window_botresponses_command_disabled" xml:space="preserve">
     <value>Адказ на адключаную каманду</value>
   </data>
+  <data name="window_settings_spotify_show_toasts" xml:space="preserve">
+    <value>Адключыце апавяшчэнні Windows аб памылках Spotify.</value>
+  </data>
+  <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
+    <value>Усплывальныя апавяшчэнні Windows аб абмежаваннях хуткасці Spotify, праблемах з уваходам у сістэму і памылках API. Банер у дадатку ўсё роўна з'яўляецца, калі гэтая функцыя выключана.</value>
+  </data>
 </root>

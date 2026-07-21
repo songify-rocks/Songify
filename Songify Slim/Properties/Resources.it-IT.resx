@@ -1472,4 +1472,10 @@
   <data name="window_botresponses_command_disabled" xml:space="preserve">
     <value>Risposta disabilitata al comando</value>
   </data>
+  <data name="window_settings_spotify_show_toasts" xml:space="preserve">
+    <value>Disattiva le notifiche di Windows per gli errori di Spotify.</value>
+  </data>
+  <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
+    <value>Notifiche popup di Windows per limiti di utilizzo di Spotify, problemi di accesso ed errori API. Il banner in-app viene comunque visualizzato anche quando questa opzione è disattivata.</value>
+  </data>
 </root>

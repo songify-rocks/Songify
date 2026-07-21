@@ -197,6 +197,21 @@
                                     FontSize="12"
                                     TabIndex="6"
                                     Toggled="TglDonationReminder_OnToggled" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglShowSpotifyToasts"
+                                    Width="467"
+                                    Height="32"
+                                    VerticalAlignment="Top"
+                                    d:Content="{x:Static local:Resources.window_settings_spotify_show_toasts}"
+                                    d:ToolTip="{x:Static local:Resources.window_settings_spotify_show_toasts_tooltip}"
+                                    Content="{DynamicResource window_settings_spotify_show_toasts}"
+                                    ContentPadding="0"
+                                    Focusable="False"
+                                    FontFamily="Segoe UI"
+                                    FontSize="12"
+                                    TabIndex="7"
+                                    ToolTip="{DynamicResource window_settings_spotify_show_toasts_tooltip}"
+                                    Toggled="TglShowSpotifyToasts_OnToggled" />
                             </StackPanel>
                             <Label
                                 Grid.Row="3"

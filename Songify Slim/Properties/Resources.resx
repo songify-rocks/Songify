@@ -1460,6 +1460,12 @@
   <data name="window_settings_spotify_bypass_fetch_gate_tooltip" xml:space="preserve">
     <value>When enabled, Songify fetches Spotify playback even when you are not live and Test Mode is off. May increase Spotify API usage and rate-limit risk.</value>
   </data>
+  <data name="window_settings_spotify_show_toasts" xml:space="preserve">
+    <value>Disable Windows notifications for Spotify errors.</value>
+  </data>
+  <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
+    <value>Windows notification popups for Spotify rate limits, login problems, and API errors. The in-app banner still appears when this is off.</value>
+  </data>
   <data name="window_settings_youtube_api_key" xml:space="preserve">
     <value>Youtube API Key</value>
   </data>

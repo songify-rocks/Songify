@@ -336,6 +336,7 @@ namespace Songify_Slim.Views
             Tglsw_BlockAllExplicitSongs.IsOn = Settings.BlockAllExplicitSongs;
             NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
             TglBypassSpotifyFetchGate.IsOn = Settings.BypassSpotifyFetchGate;
+            TglShowSpotifyToasts.IsOn = Settings.ShowSpotifyToasts;
             TbRequesterPrefix.Text = Settings.RequesterPrefix;
             TglDonationReminder.IsOn = Settings.DonationReminder;
             TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
@@ -1583,6 +1584,11 @@ namespace Songify_Slim.Views
             main?.RefreshSpotifyTestModeControlsVisibility();
         }
 
+        private void TglShowSpotifyToasts_OnToggled(object sender, RoutedEventArgs e)
+        {
+            Settings.ShowSpotifyToasts = ((ToggleSwitch)sender).IsOn;
+        }
+
         private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e)
         {
             CbSpotifyPlaylist.IsEnabled = false;
@@ -1911,9 +1917,47 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void Tglsw_OnlyAddToPlaylist_OnToggled(object sender, RoutedEventArgs e)
+        private async void Tglsw_OnlyAddToPlaylist_OnToggled(object sender, RoutedEventArgs e)
         {
-            Settings.AddSrtoPlaylistOnly = ((ToggleSwitch)sender).IsOn;
+            try
+            {
+                if (sender is not ToggleSwitch toggleSwitch)
+                    return;
+
+                if (!toggleSwitch.IsOn)
+                {
+                    Settings.AddSrtoPlaylistOnly = false;
+                    return;
+                }
+
+                MetroDialogSettings dialogSettings = new MetroDialogSettings
+                {
+                    AnimateHide = false,
+                    AnimateShow = true
+                };
+
+                MessageDialogResult result = await this.ShowMessageAsync(
+                    "Warning",
+                    "Turning this option on makes it so that song requests will ONLY be " +
+                    "added to the \"Liked Songs\" playlist selected in the Spotify tab.\n\n" +
+                    "They WILL NOT end up in your queue!",
+                    MessageDialogStyle.AffirmativeAndNegative,
+                    dialogSettings);
+
+                if (result == MessageDialogResult.Affirmative)
+                {
+                    Settings.AddSrtoPlaylistOnly = true;
+                }
+                else
+                {
+                    toggleSwitch.IsOn = false;
+                    Settings.AddSrtoPlaylistOnly = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Core, "Error setting AddSrtoPlaylistOnly", ex);
+            }
         }
 
         private void NudBits_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
