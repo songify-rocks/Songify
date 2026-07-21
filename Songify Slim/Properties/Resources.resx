@@ -1461,10 +1461,49 @@
     <value>When enabled, Songify fetches Spotify playback even when you are not live and Test Mode is off. May increase Spotify API usage and rate-limit risk.</value>
   </data>
   <data name="window_settings_spotify_show_toasts" xml:space="preserve">
-    <value>Disable Windows notifications for Spotify errors.</value>
+    <value>Show Spotify toast notifications</value>
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Windows notification popups for Spotify rate limits, login problems, and API errors. The in-app banner still appears when this is off.</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Limits</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Bits</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>More options</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>None selected</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Cloud</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Twitch auth ports</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Refresh Twitch login</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Right-click to insert format tokens (artist, title, requester, …).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Sync to all user levels</value>
   </data>
   <data name="window_settings_youtube_api_key" xml:space="preserve">
     <value>Youtube API Key</value>

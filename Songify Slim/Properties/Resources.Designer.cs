@@ -4172,5 +4172,122 @@ namespace Songify_Slim.Properties {
                 return ResourceManager.GetString("window_userlist_user_levels", resourceCulture);
             }
         }
+        /// <summary>
+        ///   Looks up a localized string similar to Right-click to insert format tokens (artist, title, requester, …).
+        /// </summary>
+        public static string window_settings_output_format_hint {
+            get {
+                return ResourceManager.GetString("window_settings_output_format_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Advanced.
+        /// </summary>
+        public static string window_settings_section_advanced {
+            get {
+                return ResourceManager.GetString("window_settings_section_advanced", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch auth ports.
+        /// </summary>
+        public static string window_settings_section_auth_ports {
+            get {
+                return ResourceManager.GetString("window_settings_section_auth_ports", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Backup.
+        /// </summary>
+        public static string window_settings_section_backup {
+            get {
+                return ResourceManager.GetString("window_settings_section_backup", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Bits.
+        /// </summary>
+        public static string window_settings_section_bits {
+            get {
+                return ResourceManager.GetString("window_settings_section_bits", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cloud.
+        /// </summary>
+        public static string window_settings_section_cloud {
+            get {
+                return ResourceManager.GetString("window_settings_section_cloud", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Filters.
+        /// </summary>
+        public static string window_settings_section_filters {
+            get {
+                return ResourceManager.GetString("window_settings_section_filters", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to General.
+        /// </summary>
+        public static string window_settings_section_general {
+            get {
+                return ResourceManager.GetString("window_settings_section_general", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Limits.
+        /// </summary>
+        public static string window_settings_section_limits {
+            get {
+                return ResourceManager.GetString("window_settings_section_limits", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to More options.
+        /// </summary>
+        public static string window_settings_section_more_options {
+            get {
+                return ResourceManager.GetString("window_settings_section_more_options", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Sync to all user levels.
+        /// </summary>
+        public static string window_settings_sync_user_levels {
+            get {
+                return ResourceManager.GetString("window_settings_sync_user_levels", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Refresh Twitch login.
+        /// </summary>
+        public static string window_settings_twitch_refresh {
+            get {
+                return ResourceManager.GetString("window_settings_twitch_refresh", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to None selected.
+        /// </summary>
+        public static string window_settings_user_levels_none {
+            get {
+                return ResourceManager.GetString("window_settings_user_levels_none", resourceCulture);
+            }
+        }
+
     }
 }

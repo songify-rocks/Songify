@@ -300,7 +300,6 @@ namespace Songify_Slim.Views
             ChbxSplit.IsOn = Settings.SplitOutput;
             ChbxUpload.IsOn = Settings.Upload;
             NudSpaces.Value = Settings.SpaceCount;
-            NudChrome.Value = Settings.ChromeFetchRate;
             NudCooldown.Value = Settings.TwSrCooldown;
             NudCooldownPerUser.Value = Settings.TwSrPerUserCooldown;
             NudMaxlength.Value = Settings.MaxSongLength;
@@ -404,6 +403,54 @@ namespace Songify_Slim.Views
             ChckUnlimitedRewardSubT3.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(4);
             ChckUnlimitedRewardVip.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(5);
             ChckUnlimitedRewardMod.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(6);
+
+            RefreshUserLevelComboSummaries();
+        }
+
+        private static readonly string[] UserLevelShortNames =
+        [
+            "Viewer", "Follower", "Sub", "Sub T2", "Sub T3", "VIP", "Mod"
+        ];
+
+        private static string FormatUserLevelsSummary(IReadOnlyCollection<int> levels, string emptyFallback)
+        {
+            List<int> sorted = (levels ?? Array.Empty<int>())
+                .Where(i => i >= 0 && i < UserLevelShortNames.Length)
+                .Distinct()
+                .OrderBy(i => i)
+                .ToList();
+
+            if (sorted.Count == 0)
+                return emptyFallback;
+            if (sorted.Count >= UserLevelShortNames.Length)
+                return "All";
+
+            string text = string.Join(", ", sorted.Select(i => UserLevelShortNames[i]));
+            return text.Length > 32 ? $"{sorted.Count} selected" : text;
+        }
+
+        private void RefreshUserLevelComboSummaries()
+        {
+            try
+            {
+                string none = Properties.Resources.window_settings_user_levels_none;
+                if (CbiAllowedUserLevelsRewardSummary != null)
+                    CbiAllowedUserLevelsRewardSummary.Content =
+                        FormatUserLevelsSummary(Settings.UserLevelsReward, none);
+                if (CbiAllowedUserLevelsCommandSummary != null)
+                    CbiAllowedUserLevelsCommandSummary.Content =
+                        FormatUserLevelsSummary(Settings.UserLevelsCommand, none);
+                if (CbiUnlimitedCommandSummary != null)
+                    CbiUnlimitedCommandSummary.Content =
+                        FormatUserLevelsSummary(Settings.UnlimitedSrUserlevelsCommand, none);
+                if (CbiUnlimitedRewardSummary != null)
+                    CbiUnlimitedRewardSummary.Content =
+                        FormatUserLevelsSummary(Settings.UnlimitedSrUserlevelsReward, none);
+            }
+            catch
+            {
+                // ignored — summaries are cosmetic
+            }
         }
 
         private async Task LoadSpotifySectionAsync()
@@ -1062,12 +1109,9 @@ namespace Songify_Slim.Views
 
         private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            // Sets the source (Spotify, BrowserCompanion, Nightbot)
+            // Chrome fetch UI removed; setting retained in config for compatibility.
             if (!IsLoaded || _isSettingControls)
-                // This prevents that the selected is always 0 (initialize components)
                 return;
-
-            if (NudChrome.Value != null) Settings.ChromeFetchRate = (int)NudChrome.Value;
         }
 
         private void NudCooldown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
@@ -1540,6 +1584,7 @@ namespace Songify_Slim.Views
             if (Settings.UserLevelsReward.Contains(value)) return;
             List<int> list = [.. Settings.UserLevelsReward, value];
             Settings.UserLevelsReward = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private void CbxUserLevelsRewardUnchecked(object sender, RoutedEventArgs e)
@@ -1550,6 +1595,7 @@ namespace Songify_Slim.Views
             List<int> list = [.. Settings.UserLevelsReward];
             list.Remove(value);
             Settings.UserLevelsReward = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private void CbxUserLevelsCommandChecked(object sender, RoutedEventArgs e)
@@ -1559,6 +1605,7 @@ namespace Songify_Slim.Views
             if (Settings.UserLevelsCommand.Contains(value)) return;
             List<int> list = [.. Settings.UserLevelsCommand, value];
             Settings.UserLevelsCommand = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private void CbxUserLevelsCommandUnchecked(object sender, RoutedEventArgs e)
@@ -1569,6 +1616,7 @@ namespace Songify_Slim.Views
             List<int> list = [.. Settings.UserLevelsCommand];
             list.Remove(value);
             Settings.UserLevelsCommand = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private void TglAddToPlaylist_Toggled(object sender, RoutedEventArgs e)
@@ -1873,6 +1921,7 @@ namespace Songify_Slim.Views
             if (Settings.UnlimitedSrUserlevelsReward.Contains(value)) return;
             List<int> list = [.. Settings.UnlimitedSrUserlevelsReward, value];
             Settings.UnlimitedSrUserlevelsReward = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private void CbxUnlimitedRewardUnchecked(object sender, RoutedEventArgs e)
@@ -1883,6 +1932,7 @@ namespace Songify_Slim.Views
             List<int> list = [.. Settings.UnlimitedSrUserlevelsReward];
             list.Remove(value);
             Settings.UnlimitedSrUserlevelsReward = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private void CbxUnlimitedCommandUnchecked(object sender, RoutedEventArgs e)
@@ -1893,6 +1943,7 @@ namespace Songify_Slim.Views
             List<int> list = [.. Settings.UnlimitedSrUserlevelsCommand];
             list.Remove(value);
             Settings.UnlimitedSrUserlevelsCommand = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private void CbxUnlimitedCommandChecked(object sender, RoutedEventArgs e)
@@ -1902,6 +1953,7 @@ namespace Songify_Slim.Views
             if (Settings.UnlimitedSrUserlevelsCommand.Contains(value)) return;
             List<int> list = [.. Settings.UnlimitedSrUserlevelsCommand, value];
             Settings.UnlimitedSrUserlevelsCommand = list;
+            RefreshUserLevelComboSummaries();
         }
 
         private async void TglsLongBadgeNames_OnToggled(object sender, RoutedEventArgs e)
