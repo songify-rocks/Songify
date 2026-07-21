@@ -626,7 +626,7 @@ public static class TwitchHandler
             string mainTokenPresent = !string.IsNullOrWhiteSpace(Settings.TwitchAccessToken) ? $"TRUE ({Settings.TwitchAccessToken.Length} chars)" : "FALSE";
             string botTokenPresent = !string.IsNullOrWhiteSpace(Settings.TwitchBotToken) ? $"TRUE ({Settings.TwitchBotToken.Length} chars)" : "FALSE";
 
-            Logger.Debug(LogSource.Twitch, 
+            Logger.Debug(LogSource.Twitch,
                 $"[{context}] Twitch Account Diagnostics: " +
                 $"TwAccEmpty={twAccEmpty}, " +
                 $"MainUserPresent={mainUserPresent}, " +
@@ -1196,7 +1196,7 @@ public static class TwitchHandler
         if (input.StartsWith("https://open.spotify.com/"))
         {
             // Extract the ID using regular expressions
-            Match match = Regex.Match(input, @"/track/([A-Za-z0-9]{22})(?:[/?]|$)");
+            Match match = Regex.Match(input, @"/track/([A-Za-z0-9]{22})(?![A-Za-z0-9])");
 
             if (match.Success)
             {
@@ -3862,7 +3862,7 @@ public static class TwitchHandler
 
     private static bool IsSpotifyBareTrackId(string input)
     {
-      if (ContainsWhitespace(input) || ContainsUrlLikePunctuation(input))
+        if (ContainsWhitespace(input) || ContainsUrlLikePunctuation(input))
         {
             return false;
         }
