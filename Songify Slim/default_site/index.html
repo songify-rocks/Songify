@@ -128,7 +128,7 @@
         }
 
         .content img {
-            height: 70;
+            height: 70px;
             transition: transform 0.3s ease;
         }
 
@@ -182,33 +182,31 @@
 </style>
 
 <body>
-<div id="error" class="card hidden">
-    <div class="content">
-        <img src="https://songify.rocks/api/images/logo.png" alt="Songify Logo"/>
-        <span class="plus-sign">+</span>
-        <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green-300x300.png" alt="Spotify Logo"/>
+    <div id="error" class="card hidden">
+        <div class="content">
+            <img src="/auth/songify.png" alt="Songify Logo" />
+            <span class="plus-sign">+</span>
+            <img src="/auth/spotify.png" alt="Spotify Logo" />
+        </div>
+        <h1>Authorization issue</h1>
+        <p>Spotify reported an error during login. You can close this page and try again in Songify.</p>
     </div>
-    <h1>Authorization issue</h1>
-    <p>Spotify reported an error during login. You can close this page and try again in Songify.</p>
-</div>
 
-<div id="success" class="card hidden">
-    <div class="content">
-        <img src="https://songify.rocks/api/images/logo.png" alt="Songify Logo"/>
-        <span class="plus-sign">+</span>
-        <img src="https://storage.googleapis.com/pr-newsroom-wp/1/2023/05/Spotify_Primary_Logo_RGB_Green-300x300.png" alt="Spotify Logo"/>
+    <div id="success" class="card hidden">
+        <div class="content">
+            <img src="/auth/songify.png" alt="Songify Logo" />
+            <span class="plus-sign">+</span>
+            <img src="/auth/spotify.png" alt="Spotify Logo" />
+        </div>
+        <h1>Success!</h1>
+        <p><span class="songify-text">Songify</span> and Spotify are now connected!<br />You can close this page.</p>
     </div>
-    <h1>Success!</h1>
-    <p><span class="songify-text">Songify</span> and Spotify are now connected!<br/>You can close this page.</p>
-</div>
 
-<script>
+    <script>
         window.addEventListener('load', function () {
-            const songifyLogo = document.querySelector('#success img[src*="songify.rocks"], #error img[src*="songify.rocks"]');
-            if (!songifyLogo) return;
-
             function startAnimations() {
-                const root = songifyLogo.closest('.card');
+                // Animate the card that was revealed (success or error)
+                const root = document.querySelector('.card:not(.hidden)');
                 if (!root) return;
                 const content = root.querySelector('.content');
                 const h1 = root.querySelector('h1');
@@ -218,11 +216,7 @@
                 if (p) p.classList.add('animate');
             }
 
-            if (songifyLogo.complete) {
-                startAnimations();
-            } else {
-                songifyLogo.addEventListener('load', startAnimations);
-            }
+            startAnimations();
         });
     </script>
 </body>

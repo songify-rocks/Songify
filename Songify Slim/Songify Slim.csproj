@@ -818,8 +818,9 @@
   <ItemGroup>
     <EmbeddedResource Include="default_site\favicon.ico" />
     <EmbeddedResource Include="default_site\index.html" />
+    <EmbeddedResource Include="default_site\songify.png" />
+    <EmbeddedResource Include="default_site\spotify.png" />
   </ItemGroup>
-  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>
