@@ -1186,7 +1186,7 @@ public static class TwitchHandler
         if (input.StartsWith("https://open.spotify.com/"))
         {
             // Extract the ID using regular expressions
-            Match match = Regex.Match(input, @"/track/([A-Za-z0-9]{22})(?:[/?]|$)");
+            Match match = Regex.Match(input, @"/track/([A-Za-z0-9]{22})(?![A-Za-z0-9])");
 
             if (match.Success)
             {
