@@ -96,6 +96,28 @@ public static class TwitchHandler
     private static string _pendingOAuthState;
     private static Enums.TwitchAccount? _pendingOAuthAccount;
 
+    /// <summary>
+    /// Restores the normal Spotify fetch interval when chat/rewards indicate activity.
+    /// No-op unless Spotify is the connected player.
+    /// </summary>
+    private static void NotifySpotifyRelatedActivity()
+    {
+        Application app = Application.Current;
+        if (app == null)
+            return;
+
+        void Apply()
+        {
+            if (app.MainWindow is MainWindow mw)
+                mw.NotifySpotifyRelatedActivity();
+        }
+
+        if (app.Dispatcher.CheckAccess())
+            Apply();
+        else
+            _ = app.Dispatcher.BeginInvoke(Apply);
+    }
+
     public static async Task AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
     {
         Stopwatch sw = new();
@@ -1066,8 +1088,11 @@ public static class TwitchHandler
             });
 
             if (executed)
+            {
+                NotifySpotifyRelatedActivity();
                 Logger.Info(LogSource.Twitch,
                     $"Command \"{commandToken}\" by {msg.ChatterUserName}: Executed successfully.");
+            }
             else if (knownButDisabled)
             {
                 Logger.Warning(LogSource.Twitch,
@@ -1215,6 +1240,7 @@ public static class TwitchHandler
     public static async Task HandleBitsSongRequest(string userId, string userName,
         string userInput, string channel)
     {
+        NotifySpotifyRelatedActivity();
         userInput = NormalizeRequestInput(userInput);
 
         TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
@@ -1310,6 +1336,7 @@ public static class TwitchHandler
     public static async Task HandleChannelPointSongRequest(bool isBroadcaster, string userId, string userName,
         string userInput, string channel, string rewardId, string redemptionId)
     {
+        NotifySpotifyRelatedActivity();
         userInput = NormalizeRequestInput(userInput);
 
         if (GlobalObjects.TwitchUsers.Count == 0)
@@ -1677,6 +1704,8 @@ public static class TwitchHandler
         // Skip song
         if (_skipCooldown)
             return true;
+
+        NotifySpotifyRelatedActivity();
 
         switch (Settings.Player)
         {
@@ -4709,6 +4738,7 @@ public static class TwitchHandler
             switch (Settings.Player)
             {
                 case Enums.PlayerType.Spotify:
+                    NotifySpotifyRelatedActivity();
                     await SpotifyApiHandler.SkipSong();
                     break;
 

@@ -2185,6 +2185,33 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Polling {0}s (idle).
+        /// </summary>
+        public static string window_main_spotify_idle_polling {
+            get {
+                return ResourceManager.GetString("window_main_spotify_idle_polling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Polling 1 min (idle).
+        /// </summary>
+        public static string window_main_spotify_idle_polling_minute {
+            get {
+                return ResourceManager.GetString("window_main_spotify_idle_polling_minute", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Spotify fetch slowed while idle to save API quota. Click to restore the normal rate from Settings.
+        /// </summary>
+        public static string window_main_spotify_idle_polling_tooltip {
+            get {
+                return ResourceManager.GetString("window_main_spotify_idle_polling_tooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Please link your Spotify account. Settings -&gt; Spotify.
         /// </summary>
         public static string window_main_link_spotify {

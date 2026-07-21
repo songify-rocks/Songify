@@ -75,9 +75,19 @@ namespace Songify_Slim.Util.Songify
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
         private PlaylistInfo playbackPlaylist = null;
 
+        /// <summary>
+        /// Consecutive Spotify pulls where playback is paused or absent.
+        /// Stage 1 (<see cref="SpotifyIdlePullsBeforeBackoff"/>): 10× settings rate (capped at 60s).
+        /// Stage 2 (another <see cref="SpotifyIdlePullsBeforeCap"/>): raise to the 60s cap if still below it.
+        /// </summary>
+        private int _spotifyIdleNotPlayingStreak;
 
+        /// <summary>0 = normal, 1 = 10× backoff, 2 = 60s cap.</summary>
+        private int _spotifyIdleBackoffStage;
 
-
+        private const int SpotifyIdlePullsBeforeBackoff = 10;
+        private const int SpotifyIdlePullsBeforeCap = 10;
+        private const int SpotifyIdleFetchIntervalCapSeconds = 60;
 
         private readonly SemaphoreSlim _pearWsProcessLock = new(1, 1);
 
@@ -86,10 +96,13 @@ namespace Songify_Slim.Util.Songify
 
         private bool _pearWsHandlerRegistered;
         private bool _pearColdHttpSynced;
+
         /// <summary>True after the first connection failure; prevents further toasts until a successful connect resets this.</summary>
         private bool _pearWsConnectFailureNotified;
+
         /// <summary>Consecutive failed connection attempts since the last successful connect or manual disconnect.</summary>
         private int _pearWsConnectFailureCount;
+
         /// <summary>Earliest time at which <see cref="FetchPear"/> will attempt the next WebSocket connect.</summary>
         private DateTimeOffset _pearWsNextConnectAttemptAt;
 
@@ -99,6 +112,7 @@ namespace Songify_Slim.Util.Songify
 
         // Windows Playback metrics for performance instrumentation (PR 1 baseline)
         private int _windowsPlaybackHeavyPathCount = 0;
+
         private int _windowsPlaybackComRetryCount = 0;
         private long _windowsPlaybackThumbnailBytesTotal = 0L;
         private Stopwatch _windowsPlaybackLastMetricsReset = Stopwatch.StartNew();
@@ -459,6 +473,103 @@ namespace Songify_Slim.Util.Songify
         ///     Returns Error Message if NightBot ID is not set
         /// </summary>
 
+        /// <summary>
+        /// Effective Spotify poll interval in ms.
+        /// Normal: settings rate.
+        /// After <see cref="SpotifyIdlePullsBeforeBackoff"/> idle pulls: 10× settings (capped at 60s).
+        /// After another <see cref="SpotifyIdlePullsBeforeCap"/> idle pulls: raise to 60s if still below.
+        /// </summary>
+        public int GetEffectiveSpotifyFetchIntervalMs()
+        {
+            int baseSeconds = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30);
+            int stage1Seconds = Math.Min(baseSeconds * 10, SpotifyIdleFetchIntervalCapSeconds);
+            int stage2Threshold = SpotifyIdlePullsBeforeBackoff + SpotifyIdlePullsBeforeCap;
+
+            if (_spotifyIdleNotPlayingStreak >= stage2Threshold)
+                return SpotifyIdleFetchIntervalCapSeconds * 1000;
+            if (_spotifyIdleNotPlayingStreak >= SpotifyIdlePullsBeforeBackoff)
+                return stage1Seconds * 1000;
+            return baseSeconds * 1000;
+        }
+
+        public int GetEffectiveSpotifyFetchIntervalSeconds() =>
+            GetEffectiveSpotifyFetchIntervalMs() / 1000;
+
+        public bool IsSpotifyIdleBackoffActive => _spotifyIdleBackoffStage > 0;
+
+        private void ResetSpotifyIdleFetchBackoff(string reason = "playback active or changed")
+        {
+            if (_spotifyIdleBackoffStage > 0)
+            {
+                int settingsSeconds = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30);
+                Logger.Info(LogSource.Spotify,
+                    $"Restoring Spotify fetch interval to {settingsSeconds}s ({reason}).");
+            }
+
+            _spotifyIdleNotPlayingStreak = 0;
+            _spotifyIdleBackoffStage = 0;
+        }
+
+        /// <summary>
+        /// Clears idle fetch backoff so the next polls use the settings interval again.
+        /// Called when playback changes or when a Spotify-related Twitch command/reward runs.
+        /// </summary>
+        public void RestoreSpotifyFetchRate(string reason = "playback active or changed")
+        {
+            ResetSpotifyIdleFetchBackoff(reason);
+        }
+
+        private void UpdateSpotifyIdleFetchBackoff(TrackInfo songInfo)
+        {
+            string previousSongId = GlobalObjects.CurrentSong?.SongId;
+
+            if (songInfo == null)
+            {
+                // Spotify returns null after prolonged idle — keep slowing polls to save quota.
+                _spotifyIdleNotPlayingStreak++;
+                EnterSpotifyIdleFetchBackoffIfNeeded();
+                return;
+            }
+
+            bool trackChanged = !string.IsNullOrEmpty(songInfo.SongId)
+                && !string.Equals(previousSongId, songInfo.SongId, StringComparison.Ordinal);
+
+            if (songInfo.IsPlaying || trackChanged)
+            {
+                ResetSpotifyIdleFetchBackoff();
+                return;
+            }
+
+            _spotifyIdleNotPlayingStreak++;
+            EnterSpotifyIdleFetchBackoffIfNeeded();
+        }
+
+        private void EnterSpotifyIdleFetchBackoffIfNeeded()
+        {
+            int baseSeconds = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30);
+            int stage1Seconds = Math.Min(baseSeconds * 10, SpotifyIdleFetchIntervalCapSeconds);
+            int stage2Threshold = SpotifyIdlePullsBeforeBackoff + SpotifyIdlePullsBeforeCap;
+
+            if (_spotifyIdleNotPlayingStreak >= SpotifyIdlePullsBeforeBackoff
+                && _spotifyIdleBackoffStage < 1)
+            {
+                _spotifyIdleBackoffStage = stage1Seconds >= SpotifyIdleFetchIntervalCapSeconds ? 2 : 1;
+                Logger.Info(LogSource.Spotify,
+                    $"Increasing Spotify fetch interval from {baseSeconds}s to {stage1Seconds}s after {SpotifyIdlePullsBeforeBackoff} idle pulls.");
+                return;
+            }
+
+            // Second stage only if 10× is still below the cap.
+            if (_spotifyIdleNotPlayingStreak >= stage2Threshold
+                && stage1Seconds < SpotifyIdleFetchIntervalCapSeconds
+                && _spotifyIdleBackoffStage < 2)
+            {
+                _spotifyIdleBackoffStage = 2;
+                Logger.Info(LogSource.Spotify,
+                    $"Increasing Spotify fetch interval from {stage1Seconds}s to {SpotifyIdleFetchIntervalCapSeconds}s after another {SpotifyIdlePullsBeforeCap} idle pulls.");
+            }
+        }
+
         public async Task FetchSpotifyWeb(bool forceUpdate = false)
         {
             // If the spotify object hast been created (successfully authed)
@@ -479,11 +590,12 @@ namespace Songify_Slim.Util.Songify
             // When Spotify is paused, playback can lag behind UI selection changes,
             // so we reconcile against queue.CurrentlyPlaying as a fallback.
             TrackInfo songInfo = await SpotifyApiHandler.GetSongInfo();
-            
-            
-            
+
             // Commented out because this seems to mess with isPlaying where it's set differently than the last state. Causing to send the track over and over again
             //  songInfo = await TryRefreshPausedTrackFromQueueAsync(songInfo);
+
+            // Update idle backoff before CurrentSong is overwritten so track changes are detected.
+            UpdateSpotifyIdleFetchBackoff(songInfo);
 
             if (songInfo == null)
             {

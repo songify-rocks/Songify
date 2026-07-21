@@ -1573,6 +1573,18 @@
     <value>Songify v1.1.1-RC1 Copyright ©</value>
     <comment>Context: Copyright line in main window or about area.</comment>
   </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Polling {0}s (idle)</value>
+    <comment>Context: Status bar chip when Spotify fetch interval is slowed due to idle/paused playback. {0} = seconds.</comment>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Polling 1 min (idle)</value>
+    <comment>Context: Status bar chip when Spotify idle fetch interval is at the 60s cap.</comment>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Spotify fetch slowed while idle to save API quota. Click to restore the normal rate from Settings.</value>
+    <comment>Context: Tooltip on the main window idle polling status chip.</comment>
+  </data>
   <data name="window_main_windows_media_session_automatic" xml:space="preserve">
     <value>Automatic (current session)</value>
     <comment>Context: First item in Windows Playback API session picker — use the OS active session.</comment>

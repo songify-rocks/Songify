@@ -100,6 +100,73 @@ namespace Songify_Slim.Views
         private bool _spotifyInitializationInProgress;
         private DispatcherTimer _spotifyIssueEtaTimer;
 
+        /// <summary>
+        /// Clears Spotify idle fetch backoff and restarts the fetch timer at the settings interval.
+        /// Used when Twitch commands/rewards indicate activity while Spotify is the connected player.
+        /// </summary>
+        public void NotifySpotifyRelatedActivity(string reason = "Twitch command or reward")
+        {
+            if (Settings.Player != PlayerType.Spotify)
+                return;
+
+            Sf.RestoreSpotifyFetchRate(reason);
+            ApplySpotifyFetchTimerInterval();
+            UpdateSpotifyIdleBackoffIndicator();
+        }
+
+        private void ApplySpotifyFetchTimerInterval()
+        {
+            if (_timerFetcher == null || _selectedSource != PlayerType.Spotify)
+                return;
+
+            try
+            {
+                // Changing Interval while Enabled restarts the countdown with the restored rate.
+                _timerFetcher.Interval = Sf.GetEffectiveSpotifyFetchIntervalMs();
+            }
+            catch (ObjectDisposedException)
+            {
+                // Timer may be mid-recreate during source switches.
+            }
+            catch (ArgumentException)
+            {
+                // Interval must be > 0.
+            }
+        }
+
+        private void UpdateSpotifyIdleBackoffIndicator()
+        {
+            void Apply()
+            {
+                if (BtnSpotifyIdleBackoff == null || TbSpotifyIdleBackoff == null)
+                    return;
+
+                bool show = _selectedSource == PlayerType.Spotify && Sf.IsSpotifyIdleBackoffActive;
+                BtnSpotifyIdleBackoff.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+                if (!show)
+                    return;
+
+                int seconds = Sf.GetEffectiveSpotifyFetchIntervalSeconds();
+                TbSpotifyIdleBackoff.Text = seconds >= 60
+                    ? (TryFindResource("window_main_spotify_idle_polling_minute") as string
+                       ?? Properties.Resources.window_main_spotify_idle_polling_minute)
+                    : string.Format(
+                        TryFindResource("window_main_spotify_idle_polling") as string
+                        ?? Properties.Resources.window_main_spotify_idle_polling,
+                        seconds);
+            }
+
+            if (!Dispatcher.CheckAccess())
+                _ = Dispatcher.BeginInvoke(Apply);
+            else
+                Apply();
+        }
+
+        private void BtnSpotifyIdleBackoff_Click(object sender, RoutedEventArgs e)
+        {
+            NotifySpotifyRelatedActivity("user restored from status bar");
+        }
+
         #endregion Variables
 
         private static async void TelemetryTask(object sender, ElapsedEventArgs e)
@@ -326,6 +393,7 @@ namespace Songify_Slim.Views
                 // Reflect source switch immediately so indicators/tooltips do not lag behind async work.
                 UpdatePearStatusIndicator();
                 UpdateSpotifyStatusIndicator();
+                UpdateSpotifyIdleBackoffIndicator();
 
                 await TwitchHandler.PurgeMismatchedRequestsForActivePlayerAsync();
                 await GlobalObjects.QueueUpdateQueueWindow();
@@ -354,6 +422,7 @@ namespace Songify_Slim.Views
 
             UpdatePearStatusIndicator();
             UpdateSpotifyStatusIndicator();
+            UpdateSpotifyIdleBackoffIndicator();
 
             UpdateWindowsMediaSessionComboVisibility();
             UpdateSpotifyTestModeControlsVisibility();
@@ -1272,6 +1341,7 @@ namespace Songify_Slim.Views
 
             UpdatePearStatusIndicator();
             UpdateSpotifyStatusIndicator();
+            UpdateSpotifyIdleBackoffIndicator();
 
             CbxSource.SelectionChanged += Cbx_Source_SelectionChanged;
 
@@ -1642,6 +1712,9 @@ namespace Songify_Slim.Views
                 ("Linked", hasTokens ? "Yes" : "No"),
                 ("User", Settings.SpotifyProfile?.DisplayName ?? "Unknown"),
                 ("Device", string.IsNullOrWhiteSpace(deviceName) ? "Unknown" : deviceName),
+                ("Fetch rate", Sf.IsSpotifyIdleBackoffActive
+                    ? $"{Sf.GetEffectiveSpotifyFetchIntervalSeconds()}s (idle — click status chip to restore)"
+                    : $"{MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30)}s"),
                 ("Action", action));
         }
 
@@ -1830,7 +1903,8 @@ namespace Songify_Slim.Views
                     switch (_selectedSource)
                     {
                         case PlayerType.Spotify:
-                            _timerFetcher.Interval = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000;
+                            _timerFetcher.Interval = Sf.GetEffectiveSpotifyFetchIntervalMs();
+                            UpdateSpotifyIdleBackoffIndicator();
                             break;
 
                         case PlayerType.WindowsPlayback:
@@ -1851,6 +1925,7 @@ namespace Songify_Slim.Views
 
                     _timerFetcher.Enabled = enable;
                     _timerFetcher.Elapsed += OnTimedEvent;
+                    UpdateSpotifyIdleBackoffIndicator();
                 }
             }
             catch (Exception ex)
@@ -1911,8 +1986,8 @@ namespace Songify_Slim.Views
                     break;
 
                 case PlayerType.Spotify:
-                    // Prevent Rate Limiting
-                    FetchTimer(MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000);
+                    // Prevent Rate Limiting (may slow further while paused/idle)
+                    FetchTimer(Sf.GetEffectiveSpotifyFetchIntervalMs());
                     break;
 
                 case PlayerType.BrowserCompanion:
