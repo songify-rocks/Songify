@@ -105,10 +105,13 @@ public static class ApiCallMeter
 
             try
             {
-                return await action();
+                T result = await action();
+                SpotifyUserNotifier.ResetConsecutiveFailures();
+                return result;
             }
             catch (APITooManyRequestsException ex)
             {
+                // 429: notify immediately; do not count toward the consecutive-failure streak.
                 int retrySeconds = GetRetryAfterSeconds(ex);
                 DateTimeOffset retryUntil = DateTimeOffset.UtcNow.AddSeconds(retrySeconds);
 
@@ -173,7 +176,8 @@ public static class ApiCallMeter
                     $"Spotify unauthorized on '{key}'. Access token may be invalid or expired. {FormatApiExceptionDetails(ex)}");
                 try
                 {
-                    SpotifyUserNotifier.NotifyUnauthorized(key);
+                    if (SpotifyUserNotifier.RegisterFailureAndShouldNotify())
+                        SpotifyUserNotifier.NotifyUnauthorized(key);
                 }
                 catch (Exception notifyEx)
                 {
@@ -193,7 +197,8 @@ public static class ApiCallMeter
                     Logger.Error(LogSource.Spotify, $"Spotify API error on '{key}': {FormatApiExceptionDetails(ex)}");
                     try
                     {
-                        SpotifyUserNotifier.NotifyApiException(key, ex);
+                        if (SpotifyUserNotifier.RegisterFailureAndShouldNotify())
+                            SpotifyUserNotifier.NotifyApiException(key, ex);
                     }
                     catch (Exception notifyEx)
                     {
@@ -217,7 +222,8 @@ public static class ApiCallMeter
                 Logger.LogExc(ex);
                 try
                 {
-                    SpotifyUserNotifier.NotifyUnexpected(key, ex);
+                    if (SpotifyUserNotifier.RegisterFailureAndShouldNotify())
+                        SpotifyUserNotifier.NotifyUnexpected(key, ex);
                 }
                 catch (Exception notifyEx)
                 {
