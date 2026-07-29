@@ -210,32 +210,10 @@
                                     FontFamily="Segoe UI"
                                     FontSize="12"
                                     TabIndex="7"
-                                    ToolTip="{DynamicResource window_settings_spotify_show_toasts_tooltip}"
-                                    Toggled="TglShowSpotifyToasts_OnToggled" />
+                                    Toggled="TglShowSpotifyToasts_OnToggled"
+                                    ToolTip="{DynamicResource window_settings_spotify_show_toasts_tooltip}" />
                             </StackPanel>
-                            <Label
-                                Grid.Row="3"
-                                Padding="0,5,5,5"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                d:Content="{x:Static local:Resources.window_settings_system_chrome_fetch_rate}"
-                                Content="{DynamicResource window_settings_system_chrome_fetch_rate}"
-                                Visibility="Collapsed" />
-                            <controls:NumericUpDown
-                                x:Name="NudChrome"
-                                Grid.Row="3"
-                                Width="145"
-                                Height="28"
-                                Padding="0"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Interval="1"
-                                Maximum="10"
-                                Minimum="1"
-                                NumericInputMode="Numbers"
-                                TabIndex="7"
-                                ValueChanged="NudChrome_ValueChanged"
-                                Visibility="Collapsed" />
+
                             <controls:ToggleSwitch
                                 x:Name="TglUseDefaultBrowser"
                                 Grid.Row="4"
@@ -248,20 +226,6 @@
                                 FontSize="12"
                                 TabIndex="8"
                                 Toggled="TglUseDefaultBrowser_OnToggled" />
-                            <controls:ToggleSwitch
-                                x:Name="TglDebugLogging"
-                                Grid.Row="5"
-                                Grid.Column="0"
-                                Width="467"
-                                Height="32"
-                                d:Content="{x:Static local:Resources.window_settings_enable_debug_logging}"
-                                Content="{DynamicResource window_settings_enable_debug_logging}"
-                                ContentPadding="0"
-                                Focusable="False"
-                                FontFamily="Segoe UI"
-                                FontSize="12"
-                                TabIndex="8"
-                                Toggled="TglDebugLogging_OnToggled" />
                             <Label
                                 Grid.Row="6"
                                 Padding="0,5,5,5"
@@ -293,16 +257,6 @@
                                 d:Content="{x:Static local:Resources.window_settings_tab_appearance}"
                                 Content="{DynamicResource window_settings_tab_appearance}"
                                 FontSize="16" />
-                            <Label
-                                x:Name="LabelColor"
-                                Grid.Row="8"
-                                Width="71"
-                                Padding="5"
-                                HorizontalAlignment="Left"
-                                VerticalAlignment="Top"
-                                d:Content="{x:Static local:Resources.window_settings_appearance_color}"
-                                Content="{DynamicResource window_settings_appearance_color}"
-                                Visibility="Collapsed" />
                             <ComboBox
                                 x:Name="ComboBoxColor"
                                 Grid.Row="8"
@@ -329,64 +283,6 @@
                                 OnContent="{DynamicResource window_settings_appearance_theme_dark}"
                                 TabIndex="10"
                                 Toggled="ThemeToggleSwitchIsCheckedChanged" />
-                            <Grid Grid.Row="9" Margin="0,6">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" />
-                                    <ColumnDefinition Width="*" />
-                                    <ColumnDefinition Width="Auto" />
-                                </Grid.ColumnDefinitions>
-                                <TextBlock
-                                    Grid.Column="0"
-                                    VerticalAlignment="Center"
-                                    Text="{DynamicResource window_settings_songify_api_token}" />
-                                <Grid Grid.Column="1" Margin="6,0">
-                                    <!--  Password Box  -->
-                                    <PasswordBox
-                                        x:Name="PasswordBox"
-                                        Height="30"
-                                        Padding="0,0,30,0"
-                                        VerticalContentAlignment="Center"
-                                        PasswordChanged="PasswordBox_OnPasswordChanged" />
-                                    <!--  Text Box (plain text)  -->
-                                    <TextBox
-                                        x:Name="TextBox"
-                                        Height="30"
-                                        Padding="0,0,30,0"
-                                        VerticalAlignment="Center"
-                                        VerticalContentAlignment="Center"
-                                        Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                        TextChanged="TextBox_OnTextChanged"
-                                        Visibility="Collapsed" />
-                                    <!--  Eye Icon Button  -->
-                                    <Button
-                                        x:Name="ShowHideButton"
-                                        Width="24"
-                                        Height="24"
-                                        MinWidth="0"
-                                        Margin="0,0,3,0"
-                                        Padding="0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        Background="Transparent"
-                                        BorderBrush="Transparent"
-                                        BorderThickness="0"
-                                        Click="ShowHideButton_OnClick"
-                                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
-                                        <iconPacks:PackIconFontAwesome
-                                            x:Name="EyeIcon"
-                                            Width="20"
-                                            Height="20"
-                                            Kind="EyeSlashSolid" />
-                                    </Button>
-                                </Grid>
-                                <Button
-                                    x:Name="btnApiToken"
-                                    Grid.Column="2"
-                                    Width="32"
-                                    d:Content="{x:Static local:Resources.common_help}"
-                                    Click="BtnApiToken_OnClick"
-                                    Content="{DynamicResource common_help}" />
-                            </Grid>
                         </Grid>
                     </ScrollViewer>
                 </Border>
@@ -480,8 +376,10 @@
                             Grid.Column="1"
                             Height="26"
                             VerticalAlignment="Center"
+                            d:ToolTip="{x:Static local:Resources.window_settings_output_format_hint}"
                             TextChanged="TxtbxOutputformat_TextChanged"
-                            TextWrapping="NoWrap">
+                            TextWrapping="NoWrap"
+                            ToolTip="{DynamicResource window_settings_output_format_hint}">
                             <TextBox.ContextMenu>
                                 <ContextMenu>
                                     <MenuItem
@@ -909,8 +807,10 @@
                                             Grid.Column="2"
                                             Margin="6,0,0,0"
                                             VerticalAlignment="Center"
+                                            d:ToolTip="{x:Static local:Resources.window_settings_twitch_refresh}"
                                             Click="BtnLogInTwitch_Click"
-                                            Tag="Main">
+                                            Tag="Main"
+                                            ToolTip="{DynamicResource window_settings_twitch_refresh}">
                                             <Button.Style>
                                                 <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                                                     <Style.Triggers>
@@ -926,7 +826,7 @@
                                             <iconPacks:ForkAwesome
                                                 Width="15"
                                                 Height="15"
-                                                Kind="SignOut" />
+                                                Kind="Refresh" />
                                         </Button>
                                     </Grid>
                                 </StackPanel>
@@ -1019,8 +919,10 @@
                                             Grid.Column="2"
                                             Margin="6,0,0,0"
                                             VerticalAlignment="Center"
-                                            Click="BtnTwitchLogout_OnClick"
-                                            Tag="Main">
+                                            d:ToolTip="{x:Static local:Resources.window_settings_twitch_refresh}"
+                                            Click="BtnLogInTwitchBot_OnClick"
+                                            Tag="Bot"
+                                            ToolTip="{DynamicResource window_settings_twitch_refresh}">
                                             <Button.Style>
                                                 <Style BasedOn="{StaticResource {x:Type Button}}" TargetType="Button">
                                                     <Style.Triggers>
@@ -1425,7 +1327,6 @@
                                     </ListBox.ItemContainerStyle>
                                 </ListBox>
                             </TabItem>
-                            <TabItem Header="|" IsEnabled="False" />
                             <TabItem Header="{DynamicResource window_settings_tab_refund_conditions}">
                                 <StackPanel Orientation="Vertical">
                                     <TextBlock Margin="6,6" Text="{DynamicResource window_settings_refund_conditions_info}" />
@@ -1534,8 +1435,8 @@
             <TabItem
                 x:Name="TabItemTwitchPoll"
                 Padding="20,0,0,0"
-                d:Header="Polls"
-                Header="Polls"
+                d:Header="{x:Static local:Resources.window_settings_tab_polls}"
+                Header="{DynamicResource window_settings_tab_polls}"
                 Tag="TwitchPolls"
                 Visibility="Visible">
                 <Border
@@ -1704,8 +1605,17 @@
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
-                    <Grid Margin="10,12,0,0">
-                        <StackPanel VerticalAlignment="Top" Orientation="Vertical">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel
+                            Margin="10,12,10,16"
+                            VerticalAlignment="Top"
+                            Orientation="Vertical">
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                d:Text="{x:Static local:Resources.window_settings_section_general}"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{DynamicResource window_settings_section_general}" />
                             <StackPanel
                                 HorizontalAlignment="Stretch"
                                 VerticalAlignment="Top"
@@ -1720,8 +1630,7 @@
                                         d:Content="{x:Static local:Resources.window_settings_spotify_sr_reward}"
                                         Content="{DynamicResource window_settings_spotify_sr_reward}"
                                         ContentPadding="0"
-                                        Focusable="False"
-                                        FontFamily="Segoe UI"
+                                                                                FontFamily="Segoe UI"
                                         FontSize="12"
                                         Toggled="Chbx_TwReward_Checked" />
                                     <Button
@@ -1738,8 +1647,7 @@
                                     d:Content="{x:Static local:Resources.window_settings_spotify_sr_clear_queue}"
                                     Content="{DynamicResource window_settings_spotify_sr_clear_queue}"
                                     ContentPadding="0"
-                                    Focusable="False"
-                                    FontFamily="Segoe UI"
+                                                                        FontFamily="Segoe UI"
                                     FontSize="12"
                                     Toggled="Chbx_AutoClear_Checked" />
                             </StackPanel>
@@ -1758,7 +1666,7 @@
                                         SelectedIndex="0"
                                         SelectionChanged="Selector_OnSelectionChanged">
                                         <ComboBox.Items>
-                                            <ComboBoxItem d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_command}" Content="{DynamicResource window_settings_spotify_sr_user_levels_command}">
+                                            <ComboBoxItem x:Name="CbiAllowedUserLevelsCommandSummary" d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_command}" Content="{DynamicResource window_settings_spotify_sr_user_levels_command}">
                                                 <ComboBoxItem.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
                                                         <Style.Triggers>
@@ -1862,13 +1770,14 @@
                                         Content="{DynamicResource window_settings_spotify_sr_userlevel_reward}" />
                                     <ComboBox
                                         x:Name="CbxAllowedUserLevelsReward"
-                                        Width="185"
+                                        Width="220"
                                         HorizontalAlignment="Right"
                                         IsReadOnly="True"
                                         SelectedIndex="0"
-                                        SelectionChanged="Selector_OnSelectionChanged">
+                                        SelectionChanged="Selector_OnSelectionChanged"
+                                        ToolTip="{Binding Content, ElementName=CbiAllowedUserLevelsRewardSummary}">
                                         <ComboBox.Items>
-                                            <ComboBoxItem d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_reward}" Content="{DynamicResource window_settings_spotify_sr_user_levels_reward}">
+                                            <ComboBoxItem x:Name="CbiAllowedUserLevelsRewardSummary" d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_reward}" Content="{DynamicResource window_settings_spotify_sr_user_levels_reward}">
                                                 <ComboBoxItem.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
                                                         <Style.Triggers>
@@ -1979,6 +1888,12 @@
                                         DockPanel.Dock="Right"
                                         SelectionChanged="CbxUserLevels_SelectionChanged" />
                                 </DockPanel>
+                                <TextBlock
+                                    Margin="0,12,0,6"
+                                    d:Text="{x:Static local:Resources.window_settings_section_limits}"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{DynamicResource window_settings_section_limits}" />
                                 <DockPanel
                                     Margin="0,6,0,0"
                                     LastChildFill="False"
@@ -2023,8 +1938,9 @@
                                         <Button
                                             x:Name="BtnSync"
                                             Height="28"
+                                            d:ToolTip="{x:Static local:Resources.window_settings_sync_user_levels}"
                                             Click="BtnSync_Click"
-                                            ToolTip="Sync to all user levels">
+                                            ToolTip="{DynamicResource window_settings_sync_user_levels}">
                                             <Button.Content>
                                                 <iconPacks:PackIconForkAwesome
                                                     Width="14"
@@ -2044,7 +1960,95 @@
                                         </Button>
                                     </StackPanel>
                                 </DockPanel>
-                                <StackPanel HorizontalAlignment="Right" Orientation="Vertical">
+                                <DockPanel Margin="0,6,0,0">
+                                    <Label
+                                        Margin="0,0,0,0"
+                                        Padding="0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        d:Content="{x:Static local:Resources.window_settings_spotify_sr_command_cd}"
+                                        Content="{DynamicResource window_settings_spotify_sr_command_cd}" />
+                                    <StackPanel
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        DockPanel.Dock="Right"
+                                        Orientation="Horizontal">
+                                        <controls:NumericUpDown
+                                            x:Name="NudCooldown"
+                                            Width="90"
+                                            Height="28"
+                                            DecimalPointCorrection="Number"
+                                            DockPanel.Dock="Right"
+                                            Interval="1"
+                                            Maximum="3600"
+                                            Minimum="1"
+                                            NumericInputMode="Numbers"
+                                            ValueChanged="NudCooldown_ValueChanged" />
+                                        <Label>s</Label>
+                                        <TextBlock
+                                            Name="GlobalCooldownDisplay"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{DynamicResource window_settings_time_placeholder}" />
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel Margin="0,6,0,0">
+                                    <Label
+                                        Margin="0,0,0,0"
+                                        Padding="0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        d:Content="{x:Static local:Resources.window_settings_spotify_sr_command_cd_user}"
+                                        Content="{DynamicResource window_settings_spotify_sr_command_cd_user}" />
+                                    <StackPanel
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        DockPanel.Dock="Right"
+                                        Orientation="Horizontal">
+                                        <controls:NumericUpDown
+                                            Name="NudCooldownPerUser"
+                                            Width="90"
+                                            Height="28"
+                                            Interval="1"
+                                            Maximum="3600"
+                                            Minimum="0"
+                                            NumericInputMode="Numbers"
+                                            ValueChanged="CooldownSpinner_OnValueChangedpinner_ValueChanged"
+                                            Value="0" />
+                                        <Label>s</Label>
+                                        <TextBlock
+                                            Name="UserCooldownDisplay"
+                                            Margin="10,0,0,0"
+                                            VerticalAlignment="Center"
+                                            Text="{DynamicResource window_settings_time_placeholder}" />
+                                    </StackPanel>
+                                </DockPanel>
+                                <DockPanel Margin="0,6,0,0">
+                                    <Label
+                                        Padding="0"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        d:Content="{x:Static local:Resources.window_settings_spotify_sr_max_length}"
+                                        Content="{DynamicResource window_settings_spotify_sr_max_length}" />
+                                    <controls:NumericUpDown
+                                        x:Name="NudMaxlength"
+                                        Width="151"
+                                        Height="28"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Top"
+                                        DecimalPointCorrection="Number"
+                                        DockPanel.Dock="Right"
+                                        Interval="1"
+                                        Maximum="100"
+                                        Minimum="1"
+                                        NumericInputMode="Numbers"
+                                        ValueChanged="NudMaxlength_ValueChanged" />
+                                </DockPanel>
+                                <StackPanel
+                                    Margin="0,6,0,0"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Vertical">
                                     <controls:ToggleSwitch
                                         x:Name="ToggleSwitchUnlimitedSr"
                                         HorizontalAlignment="Right"
@@ -2072,11 +2076,11 @@
                                             </Style>
                                         </ComboBox.Style>
                                         <ComboBox.Items>
-                                            <ComboBoxItem d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_command}" Content="{DynamicResource window_settings_spotify_sr_user_levels_command}">
+                                            <ComboBoxItem x:Name="CbiUnlimitedCommandSummary" d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_command}" Content="{DynamicResource window_settings_spotify_sr_user_levels_command}">
                                                 <ComboBoxItem.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxAllowedUserLevelsReward}" Value="True">
+                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxUnlimitedUserLevelsCommand}" Value="True">
                                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -2188,11 +2192,11 @@
                                             </Style>
                                         </ComboBox.Style>
                                         <ComboBox.Items>
-                                            <ComboBoxItem d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_reward}" Content="{DynamicResource window_settings_spotify_sr_user_levels_reward}">
+                                            <ComboBoxItem x:Name="CbiUnlimitedRewardSummary" d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_reward}" Content="{DynamicResource window_settings_spotify_sr_user_levels_reward}">
                                                 <ComboBoxItem.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
                                                         <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxAllowedUserLevelsReward}" Value="True">
+                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxUnlimitedUserLevelsReward}" Value="True">
                                                                 <Setter Property="Visibility" Value="Collapsed" />
                                                             </DataTrigger>
                                                         </Style.Triggers>
@@ -2284,91 +2288,12 @@
                                         </ComboBox.Items>
                                     </ComboBox>
                                 </StackPanel>
-                                <DockPanel Margin="0,6,0,0">
-                                    <Label
-                                        Margin="0,0,0,0"
-                                        Padding="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        d:Content="{x:Static local:Resources.window_settings_spotify_sr_command_cd}"
-                                        Content="{DynamicResource window_settings_spotify_sr_command_cd}" />
-                                    <StackPanel
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        DockPanel.Dock="Right"
-                                        Orientation="Horizontal">
-                                        <controls:NumericUpDown
-                                            x:Name="NudCooldown"
-                                            Width="90"
-                                            Height="28"
-                                            DecimalPointCorrection="Number"
-                                            DockPanel.Dock="Right"
-                                            Interval="1"
-                                            Maximum="3600"
-                                            Minimum="1"
-                                            NumericInputMode="Numbers"
-                                            ValueChanged="NudCooldown_ValueChanged" />
-                                        <Label>s</Label>
-                                        <TextBlock
-                                            Name="GlobalCooldownDisplay"
-                                            Margin="10,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="{DynamicResource window_settings_time_placeholder}" />
-                                    </StackPanel>
-                                </DockPanel>
-                                <DockPanel Margin="0,6,0,0">
-                                    <Label
-                                        Margin="0,0,0,0"
-                                        Padding="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        d:Content="{x:Static local:Resources.window_settings_spotify_sr_command_cd_user}"
-                                        Content="{DynamicResource window_settings_spotify_sr_command_cd_user}" />
-                                    <StackPanel
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        DockPanel.Dock="Right"
-                                        Orientation="Horizontal">
-                                        <controls:NumericUpDown
-                                            Name="NudCooldownPerUser"
-                                            Width="90"
-                                            Height="28"
-                                            Interval="1"
-                                            Maximum="3600"
-                                            Minimum="0"
-                                            NumericInputMode="Numbers"
-                                            ValueChanged="CooldownSpinner_OnValueChangedpinner_ValueChanged"
-                                            Value="0" />
-                                        <Label>s</Label>
-                                        <TextBlock
-                                            Name="UserCooldownDisplay"
-                                            Margin="10,0,0,0"
-                                            VerticalAlignment="Center"
-                                            Text="{DynamicResource window_settings_time_placeholder}" />
-                                    </StackPanel>
-                                </DockPanel>
-                                <DockPanel Margin="0,6,0,0">
-                                    <Label
-                                        Padding="0"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Center"
-                                        d:Content="{x:Static local:Resources.window_settings_spotify_sr_max_length}"
-                                        Content="{DynamicResource window_settings_spotify_sr_max_length}" />
-                                    <controls:NumericUpDown
-                                        x:Name="NudMaxlength"
-                                        Width="151"
-                                        Height="28"
-                                        Padding="0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Top"
-                                        DecimalPointCorrection="Number"
-                                        DockPanel.Dock="Right"
-                                        Interval="1"
-                                        Maximum="100"
-                                        Minimum="1"
-                                        NumericInputMode="Numbers"
-                                        ValueChanged="NudMaxlength_ValueChanged" />
-                                </DockPanel>
+                                <TextBlock
+                                    Margin="0,12,0,6"
+                                    d:Text="{x:Static local:Resources.window_settings_section_filters}"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{DynamicResource window_settings_section_filters}" />
                                 <controls:ToggleSwitch
                                     x:Name="Tglsw_BlockAllExplicitSongs"
                                     Width="470"
@@ -2377,18 +2302,24 @@
                                     d:Content="{x:Static local:Resources.window_settings_spotify_sr_block_explicit}"
                                     Content="{DynamicResource window_settings_spotify_sr_block_explicit}"
                                     ContentPadding="0"
-                                    Focusable="False"
                                     FontFamily="Segoe UI"
                                     FontSize="12"
                                     Toggled="Chbx_BlockAllExplicit_Checked" />
                                 <controls:ToggleSwitch
                                     x:Name="Tglsw_OnlyAddToPlaylist"
+                                    Margin="0,6,0,0"
                                     d:Content="{x:Static local:Resources.window_settings_only_add_to_playlist}"
                                     Content="{DynamicResource window_settings_spotify_sr_add_only_to_playlist}"
                                     ContentPadding="0"
                                     FontFamily="Segoe UI"
                                     FontSize="12"
                                     Toggled="Tglsw_OnlyAddToPlaylist_OnToggled" />
+                                <TextBlock
+                                    Margin="0,12,0,6"
+                                    d:Text="{x:Static local:Resources.window_settings_section_bits}"
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Text="{DynamicResource window_settings_section_bits}" />
                                 <DockPanel>
                                     <controls:ToggleSwitch
                                         x:Name="Tglsw_BitsForSr"
@@ -2424,7 +2355,7 @@
                                 </DockPanel>
                             </StackPanel>
                         </StackPanel>
-                    </Grid>
+                    </ScrollViewer>
                 </Border>
             </TabItem>
             <TabItem
@@ -2531,215 +2462,217 @@
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
-                    <Grid Margin="10,16,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <DockPanel
-                            x:Name="PnlSpotify"
-                            Margin="0,0,0,6"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Top">
-                            <Border
-                                Width="60"
-                                Height="60"
-                                BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
-                                BorderThickness="3"
-                                CornerRadius="30">
-                                <Border.Background>
-                                    <ImageBrush
-                                        x:Name="ImgSpotifyProfile"
-                                        Opacity="1"
-                                        Stretch="Fill" />
-                                </Border.Background>
-                                <iconPacks:PackIconBootstrapIcons
-                                    x:Name="ImgSpotifyProfilePlaceholder"
-                                    Width="35"
-                                    Height="35"
-                                    HorizontalAlignment="Center"
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="10,16,10,16">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <DockPanel
+                                x:Name="PnlSpotify"
+                                Margin="0,0,0,6"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Top">
+                                <Border
+                                    Width="60"
+                                    Height="60"
+                                    BorderBrush="{DynamicResource MahApps.Brushes.Accent}"
+                                    BorderThickness="3"
+                                    CornerRadius="30">
+                                    <Border.Background>
+                                        <ImageBrush
+                                            x:Name="ImgSpotifyProfile"
+                                            Opacity="1"
+                                            Stretch="Fill" />
+                                    </Border.Background>
+                                    <iconPacks:PackIconBootstrapIcons
+                                        x:Name="ImgSpotifyProfilePlaceholder"
+                                        Width="35"
+                                        Height="35"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Kind="Person" />
+                                </Border>
+                                <Label
+                                    x:Name="LblSpotifyAcc"
+                                    Margin="16,0,0,0"
+                                    HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
-                                    Kind="Person" />
-                            </Border>
+                                    d:Content="{x:Static local:Resources.window_settings_integration_spotify_linked}"
+                                    Content="{DynamicResource window_settings_integration_spotify_linked}" />
+                            </DockPanel>
+                            <Button
+                                x:Name="BtnSpotifyLink"
+                                Grid.Row="0"
+                                Width="90"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                d:Content="{x:Static local:Resources.window_settings_integration_link}"
+                                Click="Btn_spotifyLink_Click"
+                                Content="{DynamicResource window_settings_integration_link}" />
+                            <controls:ToggleSwitch
+                                x:Name="TglswSpotify"
+                                Grid.Row="1"
+                                Margin="0,0,0,6"
+                                Padding="5,0,0,0"
+                                VerticalAlignment="Top"
+                                d:OffContent="{x:Static local:Resources.window_settings_spotify_use_songify_app}"
+                                d:OnContent="{x:Static local:Resources.window_settings_spotify_use_own_app}"
+                                ContentPadding="0"
+                                FontFamily="Segoe UI"
+                                FontSize="12"
+                                IsOn="True"
+                                OffContent="{DynamicResource window_settings_spotify_use_songify_app}"
+                                OnContent="{DynamicResource window_settings_spotify_use_own_app}"
+                                Toggled="Tglsw_Spotify_IsCheckedChanged"
+                                Visibility="Collapsed" />
+                            <StackPanel
+                                Grid.Row="2"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <TextBox
+                                    x:Name="TbClientId"
+                                    Width="232"
+                                    Height="23"
+                                    Margin="0,0,6,0"
+                                    VerticalAlignment="Top"
+                                    TextChanged="Tb_ClientID_TextChanged"
+                                    TextWrapping="Wrap" />
+                                <Button
+                                    x:Name="BtnOwnAppHelp"
+                                    Width="32"
+                                    Margin="0,0,0,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Stretch"
+                                    VerticalContentAlignment="Center"
+                                    Click="Btn_OwnAppHelp_Click"
+                                    Content="{DynamicResource common_help}" />
+                            </StackPanel>
+                            <PasswordBox
+                                x:Name="TbClientSecret"
+                                Grid.Row="3"
+                                Width="270"
+                                Height="23"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                IsEnabled="False"
+                                PasswordChanged="Tb_ClientSecret_PasswordChanged"
+                                Visibility="Collapsed" />
                             <Label
-                                x:Name="LblSpotifyAcc"
-                                Margin="16,0,0,0"
+                                Grid.Row="2"
+                                Margin="0,0,0,6"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{DynamicResource window_settings_client_id}" />
+                            <Label
+                                Grid.Row="3"
+                                Margin="0,0,0,6"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Top"
+                                Content="{DynamicResource window_settings_client_secret}"
+                                Visibility="Collapsed" />
+
+                            <Label
+                                Grid.Row="4"
+                                d:Content="{x:Static local:Resources.window_settings_spotify_songlike_label}"
+                                d:ToolTip="{x:Static local:Resources.window_settings_spotify_songlike_tooltip}"
+                                Content="{DynamicResource window_settings_spotify_songlike_label}"
+                                ToolTip="{DynamicResource window_settings_spotify_songlike_tooltip}" />
+                            <StackPanel
+                                Grid.Row="4"
+                                Width="270"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <ComboBox
+                                    x:Name="CbSpotifyPlaylist"
+                                    Width="238"
+                                    Margin="0,0,6,0"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    MaxDropDownHeight="300"
+                                    SelectionChanged="Cb_SpotifyPlaylist_SelectionChanged" />
+                                <Button
+                                    x:Name="BtnReloadPlaylists"
+                                    Width="26"
+                                    Height="26"
+                                    HorizontalAlignment="Right"
+                                    Click="BtnReloadPlaylists_Click">
+                                    <Button.Content>
+                                        <iconPacks:PackIconForkAwesome
+                                            Width="12"
+                                            Height="12"
+                                            Kind="Refresh" />
+                                    </Button.Content>
+                                </Button>
+                            </StackPanel>
+                            <StackPanel
+                                Grid.Row="5"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    Width="223"
+                                    Padding="0,5,5,5"
+                                    d:Text="{x:Static local:Resources.window_settings_spotify_add_to_playlist}"
+                                    Text="{DynamicResource window_settings_spotify_add_to_playlist}"
+                                    TextWrapping="Wrap" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglAddToPlaylist"
+                                    Width="46"
+                                    MinWidth="46"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="TglAddToPlaylist_Toggled" />
+                            </StackPanel>
+                            <TextBlock
+                                Grid.Row="7"
                                 HorizontalAlignment="Left"
                                 VerticalAlignment="Center"
-                                d:Content="{x:Static local:Resources.window_settings_integration_spotify_linked}"
-                                Content="{DynamicResource window_settings_integration_spotify_linked}" />
-                        </DockPanel>
-                        <Button
-                            x:Name="BtnSpotifyLink"
-                            Grid.Row="0"
-                            Width="90"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Center"
-                            d:Content="{x:Static local:Resources.window_settings_integration_link}"
-                            Click="Btn_spotifyLink_Click"
-                            Content="{DynamicResource window_settings_integration_link}" />
-                        <controls:ToggleSwitch
-                            x:Name="TglswSpotify"
-                            Grid.Row="1"
-                            Margin="0,0,0,6"
-                            Padding="5,0,0,0"
-                            VerticalAlignment="Top"
-                            d:OffContent="{x:Static local:Resources.window_settings_spotify_use_songify_app}"
-                            d:OnContent="{x:Static local:Resources.window_settings_spotify_use_own_app}"
-                            ContentPadding="0"
-                            FontFamily="Segoe UI"
-                            FontSize="12"
-                            IsOn="True"
-                            OffContent="{DynamicResource window_settings_spotify_use_songify_app}"
-                            OnContent="{DynamicResource window_settings_spotify_use_own_app}"
-                            Toggled="Tglsw_Spotify_IsCheckedChanged"
-                            Visibility="Collapsed" />
-                        <StackPanel
-                            Grid.Row="2"
-                            HorizontalAlignment="Right"
-                            Orientation="Horizontal">
-                            <TextBox
-                                x:Name="TbClientId"
-                                Width="232"
-                                Height="23"
-                                Margin="0,0,6,0"
-                                VerticalAlignment="Top"
-                                TextChanged="Tb_ClientID_TextChanged"
-                                TextWrapping="Wrap" />
-                            <Button
-                                x:Name="BtnOwnAppHelp"
-                                Width="32"
-                                Margin="0,0,0,6"
+                                Text="{DynamicResource window_settings_spotify_fetch_rate}" />
+                            <controls:NumericUpDown
+                                x:Name="NudSpotifyFetchRate"
+                                Grid.Row="7"
+                                Width="270"
+                                Margin="0,6"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Stretch"
-                                VerticalContentAlignment="Center"
-                                Click="Btn_OwnAppHelp_Click"
-                                Content="{DynamicResource common_help}" />
-                        </StackPanel>
-                        <PasswordBox
-                            x:Name="TbClientSecret"
-                            Grid.Row="3"
-                            Width="270"
-                            Height="23"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            IsEnabled="False"
-                            PasswordChanged="Tb_ClientSecret_PasswordChanged"
-                            Visibility="Collapsed" />
-                        <Label
-                            Grid.Row="2"
-                            Margin="0,0,0,6"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{DynamicResource window_settings_client_id}" />
-                        <Label
-                            Grid.Row="3"
-                            Margin="0,0,0,6"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Content="{DynamicResource window_settings_client_secret}"
-                            Visibility="Collapsed" />
-
-                        <Label
-                            Grid.Row="4"
-                            d:Content="{x:Static local:Resources.window_settings_spotify_songlike_label}"
-                            d:ToolTip="{x:Static local:Resources.window_settings_spotify_songlike_tooltip}"
-                            Content="{DynamicResource window_settings_spotify_songlike_label}"
-                            ToolTip="{DynamicResource window_settings_spotify_songlike_tooltip}" />
-                        <StackPanel
-                            Grid.Row="4"
-                            Width="270"
-                            HorizontalAlignment="Right"
-                            Orientation="Horizontal">
-                            <ComboBox
-                                x:Name="CbSpotifyPlaylist"
-                                Width="238"
-                                Margin="0,0,6,0"
+                                Maximum="30"
+                                Minimum="1"
+                                NumericInputMode="Numbers"
+                                ParsingNumberStyle="Integer"
+                                ValueChanged="NudSpotifyFetchRate_OnValueChanged"
+                                Value="1" />
+                            <StackPanel
+                                x:Name="PnlFetchGating"
+                                Grid.Row="8"
                                 HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                MaxDropDownHeight="300"
-                                SelectionChanged="Cb_SpotifyPlaylist_SelectionChanged" />
-                            <Button
-                                x:Name="BtnReloadPlaylists"
-                                Width="26"
-                                Height="26"
-                                HorizontalAlignment="Right"
-                                Click="BtnReloadPlaylists_Click">
-                                <Button.Content>
-                                    <iconPacks:PackIconForkAwesome
-                                        Width="12"
-                                        Height="12"
-                                        Kind="Refresh" />
-                                </Button.Content>
-                            </Button>
-                        </StackPanel>
-                        <StackPanel
-                            Grid.Row="5"
-                            HorizontalAlignment="Right"
-                            Orientation="Horizontal">
-                            <TextBlock
-                                Width="223"
-                                Padding="0,5,5,5"
-                                d:Text="{x:Static local:Resources.window_settings_spotify_add_to_playlist}"
-                                Text="{DynamicResource window_settings_spotify_add_to_playlist}"
-                                TextWrapping="Wrap" />
-                            <controls:ToggleSwitch
-                                x:Name="TglAddToPlaylist"
-                                Width="46"
-                                MinWidth="46"
-                                VerticalAlignment="Center"
-                                OffContent=""
-                                OnContent=""
-                                Toggled="TglAddToPlaylist_Toggled" />
-                        </StackPanel>
-                        <TextBlock
-                            Grid.Row="7"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Text="{DynamicResource window_settings_spotify_fetch_rate}" />
-                        <controls:NumericUpDown
-                            x:Name="NudSpotifyFetchRate"
-                            Grid.Row="7"
-                            Width="270"
-                            Margin="0,6"
-                            HorizontalAlignment="Right"
-                            Maximum="30"
-                            Minimum="1"
-                            NumericInputMode="Numbers"
-                            ParsingNumberStyle="Integer"
-                            ValueChanged="NudSpotifyFetchRate_OnValueChanged"
-                            Value="1" />
-                        <StackPanel
-                            x:Name="PnlFetchGating"
-                            Grid.Row="8"
-                            HorizontalAlignment="Right"
-                            Orientation="Horizontal">
-                            <TextBlock
-                                Width="223"
-                                Padding="0,5,5,5"
-                                VerticalAlignment="Center"
-                                d:Text="{x:Static local:Resources.window_settings_spotify_bypass_fetch_gate}"
-                                d:ToolTip="{x:Static local:Resources.window_settings_spotify_bypass_fetch_gate_tooltip}"
-                                Text="{DynamicResource window_settings_spotify_bypass_fetch_gate}"
-                                TextWrapping="Wrap"
-                                ToolTip="{DynamicResource window_settings_spotify_bypass_fetch_gate_tooltip}" />
-                            <controls:ToggleSwitch
-                                x:Name="TglBypassSpotifyFetchGate"
-                                Width="46"
-                                MinWidth="46"
-                                VerticalAlignment="Center"
-                                OffContent=""
-                                OnContent=""
-                                Toggled="TglBypassSpotifyFetchGate_OnToggled" />
-                        </StackPanel>
-                    </Grid>
+                                Orientation="Horizontal">
+                                <TextBlock
+                                    Width="223"
+                                    Padding="0,5,5,5"
+                                    VerticalAlignment="Center"
+                                    d:Text="{x:Static local:Resources.window_settings_spotify_bypass_fetch_gate}"
+                                    d:ToolTip="{x:Static local:Resources.window_settings_spotify_bypass_fetch_gate_tooltip}"
+                                    Text="{DynamicResource window_settings_spotify_bypass_fetch_gate}"
+                                    TextWrapping="Wrap"
+                                    ToolTip="{DynamicResource window_settings_spotify_bypass_fetch_gate_tooltip}" />
+                                <controls:ToggleSwitch
+                                    x:Name="TglBypassSpotifyFetchGate"
+                                    Width="46"
+                                    MinWidth="46"
+                                    VerticalAlignment="Center"
+                                    OffContent=""
+                                    OnContent=""
+                                    Toggled="TglBypassSpotifyFetchGate_OnToggled" />
+                            </StackPanel>
+                        </Grid>
+                    </ScrollViewer>
                 </Border>
             </TabItem>
             <TabItem Header="{DynamicResource window_settings_tab_youtube}" Tag="Youtube">
@@ -2873,125 +2806,188 @@
                     Margin="10,0,0,0"
                     BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
                     BorderThickness="2,0,0,0">
-                    <Grid Margin="10,12,0,0">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="32" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Button
-                            x:Name="BtnExportConfig"
-                            Grid.Row="0"
-                            Grid.Column="1"
-                            Width="170"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            d:Content="{x:Static local:Resources.window_settings_config_export}"
-                            Click="Btn_ExportConfig_Click"
-                            Content="{DynamicResource window_settings_config_export}" />
-                        <Button
-                            x:Name="BtnImportConfig"
-                            Grid.Row="1"
-                            Grid.Column="1"
-                            Width="170"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            d:Content="{x:Static local:Resources.window_settings_config_import}"
-                            Click="Btn_ImportConfig_Click"
-                            Content="{DynamicResource window_settings_config_import}"
-                            Visibility="Visible" />
-                        <Button
-                            x:Name="BtnResetConfig"
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Width="170"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            d:Content="{x:Static local:Resources.window_settings_config_reset}"
-                            Click="Btn_ResetConfig_Click"
-                            Content="{DynamicResource window_settings_config_reset}" />
-                        <Label
-                            Grid.Row="0"
-                            Grid.Column="0"
-                            Content="{DynamicResource window_settings_twitch_auth_ports}" />
-                        <StackPanel
-                            Grid.Row="1"
-                            Grid.RowSpan="2"
-                            Grid.Column="0"
-                            Orientation="Vertical">
+                    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+                        <StackPanel Margin="10,12,10,16">
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                d:Text="{x:Static local:Resources.window_settings_section_backup}"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{DynamicResource window_settings_section_backup}" />
+                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+                                <Button
+                                    x:Name="BtnExportConfig"
+                                    Width="170"
+                                    Margin="0,0,6,0"
+                                    d:Content="{x:Static local:Resources.window_settings_config_export}"
+                                    Click="Btn_ExportConfig_Click"
+                                    Content="{DynamicResource window_settings_config_export}" />
+                                <Button
+                                    x:Name="BtnImportConfig"
+                                    Width="170"
+                                    Margin="0,0,6,0"
+                                    d:Content="{x:Static local:Resources.window_settings_config_import}"
+                                    Click="Btn_ImportConfig_Click"
+                                    Content="{DynamicResource window_settings_config_import}" />
+                                <Button
+                                    x:Name="BtnResetConfig"
+                                    Width="170"
+                                    d:Content="{x:Static local:Resources.window_settings_config_reset}"
+                                    Click="Btn_ResetConfig_Click"
+                                    Content="{DynamicResource window_settings_config_reset}" />
+                            </StackPanel>
+
+                            <TextBlock
+                                Margin="0,20,0,6"
+                                d:Text="{x:Static local:Resources.window_settings_section_cloud}"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{DynamicResource window_settings_section_cloud}" />
                             <StackPanel Orientation="Horizontal">
-                                <Label Width="80" Content="{DynamicResource window_settings_redirect_port}" />
+                                <Button
+                                    x:Name="BtnSaveCloudSettings"
+                                    Margin="0,0,6,0"
+                                    Click="BtnSaveCloudSettings_OnClick">
+                                    <Button.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <iconPacks:PackIconForkAwesome
+                                                Width="12"
+                                                Height="12"
+                                                Kind="Upload" />
+                                            <TextBlock
+                                                Margin="6,0"
+                                                VerticalAlignment="Center"
+                                                Text="{DynamicResource window_settings_save_cloud}" />
+                                        </StackPanel>
+                                    </Button.Content>
+                                </Button>
+                                <Button x:Name="BtnRestoreCloudSettings" Click="BtnRestoreCloudSettings_OnClick">
+                                    <StackPanel Orientation="Horizontal">
+                                        <iconPacks:PackIconForkAwesome
+                                            Width="12"
+                                            Height="12"
+                                            Kind="Download" />
+                                        <TextBlock
+                                            Margin="6,0"
+                                            VerticalAlignment="Center"
+                                            Text="{DynamicResource window_settings_restore_cloud}" />
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                            <TextBlock
+                                x:Name="TblError"
+                                Margin="0,6,0,0"
+                                Foreground="Red" />
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                Opacity="0.85"
+                                Text="{DynamicResource window_settings_credentials_disclaimer}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Margin="0,20,0,6"
+                                d:Text="{x:Static local:Resources.window_settings_section_auth_ports}"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{DynamicResource window_settings_section_auth_ports}" />
+
+                            <StackPanel Margin="0,0,0,6" Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="{DynamicResource window_settings_redirect_port}" />
                                 <ComboBox
                                     x:Name="ComboboxRedirectPort"
-                                    MinWidth="100"
+                                    MinWidth="120"
                                     SelectionChanged="ComboboxRedirectPort_SelectionChanged" />
                             </StackPanel>
-                            <StackPanel Margin="0,6,0,0" Orientation="Horizontal">
-                                <Label Width="80" Content="{DynamicResource window_settings_fetch_port}" />
+                            <StackPanel Orientation="Horizontal">
+                                <Label
+                                    Width="100"
+                                    VerticalAlignment="Center"
+                                    Content="{DynamicResource window_settings_fetch_port}" />
                                 <ComboBox
                                     x:Name="ComboboxfetchPort"
-                                    MinWidth="100"
+                                    MinWidth="120"
                                     SelectionChanged="ComboboxfetchPort_SelectionChanged" />
                             </StackPanel>
-                        </StackPanel>
-                        <TextBlock
-                            Grid.Row="3"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="2"
-                            Margin="0,16,0,0"
-                            Text="{DynamicResource window_settings_credentials_disclaimer}"
-                            TextWrapping="Wrap" />
-                        <Button
-                            x:Name="BtnSaveCloudSettings"
-                            Grid.Row="4"
-                            Grid.Column="0"
-                            Margin="6"
-                            Click="BtnSaveCloudSettings_OnClick">
-                            <Button.Content>
-                                <StackPanel Orientation="Horizontal">
-                                    <iconPacks:PackIconForkAwesome
-                                        Width="12"
-                                        Height="12"
-                                        Kind="Upload" />
-                                    <TextBlock
-                                        Margin="6,0"
-                                        VerticalAlignment="Center"
-                                        Text="{DynamicResource window_settings_save_cloud}" />
-                                </StackPanel>
-                            </Button.Content>
-                        </Button>
-                        <Button
-                            x:Name="BtnRestoreCloudSettings"
-                            Grid.Row="4"
-                            Grid.Column="1"
-                            Margin="6"
-                            Click="BtnRestoreCloudSettings_OnClick">
-                            <StackPanel Orientation="Horizontal">
-                                <iconPacks:PackIconForkAwesome
-                                    Width="12"
-                                    Height="12"
-                                    Kind="Download" />
+
+                            <TextBlock
+                                Margin="0,20,0,6"
+                                d:Text="{x:Static local:Resources.window_settings_section_advanced}"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="{DynamicResource window_settings_section_advanced}" />
+                            <Grid Margin="0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
                                 <TextBlock
-                                    Margin="6,0"
+                                    Grid.Column="0"
                                     VerticalAlignment="Center"
-                                    Text="Restore Cloud Settings" />
-                            </StackPanel>
-                        </Button>
-                        <TextBlock
-                            x:Name="TblError"
-                            Grid.Row="5"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="2"
-                            Margin="6"
-                            Foreground="Red" />
-                    </Grid>
+                                    Text="{DynamicResource window_settings_songify_api_token}" />
+                                <Grid Grid.Column="1" Margin="6,0">
+                                    <!--  Password Box  -->
+                                    <PasswordBox
+                                        x:Name="PasswordBox"
+                                        Height="30"
+                                        Padding="0,0,30,0"
+                                        VerticalContentAlignment="Center"
+                                        PasswordChanged="PasswordBox_OnPasswordChanged" />
+                                    <!--  Text Box (plain text)  -->
+                                    <TextBox
+                                        x:Name="TextBox"
+                                        Height="30"
+                                        Padding="0,0,30,0"
+                                        VerticalAlignment="Center"
+                                        VerticalContentAlignment="Center"
+                                        Text="{Binding Password, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        TextChanged="TextBox_OnTextChanged"
+                                        Visibility="Collapsed" />
+                                    <!--  Eye Icon Button  -->
+                                    <Button
+                                        x:Name="ShowHideButton"
+                                        Width="24"
+                                        Height="24"
+                                        MinWidth="0"
+                                        Margin="0,0,3,0"
+                                        Padding="0"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        Click="ShowHideButton_OnClick"
+                                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
+                                        <iconPacks:PackIconFontAwesome
+                                            x:Name="EyeIcon"
+                                            Width="20"
+                                            Height="20"
+                                            Kind="EyeSlashSolid" />
+                                    </Button>
+                                </Grid>
+                                <Button
+                                    x:Name="btnApiToken"
+                                    Grid.Column="2"
+                                    Width="32"
+                                    d:Content="{x:Static local:Resources.common_help}"
+                                    Click="BtnApiToken_OnClick"
+                                    Content="{DynamicResource common_help}" />
+                            </Grid>
+                            <controls:ToggleSwitch
+                                x:Name="TglDebugLogging"
+                                Height="32"
+                                HorizontalAlignment="Stretch"
+                                d:Content="{x:Static local:Resources.window_settings_enable_debug_logging}"
+                                Content="{DynamicResource window_settings_enable_debug_logging}"
+                                ContentPadding="0"
+                                FontFamily="Segoe UI"
+                                FontSize="12"
+                                TabIndex="8"
+                                Toggled="TglDebugLogging_OnToggled" />
+                        </StackPanel>
+                    </ScrollViewer>
                 </Border>
             </TabItem>
         </TabControl>

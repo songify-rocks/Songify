@@ -13,8 +13,8 @@ namespace Songify_Slim.Util.Spotify;
 
 /// <summary>
 /// Throttled Windows toast notifications for Spotify UX (ApiCallMeter, OAuth, token refresh).
-/// Operational API errors (401/5xx/etc.) share a global quiet period so alternating failures do not spam toasts;
-/// the persistent banner still updates with counts.
+/// Non-429 API failures only notify after several consecutive failures; 429 rate limits notify immediately.
+/// Operational toasts also share a quiet period so alternating 401/500 do not spam.
 /// </summary>
 public static class SpotifyUserNotifier
 {
@@ -27,7 +27,11 @@ public static class SpotifyUserNotifier
     /// </summary>
     private static readonly TimeSpan OperationalToastQuietPeriod = TimeSpan.FromMinutes(3);
 
+    /// <summary>How many consecutive non-429 API failures are required before notifying the user.</summary>
+    private const int ConsecutiveFailuresBeforeNotify = 5;
+
     private static DateTimeOffset? _lastOperationalToastUtc;
+    private static int _consecutiveApiFailures;
 
     /// <summary>Fired when rate limit hint text changes; null or empty means cleared.</summary>
     public static event Action<string> RateLimitHintChanged;
@@ -36,6 +40,33 @@ public static class SpotifyUserNotifier
     /// Fired when persistent Spotify issues list changes.
     /// </summary>
     public static event Action<IReadOnlyList<SpotifyPersistentIssue>> PersistentIssuesChanged;
+
+    /// <summary>
+    /// Resets the consecutive non-429 failure streak (call after a successful Spotify API request).
+    /// </summary>
+    public static void ResetConsecutiveFailures()
+    {
+        lock (Gate)
+        {
+            _consecutiveApiFailures = 0;
+        }
+    }
+
+    /// <summary>
+    /// Records a non-429 API failure. Returns true once the streak reaches
+    /// <see cref="ConsecutiveFailuresBeforeNotify"/> (and on every failure after that until reset).
+    /// 429 handling should not call this.
+    /// </summary>
+    public static bool RegisterFailureAndShouldNotify()
+    {
+        lock (Gate)
+        {
+            if (_consecutiveApiFailures < int.MaxValue)
+                _consecutiveApiFailures++;
+
+            return _consecutiveApiFailures >= ConsecutiveFailuresBeforeNotify;
+        }
+    }
 
     /// <summary>
     /// Shows a toast unless the same throttle key was shown within <paramref name="minInterval"/>.

@@ -288,11 +288,11 @@
     <comment>Toggleswitch content for "Download album cover (only works with API)"</comment>
   </data>
   <data name="window_settings_output_pause_text" xml:space="preserve">
-    <value>Тэкст для паўзы</value>
+    <value>Тэкст паўзы</value>
     <comment>Toggleswitch content for "Pause Text"</comment>
   </data>
   <data name="window_settings_output_pause_watermark" xml:space="preserve">
-    <value>Адмысловы тэкст для паўзы (пуста для тэкставага файлу)</value>
+    <value>Адмысловы тэкст паўзы (пуста для тэкставага файлу)</value>
     <comment>Watermark content for the pause text textbox</comment>
   </data>
   <data name="window_settings_output_upload_song_info" xml:space="preserve">
@@ -495,7 +495,7 @@
     <value>Spotify не падключаны</value>
   </data>
   <data name="window_settings_integration_refund_wrong_player_requested" xml:space="preserve">
-    <value>Песня для іншага выканаўцы</value>
+    <value>Песня для іншага гульца</value>
   </data>
   <data name="window_settings_integration_refund_song_not_available" xml:space="preserve">
     <value>Песня недаступная ў рэгіёне</value>
@@ -822,7 +822,7 @@
     <comment>Toggleswitch content for "Use Own AppID"</comment>
   </data>
   <data name="window_settings_system_chrome_fetch_rate" xml:space="preserve">
-    <value>Хуткасць загрузкі Chrome (секунды)</value>
+    <value>Частата апытвання Chrome (секунды)</value>
     <comment>Label content for "Chrome fetch rate (seconds)"</comment>
   </data>
   <data name="menu_song_requests_queue_browser" xml:space="preserve">
@@ -1018,7 +1018,7 @@
     <value>Карыстальнік, які запусціў каманду або ўзнагароду канала</value>
   </data>
   <data name="param_cmd_description" xml:space="preserve">
-    <value>The chat command token the user sent (first word of the message)</value>
+    <value>Каманда чата, што даслаў карыстальнік (першае слова паведамлення)</value>
   </data>
   <data name="param_requester_description" xml:space="preserve">
     <value>Заказчык бягучай песні</value>
@@ -1361,10 +1361,10 @@
     <value>Прапусціць, калі перамагае гэты адказ</value>
   </data>
   <data name="window_settings_edit_commands_hint" xml:space="preserve">
-    <value>Рэдагаваць каманды па кліку на трыгер</value>
+    <value>Каб рэдагаваць каманды націсніце на трыгер (ПР: !song)</value>
   </data>
   <data name="window_settings_right_click_command_hint" xml:space="preserve">
-    <value>Клікні ПКМ па камандзе, каб рэгуляваць, хто можа яе выкарыстоўваць.</value>
+    <value>Націсніце ПКМ па камандзе, каб рэгуляваць, хто можа ёй карыстацца.</value>
   </data>
   <data name="window_settings_long_badge_names" xml:space="preserve">
     <value>Доўгія назвы значкоў</value>
@@ -1379,7 +1379,7 @@
     <value>Сакрэт</value>
   </data>
   <data name="window_settings_spotify_fetch_rate" xml:space="preserve">
-    <value>Інтэрвал запыту Spotify (секунды)</value>
+    <value>Частата апытвання Spotify (секунды)</value>
   </data>
   <data name="window_settings_youtube_api_key" xml:space="preserve">
     <value>API YouTube Ключ</value>
@@ -1394,7 +1394,7 @@
     <value>Порт пераадрасацыі:</value>
   </data>
   <data name="window_settings_fetch_port" xml:space="preserve">
-    <value>Порт запыту:</value>
+    <value>Порт апытвання:</value>
   </data>
   <data name="window_settings_credentials_disclaimer" xml:space="preserve">
     <value>Мы не захоўваем даныя Twitch і Spotify! Пры аднаўленні з воблака спатрэбіцца зноў увайсці ў Twitch і Spotify</value>
@@ -1439,13 +1439,13 @@
     <value>Songify v1.1.1-RC1 Copyright ©</value>
   </data>
   <data name="window_history_copy_url_tooltip" xml:space="preserve">
-    <value>Капіяваць гісторыю URL</value>
+    <value>Капіяваць гісторыю URL.</value>
   </data>
   <data name="window_apichart_seconds_rolling" xml:space="preserve">
     <value>Секунды (рухомы)</value>
   </data>
   <data name="window_apichart_requests_per_min" xml:space="preserve">
-    <value>Запытаў / хв</value>
+    <value>запытаў / хв</value>
   </data>
   <data name="window_patchnotes_title" xml:space="preserve">
     <value>Апісанне змен</value>
@@ -1655,9 +1655,60 @@
     <value>Адказ на адключаную каманду</value>
   </data>
   <data name="window_settings_spotify_show_toasts" xml:space="preserve">
-    <value>Адключыце апавяшчэнні Windows аб памылках Spotify.</value>
+    <value>Паказваць усплывальныя апавяшчэнні ад Spotify</value>
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
-    <value>Усплывальныя апавяшчэнні Windows аб абмежаваннях хуткасці Spotify, праблемах з уваходам у сістэму і памылках API. Банер у дадатку ўсё роўна з'яўляецца, калі гэтая функцыя выключана.</value>
+    <value>Усплывальныя апавяшчэнні Windows аб абмежаваннях частаты апытвання Spotify, праблемах з уваходам у сістэму і памылках API. Банер у праграме ўсё роўна будзе з'яўляцца, калі гэтая функцыя выключана.</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Галасаванне {0}с (чаканне)</value>
+    <comment>Context: Status bar chip when Spotify fetch interval is slowed due to idle/paused playback. {0} = seconds.</comment>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Галасаванне 1 хв (чаканне)</value>
+    <comment>Context: Status bar chip when Spotify idle fetch interval is at the 60s cap.</comment>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Частата апытвання Spotify запаволена падчас чакання (каб захаваць API-квоты). Націсніце, каб аднавіць звычайную частату ў Наладах.</value>
+    <comment>Context: Tooltip on the main window idle polling status chip.</comment>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Агульныя</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Абмежаванні</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Фільтры</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Bits</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Іншыя параметры</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Не абрана</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Пашыраныя налады</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Рэзервовая копія</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Воблака</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Парты аўтарызацыі Twitch</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Абнавіць уваход праз Twitch</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Сінхранізацыя з усімі ўзроўнямі карыстальнікаў</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Націсніце ПКМ каб уставіць параметр фарматравання (выканаўца, назва, заказчык, ...).</value>
   </data>
 </root>
