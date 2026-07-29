@@ -647,7 +647,7 @@ namespace Songify_Slim.Util.Songify.Twitch
                 await TwitchHandler.RunTwitchUserSync();
                 Logger.Info(LogSource.Twitch, $"Redeem: {eventData.Reward.Title} by {eventData.UserName}");
 
-                await TwitchHandler.HandleChannelPointSongRequst(
+                await TwitchHandler.HandleChannelPointSongRequest(
                     isBroadcaster: eventData.UserId == eventData.BroadcasterUserId,
                     userId: eventData.UserId,
                     userName: eventData.UserName,

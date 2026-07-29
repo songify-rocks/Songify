@@ -1477,6 +1477,57 @@
     <value>Windows-Benachrichtigungen für Spotify Rate-Limit, Anmeldeprobleme und API-Fehler werden angezeigt. Das In-App-Banner wird weiterhin angezeigt, auch wenn diese Option deaktiviert ist.</value>
   </data>
   <data name="window_settings_spotify_show_toasts" xml:space="preserve">
-    <value>Windows-Benachrichtigungen für Spotify-Fehler deaktivieren.</value>
+    <value>Spotify-Infobanner anzeigen</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Abfrage {0}s (Abwesend)</value>
+    <comment>Context: Status bar chip when Spotify fetch interval is slowed due to idle/paused playback. {0} = seconds.</comment>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Abfrage 1 min (Abwesend)</value>
+    <comment>Context: Status bar chip when Spotify idle fetch interval is at the 60s cap.</comment>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Spotify-Abruf im Leerlauf gedrosselt (API-Schutz). Zum Zurücksetzen in die Einstellungen klicken.</value>
+    <comment>Context: Tooltip on the main window idle polling status chip.</comment>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Allgemein</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Einschränkung</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Bits</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Weitere Einstellungen</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Erweitert</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Rechte Maustaste um Format Tokens einzufügen (Künstler, Titel, Anforderer, …)</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Keine Benutzer Level</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Cloud</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Twitch-Authentifizierungs-Ports</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Twitch-Login aktualisieren</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Zu allen Benutzer Leveln Synchronisieren</value>
   </data>
 </root>

@@ -718,6 +718,39 @@
                 </Grid>
             </Viewbox>
         </Grid>
+
+        <Button
+            x:Name="BtnSpotifyIdleBackoff"
+            Grid.Row="2"
+            Grid.Column="0"
+            Grid.ColumnSpan="2"
+            Margin="0,0,8,0"
+            Padding="4,0"
+            HorizontalAlignment="Center"
+            d:ToolTip="{x:Static local:Resources.window_main_spotify_idle_polling_tooltip}"
+            Click="BtnSpotifyIdleBackoff_Click"
+            Cursor="Hand"
+            Style="{StaticResource IconOnlyButton}"
+            ToolTip="{DynamicResource window_main_spotify_idle_polling_tooltip}"
+            Visibility="Collapsed">
+            <StackPanel Orientation="Horizontal">
+                <iconPacks:PackIconMaterial
+                    Width="12"
+                    Height="12"
+                    Margin="0,0,4,0"
+                    VerticalAlignment="Center"
+                    Foreground="IndianRed"
+                    Kind="SpeedometerSlow" />
+                <TextBlock
+                    x:Name="TbSpotifyIdleBackoff"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    FontWeight="Bold"
+                    Foreground="IndianRed"
+                    Text="Polling 20s (idle)" />
+            </StackPanel>
+        </Button>
+
         <StackPanel
             Grid.Row="2"
             Grid.Column="0"
@@ -873,6 +906,8 @@
                                     VerticalAlignment="Center"
                                     Kind="SolidCircle" />
                             </Button>
+
+
 
                             <Button
                                 Margin="0,0,8,0"

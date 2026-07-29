@@ -101,6 +101,28 @@ public static class TwitchHandler
     private static string _pendingOAuthState;
     private static Enums.TwitchAccount? _pendingOAuthAccount;
 
+    /// <summary>
+    /// Restores the normal Spotify fetch interval when chat/rewards indicate activity.
+    /// No-op unless Spotify is the connected player.
+    /// </summary>
+    private static void NotifySpotifyRelatedActivity()
+    {
+        Application app = Application.Current;
+        if (app == null)
+            return;
+
+        void Apply()
+        {
+            if (app.MainWindow is MainWindow mw)
+                mw.NotifySpotifyRelatedActivity();
+        }
+
+        if (app.Dispatcher.CheckAccess())
+            Apply();
+        else
+            _ = app.Dispatcher.BeginInvoke(Apply);
+    }
+
     public static async Task AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
     {
         Stopwatch sw = new();
@@ -1071,8 +1093,11 @@ public static class TwitchHandler
             });
 
             if (executed)
+            {
+                NotifySpotifyRelatedActivity();
                 Logger.Info(LogSource.Twitch,
                     $"Command \"{commandToken}\" by {msg.ChatterUserName}: Executed successfully.");
+            }
             else if (knownButDisabled)
             {
                 Logger.Warning(LogSource.Twitch,
@@ -1191,7 +1216,7 @@ public static class TwitchHandler
         if (input.StartsWith("https://open.spotify.com/"))
         {
             // Extract the ID using regular expressions
-            Match match = Regex.Match(input, @"/track/([^/?]+)");
+            Match match = Regex.Match(input, @"/track/([A-Za-z0-9]{22})(?![A-Za-z0-9])");
 
             if (match.Success)
             {
@@ -1220,6 +1245,9 @@ public static class TwitchHandler
     public static async Task HandleBitsSongRequest(string userId, string userName,
         string userInput, string channel)
     {
+        NotifySpotifyRelatedActivity();
+        userInput = NormalizeRequestInput(userInput);
+
         TwitchUser existingUser = GlobalObjects.TwitchUsers.FirstOrDefault(o => o.UserId == userId);
 
         int subtier = int.Parse(GlobalObjects.Subscribers.Where(s => s.UserId == userId)
@@ -1310,9 +1338,12 @@ public static class TwitchHandler
         }
     }
 
-    public static async Task HandleChannelPointSongRequst(bool isBroadcaster, string userId, string userName,
+    public static async Task HandleChannelPointSongRequest(bool isBroadcaster, string userId, string userName,
         string userInput, string channel, string rewardId, string redemptionId)
     {
+        NotifySpotifyRelatedActivity();
+        userInput = NormalizeRequestInput(userInput);
+
         if (GlobalObjects.TwitchUsers.Count == 0)
         {
             await RunTwitchUserSync();
@@ -1687,6 +1718,8 @@ public static class TwitchHandler
         }
 
         bool skipSucceeded;
+        NotifySpotifyRelatedActivity();
+
         switch (Settings.Player)
         {
             case Enums.PlayerType.Spotify:
@@ -2383,7 +2416,7 @@ public static class TwitchHandler
         }
 
         string requestInput = message.Message.Text.Contains(' ')
-            ? message.Message.Text.Substring(message.Message.Text.IndexOf(' ') + 1).Trim()
+            ? NormalizeRequestInput(message.Message.Text.Substring(message.Message.Text.IndexOf(' ') + 1))
             : string.Empty;
 
         if (string.IsNullOrWhiteSpace(requestInput))
@@ -2457,13 +2490,13 @@ public static class TwitchHandler
             case Enums.PlayerType.Spotify:
                 Logger.Info(LogSource.Songrequest,
                     $"[Command] Dispatching request to Spotify handler (user={message.ChatterUserName})");
-                await HandleSpotifyRequest(message, cmdParams, cmd);
+                await HandleSpotifyRequest(message, requestInput, cmdParams, cmd);
                 break;
             //case PlayerType.YtmDesktop:
             case Enums.PlayerType.Pear:
                 Logger.Info(LogSource.Songrequest,
                     $"[Command] Dispatching request to Pear/YouTube handler (user={message.ChatterUserName})");
-                await HandleYtmRequest(message, cmdParams, cmd);
+                await HandleYtmRequest(message, requestInput, cmdParams, cmd);
                 break;
 
             case Enums.PlayerType.WindowsPlayback:
@@ -2705,8 +2738,16 @@ public static class TwitchHandler
         };
     }
 
+    /// <summary>
+    /// Handles chat-based Spotify song requests after command intake has already normalized
+    /// and validated the request text.
+    /// </summary>
+    /// <param name="message">Original Twitch chat message that triggered the command.</param>
+    /// <param name="requestInput">Normalized request text extracted at ingress.</param>
+    /// <param name="cmdParams">Resolved user and command execution context.</param>
+    /// <param name="cmd">The command definition that routed to this handler.</param>
     // ReSharper disable once UnusedParameter.Local
-    private static async Task HandleSpotifyRequest(ChannelChatMessage message, TwitchCommandParams cmdParams, TwitchCommand cmd)
+    private static async Task HandleSpotifyRequest(ChannelChatMessage message, string requestInput, TwitchCommandParams cmdParams, TwitchCommand cmd)
     {
         if (SpotifyApiHandler.Client == null)
         {
@@ -2714,27 +2755,27 @@ public static class TwitchHandler
             return;
         }
 
-        string msg = message.Message.Text.Contains(' ')
-            ? message.Message.Text.Substring(message.Message.Text.IndexOf(' ') + 1)
-            : string.Empty;
-
-        string trackId = await GetTrackIdFromInput(msg.Trim());
+        string trackId = await GetTrackIdFromInput(requestInput);
 
         await AddSong(trackId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
     }
 
+    /// <summary>
+    /// Handles chat-based YouTube Music (Pear) song requests using the request text
+    /// that was already normalized at command ingress.
+    /// </summary>
+    /// <param name="message">Original Twitch chat message that triggered the command.</param>
+    /// <param name="requestInput">Normalized request text extracted at ingress.</param>
+    /// <param name="cmdParams">Resolved user and command execution context.</param>
+    /// <param name="cmd">The command definition that routed to this handler.</param>
     // ReSharper disable once UnusedParameter.Local
-    private static async Task HandleYtmRequest(ChannelChatMessage message, TwitchCommandParams cmdParams, TwitchCommand cmd)
+    private static async Task HandleYtmRequest(ChannelChatMessage message, string requestInput, TwitchCommandParams cmdParams, TwitchCommand cmd)
     {
         switch (Settings.Player)
         {
             case Enums.PlayerType.Pear:
                 {
-                    string msg = message.Message.Text.Contains(' ')
-                        ? message.Message.Text.Substring(message.Message.Text.IndexOf(' ') + 1)
-                        : string.Empty;
-
-                    await AddYtSong(msg.Trim(), TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
+                    await AddYtSong(requestInput, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
                     break;
                 }
 
@@ -2779,6 +2820,11 @@ public static class TwitchHandler
         }
 
         return parameters.Aggregate(source, (current, parameter) => current.Replace($"{{{parameter.Key}}}", parameter.Value));
+    }
+
+    private static string NormalizeRequestInput(string input)
+    {
+        return string.IsNullOrWhiteSpace(input) ? string.Empty : input.Trim();
     }
 
     public static void ResetTwitchSetting(Enums.TwitchAccount account)
@@ -3220,27 +3266,66 @@ public static class TwitchHandler
             Enums.AnnouncementColor.Primary => AnnouncementColors.Primary,
             _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
         };
+        
+        await _chatSendLock.WaitAsync();
         try
         {
-            if (BotTokenCheck != null)
-            {
-                await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
-                    Settings.TwitchBotUser.Id, msg, announcementColors,
-                    Settings.TwitchBotToken);
-                return;
-            }
+            // Enforce minimum gap to avoid Twitch "Too Many Requests" on rapid sends.
+            int elapsed = (int)(DateTime.UtcNow - _lastChatSentAt).TotalMilliseconds;
+            if (elapsed < ChatSendMinGapMs)
+                await Task.Delay(ChatSendMinGapMs - elapsed);
 
-            if (TokenCheck != null)
+            for (int attempt = 1; attempt <= 2; attempt++)
             {
-                await TwitchApi.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
-                    Settings.TwitchUser.Id, msg, announcementColors,
-                    Settings.TwitchAccessToken);
-                return;
+                try
+                {
+                    if (BotTokenCheck != null)
+                    {
+                        await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
+                            Settings.TwitchBotUser.Id, msg, announcementColors,
+                            Settings.TwitchBotToken);
+                        _lastChatSentAt = DateTime.UtcNow;
+                        Logger.Info(LogSource.Twitch, $"Twitch Chat: Announcement sent: {msg}");
+                        return;
+                    }
+
+                    if (TokenCheck != null)
+                    {
+                        await TwitchApi.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
+                            Settings.TwitchUser.Id, msg, announcementColors,
+                            Settings.TwitchAccessToken);
+                        _lastChatSentAt = DateTime.UtcNow;
+                        Logger.Info(LogSource.Twitch, $"Twitch Chat: Announcement sent: {msg}");
+                        return;
+                    }
+                    
+                    Logger.Warning(LogSource.Twitch, "No valid token available for announcement.");
+                    return;
+                }
+                catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException) when (attempt == 1)
+                {
+                    _lastChatSentAt = DateTime.UtcNow;
+                    Logger.Log(LogLevel.Warning, LogSource.Twitch,
+                        $"Twitch chat rate limited — waiting 1s before retry: {msg}");
+                    await Task.Delay(1000);
+                    // fall through to attempt 2
+                }
+                catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException)
+                {
+                    _lastChatSentAt = DateTime.UtcNow;
+                    Logger.Log(LogLevel.Warning, LogSource.Twitch,
+                        $"Twitch chat rate limited after retry — announcement dropped: {msg}");
+                    return;
+                }
             }
         }
         catch (Exception ex)
         {
             Logger.Error(LogSource.Twitch, "Could not send announcement. Has the bot been created through the app?", ex);
+        }
+        finally
+        {
+            _chatSendLock.Release();
         }
 
         await SendChatMessage($"{msg}");
@@ -4497,6 +4582,7 @@ public static class TwitchHandler
                 }
                 catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException) when (attempt == 1)
                 {
+                    _lastChatSentAt = DateTime.UtcNow;
                     Logger.Log(LogLevel.Warning, LogSource.Twitch,
                         $"Twitch chat rate limited — waiting 1s before retry: {message}");
                     await Task.Delay(1000);
@@ -4504,6 +4590,7 @@ public static class TwitchHandler
                 }
                 catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException)
                 {
+                    _lastChatSentAt = DateTime.UtcNow;
                     Logger.Log(LogLevel.Warning, LogSource.Twitch,
                         $"Twitch chat rate limited after retry — message dropped: {message}");
                     return;
@@ -4773,6 +4860,7 @@ public static class TwitchHandler
             switch (Settings.Player)
             {
                 case Enums.PlayerType.Spotify:
+                    NotifySpotifyRelatedActivity();
                     await SpotifyApiHandler.SkipSong();
                     break;
 
