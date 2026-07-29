@@ -1332,19 +1332,19 @@ namespace Songify_Slim.Util.Spotify
             return true;
         }
 
-        public static async Task SkipSong()
+        public static async Task<bool> SkipSong()
         {
             if (Client == null)
-                return;
+                return false;
             try
             {
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
-                await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(cts.Token), SoftLimitPerminute, cts.Token);
+                return await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(cts.Token), SoftLimitPerminute, cts.Token);
             }
             catch (Exception)
             {
-                // ignored
+                return false;
             }
         }
 
