@@ -190,8 +190,19 @@ public static class ApiCallMeter
             catch (APIException ex)
             {
                 if (key == "Playlists.Get" && ex.Message == "Resource not found")
+                {
                     Logger.Error(LogSource.Spotify,
                         $"Spotify API: Can't get public playlist Info. {FormatApiExceptionDetails(ex)}");
+                }
+                else if (ex.Response?.StatusCode == System.Net.HttpStatusCode.Forbidden &&
+                         ex.Message?.Contains("Restriction violated") == true)
+                {
+                    // 403 Restriction violated is expected when Spotify has no active playback
+                    // (e.g. nothing playing, no active device, or skip attempted on a restricted context).
+                    // Log at Warning level to avoid noise in the error log.
+                    Logger.Log(LogLevel.Warning, LogSource.Spotify,
+                        $"Spotify player restriction on '{key}' (no active playback or device): {FormatApiExceptionDetails(ex)}");
+                }
                 else
                 {
                     Logger.Error(LogSource.Spotify, $"Spotify API error on '{key}': {FormatApiExceptionDetails(ex)}");

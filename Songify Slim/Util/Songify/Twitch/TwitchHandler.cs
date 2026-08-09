@@ -81,6 +81,11 @@ public static class TwitchHandler
     private static readonly DispatcherTimer TwitchUserSyncTimer = new() { Interval = TimeSpan.FromSeconds(30) };
     private static readonly List<string> SkipVotes = [];
     private static readonly SemaphoreSlim Lock = new(1, 1);
+    // Twitch Helix SendChatMessage rate limit: ~3 req/s per channel.
+    // Enforce a minimum 400 ms gap between sends to stay well clear of the limit.
+    private static readonly SemaphoreSlim _chatSendLock = new(1, 1);
+    private static DateTime _lastChatSentAt = DateTime.MinValue;
+    private const int ChatSendMinGapMs = 400;
     private static readonly Stopwatch CooldownStopwatch = new();
     private static readonly Timer CooldownTimer = new() { Interval = TimeSpan.FromSeconds(Settings.TwSrCooldown < 1 ? 0 : Settings.TwSrCooldown).TotalMilliseconds };
     private static readonly Timer SkipCooldownTimer = new() { Interval = TimeSpan.FromSeconds(5).TotalMilliseconds };
@@ -1697,40 +1702,85 @@ public static class TwitchHandler
         return true;
     }
 
-    public static async Task<bool> HandleSkipReward()
+    public static async Task<bool> HandleSkipReward(string redemptionId = null, string rewardId = null)
     {
         if (GlobalObjects.CurrentSong.IsSongrequest() && Settings.SkipOnlyNonSrSongs)
+        {
+            await CancelSkipRedemption(rewardId, redemptionId);
             return true;
+        }
+
         // Skip song
         if (_skipCooldown)
+        {
+            await CancelSkipRedemption(rewardId, redemptionId);
             return true;
+        }
 
+        bool skipSucceeded;
         NotifySpotifyRelatedActivity();
 
         switch (Settings.Player)
         {
             case Enums.PlayerType.Spotify:
-                await SpotifyApiHandler.SkipSong();
+                skipSucceeded = await SpotifyApiHandler.SkipSong();
                 break;
 
             case Enums.PlayerType.Pear:
-                await PearApi.SkipAsync();
+                skipSucceeded = await PearApi.SkipAsync();
                 break;
 
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
             case Enums.PlayerType.BrowserCompanion:
+            case Enums.PlayerType.WindowsPlayback:
+                skipSucceeded = false;
                 break;
 
-            case Enums.PlayerType.WindowsPlayback:
             default:
                 throw new ArgumentOutOfRangeException();
+        }
+
+        if (!skipSucceeded)
+        {
+            Logger.Warning(LogSource.Twitch, $"Skip reward: {Settings.Player} skip failed — cancelling redemption.");
+            await CancelSkipRedemption(rewardId, redemptionId);
+            return true;
         }
 
         await SendChatMessage("Skipping current song...");
         _skipCooldown = true;
         SkipCooldownTimer.Start();
         return false;
+    }
+
+    private static async Task CancelSkipRedemption(string rewardId, string redemptionId)
+    {
+        if (string.IsNullOrEmpty(rewardId) || string.IsNullOrEmpty(redemptionId) || TwitchApi == null)
+            return;
+        try
+        {
+            GetCustomRewardsResponse resp = await TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(
+                broadcasterId: Settings.TwitchUser.Id,
+                rewardIds: [rewardId],
+                onlyManageableRewards: true,
+                accessToken: Settings.TwitchAccessToken
+            );
+            if (resp.Data == null || !resp.Data.Any())
+            {
+                Logger.Warning(LogSource.Twitch, "Skip reward: cannot cancel — reward not managed by Songify.");
+                return;
+            }
+
+            await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
+                Settings.TwitchUser.Id, rewardId,
+                [redemptionId],
+                new UpdateCustomRewardRedemptionStatusRequest { Status = CustomRewardRedemptionStatus.CANCELED });
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Twitch, "Skip reward: failed to cancel redemption", ex);
+        }
     }
 
     public static void InitializeCommands(List<TwitchCommand> commands)
@@ -3216,27 +3266,66 @@ public static class TwitchHandler
             Enums.AnnouncementColor.Primary => AnnouncementColors.Primary,
             _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
         };
+        
+        await _chatSendLock.WaitAsync();
         try
         {
-            if (BotTokenCheck != null)
-            {
-                await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
-                    Settings.TwitchBotUser.Id, msg, announcementColors,
-                    Settings.TwitchBotToken);
-                return;
-            }
+            // Enforce minimum gap to avoid Twitch "Too Many Requests" on rapid sends.
+            int elapsed = (int)(DateTime.UtcNow - _lastChatSentAt).TotalMilliseconds;
+            if (elapsed < ChatSendMinGapMs)
+                await Task.Delay(ChatSendMinGapMs - elapsed);
 
-            if (TokenCheck != null)
+            for (int attempt = 1; attempt <= 2; attempt++)
             {
-                await TwitchApi.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
-                    Settings.TwitchUser.Id, msg, announcementColors,
-                    Settings.TwitchAccessToken);
-                return;
+                try
+                {
+                    if (BotTokenCheck != null)
+                    {
+                        await _twitchApiBot.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
+                            Settings.TwitchBotUser.Id, msg, announcementColors,
+                            Settings.TwitchBotToken);
+                        _lastChatSentAt = DateTime.UtcNow;
+                        Logger.Info(LogSource.Twitch, $"Twitch Chat: Announcement sent: {msg}");
+                        return;
+                    }
+
+                    if (TokenCheck != null)
+                    {
+                        await TwitchApi.Helix.Chat.SendChatAnnouncementAsync(Settings.TwitchUser.Id,
+                            Settings.TwitchUser.Id, msg, announcementColors,
+                            Settings.TwitchAccessToken);
+                        _lastChatSentAt = DateTime.UtcNow;
+                        Logger.Info(LogSource.Twitch, $"Twitch Chat: Announcement sent: {msg}");
+                        return;
+                    }
+                    
+                    Logger.Warning(LogSource.Twitch, "No valid token available for announcement.");
+                    return;
+                }
+                catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException) when (attempt == 1)
+                {
+                    _lastChatSentAt = DateTime.UtcNow;
+                    Logger.Log(LogLevel.Warning, LogSource.Twitch,
+                        $"Twitch chat rate limited — waiting 1s before retry: {msg}");
+                    await Task.Delay(1000);
+                    // fall through to attempt 2
+                }
+                catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException)
+                {
+                    _lastChatSentAt = DateTime.UtcNow;
+                    Logger.Log(LogLevel.Warning, LogSource.Twitch,
+                        $"Twitch chat rate limited after retry — announcement dropped: {msg}");
+                    return;
+                }
             }
         }
         catch (Exception ex)
         {
             Logger.Error(LogSource.Twitch, "Could not send announcement. Has the bot been created through the app?", ex);
+        }
+        finally
+        {
+            _chatSendLock.Release();
         }
 
         await SendChatMessage($"{msg}");
@@ -4460,28 +4549,61 @@ public static class TwitchHandler
 
     private static async Task SendChatMessage(string message)
     {
+        await _chatSendLock.WaitAsync();
         try
         {
-            SendChatMessageResponse chatResponse = await TwitchApi.Helix.Chat.SendChatMessage(new
-                    SendChatMessageRequest
-            {
-                BroadcasterId = Settings.TwitchUser.Id,
-                SenderId = Settings.TwitchChatAccount.Id,
-                Message = message,
-                ReplyParentMessageId = null,
-                ForSourceOnly = null
-            }, Settings.TwitchChatAccount.Token.Replace("oauth:", "")
-            );
+            // Enforce minimum gap to avoid Twitch "Too Many Requests" on rapid sends.
+            int elapsed = (int)(DateTime.UtcNow - _lastChatSentAt).TotalMilliseconds;
+            if (elapsed < ChatSendMinGapMs)
+                await Task.Delay(ChatSendMinGapMs - elapsed);
 
-            ChatMessageInfo msgInfo = chatResponse.Data[0];
-            if (msgInfo.IsSent)
-                Logger.Info(LogSource.Twitch, $"Twitch Chat: Sent: {message}");
-            else
-                Logger.Error(LogSource.Twitch, $"Twitch Chat: Failed to send ({msgInfo.DropReason})");
+            for (int attempt = 1; attempt <= 2; attempt++)
+            {
+                try
+                {
+                    SendChatMessageResponse chatResponse = await TwitchApi.Helix.Chat.SendChatMessage(new
+                            SendChatMessageRequest
+                    {
+                        BroadcasterId = Settings.TwitchUser.Id,
+                        SenderId = Settings.TwitchChatAccount.Id,
+                        Message = message,
+                        ReplyParentMessageId = null,
+                        ForSourceOnly = null
+                    }, Settings.TwitchChatAccount.Token.Replace("oauth:", "")
+                    );
+
+                    _lastChatSentAt = DateTime.UtcNow;
+                    ChatMessageInfo msgInfo = chatResponse.Data[0];
+                    if (msgInfo.IsSent)
+                        Logger.Info(LogSource.Twitch, $"Twitch Chat: Sent: {message}");
+                    else
+                        Logger.Error(LogSource.Twitch, $"Twitch Chat: Failed to send ({msgInfo.DropReason})");
+                    return; // success — no retry needed
+                }
+                catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException) when (attempt == 1)
+                {
+                    _lastChatSentAt = DateTime.UtcNow;
+                    Logger.Log(LogLevel.Warning, LogSource.Twitch,
+                        $"Twitch chat rate limited — waiting 1s before retry: {message}");
+                    await Task.Delay(1000);
+                    // fall through to attempt 2
+                }
+                catch (TwitchLib.Api.Core.Exceptions.TooManyRequestsException)
+                {
+                    _lastChatSentAt = DateTime.UtcNow;
+                    Logger.Log(LogLevel.Warning, LogSource.Twitch,
+                        $"Twitch chat rate limited after retry — message dropped: {message}");
+                    return;
+                }
+            }
         }
         catch (Exception e)
         {
             Logger.Error(LogSource.Twitch, "Error sending chat message", e);
+        }
+        finally
+        {
+            _chatSendLock.Release();
         }
     }
 
