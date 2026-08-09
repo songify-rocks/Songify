@@ -74,6 +74,7 @@ public static class TwitchHandler
 {
     private static bool _onCooldown;
     private static bool _skipCooldown;
+    private static readonly Stopwatch SkipCooldownStopwatch = new();
     private static bool _syncTimerHooked;
     private static CancellationTokenSource _cts;
     private static IHost _host;
@@ -1704,7 +1705,7 @@ public static class TwitchHandler
         return true;
     }
 
-    public static async Task<bool> HandleSkipReward(string redemptionId = null, string rewardId = null)
+    public static async Task<bool> HandleSkipReward(string redemptionId = null, string rewardId = null, string userName = null)
     {
         if (GlobalObjects.CurrentSong.IsSongrequest() && Settings.SkipOnlyNonSrSongs)
         {
@@ -1712,10 +1713,11 @@ public static class TwitchHandler
             return true;
         }
 
-        // Skip song
+        // Shared global skip cooldown (reward + command + vote-skip).
         if (_skipCooldown)
         {
             await CancelSkipRedemption(rewardId, redemptionId);
+            await RespondSkipCooldownAsync(userName);
             return true;
         }
 
@@ -1751,8 +1753,7 @@ public static class TwitchHandler
         }
 
         await SendChatMessage("Skipping current song...");
-        _skipCooldown = true;
-        SkipCooldownTimer.Start();
+        StartSkipCooldown();
         return false;
     }
 
@@ -2218,7 +2219,10 @@ public static class TwitchHandler
             return;
 
         if (_skipCooldown)
+        {
+            await RespondSkipCooldownAsync(message.ChatterUserName);
             return;
+        }
 
         Application.Current.Dispatcher.Invoke(() =>
         {
@@ -2272,8 +2276,7 @@ public static class TwitchHandler
 
         SendOrAnnounceMessage(response, cmd);
 
-        _skipCooldown = true;
-        SkipCooldownTimer.Start();
+        StartSkipCooldown();
     }
 
     private static async Task HandleSongCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -2285,11 +2288,6 @@ public static class TwitchHandler
                 return;
 
             Logger.Log(LogLevel.Debug, LogSource.Twitch, "User is allowed");
-            Logger.Log(LogLevel.Debug, LogSource.Twitch, "Check if on Cooldown");
-
-            if (_skipCooldown)
-                return;
-            Logger.Log(LogLevel.Debug, LogSource.Twitch, "Not on Cooldown");
             Logger.Log(LogLevel.Debug, LogSource.Twitch, "Creating response");
 
             string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
@@ -2595,7 +2593,11 @@ public static class TwitchHandler
             }
         }
 
-        if (_skipCooldown) return;
+        if (_skipCooldown)
+        {
+            await RespondSkipCooldownAsync(message.ChatterUserName);
+            return;
+        }
         //Start a skip vote, add the user to SkipVotes, if at least 5 users voted, skip the song
         if (SkipVotes.Any(o => o == message.ChatterUserName)) return;
         SkipVotes.Add(message.ChatterUserName);
@@ -2635,8 +2637,7 @@ public static class TwitchHandler
         await SendChatMessage("Skipping song by vote...");
 
         SkipVotes.Clear();
-        _skipCooldown = true;
-        SkipCooldownTimer.Start();
+        StartSkipCooldown();
     }
 
     private static async Task HandleToggleSrCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -3273,9 +3274,11 @@ public static class TwitchHandler
         try
         {
             // Enforce minimum gap to avoid Twitch "Too Many Requests" on rapid sends.
-            int elapsed = (int)(DateTime.UtcNow - _lastChatSentAt).TotalMilliseconds;
-            if (elapsed < ChatSendMinGapMs)
-                await Task.Delay(ChatSendMinGapMs - elapsed);
+            // Do not cast TotalMilliseconds to int first — with DateTime.MinValue that overflows
+            // and produces a negative Task.Delay argument.
+            double elapsedMs = (DateTime.UtcNow - _lastChatSentAt).TotalMilliseconds;
+            if (elapsedMs >= 0 && elapsedMs < ChatSendMinGapMs)
+                await Task.Delay(ChatSendMinGapMs - (int)elapsedMs);
 
             for (int attempt = 1; attempt <= 2; attempt++)
             {
@@ -4559,9 +4562,11 @@ public static class TwitchHandler
         try
         {
             // Enforce minimum gap to avoid Twitch "Too Many Requests" on rapid sends.
-            int elapsed = (int)(DateTime.UtcNow - _lastChatSentAt).TotalMilliseconds;
-            if (elapsed < ChatSendMinGapMs)
-                await Task.Delay(ChatSendMinGapMs - elapsed);
+            // Do not cast TotalMilliseconds to int first — with DateTime.MinValue that overflows
+            // and produces a negative Task.Delay argument.
+            double elapsedMs = (DateTime.UtcNow - _lastChatSentAt).TotalMilliseconds;
+            if (elapsedMs is >= 0 and < ChatSendMinGapMs)
+                await Task.Delay(ChatSendMinGapMs - (int)elapsedMs);
 
             for (int attempt = 1; attempt <= 2; attempt++)
             {
@@ -4655,7 +4660,36 @@ public static class TwitchHandler
     private static void SkipCooldownTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
         _skipCooldown = false;
+        SkipCooldownStopwatch.Stop();
         SkipCooldownTimer.Stop();
+    }
+
+    private static void StartSkipCooldown()
+    {
+        _skipCooldown = true;
+        SkipCooldownStopwatch.Restart();
+        SkipCooldownTimer.Stop();
+        SkipCooldownTimer.Start();
+    }
+
+    private static int GetSkipCooldownRemainingSeconds()
+    {
+        double remaining = (SkipCooldownTimer.Interval / 1000.0) - SkipCooldownStopwatch.Elapsed.TotalSeconds;
+        return Math.Max(0, (int)Math.Ceiling(remaining));
+    }
+
+    private static async Task RespondSkipCooldownAsync(string userName)
+    {
+        int remaining = GetSkipCooldownRemainingSeconds();
+        string response = CreateResponse(new PlaceholderContext(GlobalObjects.CurrentSong)
+        {
+            User = userName ?? "",
+            Cd = remaining.ToString()
+        }, Settings.BotRespCooldown);
+
+        Logger.Info(LogSource.Twitch,
+            $"Skip on global cooldown ({remaining}s left) — notifying {(string.IsNullOrEmpty(userName) ? "chat" : userName)}.");
+        await SendChatMessage(response);
     }
 
     private static void StartCooldown()

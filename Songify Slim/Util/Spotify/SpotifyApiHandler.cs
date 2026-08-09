@@ -1338,6 +1338,8 @@ namespace Songify_Slim.Util.Spotify
                 return false;
             try
             {
+                await LogPlaybackStateBeforeSkipAsync().ConfigureAwait(false);
+
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
                 return await ApiCallMeter.RunAsync("Player.SkipNext", () => Client.Player.SkipNext(cts.Token), SoftLimitPerminute, cts.Token);
@@ -1346,6 +1348,61 @@ namespace Songify_Slim.Util.Spotify
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Captures playback context/disallows before SkipNext to diagnose 403 Restriction violated.
+        /// Only invoked when <see cref="Settings.DebugLogging"/> is on.
+        /// </summary>
+        private static async Task LogPlaybackStateBeforeSkipAsync()
+        {
+            try
+            {
+                CurrentlyPlayingContext playback = await GetPlayback().ConfigureAwait(false);
+                if (playback == null)
+                {
+                    Logger.Debug(LogSource.Spotify, "SkipSong preflight: GetCurrentPlayback returned null (no active device/session?)");
+                    return;
+                }
+
+                string itemType = playback.Item switch
+                {
+                    FullTrack track => track.Type.ToString(),
+                    FullEpisode episode => episode.Type.ToString(),
+                    _ => playback.CurrentlyPlayingType
+                };
+
+                string disallows = FormatDisallows(playback.Actions?.Disallows);
+
+                Logger.Debug(LogSource.Spotify,
+                    "SkipSong preflight: " +
+                    $"Context.Type={playback.Context?.Type}, " +
+                    $"Context.Uri={playback.Context?.Uri}, " +
+                    $"Item.Type={itemType}, " +
+                    $"Device.Name={playback.Device?.Name}, " +
+                    $"Device.Type={playback.Device?.Type}, " +
+                    $"IsPlaying={playback.IsPlaying}, " +
+                    $"Disallows={disallows}");
+            }
+            catch (Exception ex)
+            {
+                Logger.Trace(LogSource.Spotify, "SkipSong preflight: failed to read playback state", ex);
+            }
+        }
+
+        private static string FormatDisallows(Dictionary<string, bool> disallows)
+        {
+            if (disallows == null)
+                return "(null)";
+            if (disallows.Count == 0)
+                return "[]";
+
+            // Prefer showing only actions that are actually disallowed; include full map if none are true.
+            List<string> blocked = disallows.Where(kv => kv.Value).Select(kv => kv.Key).OrderBy(k => k).ToList();
+            if (blocked.Count > 0)
+                return "[" + string.Join(", ", blocked) + "]";
+
+            return "[" + string.Join(", ", disallows.OrderBy(kv => kv.Key).Select(kv => $"{kv.Key}={kv.Value}")) + "]";
         }
 
         public static async Task<QueueResponse> GetQueueInfo()
@@ -1680,90 +1737,95 @@ namespace Songify_Slim.Util.Spotify
                     SoftLimitPerminute, cts.Token);
 
                 // No playlist context -> clear playlist cache and exit
-                string contextUri = playback?.Context.Uri;
-                if (!string.Equals(playback?.Context.Type, "playlist", StringComparison.OrdinalIgnoreCase) ||
-                    string.IsNullOrWhiteSpace(contextUri))
+                string contextUri = playback?.Context?.Uri;
+                if (!string.IsNullOrEmpty(contextUri))
                 {
-                    _cachedPlaylistId = null;
-                    _cachedPlaylistInfo = null;
-                    return null;
-                }
-
-                // Extract playlist id from spotify:playlist:<id>
-                string playlistId = ExtractLastSegment(contextUri, ':');
-                if (string.IsNullOrWhiteSpace(playlistId))
-                {
-                    _cachedPlaylistId = null;
-                    _cachedPlaylistInfo = null;
-                    return null;
-                }
-
-                // Cache hit
-                if (playlistId == _cachedPlaylistId &&
-                    _cachedPlaylistInfo != null &&
-                    (DateTime.UtcNow - _cachedPlaylistFetchedAt) < PlaylistCacheTtl)
-                {
-                    return _cachedPlaylistInfo;
-                }
-                string playlistUrl = $"https://open.spotify.com/playlist/{playlistId}";
-
-                PlaylistInfo info = null;
-
-                // First try: official API
-                try
-                {
-                    FullPlaylist playlist = await ApiCallMeter.RunAsync(
-                        "Playlists.Get",
-                        () => Client.Playlists.Get(playlistId),
-                        SoftLimitPerminute);
-
-                    if (playlist != null)
+                    if (!string.Equals(playback?.Context.Type, "playlist", StringComparison.OrdinalIgnoreCase) ||
+    string.IsNullOrWhiteSpace(contextUri))
                     {
+                        _cachedPlaylistId = null;
+                        _cachedPlaylistInfo = null;
+                        return null;
+                    }
+
+                    // Extract playlist id from spotify:playlist:<id>
+                    string playlistId = ExtractLastSegment(contextUri, ':');
+                    if (string.IsNullOrWhiteSpace(playlistId))
+                    {
+                        _cachedPlaylistId = null;
+                        _cachedPlaylistInfo = null;
+                        return null;
+                    }
+
+                    // Cache hit
+                    if (playlistId == _cachedPlaylistId &&
+                        _cachedPlaylistInfo != null &&
+                        (DateTime.UtcNow - _cachedPlaylistFetchedAt) < PlaylistCacheTtl)
+                    {
+                        return _cachedPlaylistInfo;
+                    }
+                    string playlistUrl = $"https://open.spotify.com/playlist/{playlistId}";
+
+                    PlaylistInfo info = null;
+
+                    // First try: official API
+                    try
+                    {
+                        FullPlaylist playlist = await ApiCallMeter.RunAsync(
+                            "Playlists.Get",
+                            () => Client.Playlists.Get(playlistId),
+                            SoftLimitPerminute);
+
+                        if (playlist != null)
+                        {
+                            info = new PlaylistInfo
+                            {
+                                Id = playlist.Id,
+                                Name = playlist.Name,
+                                Owner = playlist.Owner?.DisplayName ?? playlist.Owner?.Id ?? "unknown",
+                                Url = playlist.ExternalUrls != null && playlist.ExternalUrls.TryGetValue("spotify", out string url)
+                                    ? url
+                                    : playlistUrl
+                            };
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        // Only fallback if it's likely an access/scopes/404 case.
+                        // If you have a specific SpotifyAPI exception type available, narrow this catch.
+                        // Otherwise: keep it broad, but don't swallow without fallback.
+                        _ = ex; // optionally log
+                    }
+
+                    // Fallback: oEmbed (title + thumbnail only)
+                    if (info == null)
+                    {
+                        SpotifyOEmbedResponse o = await OEmbedClient.GetAsync(playlistUrl).ConfigureAwait(false);
+                        (string Name, string Owner)? embed = await SpotifyEmbedNextData.TryGetPlaylistNameAndOwnerAsync(playlistId);
                         info = new PlaylistInfo
                         {
-                            Id = playlist.Id,
-                            Name = playlist.Name,
-                            Owner = playlist.Owner?.DisplayName ?? playlist.Owner?.Id ?? "unknown",
-                            Url = playlist.ExternalUrls != null && playlist.ExternalUrls.TryGetValue("spotify", out string url)
-                                ? url
-                                : playlistUrl
+                            Id = playlistId,
+                            Name = embed?.Name ?? o?.Title ?? "unknown",
+                            Owner = embed?.Owner ?? "unknown",
+                            Url = $"https://open.spotify.com/playlist/{playlistId}",
+                            Image = o?.ThumbnailUrl
                         };
                     }
-                }
-                catch (Exception ex)
-                {
-                    // Only fallback if it's likely an access/scopes/404 case.
-                    // If you have a specific SpotifyAPI exception type available, narrow this catch.
-                    // Otherwise: keep it broad, but don't swallow without fallback.
-                    _ = ex; // optionally log
-                }
 
-                // Fallback: oEmbed (title + thumbnail only)
-                if (info == null)
-                {
-                    SpotifyOEmbedResponse o = await OEmbedClient.GetAsync(playlistUrl).ConfigureAwait(false);
-                    (string Name, string Owner)? embed = await SpotifyEmbedNextData.TryGetPlaylistNameAndOwnerAsync(playlistId);
-                    info = new PlaylistInfo
-                    {
-                        Id = playlistId,
-                        Name = embed?.Name ?? o?.Title ?? "unknown",
-                        Owner = embed?.Owner ?? "unknown",
-                        Url = $"https://open.spotify.com/playlist/{playlistId}",
-                        Image = o?.ThumbnailUrl
-                    };
+                    _cachedPlaylistId = playlistId;
+                    _cachedPlaylistInfo = info;
+                    _cachedPlaylistFetchedAt = DateTime.UtcNow;
+
+                    return info;
                 }
-
-                _cachedPlaylistId = playlistId;
-                _cachedPlaylistInfo = info;
-                _cachedPlaylistFetchedAt = DateTime.UtcNow;
-
-                return info;
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
                 return null;
             }
+
+            return null;
         }
 
         private static string ExtractLastSegment(string s, char separator)

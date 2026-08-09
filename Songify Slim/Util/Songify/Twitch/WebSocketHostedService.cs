@@ -659,7 +659,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
 
             if (Settings.TwRewardSkipId.Any(id => id == eventData.Reward.Id))
-                await TwitchHandler.HandleSkipReward(eventData.Id, eventData.Reward.Id);
+                await TwitchHandler.HandleSkipReward(eventData.Id, eventData.Reward.Id, eventData.UserName);
 
             if (Settings.TwRewardSkipPoll.Any(id => id == eventData.Reward.Id))
                 await TwitchHandler.StartSkipPoll(eventData.Id, eventData.Reward.Id);
