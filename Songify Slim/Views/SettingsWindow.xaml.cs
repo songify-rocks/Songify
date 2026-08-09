@@ -63,7 +63,12 @@ namespace Songify_Slim.Views
         private Window_ResponseParams _wRp;
         private bool _showPassword;
         private bool _isSettingControls;
+        private bool _rewardsLoadStarted;
+        private bool _rewardsLoading;
         private BitmapImage? _defaultSongifyProfileImage;
+
+        /// <summary>True while binding controls or before the window is ready — skip save/side-effect handlers.</summary>
+        private bool IgnoreControlEvents => !IsLoaded || _isSettingControls;
 
         private Dictionary<string, string> _supportedLanguages = new()
         {
@@ -198,14 +203,9 @@ namespace Songify_Slim.Views
                 ApplyTwitchAccountsUi();
                 LogStep(sw, "ApplyTwitchAccountsUi");
 
-                await LoadRewardsSectionAsync();
-                LogStep(sw, "LoadRewardsSectionAsync");
-
+                // Refund condition toggles are local UI — do not wait on Twitch rewards here.
                 ApplyRefundConditions();
                 LogStep(sw, "ApplyRefundConditions");
-
-                ThemeHandler.ApplyTheme();
-                LogStep(sw, "ApplyTheme");
 
                 LogStep(sw, "END");
             }
@@ -217,6 +217,48 @@ namespace Songify_Slim.Views
             {
                 SetLoadingState(false);
                 _isSettingControls = false;
+            }
+
+            // Rewards are fetched lazily when the Rewards tab is selected (UI virtualization).
+            _rewardsLoadStarted = false;
+            if (TabCtrl.SelectedItem is TabItem { Tag: "TwitchRewards" })
+                _ = EnsureRewardsLoadedAsync();
+        }
+
+        private async void TabCtrl_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            // Nested TabControls also raise SelectionChanged (bubbling); ignore those.
+            if (!ReferenceEquals(e.Source, TabCtrl))
+                return;
+            if (!IsLoaded || _isSettingControls)
+                return;
+            if (TabCtrl.SelectedItem is not TabItem { Tag: "TwitchRewards" })
+                return;
+
+            await EnsureRewardsLoadedAsync().ConfigureAwait(true);
+        }
+
+        private async Task EnsureRewardsLoadedAsync()
+        {
+            if (_rewardsLoadStarted || _rewardsLoading)
+                return;
+
+            _rewardsLoadStarted = true;
+            try
+            {
+                if (BtnUpdateRewards != null)
+                    BtnUpdateRewards.IsEnabled = false;
+                await LoadRewardsSectionAsync().ConfigureAwait(true);
+            }
+            catch (Exception ex)
+            {
+                _rewardsLoadStarted = false;
+                Logger.Error(LogSource.Twitch, "Lazy reward load failed.", ex);
+            }
+            finally
+            {
+                if (BtnUpdateRewards != null)
+                    BtnUpdateRewards.IsEnabled = true;
             }
         }
 
@@ -908,32 +950,40 @@ namespace Songify_Slim.Views
 
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // Sets wether to clear the queue on startup or not
             Settings.AutoClearQueue = ChbxAutoClear.IsOn;
         }
 
         private void Chbx_TwAutoconnect_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // Sets wether to autoconnect or not
             Settings.TwAutoConnect = ChbxTwAutoconnect.IsOn;
         }
 
         private void Chbx_TwReward_Checked(object sender, RoutedEventArgs e)
         {
-            // enables / disables telemetry
+            if (IgnoreControlEvents)
+                return;
             Settings.TwSrReward = ChbxTwReward.IsOn;
             _ = TwitchHandler.SetTwitchSrRewardsEnabledState(ChbxTwReward.IsOn);
         }
 
         private void ChbxAutostartChecked(object sender, RoutedEventArgs e)
         {
-            // checkbox for autostart
+            if (IgnoreControlEvents)
+                return;
             bool? chbxAutostartIsChecked = ChbxAutostart.IsOn;
             MainWindow.RegisterInStartup((bool)chbxAutostartIsChecked);
         }
 
         private void ChbxCover_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // enables / disables telemetry
             Settings.DownloadCover = ChbxCover.IsOn;
         }
@@ -946,6 +996,8 @@ namespace Songify_Slim.Views
 
         private void ChbxMinimizeSystrayChecked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // enables / disbales minimize to systray
             bool isChecked = ChbxMinimizeSystray.IsOn;
             Settings.Systray = isChecked;
@@ -953,22 +1005,30 @@ namespace Songify_Slim.Views
 
         private void ChbxOpenQueueOnStartup_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.OpenQueueOnStartup = ((ToggleSwitch)sender).IsOn;
         }
 
         private void ChbxSpaces_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             if (ChbxSpaces.IsChecked != null) Settings.AppendSpaces = (bool)ChbxSpaces.IsChecked;
         }
 
         private void ChbxSplit_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // enables / disables telemetry
             Settings.SplitOutput = ChbxSplit.IsOn;
         }
 
         private void ChbxUpload_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // enables / disables upload
             Settings.Upload = ChbxUpload.IsOn;
             //((MainWindow)_mW).UploadSong(((MainWindow)_mW).CurrSong);
@@ -1112,22 +1172,22 @@ namespace Songify_Slim.Views
 
         private void Nud_Spaces_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
+            if (IgnoreControlEvents)
+                return;
             if (NudSpaces.Value != null) Settings.SpaceCount = (int)NudSpaces.Value;
         }
 
         private void NudChrome_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
             // Chrome fetch UI removed; setting retained in config for compatibility.
-            if (!IsLoaded || _isSettingControls)
-                return;
         }
 
         private void NudCooldown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
+            if (IgnoreControlEvents)
+                return;
             // Sets command cooldown
             if (NudCooldown.Value == null)
-                return;
-            if (!IsLoaded || _isSettingControls)
                 return;
             Settings.TwSrCooldown = (int)NudCooldown.Value;
             if (!NudCooldown.Value.HasValue) return;
@@ -1139,11 +1199,15 @@ namespace Songify_Slim.Views
 
         private void NudMaxlength_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
+            if (IgnoreControlEvents)
+                return;
             if (NudMaxlength.Value != null) Settings.MaxSongLength = (int)NudMaxlength.Value;
         }
 
         private void NudMaxReq_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
+            if (IgnoreControlEvents)
+                return;
             //Sets max requests per user value
             switch ((Enums.TwitchUserLevels)CbxUserLevelsMaxReq.SelectedIndex)
             {
@@ -1226,16 +1290,22 @@ namespace Songify_Slim.Views
 
         private void Tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.ClientId = TbClientId.Text;
         }
 
         private void Tb_ClientSecret_PasswordChanged(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.ClientSecret = TbClientSecret.Password;
         }
 
         private void Tgl_AnnounceInChat_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.AnnounceInChat = TglAnnounceInChat.IsOn;
         }
 
@@ -1256,7 +1326,8 @@ namespace Songify_Slim.Views
 
         private void ThemeToggleSwitchIsCheckedChanged(object sender, EventArgs e)
         {
-            // set the theme (BaseLight / BaseDark)
+            if (IgnoreControlEvents)
+                return;
             Settings.Theme = ThemeToggleSwitch.IsOn ? "Dark" : "Light";
 
             ThemeHandler.ApplyTheme();
@@ -1264,6 +1335,8 @@ namespace Songify_Slim.Views
 
         private void Txtbx_twChannel_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             ((TextBox)sender).Text = ((TextBox)sender).Text.ToLower().Trim();
             // Sets the twitch channel
             Settings.TwChannel = TxtbxTwChannel.Text.Trim();
@@ -1271,25 +1344,31 @@ namespace Songify_Slim.Views
 
         private void Txtbx_twOAuth_PasswordChanged(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // Sets the twitch oauth token
             Settings.TwOAuth = TxtbxTwOAuth.Password;
         }
 
         private void Txtbx_twUser_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // Sets the twitch acc
             Settings.TwAcc = TxtbxTwUser.Text.Trim();
         }
 
         private void TxtbxCustompausetext_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             // write CustomPausetext to settings
             Settings.CustomPauseText = TxtbxCustompausetext.Text;
         }
 
         private void TxtbxOutputformat_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             // write custom output format to settings
             if (TxtbxOutputformat.Text == Settings.OutputString)
@@ -1300,7 +1379,7 @@ namespace Songify_Slim.Views
 
         private void TxtbxOutputformat2_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             if (TxtbxOutputformat2.Text == Settings.OutputString2)
                 return;
@@ -1309,12 +1388,14 @@ namespace Songify_Slim.Views
 
         private void CbxUserLevels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.TwSrUserLevel = CbxUserLevels.SelectedIndex;
         }
 
         private void CbxUserLevelsMaxReq_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
 
             NudMaxReq.ValueChanged -= NudMaxReq_ValueChanged;
@@ -1357,6 +1438,7 @@ namespace Songify_Slim.Views
         private async void BtnUpdateRewards_Click(object sender, RoutedEventArgs e)
         {
             ((Button)sender).IsEnabled = false;
+            _rewardsLoadStarted = true;
             await LoadRewards();
             ((Button)sender).IsEnabled = true;
         }
@@ -1367,34 +1449,46 @@ namespace Songify_Slim.Views
                 return;
             if (TwitchHandler.TokenCheck == null)
                 return;
+            if (_rewardsLoading)
+                return;
+
+            _rewardsLoading = true;
             BtnCreateNewReward.IsEnabled = true;
             try
             {
-                List<CustomReward> managableRewards = await TwitchApiHelper.GetChannelRewards(true);
-                List<CustomReward> rewards = await TwitchApiHelper.GetChannelRewards(false);
+                // Helix I/O off the UI thread; only assign ItemsSource on the dispatcher.
+                Task<List<CustomReward>> manageableTask = TwitchApiHelper.GetChannelRewards(true);
+                Task<List<CustomReward>> rewardsTask = TwitchApiHelper.GetChannelRewards(false);
+                await Task.WhenAll(manageableTask, rewardsTask).ConfigureAwait(false);
+
+                List<CustomReward> managableRewards = await manageableTask.ConfigureAwait(false) ?? [];
+                List<CustomReward> rewards = await rewardsTask.ConfigureAwait(false);
                 if (rewards == null)
                     return;
-                //Comapre all reward.id with Settings.TwRewardId and remove from Settings where no ID was found
-                List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
-                foreach (string s in idsToRemove)
-                {
-                    Settings.TwRewardId.Remove(s);
-                }
 
-                ListboxRewards.Items.Clear();
+                HashSet<string> manageableIds = new(managableRewards.Select(r => r.Id));
+                List<TwitchRewardListItem> items = rewards
+                    .OrderBy(o => o.Cost)
+                    .Select(r => new TwitchRewardListItem(r, manageableIds.Contains(r.Id)))
+                    .ToList();
 
-                if (rewards.Count > 0)
+                await Dispatcher.InvokeAsync(() =>
                 {
-                    foreach (CustomReward reward in rewards.OrderBy(o => o.Cost))
-                    {
-                        bool manageable = managableRewards.Find(r => r.Id == reward.Id) != null;
-                        ListboxRewards.Items.Add(new UcTwitchReward(reward, manageable));
-                    }
-                }
+                    List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
+                    foreach (string s in idsToRemove)
+                        Settings.TwRewardId.Remove(s);
+
+                    ListboxRewards.ItemsSource = null;
+                    ListboxRewards.ItemsSource = items;
+                }, DispatcherPriority.Background);
             }
             catch (Exception e)
             {
                 Logger.Error(LogSource.Twitch, "Error loading rewards.", e);
+            }
+            finally
+            {
+                _rewardsLoading = false;
             }
         }
 
@@ -1434,7 +1528,7 @@ namespace Songify_Slim.Views
 
         private void NudServerPort_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
             int? value = (int?)((NumericUpDown)sender).Value;
             if (value == null) return;
             NudServerPort.ValueChanged -= NudServerPort_ValueChanged;
@@ -1456,16 +1550,22 @@ namespace Songify_Slim.Views
 
         private void TglAutoStartWebserver_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.AutoStartWebServer = ((ToggleSwitch)sender).IsOn;
         }
 
         private void TglWebServerPassword_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.WebServerPasswordEnabled = ((ToggleSwitch)sender).IsOn;
         }
 
         private void PasswordBox_WebServer_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             if (sender is not PasswordBox pb) return;
             Settings.WebServerPassword = pb.Password;
         }
@@ -1481,6 +1581,8 @@ namespace Songify_Slim.Views
 
         private void TglBetaUpdates_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.BetaUpdates = ((ToggleSwitch)sender).IsOn;
         }
 
@@ -1492,6 +1594,8 @@ namespace Songify_Slim.Views
 
         private void Tgl_OnlyWorkWhenLive_OnToggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.BotOnlyWorkWhenLive = TglOnlyWorkWhenLive.IsOn;
             TglInformChat.IsEnabled = TglOnlyWorkWhenLive.IsOn;
             if (TglOnlyWorkWhenLive.IsOn) return;
@@ -1500,6 +1604,8 @@ namespace Songify_Slim.Views
 
         private void ToggleSwitchUnlimitedSR_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.TwSrUnlimitedSr = ToggleSwitchUnlimitedSr.IsOn;
         }
 
@@ -1535,6 +1641,8 @@ namespace Songify_Slim.Views
 
         private void Tgl_InformChat_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.ChatLiveStatus = TglInformChat.IsOn;
         }
 
@@ -1555,7 +1663,7 @@ namespace Songify_Slim.Views
 
         private async void Cb_SpotifyPlaylist_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             if ((((ComboBox)sender).SelectedItem as ComboBoxItem)?.Content is not UcPlaylistItem item) return;
             if (item.Playlist.Id == Settings.SpotifyPlaylistId.PlaylistId)
@@ -1640,11 +1748,15 @@ namespace Songify_Slim.Views
 
         private void TglAddToPlaylist_Toggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.AddSrToPlaylist = ((ToggleSwitch)sender).IsOn;
         }
 
         private void TglBypassSpotifyFetchGate_OnToggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.BypassSpotifyFetchGate = ((ToggleSwitch)sender).IsOn;
             MainWindow main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault()
                               ?? (Application.Current.MainWindow as MainWindow);
@@ -1653,6 +1765,8 @@ namespace Songify_Slim.Views
 
         private void TglShowSpotifyToasts_OnToggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.ShowSpotifyToasts = ((ToggleSwitch)sender).IsOn;
         }
 
@@ -1740,14 +1854,14 @@ namespace Songify_Slim.Views
 
         private void TbArtistBlocklistSyncUrl_OnLostFocus(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.ArtistBlocklistSyncUrl = TbArtistBlocklistSyncUrl.Text?.Trim() ?? "";
         }
 
         private void CbxArtistBlocklistSyncColumn_OnSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
 
             if (CbxArtistBlocklistSyncNameColumn?.SelectedValue is string nameHeader)
@@ -1759,14 +1873,14 @@ namespace Songify_Slim.Views
 
         private void TglArtistBlocklistSyncEnabled_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.ArtistBlocklistSyncEnabled = TglArtistBlocklistSyncEnabled.IsOn;
         }
 
         private async void BtnArtistBlocklistDetectColumns_Click(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
 
             string url = TbArtistBlocklistSyncUrl.Text?.Trim() ?? "";
@@ -1843,7 +1957,7 @@ namespace Songify_Slim.Views
 
         private async void BtnArtistBlocklistSyncNow_Click(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
 
             Settings.ArtistBlocklistSyncUrl = TbArtistBlocklistSyncUrl.Text?.Trim() ?? "";
@@ -1955,7 +2069,6 @@ namespace Songify_Slim.Views
                             CbSpotifyPlaylist.Items.Add(new ComboBoxItem
                             { Content = new UcPlaylistItem(cache) });
                             playlistCache.Add(cache);
-                            Thread.Sleep(100);
                         }
 
                         CbSpotifyPlaylist.SelectionChanged += Cb_SpotifyPlaylist_SelectionChanged;
@@ -2015,22 +2128,28 @@ namespace Songify_Slim.Views
 
         private void Chbx_BlockAllExplicit_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.BlockAllExplicitSongs = ((ToggleSwitch)sender).IsOn;
         }
 
         private void TbRequesterPrefix_TextChanged(object sender, TextChangedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.RequesterPrefix = TbRequesterPrefix.Text;
         }
 
         private void TglUseDefaultBrowser_OnToggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             Settings.UseDefaultBrowser = ((ToggleSwitch)sender).IsOn;
         }
 
         private async void TglDonationReminder_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             if (Settings.DonationReminder == ((ToggleSwitch)sender).IsOn)
                 return;
@@ -2078,7 +2197,7 @@ namespace Songify_Slim.Views
 
         private void CbPauseOptions_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             if ((Enums.PauseOptions)CbPauseOptions.SelectedIndex == Settings.PauseOption)
                 return;
@@ -2087,6 +2206,8 @@ namespace Songify_Slim.Views
 
         private void ChbxSpacesSplitFiles_Checked(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             bool? isChecked = ((CheckBox)sender).IsChecked;
             if (isChecked != null)
                 Settings.AppendSpacesSplitFiles = (bool)isChecked;
@@ -2095,7 +2216,7 @@ namespace Songify_Slim.Views
         private void CooldownSpinner_OnValueChangedpinner_ValueChanged(object sender,
             RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             if (!NudCooldownPerUser.Value.HasValue) return;
             Settings.TwSrPerUserCooldown = (int)NudCooldownPerUser.Value;
@@ -2107,14 +2228,14 @@ namespace Songify_Slim.Views
 
         private void Tgl_KeepCover_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.KeepAlbumCover = ((ToggleSwitch)sender).IsOn;
         }
 
         private void TglCanvas_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.DownloadCanvas = ((ToggleSwitch)sender).IsOn;
         }
@@ -2211,6 +2332,8 @@ namespace Songify_Slim.Views
 
         private async void TglsLongBadgeNames_OnToggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             try
             {
                 Settings.LongBadgeNames = ((ToggleSwitch)sender).IsOn;
@@ -2224,6 +2347,8 @@ namespace Songify_Slim.Views
 
         private async void Tglsw_OnlyAddToPlaylist_OnToggled(object sender, RoutedEventArgs e)
         {
+            if (IgnoreControlEvents)
+                return;
             try
             {
                 if (sender is not ToggleSwitch toggleSwitch)
@@ -2267,7 +2392,7 @@ namespace Songify_Slim.Views
 
         private void NudBits_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
             if (!NudBits.Value.HasValue) return;
             Settings.MinimumBitsForSr = (int)NudBits.Value;
             string imageName = GetImageNameForValue((int)NudBits.Value);
@@ -2289,14 +2414,14 @@ namespace Songify_Slim.Views
 
         private void PwbSongifyToken_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.SongifyApiKey = ((PasswordBox)sender).Password;
         }
 
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             if (TextBox.Text != PasswordBox.Password)
                 Settings.SongifyApiKey = PasswordBox.Password;
@@ -2330,7 +2455,7 @@ namespace Songify_Slim.Views
 
         private void TextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
 
             // Only update if not a pure visibility toggle
@@ -2403,7 +2528,7 @@ namespace Songify_Slim.Views
 
         private void RefundCondition_Toggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
 
             if (sender is not ToggleSwitch { Tag: Enums.RefundCondition conditionValue } toggle) return;
             List<Enums.RefundCondition> current = Settings.RefundConditons;
@@ -2557,21 +2682,21 @@ namespace Songify_Slim.Views
 
         private void TglOnlySkipNonSrRewards_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.SkipOnlyNonSrSongs = ((ToggleSwitch)sender).IsOn;
         }
 
         private void Tglsw_BitsForSr_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.SrForBits = ((ToggleSwitch)sender).IsOn;
         }
 
         private void NudSpotifyFetchRate_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             if (!NudSpotifyFetchRate.Value.HasValue) return;
             Settings.SpotifyFetchRate = (int)NudSpotifyFetchRate.Value;
@@ -2584,21 +2709,21 @@ namespace Songify_Slim.Views
 
         private void TglDebugLogging_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.DebugLogging = ((ToggleSwitch)sender).IsOn;
         }
 
         private void NudLogFileRetention_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded || _isSettingControls || NudLogFileRetention.Value == null)
+            if (IgnoreControlEvents || NudLogFileRetention.Value == null)
                 return;
             Settings.LogFileRetentionCount = (int)NudLogFileRetention.Value;
         }
 
         private void PasswordBox_YoutubeApiKey_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.YoutubeApiKey = PasswordBox_YoutubeApiKey.Password;
         }
@@ -2636,14 +2761,14 @@ namespace Songify_Slim.Views
 
         private void TextBoxPollTitle_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
             Settings.TwitchPollSettings.Title = ((TextBox)sender).Text;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
         }
 
         private void TextBoxPollAnswer1_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
 
             Settings.TwitchPollSettings.Choices[0] = ((TextBox)sender).Text;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
@@ -2651,7 +2776,7 @@ namespace Songify_Slim.Views
 
         private void TextBoxPollAnswer2_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
 
             Settings.TwitchPollSettings.Choices[1] = ((TextBox)sender).Text;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
@@ -2659,7 +2784,7 @@ namespace Songify_Slim.Views
 
         private void ToggleSwitchPollAdditionalVotes_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
 
             Settings.TwitchPollSettings.AdditionalVotesEnabled = ((ToggleSwitch)sender).IsOn;
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
@@ -2668,7 +2793,7 @@ namespace Songify_Slim.Views
         private void NumericUpDownPollChannelPointsPerVote_OnValueChanged(object sender,
             RoutedPropertyChangedEventArgs<double?> e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
 
             double? value = ((NumericUpDown)sender).Value;
             if (value == null)
@@ -2679,7 +2804,7 @@ namespace Songify_Slim.Views
 
         private void RadioButtonPollAnswer1_OnChecked(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
             Settings.TwitchPollSettings.WinningChoice = ((RadioButton)sender).Content.ToString();
             Settings.TwitchPollSettings = Settings.TwitchPollSettings;
         }
@@ -2700,14 +2825,14 @@ namespace Songify_Slim.Views
 
         private void Tgl_SharedChat_Toggled(object sender, RoutedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls)
+            if (IgnoreControlEvents)
                 return;
             Settings.SharedChatEnabled = ((ToggleSwitch)sender).IsOn;
         }
 
         private void TbBitsKeyword_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (!IsLoaded || _isSettingControls) return;
+            if (IgnoreControlEvents) return;
             Settings.SrForBitsKeyWord = ((TextBox)sender).Text;
         }
 

@@ -21,56 +21,110 @@ using TwitchLib.Api.Helix.Models.ChannelPoints;
 
 namespace Songify_Slim.UserControls
 {
+    /// <summary>Lightweight list row for virtualized reward binding.</summary>
+    public sealed class TwitchRewardListItem
+    {
+        public TwitchRewardListItem(CustomReward reward, bool manageable)
+        {
+            Reward = reward;
+            Manageable = manageable;
+        }
+
+        public CustomReward Reward { get; }
+        public bool Manageable { get; }
+    }
+
     /// <summary>
     /// Interaction logic for UC_TwitchReward.xaml
     /// </summary>
     public partial class UcTwitchReward
     {
-        private readonly CustomReward _reward;
+        private CustomReward _reward;
+        private bool _isApplying;
 
         // Place this as a class-level field:
         private CancellationTokenSource _debounceTokenSource;
 
-        public UcTwitchReward(CustomReward reward, bool manageable)
+        public UcTwitchReward()
         {
             InitializeComponent();
-            _reward = reward;
-            TxtRewardname.Text = _reward.Title;
-            TxtRewardcost.Text = _reward.Cost.ToString();
-            TxtRewardcost.IsEnabled = manageable;
-            ImgManageable.Visibility = manageable ? Visibility.Visible : Visibility.Hidden;
+            DataContextChanged += (_, _) => TryBindFromDataContext();
+        }
 
-            if (_reward.BackgroundColor != null)
-            {
-                try
-                {
-                    ImgBorder.Background = _reward is { BackgroundColor: not null } ? new SolidColorBrush((Color)ColorConverter.ConvertFromString(_reward.BackgroundColor)!) : GetRandomSolidColorBrush();
-                }
-                catch (Exception)
-                {
-                    ImgBorder.Background = GetRandomSolidColorBrush();
-                }
-            }
+        public UcTwitchReward(CustomReward reward, bool manageable) : this()
+        {
+            Apply(reward, manageable);
+        }
 
-            if (_reward.Image != null)
-                ImgReward.Source = new BitmapImage(new Uri(_reward.Image.Url1x));
-            //TglRewardActive.IsOn = Settings.TwRewardId.Any(o => o == _reward.Id);
-            // if the reward id is in the skip list, set the combobox to skip, if it's in the sr list, set it to sr else set it to 0
-            if (Settings.TwRewardSkipId.Any(o => o == _reward.Id))
+        private void TryBindFromDataContext()
+        {
+            if (DataContext is TwitchRewardListItem item)
+                Apply(item.Reward, item.Manageable);
+        }
+
+        private void Apply(CustomReward reward, bool manageable)
+        {
+            if (reward == null)
+                return;
+
+            _isApplying = true;
+            try
             {
-                CbxAction.SelectedIndex = 2;
+                _reward = reward;
+                TxtRewardname.Text = _reward.Title;
+                TxtRewardcost.Text = _reward.Cost.ToString();
+                TxtRewardcost.IsEnabled = manageable;
+                ImgManageable.Visibility = manageable ? Visibility.Visible : Visibility.Hidden;
+
+                if (_reward.BackgroundColor != null)
+                {
+                    try
+                    {
+                        ImgBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(_reward.BackgroundColor)!);
+                    }
+                    catch (Exception)
+                    {
+                        ImgBorder.Background = GetRandomSolidColorBrush();
+                    }
+                }
+
+                // Prefer custom image; most rewards only have default_image from Helix.
+                string imageUrl = _reward.Image?.Url1x ?? _reward.DefaultImage?.Url1x;
+                if (!string.IsNullOrEmpty(imageUrl) &&
+                    Uri.TryCreate(imageUrl, UriKind.Absolute, out Uri imageUri))
+                {
+                    try
+                    {
+                        // Default CacheOption downloads asynchronously (no DelayCreation/OnDemand).
+                        var bitmap = new BitmapImage();
+                        bitmap.BeginInit();
+                        bitmap.UriSource = imageUri;
+                        bitmap.DecodePixelWidth = 40;
+                        bitmap.EndInit();
+                        ImgReward.Source = bitmap;
+                    }
+                    catch
+                    {
+                        ImgReward.Source = new BitmapImage(new Uri("/Resources/img/default-1.png", UriKind.Relative));
+                    }
+                }
+                else
+                {
+                    ImgReward.Source = new BitmapImage(new Uri("/Resources/img/default-1.png", UriKind.Relative));
+                }
+
+                if (Settings.TwRewardSkipId.Any(o => o == _reward.Id))
+                    CbxAction.SelectedIndex = 2;
+                else if (Settings.TwRewardId.Any(o => o == _reward.Id))
+                    CbxAction.SelectedIndex = 1;
+                else if (Settings.TwRewardSkipPoll.Any(o => o == _reward.Id))
+                    CbxAction.SelectedIndex = 3;
+                else
+                    CbxAction.SelectedIndex = 0;
             }
-            else if (Settings.TwRewardId.Any(o => o == _reward.Id))
+            finally
             {
-                CbxAction.SelectedIndex = 1;
-            }
-            else if (Settings.TwRewardSkipPoll.Any(o => o == _reward.Id))
-            {
-                CbxAction.SelectedIndex = 3;
-            }
-            else
-            {
-                CbxAction.SelectedIndex = 0;
+                _isApplying = false;
             }
         }
 
@@ -122,7 +176,7 @@ namespace Songify_Slim.UserControls
         private void CbxAction_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Ensure sender is a ComboBox and _reward is available
-            if (sender is not ComboBox comboBox || _reward == null)
+            if (_isApplying || sender is not ComboBox comboBox || _reward == null)
             {
                 return;
             }

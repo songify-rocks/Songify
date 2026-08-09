@@ -1310,7 +1310,8 @@ namespace Songify_Slim.Util.Configuration
                 AnnounceInChat = GetAnnounceInChat(),
                 AppendSpaces = GetAppendSpaces(),
                 AppendSpacesSplitFiles = GetAppendSpacesSplitFiles(),
-                ArtistBlacklist = GetArtistBlacklist(),
+                // Legacy field — keep empty. Artists are stored in BlockedSpotifyArtists.
+                ArtistBlacklist = [],
                 AutoClearQueue = GetAutoClearQueue(),
                 Autostart = GetAutostart(),
                 AutoStartWebServer = GetAutoStartWebServer(),
@@ -1426,8 +1427,12 @@ namespace Songify_Slim.Util.Configuration
 
             BlockedSpotifyArtists blockedSpotifyArtists = new()
             {
-                Artists = CurrentConfig.BlockedSpotifyArtists.Artists
+                Artists = CurrentConfig.BlockedSpotifyArtists?.Artists ?? []
             };
+
+            // Keep the in-memory legacy list empty so it cannot be re-persisted elsewhere.
+            if (CurrentConfig.AppConfig != null)
+                CurrentConfig.AppConfig.ArtistBlacklist = [];
 
             return new Configuration
             {

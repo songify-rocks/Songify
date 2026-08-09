@@ -74,6 +74,7 @@
         <TabControl
             x:Name="TabCtrl"
             Margin="10,0,10,0"
+            SelectionChanged="TabCtrl_OnSelectionChanged"
             TabStripPlacement="Left">
             <TabItem
                 d:Header="{x:Static local:Resources.window_settings_tab_system}"
@@ -1310,7 +1311,14 @@
                                     ScrollViewer.CanContentScroll="True"
                                     SelectionMode="Single"
                                     Style="{DynamicResource MahApps.Styles.ListBox.Virtualized}"
+                                    VirtualizingPanel.IsVirtualizing="True"
+                                    VirtualizingPanel.VirtualizationMode="Recycling"
                                     VirtualizingStackPanel.ScrollUnit="Item">
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type userControls:TwitchRewardListItem}">
+                                            <userControls:UcTwitchReward />
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
                                     <ListBox.ItemContainerStyle>
                                         <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
                                             <Setter Property="OverridesDefaultStyle" Value="True" />
