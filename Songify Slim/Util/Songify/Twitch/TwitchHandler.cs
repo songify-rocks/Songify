@@ -81,9 +81,11 @@ public static class TwitchHandler
     private static readonly DispatcherTimer TwitchUserSyncTimer = new() { Interval = TimeSpan.FromSeconds(30) };
     private static readonly List<string> SkipVotes = [];
     private static readonly SemaphoreSlim Lock = new(1, 1);
+
     // Twitch Helix SendChatMessage rate limit: ~3 req/s per channel.
     // Enforce a minimum 400 ms gap between sends to stay well clear of the limit.
     private static readonly SemaphoreSlim _chatSendLock = new(1, 1);
+
     private static DateTime _lastChatSentAt = DateTime.MinValue;
     private const int ChatSendMinGapMs = 400;
     private static readonly Stopwatch CooldownStopwatch = new();
@@ -3266,7 +3268,7 @@ public static class TwitchHandler
             Enums.AnnouncementColor.Primary => AnnouncementColors.Primary,
             _ => throw new ArgumentOutOfRangeException(nameof(color), color, null)
         };
-        
+
         await _chatSendLock.WaitAsync();
         try
         {
@@ -3298,7 +3300,7 @@ public static class TwitchHandler
                         Logger.Info(LogSource.Twitch, $"Twitch Chat: Announcement sent: {msg}");
                         return;
                     }
-                    
+
                     Logger.Warning(LogSource.Twitch, "No valid token available for announcement.");
                     return;
                 }
@@ -4214,9 +4216,13 @@ public static class TwitchHandler
         {
             foreach (BlockedArtist artist in Settings.ArtistBlacklist.Where(a => Array.IndexOf(track.Artists.Select(x => x.Id).ToArray(), a.Id) != -1))
             {
+                string artistName = track.Artists.FirstOrDefault(a => a.Id == artist.Id)?.Name
+                                    ?? artist.Name
+                                    ?? "";
+
                 response = Settings.BotRespBlacklist;
                 response = response.Replace("{user}", e.DisplayName);
-                response = response.Replace("{artist}", artist.Name);
+                response = response.Replace("{artist}", artistName);
                 response = response.Replace("{title}", "");
                 response = response.Replace("{maxreq}", "");
                 response = response.Replace("{errormsg}", "");

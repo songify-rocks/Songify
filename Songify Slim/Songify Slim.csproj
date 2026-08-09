@@ -330,6 +330,7 @@
     <Compile Include="Views\SettingsWindow.xaml.cs">
       <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Util\Songify\ArtistCsvImport.cs" />
     <Compile Include="Util\Songify\SongFetcher.cs" />
     <Compile Include="Util\General\ThemeHandler.cs" />
     <Compile Include="Util\Songify\Twitch\TwitchHandler.cs" />
@@ -337,6 +338,9 @@
     <Compile Include="Util\Songify\TwitchOAuth\ImplicitOAuth.cs" />
     <Compile Include="Util\Songify\TwitchOAuth\Scopes.cs" />
     <Compile Include="Util\Songify\WebHelper.cs" />
+    <Compile Include="Views\Window_ArtistImport.xaml.cs">
+      <DependentUpon>Window_ArtistImport.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Window_Blacklist.xaml.cs">
       <DependentUpon>Window_Blacklist.xaml</DependentUpon>
     </Compile>
@@ -436,6 +440,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\UC_RewardItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Window_ArtistImport.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
@@ -83,6 +84,8 @@ namespace Songify_Slim.Views
         private int _secondsRemaining = 4;
         private readonly ContextMenu _contextMenu = new();
         private static readonly Timer Timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
+        private static readonly Timer ArtistBlocklistSyncTimer = new(TimeSpan.FromHours(1).TotalMilliseconds);
+        private static int _artistBlocklistSyncRunning;
         private DispatcherTimer _testModeTimer;
         private PlayerType _selectedSource;
         private bool _syncingWindowsMediaSessionCombo;
@@ -203,8 +206,103 @@ namespace Songify_Slim.Views
             InitializeComponent();
             Timer.Elapsed += TelemetryTask;
             Timer.Start();
+            ArtistBlocklistSyncTimer.Elapsed += ArtistBlocklistSyncTimer_Elapsed;
+            ArtistBlocklistSyncTimer.AutoReset = true;
+            ArtistBlocklistSyncTimer.Start();
+            // Startup sync when enabled (forced — not gated by last-sync age).
+            _ = Task.Run(async () =>
+            {
+                try
+                {
+                    await Task.Delay(8000);
+                    await TryRunArtistBlocklistSyncAsync(force: true, reason: "startup");
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(LogLevel.Error, LogSource.Core, "Startup artist blocklist sync failed", ex);
+                }
+            });
             PearWebSocketClient.ConnectionStateChanged += OnPearConnectionStateChanged;
             DataContext = this;
+        }
+
+        private static async void ArtistBlocklistSyncTimer_Elapsed(object sender, ElapsedEventArgs e)
+        {
+            await TryRunArtistBlocklistSyncAsync(force: false, reason: "hourly timer");
+        }
+
+        /// <summary>
+        /// Hourly (or forced) download of the configured artist CSV into the Spotify artist blocklist.
+        /// </summary>
+        public static async Task TryRunArtistBlocklistSyncAsync(bool force, string reason = null)
+        {
+            string trigger = string.IsNullOrWhiteSpace(reason) ? (force ? "forced" : "scheduled") : reason;
+
+            if (!Settings.ArtistBlocklistSyncEnabled)
+            {
+                if (force)
+                    Logger.Info(LogSource.Spotify, $"Artist blocklist sync skipped ({trigger}): hourly sync is disabled in Settings → Spotify.");
+                else
+                    Logger.Debug(LogSource.Spotify, $"Artist blocklist sync skipped ({trigger}): hourly sync is disabled.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(Settings.ArtistBlocklistSyncUrl))
+            {
+                Logger.Info(LogSource.Spotify, $"Artist blocklist sync skipped ({trigger}): no CSV URL configured.");
+                return;
+            }
+
+            if (!force)
+            {
+                string last = Settings.ArtistBlocklistSyncLastUtc;
+                if (!string.IsNullOrWhiteSpace(last) &&
+                    DateTime.TryParse(last, null, DateTimeStyles.RoundtripKind, out DateTime lastUtc) &&
+                    DateTime.UtcNow - lastUtc.ToUniversalTime() < TimeSpan.FromHours(1))
+                {
+                    Logger.Debug(LogSource.Spotify,
+                        $"Artist blocklist sync skipped ({trigger}): last sync was less than 1 hour ago ({last}).");
+                    return;
+                }
+            }
+
+            if (Interlocked.Exchange(ref _artistBlocklistSyncRunning, 1) == 1)
+            {
+                Logger.Debug(LogSource.Spotify, $"Artist blocklist sync skipped ({trigger}): already running.");
+                return;
+            }
+
+            try
+            {
+                Logger.Info(LogSource.Spotify,
+                    $"Artist blocklist sync starting ({trigger}): {Settings.ArtistBlocklistSyncUrl}");
+
+                ArtistCsvSyncResult result = await ArtistCsvImport.SyncFromSettingsAsync();
+                if (!result.Success)
+                {
+                    Logger.Warning(LogSource.Spotify, $"Artist blocklist sync failed ({trigger}): {result.Message}");
+                    return;
+                }
+
+                Logger.Info(LogSource.Spotify, $"Artist blocklist sync finished ({trigger}): {result.Message}");
+
+                Application.Current?.Dispatcher?.BeginInvoke(new Action(() =>
+                {
+                    foreach (Window window in Application.Current.Windows)
+                    {
+                        if (window is Window_Blacklist blacklist)
+                            blacklist.RefreshArtistsFromExternal();
+                    }
+                }));
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Core, $"Artist blocklist sync failed ({trigger})", ex);
+            }
+            finally
+            {
+                Interlocked.Exchange(ref _artistBlocklistSyncRunning, 0);
+            }
         }
 
         public static void RegisterInStartup(bool isChecked)
@@ -1531,6 +1629,21 @@ namespace Songify_Slim.Views
                     OpenPatchNotes();
                     Settings.UpdateRequired = false;
                     RefreshSpotifyTestModeControlsVisibility();
+
+
+                    if (Settings.CurrentConfig.AppConfig.ArtistBlacklist.Count > 0)
+                    {
+                        // Do this only one time to import blocked artist into new settings file.
+                        HashSet<string> existingIds = Settings.CurrentConfig.BlockedSpotifyArtists.Artists
+                            .Select(x => x.Id)
+                            .ToHashSet();
+
+                        Settings.CurrentConfig.BlockedSpotifyArtists.Artists.AddRange(
+                            Settings.CurrentConfig.AppConfig.ArtistBlacklist
+                                .Where(x => existingIds.Add(x.Id)));
+
+                        Settings.CurrentConfig.AppConfig.ArtistBlacklist.Clear();
+                    }
                 }
             }
             catch (Exception e)
@@ -2165,7 +2278,8 @@ namespace Songify_Slim.Views
         public void SetTextPreview(string replace)
         {
             TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal,
-                new Action(() => {
+                new Action(() =>
+                {
                     BindingOperations.ClearBinding(TxtblockLiveoutput, TextBlock.TextProperty);
                     TxtblockLiveoutput.Text = replace;
                 }));

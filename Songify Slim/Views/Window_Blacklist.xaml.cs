@@ -1,7 +1,11 @@
 ﻿using MahApps.Metro.Controls;
 using MahApps.Metro.Controls.Dialogs;
+using Songify_Slim.Models.Blocklist;
+using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Spotify;
 using SpotifyAPI.Web;
 using System;
@@ -13,10 +17,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using Songify_Slim.Models.Blocklist;
-using Songify_Slim.UserControls;
-using Songify_Slim.Util.General;
-using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using Logger = Songify_Slim.Util.General.Logger;
 using Task = System.Threading.Tasks.Task;
@@ -65,12 +65,15 @@ namespace Songify_Slim.Views
             RefreshUsers();
         }
 
-        private void RefreshArtists()
+        public void RefreshArtists()
         {
             _uiArtists.Clear();
             foreach (BlockedArtist a in Settings.ArtistBlacklist)
                 _uiArtists.Add(a);
         }
+
+        /// <summary>Called after external artist blocklist imports/syncs.</summary>
+        public void RefreshArtistsFromExternal() => RefreshArtists();
 
         private void RefreshSongs()
         {
@@ -632,6 +635,23 @@ namespace Songify_Slim.Views
             }
         }
 
+        private void ImportArtists_Click(object sender, RoutedEventArgs e)
+        {
+            Window_ArtistImport existing = Application.Current.Windows.OfType<Window_ArtistImport>().FirstOrDefault();
+            if (existing != null)
+            {
+                existing.Activate();
+                existing.Focus();
+                return;
+            }
+
+            Window_ArtistImport importWindow = new()
+            {
+                Owner = this
+            };
+            importWindow.ImportCompleted += (_, _) => RefreshArtists();
+            importWindow.Show();
+        }
     }
 
     public class ArtistResolveCandidate
@@ -639,7 +659,6 @@ namespace Songify_Slim.Views
         public string Name { get; set; } = "";
         public string Id { get; set; } = "";
     }
-
 
     public class ArtistPickerRow
     {

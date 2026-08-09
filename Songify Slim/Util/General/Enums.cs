@@ -105,7 +105,8 @@ public static class Enums
         TwitchCredentials,
         BotConfig,
         AppConfig,
-        TwitchCommands
+        TwitchCommands,
+        BlockedSpotifyArtists
     }
 
     public enum RequestPlayerType

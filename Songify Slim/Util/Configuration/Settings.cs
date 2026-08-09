@@ -144,9 +144,16 @@ namespace Songify_Slim.Util.Configuration
         public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
         public static bool BypassSpotifyFetchGate { get => GetBypassSpotifyFetchGate(); set => SetBypassSpotifyFetchGate(value); }
         public static bool ShowSpotifyToasts { get => GetShowSpotifyToasts(); set => SetShowSpotifyToasts(value); }
+        public static bool ArtistBlocklistSyncEnabled { get => GetArtistBlocklistSyncEnabled(); set => SetArtistBlocklistSyncEnabled(value); }
+        public static string ArtistBlocklistSyncUrl { get => GetArtistBlocklistSyncUrl(); set => SetArtistBlocklistSyncUrl(value); }
+        public static string ArtistBlocklistSyncNameColumn { get => GetArtistBlocklistSyncNameColumn(); set => SetArtistBlocklistSyncNameColumn(value); }
+        public static string ArtistBlocklistSyncIdColumn { get => GetArtistBlocklistSyncIdColumn(); set => SetArtistBlocklistSyncIdColumn(value); }
+        public static string ArtistBlocklistSyncLastUtc { get => GetArtistBlocklistSyncLastUtc(); set => SetArtistBlocklistSyncLastUtc(value); }
         public static TwitchChatAccount TwitchChatAccount { get => GetTwitchChatAccount(); set => SetTwitchChatAccount(value); }
+
         // Backward compatible: older configs stored a single issue, newer configs store a list.
         public static SpotifyPersistentIssue SpotifyPersistentIssue { get => GetSpotifyPersistentIssue(); set => SetSpotifyPersistentIssue(value); }
+
         public static List<SpotifyPersistentIssue> SpotifyPersistentIssues { get => GetSpotifyPersistentIssues(); set => SetSpotifyPersistentIssues(value); }
 
         private static TwitchChatAccount GetTwitchChatAccount()
@@ -191,6 +198,61 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetShowSpotifyToasts()
         {
             return CurrentConfig.AppConfig.ShowSpotifyToasts;
+        }
+
+        private static void SetArtistBlocklistSyncEnabled(bool value)
+        {
+            CurrentConfig.AppConfig.ArtistBlocklistSyncEnabled = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetArtistBlocklistSyncEnabled()
+        {
+            return CurrentConfig.AppConfig.ArtistBlocklistSyncEnabled;
+        }
+
+        private static void SetArtistBlocklistSyncUrl(string value)
+        {
+            CurrentConfig.AppConfig.ArtistBlocklistSyncUrl = value ?? "";
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetArtistBlocklistSyncUrl()
+        {
+            return CurrentConfig.AppConfig.ArtistBlocklistSyncUrl ?? "";
+        }
+
+        private static void SetArtistBlocklistSyncNameColumn(string value)
+        {
+            CurrentConfig.AppConfig.ArtistBlocklistSyncNameColumn = value ?? "";
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetArtistBlocklistSyncNameColumn()
+        {
+            return CurrentConfig.AppConfig.ArtistBlocklistSyncNameColumn ?? "";
+        }
+
+        private static void SetArtistBlocklistSyncIdColumn(string value)
+        {
+            CurrentConfig.AppConfig.ArtistBlocklistSyncIdColumn = value ?? "";
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetArtistBlocklistSyncIdColumn()
+        {
+            return CurrentConfig.AppConfig.ArtistBlocklistSyncIdColumn ?? "";
+        }
+
+        private static void SetArtistBlocklistSyncLastUtc(string value)
+        {
+            CurrentConfig.AppConfig.ArtistBlocklistSyncLastUtc = value ?? "";
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetArtistBlocklistSyncLastUtc()
+        {
+            return CurrentConfig.AppConfig.ArtistBlocklistSyncLastUtc ?? "";
         }
 
         private static SpotifyPersistentIssue GetSpotifyPersistentIssue()
@@ -1272,6 +1334,11 @@ namespace Songify_Slim.Util.Configuration
                 SpotifyFetchRate = GetSpotifyFetchRate(),
                 BypassSpotifyFetchGate = GetBypassSpotifyFetchGate(),
                 ShowSpotifyToasts = GetShowSpotifyToasts(),
+                ArtistBlocklistSyncEnabled = GetArtistBlocklistSyncEnabled(),
+                ArtistBlocklistSyncUrl = GetArtistBlocklistSyncUrl(),
+                ArtistBlocklistSyncNameColumn = GetArtistBlocklistSyncNameColumn(),
+                ArtistBlocklistSyncIdColumn = GetArtistBlocklistSyncIdColumn(),
+                ArtistBlocklistSyncLastUtc = GetArtistBlocklistSyncLastUtc(),
                 DebugLogging = GetDebugLogging(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
@@ -1323,13 +1390,19 @@ namespace Songify_Slim.Util.Configuration
                 Commands = CurrentConfig.TwitchCommands.Commands
             };
 
+            BlockedSpotifyArtists blockedSpotifyArtists = new()
+            {
+                Artists = CurrentConfig.BlockedSpotifyArtists.Artists
+            };
+
             return new Configuration
             {
                 AppConfig = appConfig,
                 SpotifyCredentials = spotifyCredentials,
                 TwitchCredentials = twitchCredentials,
                 BotConfig = botConfig,
-                TwitchCommands = twitchCommands
+                TwitchCommands = twitchCommands,
+                BlockedSpotifyArtists = blockedSpotifyArtists
             };
         }
 
@@ -1348,6 +1421,23 @@ namespace Songify_Slim.Util.Configuration
             CurrentConfig.AppConfig = config.AppConfig;
             CurrentConfig.BotConfig = config.BotConfig;
             CurrentConfig.TwitchCommands = config.TwitchCommands;
+            CurrentConfig.BlockedSpotifyArtists = config.BlockedSpotifyArtists ?? new BlockedSpotifyArtists();
+            CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
+
+            // Older cloud saves may still keep artists on AppConfig; migrate into BlockedSpotifyArtists.
+            List<BlockedArtist> legacyArtists = CurrentConfig.AppConfig?.ArtistBlacklist;
+            if (legacyArtists is { Count: > 0 })
+            {
+                HashSet<string> existingKeys = CurrentConfig.BlockedSpotifyArtists.Artists
+                    .Select(x => x.Key)
+                    .Where(k => !string.IsNullOrEmpty(k))
+                    .ToHashSet();
+
+                CurrentConfig.BlockedSpotifyArtists.Artists.AddRange(
+                    legacyArtists.Where(x => !string.IsNullOrEmpty(x.Key) && existingKeys.Add(x.Key)));
+
+                CurrentConfig.AppConfig.ArtistBlacklist.Clear();
+            }
 
             // Restore the token
             SongifyApiKey = existingApiKey;
@@ -1357,8 +1447,15 @@ namespace Songify_Slim.Util.Configuration
             {
                 foreach (Window window in Application.Current.Windows)
                 {
-                    if (window is not Window_Settings settingsWindow) continue;
-                    await settingsWindow.SetControls();
+                    switch (window)
+                    {
+                        case Window_Settings settingsWindow:
+                            await settingsWindow.SetControls();
+                            break;
+                        case Window_Blacklist blockListWindow:
+                            blockListWindow.RefreshArtists();
+                            break;
+                    }
                 }
             });
         }
@@ -1395,7 +1492,9 @@ namespace Songify_Slim.Util.Configuration
 
         private static List<BlockedArtist> GetArtistBlacklist()
         {
-            return CurrentConfig.AppConfig.ArtistBlacklist;
+            CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
+            CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
+            return CurrentConfig.BlockedSpotifyArtists.Artists;
         }
 
         private static bool GetAutoClearQueue()
@@ -2130,8 +2229,9 @@ namespace Songify_Slim.Util.Configuration
 
         private static void SetArtistBlacklist(List<BlockedArtist> value)
         {
-            CurrentConfig.AppConfig.ArtistBlacklist = value;
-            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+            CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
+            CurrentConfig.BlockedSpotifyArtists.Artists = value ?? [];
+            ConfigHandler.WriteConfig(ConfigTypes.BlockedSpotifyArtists, CurrentConfig.BlockedSpotifyArtists);
         }
 
         private static void SetAutoClearQueue(bool value)

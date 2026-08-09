@@ -1,0 +1,159 @@
+<controls:MetroWindow
+    x:Class="Songify_Slim.Views.Window_ArtistImport"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:Songify_Slim.Properties"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="Import Artist List"
+    Width="560"
+    Height="560"
+    MinWidth="480"
+    MinHeight="480"
+    ResizeMode="CanResizeWithGrip"
+    ShowIconOnTitleBar="False"
+    WindowStartupLocation="CenterOwner"
+    WindowStyle="ToolWindow"
+    mc:Ignorable="d">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock
+            Grid.Row="0"
+            Margin="0,0,0,12"
+            Opacity="0.75"
+            Text="Load a CSV from a file or raw GitHub URL, map Name/Id columns, then import."
+            TextWrapping="Wrap" />
+
+        <StackPanel Grid.Row="1" Margin="0,0,0,12">
+            <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                <RadioButton
+                    x:Name="RbImportFile"
+                    MinWidth="52"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    Checked="ImportSource_Checked"
+                    Content="File"
+                    DockPanel.Dock="Left"
+                    GroupName="ImportSource"
+                    IsChecked="True" />
+                <Button
+                    x:Name="BtnImportBrowse"
+                    MinWidth="80"
+                    Margin="8,0,0,0"
+                    Click="ImportBrowse_Click"
+                    Content="Browse…"
+                    DockPanel.Dock="Right" />
+                <TextBox
+                    x:Name="TbImportFilePath"
+                    VerticalAlignment="Center"
+                    IsReadOnly="True" />
+            </DockPanel>
+
+            <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                <RadioButton
+                    x:Name="RbImportUrl"
+                    MinWidth="52"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    Checked="ImportSource_Checked"
+                    Content="URL"
+                    DockPanel.Dock="Left"
+                    GroupName="ImportSource" />
+                <TextBox
+                    x:Name="TbImportUrl"
+                    VerticalAlignment="Center"
+                    Text="https://raw.githubusercontent.com/CennoxX/spotify-ai-blocker/refs/heads/main/SpotifyAiArtists.csv"
+                    TextWrapping="NoWrap" />
+            </DockPanel>
+
+            <Button
+                MinWidth="110"
+                HorizontalAlignment="Right"
+                Click="ImportLoad_Click"
+                Content="Load CSV" />
+        </StackPanel>
+
+        <Grid Grid.Row="2" Margin="0,0,0,12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="12" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0">
+                <TextBlock Margin="0,0,0,4" Text="Name column" />
+                <ComboBox
+                    x:Name="CbxImportNameColumn"
+                    DisplayMemberPath="Display"
+                    SelectedValuePath="Index"
+                    SelectionChanged="ImportColumnMapping_Changed" />
+            </StackPanel>
+            <StackPanel Grid.Column="2">
+                <TextBlock Margin="0,0,0,4" Text="Id column (optional)" />
+                <ComboBox
+                    x:Name="CbxImportIdColumn"
+                    DisplayMemberPath="Display"
+                    SelectedValuePath="Index"
+                    SelectionChanged="ImportColumnMapping_Changed" />
+            </StackPanel>
+        </Grid>
+
+        <DataGrid
+            x:Name="DgImportPreview"
+            Grid.Row="3"
+            Margin="0,0,0,8"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            IsReadOnly="True"
+            ItemsSource="{Binding ImportPreviewRows}"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.VerticalScrollBarVisibility="Auto">
+            <DataGrid.Columns>
+                <DataGridTextColumn
+                    Width="2*"
+                    Binding="{Binding Name}"
+                    Header="Name" />
+                <DataGridTextColumn
+                    Width="*"
+                    MinWidth="140"
+                    Binding="{Binding Id}"
+                    Header="Id" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <TextBlock
+            x:Name="TbImportStatus"
+            Grid.Row="4"
+            Margin="0,0,0,12"
+            Opacity="0.75"
+            Text="No CSV loaded."
+            TextWrapping="Wrap" />
+
+        <StackPanel
+            Grid.Row="5"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <Button
+                MinWidth="90"
+                Margin="0,0,10,0"
+                Click="ImportCancel_Click"
+                Content="{DynamicResource common_cancel}"
+                IsCancel="True" />
+            <Button
+                x:Name="BtnImportConfirm"
+                MinWidth="100"
+                Click="ImportConfirm_Click"
+                Content="Import"
+                IsDefault="True"
+                IsEnabled="False" />
+        </StackPanel>
+    </Grid>
+</controls:MetroWindow>

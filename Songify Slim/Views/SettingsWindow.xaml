@@ -2474,6 +2474,11 @@
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
                                 <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
                             </Grid.RowDefinitions>
                             <DockPanel
                                 x:Name="PnlSpotify"
@@ -2671,6 +2676,98 @@
                                     OnContent=""
                                     Toggled="TglBypassSpotifyFetchGate_OnToggled" />
                             </StackPanel>
+
+                            <TextBlock
+                                Grid.Row="9"
+                                Margin="0,16,0,6"
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Text="Artist blocklist sync" />
+                            <TextBlock
+                                Grid.Row="10"
+                                Margin="0,0,0,8"
+                                Opacity="0.75"
+                                Text="Hourly download a CSV (file URL / raw GitHub) and add new artists to the Spotify artist blocklist. Set column mapping once after Detect."
+                                TextWrapping="Wrap" />
+
+                            <DockPanel Grid.Row="11" Margin="0,0,0,8" LastChildFill="True">
+                                <TextBlock
+                                    MinWidth="70"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Left"
+                                    Text="CSV URL" />
+                                <TextBox
+                                    x:Name="TbArtistBlocklistSyncUrl"
+                                    VerticalAlignment="Center"
+                                    LostFocus="TbArtistBlocklistSyncUrl_OnLostFocus"
+                                    TextChanged="TbArtistBlocklistSyncUrl_OnTextChanged" />
+                            </DockPanel>
+
+                            <Grid Grid.Row="12" Margin="0,0,0,8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="12" />
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Margin="0,0,0,4" Text="Name column" />
+                                    <ComboBox
+                                        x:Name="CbxArtistBlocklistSyncNameColumn"
+                                        DisplayMemberPath="Display"
+                                        SelectedValuePath="Header"
+                                        SelectionChanged="CbxArtistBlocklistSyncColumn_OnSelectionChanged" />
+                                </StackPanel>
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Margin="0,0,0,4" Text="Id column" />
+                                    <ComboBox
+                                        x:Name="CbxArtistBlocklistSyncIdColumn"
+                                        DisplayMemberPath="Display"
+                                        SelectedValuePath="Header"
+                                        SelectionChanged="CbxArtistBlocklistSyncColumn_OnSelectionChanged" />
+                                </StackPanel>
+                                <Button
+                                    Grid.Column="3"
+                                    MinWidth="110"
+                                    Margin="12,18,0,0"
+                                    VerticalAlignment="Top"
+                                    Click="BtnArtistBlocklistDetectColumns_Click"
+                                    Content="Detect" />
+                            </Grid>
+
+                            <DockPanel Grid.Row="13" LastChildFill="True">
+                                <StackPanel
+                                    VerticalAlignment="Center"
+                                    DockPanel.Dock="Right"
+                                    Orientation="Horizontal">
+                                    <Button
+                                        MinWidth="100"
+                                        Margin="0,0,10,0"
+                                        Click="BtnArtistBlocklistSyncNow_Click"
+                                        Content="Sync now" />
+                                    <controls:ToggleSwitch
+                                        x:Name="TglArtistBlocklistSyncEnabled"
+                                        Width="46"
+                                        MinWidth="46"
+                                        VerticalAlignment="Center"
+                                        OffContent=""
+                                        OnContent=""
+                                        Toggled="TglArtistBlocklistSyncEnabled_OnToggled" />
+                                </StackPanel>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Text="Hourly auto-sync"
+                                        TextWrapping="Wrap" />
+                                    <TextBlock
+                                        x:Name="TbArtistBlocklistSyncStatus"
+                                        Margin="0,4,8,0"
+                                        Opacity="0.75"
+                                        Text="Last sync: never"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </DockPanel>
                         </Grid>
                     </ScrollViewer>
                 </Border>

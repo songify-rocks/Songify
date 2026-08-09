@@ -33,8 +33,8 @@ namespace Songify_Slim.Util.Configuration
     internal class ConfigHandler
     {
         public static List<TwitchCommand> DefaultCommands { get; set; } =
-       [
-           new()
+        [
+            new()
             {
                 CommandType = CommandType.SongRequest,
                 Trigger = "ssr",
@@ -46,7 +46,7 @@ namespace Songify_Slim.Util.Configuration
                 CustomProperties = new Dictionary<string, object>()
             },
 
-           new()
+            new()
             {
                 CommandType = CommandType.Next,
                 Trigger = "next",
@@ -82,20 +82,20 @@ namespace Songify_Slim.Util.Configuration
                 CustomProperties = new Dictionary<string, object>()
             },
 
-            new ()
-           {
-               CommandType = CommandType.ToggleSr,
-               Trigger = "togglesr",
-               Aliases = null,
-               Response = "Song requests are now {state}",
-               IsEnabled = false,
-               AllowedUserLevels = [6],
-               IsAnnouncement = false,
-               AnnouncementColor = AnnouncementColor.Blue,
-               CustomProperties = new Dictionary<string, object>()
-           },
+            new()
+            {
+                CommandType = CommandType.ToggleSr,
+                Trigger = "togglesr",
+                Aliases = null,
+                Response = "Song requests are now {state}",
+                IsEnabled = false,
+                AllowedUserLevels = [6],
+                IsAnnouncement = false,
+                AnnouncementColor = AnnouncementColor.Blue,
+                CustomProperties = new Dictionary<string, object>()
+            },
 
-           new()
+            new()
             {
                 CommandType = CommandType.Position,
                 Trigger = "pos",
@@ -125,7 +125,7 @@ namespace Songify_Slim.Util.Configuration
                 Trigger = "remove",
                 Response = "{user} your previous request ({song}) will be skipped.",
                 IsEnabled = false,
-                AllowedUserLevels = [0,1,2,3,4,5,6],
+                AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6],
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
                 CustomProperties = new Dictionary<string, object>()
@@ -154,7 +154,7 @@ namespace Songify_Slim.Util.Configuration
                 AnnouncementColor = AnnouncementColor.Blue,
                 CustomProperties = new Dictionary<string, object>
                 {
-                    {"SkipCount", 5}
+                    { "SkipCount", 5 }
                 }
             },
 
@@ -193,7 +193,7 @@ namespace Songify_Slim.Util.Configuration
                 AnnouncementColor = AnnouncementColor.Blue,
                 CustomProperties = new Dictionary<string, object>
                 {
-                    {"VolumeSetResponse", "Spotify volume set to {vol}%"}
+                    { "VolumeSetResponse", "Spotify volume set to {vol}%" }
                 }
             },
 
@@ -209,18 +209,18 @@ namespace Songify_Slim.Util.Configuration
                 CustomProperties = new Dictionary<string, object>()
             },
 
-           new()
-           {
-               CommandType = CommandType.BanSong,
-               Trigger = "bansong",
-               Response = "The song {song} has been added to the blocklist.",
-               IsEnabled = false,
-               AllowedUserLevels = [6],
-               IsAnnouncement = false,
-               AnnouncementColor = AnnouncementColor.Blue,
-               CustomProperties = new Dictionary<string, object>()
-           }
-       ];
+            new()
+            {
+                CommandType = CommandType.BanSong,
+                Trigger = "bansong",
+                Response = "The song {song} has been added to the blocklist.",
+                IsEnabled = false,
+                AllowedUserLevels = [6],
+                IsAnnouncement = false,
+                AnnouncementColor = AnnouncementColor.Blue,
+                CustomProperties = new Dictionary<string, object>()
+            }
+        ];
 
         public static void WriteConfig(ConfigTypes configType, object o, string path = null, bool isBackup = false)
         {
@@ -239,6 +239,7 @@ namespace Songify_Slim.Util.Configuration
                 ConfigTypes.BotConfig => "BotConfig",
                 ConfigTypes.AppConfig => "AppConfig",
                 ConfigTypes.TwitchCommands => "TwitchCommands",
+                ConfigTypes.BlockedSpotifyArtists => "BlockedSpotifyArtists",
                 _ => throw new ArgumentOutOfRangeException(nameof(configType), configType, null)
             };
 
@@ -249,6 +250,7 @@ namespace Songify_Slim.Util.Configuration
                 ConfigTypes.BotConfig => o as BotConfig ?? throw new InvalidOperationException(),
                 ConfigTypes.AppConfig => o as AppConfig ?? throw new InvalidOperationException(),
                 ConfigTypes.TwitchCommands => o as TwitchCommands ?? throw new InvalidOperationException(),
+                ConfigTypes.BlockedSpotifyArtists => o as BlockedSpotifyArtists ?? throw new InvalidOperationException(),
                 _ => throw new ArgumentOutOfRangeException(nameof(configType), configType, null)
             };
 
@@ -261,8 +263,8 @@ namespace Songify_Slim.Util.Configuration
             {
                 // 1) Write temp file and flush to disk
                 using (FileStream fs = new(
-                    tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096,
-                    FileOptions.WriteThrough | FileOptions.SequentialScan))
+                           tempPath, FileMode.CreateNew, FileAccess.Write, FileShare.None, 4096,
+                           FileOptions.WriteThrough | FileOptions.SequentialScan))
                 using (StreamWriter writer = new(fs, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
                 {
                     writer.Write(yaml);
@@ -288,12 +290,14 @@ namespace Songify_Slim.Util.Configuration
                     {
                         if (File.Exists(fullPath))
                         {
-                            File.Replace(tempPath, fullPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
+                            File.Replace(tempPath, fullPath, destinationBackupFileName: null,
+                                ignoreMetadataErrors: true);
                         }
                         else
                         {
                             File.Move(tempPath, fullPath);
                         }
+
                         break; // success
                     }
                     catch (IOException) when (attempt < maxAttempts)
@@ -311,7 +315,15 @@ namespace Songify_Slim.Util.Configuration
             catch (Exception ex)
             {
                 // Clean up temp if anything failed
-                try { if (File.Exists(tempPath)) File.Delete(tempPath); } catch { /* ignore */ }
+                try
+                {
+                    if (File.Exists(tempPath)) File.Delete(tempPath);
+                }
+                catch
+                {
+                    /* ignore */
+                }
+
                 Logger.Error(LogSource.Core, "Error writing config files.", ex);
             }
         }
@@ -336,14 +348,20 @@ namespace Songify_Slim.Util.Configuration
                 T fromYaml = TryRead<T>(yamlPath, deserializer);
                 if (fromYaml != null) return fromYaml;
             }
-            catch { /* corrupted yaml? fall through to bak */ }
+            catch
+            {
+                /* corrupted yaml? fall through to bak */
+            }
 
             try
             {
                 T fromBak = TryRead<T>(bakPath, deserializer);
                 if (fromBak != null) return fromBak;
             }
-            catch { /* corrupted bak too */ }
+            catch
+            {
+                /* corrupted bak too */
+            }
 
             return new T(); // defaults
         }
@@ -369,11 +387,13 @@ namespace Songify_Slim.Util.Configuration
                 switch (configType)
                 {
                     case ConfigTypes.SpotifyCredentials:
-                        config.SpotifyCredentials = LoadOrCreateConfig<SpotifyCredentials>(path, "SpotifyCredentials", deserializer);
+                        config.SpotifyCredentials =
+                            LoadOrCreateConfig<SpotifyCredentials>(path, "SpotifyCredentials", deserializer);
                         break;
 
                     case ConfigTypes.TwitchCredentials:
-                        config.TwitchCredentials = LoadOrCreateConfig<TwitchCredentials>(path, "TwitchCredentials", deserializer);
+                        config.TwitchCredentials =
+                            LoadOrCreateConfig<TwitchCredentials>(path, "TwitchCredentials", deserializer);
                         break;
 
                     case ConfigTypes.BotConfig:
@@ -385,8 +405,14 @@ namespace Songify_Slim.Util.Configuration
                         WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
+                    case ConfigTypes.BlockedSpotifyArtists:
+                        config.BlockedSpotifyArtists = LoadOrCreateConfig<BlockedSpotifyArtists>(path, "BlockedSpotifyArtists", deserializer);
+                        WriteConfig(ConfigTypes.BlockedSpotifyArtists, config.BlockedSpotifyArtists, path, false);
+                        break;
+
                     case ConfigTypes.TwitchCommands:
-                        config.TwitchCommands = LoadOrCreateConfig<TwitchCommands>(path, "TwitchCommands", deserializer);
+                        config.TwitchCommands =
+                            LoadOrCreateConfig<TwitchCommands>(path, "TwitchCommands", deserializer);
 
                         if (config.TwitchCommands.Commands.Count == 0)
                         {
@@ -405,7 +431,8 @@ namespace Songify_Slim.Util.Configuration
                             else
                             {
                                 // Command exists but ensure CustomProperties contains expected keys for the command type
-                                TwitchCommand existingCommand = config.TwitchCommands.Commands.First(c => c.CommandType == cmdType);
+                                TwitchCommand existingCommand =
+                                    config.TwitchCommands.Commands.First(c => c.CommandType == cmdType);
                                 TwitchCommand defaultCommand = DefaultCommands.First(c => c.CommandType == cmdType);
 
                                 // Ensure command has CustomProperties dictionary
@@ -418,7 +445,8 @@ namespace Songify_Slim.Util.Configuration
                                     if (!existingCommand.CustomProperties.ContainsKey("SkipCount"))
                                     {
                                         existingCommand.CustomProperties["SkipCount"] =
-                                            defaultCommand.CustomProperties.TryGetValue("SkipCount", out object customProperty)
+                                            defaultCommand.CustomProperties.TryGetValue("SkipCount",
+                                                out object customProperty)
                                                 ? customProperty
                                                 : 5;
                                     }
@@ -429,13 +457,15 @@ namespace Songify_Slim.Util.Configuration
                                     if (!existingCommand.CustomProperties.ContainsKey("VolumeSetResponse"))
                                     {
                                         existingCommand.CustomProperties["VolumeSetResponse"] =
-                                            defaultCommand.CustomProperties.TryGetValue("VolumeSetResponse", out object customProperty)
+                                            defaultCommand.CustomProperties.TryGetValue("VolumeSetResponse",
+                                                out object customProperty)
                                                 ? customProperty
                                                 : "Volume set to {vol}%.";
                                     }
                                 }
                             }
                         }
+
                         break;
 
                     default:
@@ -454,7 +484,8 @@ namespace Songify_Slim.Util.Configuration
                 (ConfigTypes.BotConfig, config.BotConfig),
                 (ConfigTypes.SpotifyCredentials, config.SpotifyCredentials),
                 (ConfigTypes.TwitchCredentials, config.TwitchCredentials),
-                (ConfigTypes.TwitchCommands, config.TwitchCommands)
+                (ConfigTypes.TwitchCommands, config.TwitchCommands),
+                (ConfigTypes.BlockedSpotifyArtists, config.BlockedSpotifyArtists)
             ];
 
             foreach ((ConfigTypes type, object obj) in configsToWrite)
@@ -466,15 +497,18 @@ namespace Songify_Slim.Util.Configuration
         public static string GenerateAccessKey()
         {
             const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
-            string key = new([.. Enumerable.Repeat(allowedChars, 1)
-                .SelectMany(s => s)
-                .Take(128)
-                .OrderBy(_ => Guid.NewGuid())]);
+            string key = new([
+                .. Enumerable.Repeat(allowedChars, 1)
+                    .SelectMany(s => s)
+                    .Take(128)
+                    .OrderBy(_ => Guid.NewGuid())
+            ]);
 
             return key;
         }
 
-        public static async Task<Tuple<bool, HttpStatusCode>> CloudSaveSettings(string apiToken, string userId, Configuration config)
+        public static async Task<Tuple<bool, HttpStatusCode>> CloudSaveSettings(string apiToken, string userId,
+            Configuration config)
         {
             try
             {
@@ -513,7 +547,8 @@ namespace Songify_Slim.Util.Configuration
                 string url = $"{GlobalObjects.ApiUrl}/user_settings";
 
                 using HttpClient http = new();
-                http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
+                http.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
                 HttpResponseMessage response = await http.PostAsync(url, content);
                 switch (response.StatusCode)
                 {
@@ -522,17 +557,23 @@ namespace Songify_Slim.Util.Configuration
                     // 403 Forbidden: User not found, no email, or no premium status
                     // 500 Internal Server Error: Database error
                     case HttpStatusCode.Unauthorized:
-                        Logger.Warning(LogSource.Api, "Cloud save failed: Unauthorized access. Invalid API token or user ID.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Unauthorized);
+                        Logger.Warning(LogSource.Api,
+                            "Cloud save failed: Unauthorized access. Invalid API token or user ID.");
+                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
+                            HttpStatusCode.Unauthorized);
 
                     case HttpStatusCode.Forbidden:
-                        Logger.Warning(LogSource.Api, "Cloud save failed: Forbidden access. User not found or no premium status.");
+                        Logger.Warning(LogSource.Api,
+                            "Cloud save failed: Forbidden access. User not found or no premium status.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
 
                     case HttpStatusCode.InternalServerError:
-                        Logger.Warning(LogSource.Api, "Cloud save failed: Internal server error. Please try again later.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.InternalServerError);
+                        Logger.Warning(LogSource.Api,
+                            "Cloud save failed: Internal server error. Please try again later.");
+                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
+                            HttpStatusCode.InternalServerError);
                 }
+
                 return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, response.StatusCode);
             }
             catch (Exception ex)
@@ -564,7 +605,8 @@ namespace Songify_Slim.Util.Configuration
                 string url = $"{GlobalObjects.ApiUrl}/user_settings?user_id={userId}";
 
                 using HttpClient http = new();
-                http.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
+                http.DefaultRequestHeaders.Authorization =
+                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
 
                 HttpResponseMessage response = await http.GetAsync(url);
 
@@ -575,16 +617,21 @@ namespace Songify_Slim.Util.Configuration
                     // 403 Forbidden: User not found, no email, or no premium status
                     // 500 Internal Server Error: Database error
                     case HttpStatusCode.Unauthorized:
-                        Logger.Warning(LogSource.Api, "Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Unauthorized);
+                        Logger.Warning(LogSource.Api,
+                            "Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
+                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
+                            HttpStatusCode.Unauthorized);
 
                     case HttpStatusCode.Forbidden:
-                        Logger.Warning(LogSource.Api, "Cloud restore failed: Forbidden access. User not found or no premium status.");
+                        Logger.Warning(LogSource.Api,
+                            "Cloud restore failed: Forbidden access. User not found or no premium status.");
                         return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
 
                     case HttpStatusCode.InternalServerError:
-                        Logger.Warning(LogSource.Api, "Cloud restore failed: Internal server error. Please try again later.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.InternalServerError);
+                        Logger.Warning(LogSource.Api,
+                            "Cloud restore failed: Internal server error. Please try again later.");
+                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
+                            HttpStatusCode.InternalServerError);
                 }
 
                 // If the API returns the raw base64 blob directly:
@@ -640,11 +687,9 @@ namespace Songify_Slim.Util.Configuration
 
         private class CloudSettingsResponse
         {
-            [JsonProperty("settings")]
-            public string Settings { get; set; }
+            [JsonProperty("settings")] public string Settings { get; set; }
 
-            [JsonProperty("updatedAt")]
-            public DateTime? UpdatedAt { get; set; }
+            [JsonProperty("updatedAt")] public DateTime? UpdatedAt { get; set; }
         }
     }
 
@@ -655,6 +700,7 @@ namespace Songify_Slim.Util.Configuration
         public TwitchCredentials TwitchCredentials { get; set; }
         public BotConfig BotConfig { get; set; }
         public TwitchCommands TwitchCommands { get; set; }
+        public BlockedSpotifyArtists BlockedSpotifyArtists { get; set; }
     }
 
     public class SpotifyCredentials
@@ -716,36 +762,58 @@ namespace Songify_Slim.Util.Configuration
         public string BotCmdSongTrigger { get; set; } = "song";
         public string BotCmdSsrTrigger { get; set; } = "ssr";
         public string BotCmdVoteskipTrigger { get; set; } = "voteskip";
-        public string BotRespBlacklist { get; set; } = "@{user} the Artist: {artist} has been blocked by the broadcaster.";
-        public string BotRespBlacklistSong { get; set; } = "@{user} the song: {song} has been blocked by the broadcaster.";
+
+        public string BotRespBlacklist { get; set; } =
+            "@{user} the Artist: {artist} has been blocked by the broadcaster.";
+
+        public string BotRespBlacklistSong { get; set; } =
+            "@{user} the song: {song} has been blocked by the broadcaster.";
+
         public string BotRespCooldown { get; set; } = "The command is on cooldown. Try again in {cd} seconds.";
-        public string BotRespError { get; set; } = "@{user} there was an error adding your Song to the queue. Error message: {errormsg}";
+
+        public string BotRespError { get; set; } =
+            "@{user} there was an error adding your Song to the queue. Error message: {errormsg}";
+
         public string BotRespExplicitSong { get; set; } = "This Song containts explicit content and is not allowed.";
         public string BotRespIsInQueue { get; set; } = "@{user} this song is already in the queue.";
-        public string BotRespLength { get; set; } = "@{user} the song you requested exceeded the maximum song length ({maxlength}).";
+
+        public string BotRespLength { get; set; } =
+            "@{user} the song you requested exceeded the maximum song length ({maxlength}).";
+
         public string BotRespMaxReq { get; set; } = "@{user} maximum number of songs in queue reached ({maxreq}).";
         public string BotRespModSkip { get; set; } = "@{user} skipped the current song.";
         public string BotRespNext { get; set; } = "@{user} {song}";
         public string BotRespNoSong { get; set; } = "@{user} please specify a song to add to the queue.";
         public string BotRespNoTrackFound { get; set; } = "No track found.";
-        public string BotRespPlaylist { get; set; } = "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
+
+        public string BotRespPlaylist { get; set; } =
+            "This song was not found in the allowed playlist.({playlist_name} {playlist_url})";
+
         public string BotRespPos { get; set; } = "@{user} {songs}{pos} {song}{/songs}";
         public string BotRespRefund { get; set; } = "Your points have been refunded.";
         public string BotRespRemove { get; set; } = "{user} your previous request ({song}) will be skipped.";
         public string BotRespSong { get; set; } = "@{user} {song}";
         public string BotRespSongLike { get; set; } = "The Song {song} has been added to the playlist.";
-        public string BotRespSuccess { get; set; } = "{artist} - {title} requested by @{user} has been added to the queue.";
+
+        public string BotRespSuccess { get; set; } =
+            "{artist} - {title} requested by @{user} has been added to the queue.";
+
         public string BotRespUnavailable { get; set; } = "The Song {song} is not available in the streamers country.";
         public string BotRespVoteSkip { get; set; } = "@{user} voted to skip the current song. ({votes})";
-        public string BotRespUserCooldown { get; set; } = "@{user} you have to wait {cd} before you can request a song again.";
+
+        public string BotRespUserCooldown { get; set; } =
+            "@{user} you have to wait {cd} before you can request a song again.";
 
         public string BotRespCommandDisabled { get; set; } = "@{user} the command {cmd} is not enabled.";
-        public string BotRespPlayerOwnershipDenied { get; set; } = "@{user} song requests are currently handled by {active_player}.";
+
+        public string BotRespPlayerOwnershipDenied { get; set; } =
+            "@{user} song requests are currently handled by {active_player}.";
 
         public string BotRespUserLevelTooLowCommand { get; set; } =
             "Sorry, only {userlevel} or higher can request songs using the command.";
 
-        public string BotRespUserLevelTooLowReward { get; set; } = "Sorry, only {userlevel} or higher can request songs using the reward.";
+        public string BotRespUserLevelTooLowReward { get; set; } =
+            "Sorry, only {userlevel} or higher can request songs using the reward.";
     }
 
     public class TwitchCommands
@@ -777,7 +845,8 @@ namespace Songify_Slim.Util.Configuration
             {
                 bool enabled = (bool)boolProp.GetValue(config);
                 if (onlyEnabled)
-                    if (!enabled) continue;
+                    if (!enabled)
+                        continue;
                 // Construct the expected trigger property name (e.g., BotCmdNext -> BotCmdNextTrigger)
                 string triggerPropName = boolProp.Name + "Trigger";
                 PropertyInfo triggerProp = type.GetProperty(triggerPropName);
@@ -892,6 +961,7 @@ namespace Songify_Slim.Util.Configuration
         public bool SkipOnlyNonSrSongs { get; set; } = false;
         public bool SrForBits { get; set; } = false;
         public int SpotifyFetchRate { get; set; } = 2;
+
         /// <summary>
         /// When true, Spotify now-playing fetch runs even when not live on Twitch and TestMode is off.
         /// </summary>
@@ -907,14 +977,29 @@ namespace Songify_Slim.Util.Configuration
         /// </summary>
         public bool ShowSpotifyToasts { get; set; } = true;
 
+        /// <summary>When true, Songify hourly downloads <see cref="ArtistBlocklistSyncUrl"/> and merges artists into the blocklist.</summary>
+        public bool ArtistBlocklistSyncEnabled { get; set; }
+
+        /// <summary>Raw CSV URL used for hourly artist blocklist sync.</summary>
+        public string ArtistBlocklistSyncUrl { get; set; } = "";
+
+        /// <summary>CSV header name mapped to artist display name. Empty = auto-detect.</summary>
+        public string ArtistBlocklistSyncNameColumn { get; set; } = "";
+
+        /// <summary>CSV header name mapped to Spotify artist id. Empty or "(None)" = no id column.</summary>
+        public string ArtistBlocklistSyncIdColumn { get; set; } = "";
+
+        /// <summary>UTC ISO-8601 timestamp of the last successful sync.</summary>
+        public string ArtistBlocklistSyncLastUtc { get; set; } = "";
+
         public bool DebugLogging { get; set; } = false;
         public string YoutubeApiKey { get; set; }
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();
         public List<string> TwRewardSkipPoll { get; set; } = [];
         public bool SharedChatEnabled { get; set; } = false;
         public string SrForBitsKeyWord { get; set; }
-        public Songify_Slim.Models.Spotify.SpotifyPersistentIssue SpotifyPersistentIssue { get; set; }
-        public List<Songify_Slim.Models.Spotify.SpotifyPersistentIssue> SpotifyPersistentIssues { get; set; } = new();
+        public SpotifyPersistentIssue SpotifyPersistentIssue { get; set; }
+        public List<SpotifyPersistentIssue> SpotifyPersistentIssues { get; set; } = new();
 
         /// <summary>
         /// Empty = use OS current SMTC session; otherwise match SourceAppUserModelId from the Windows media session.
@@ -924,5 +1009,10 @@ namespace Songify_Slim.Util.Configuration
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
         public int MinimumBitsForSR = 1;
+    }
+
+    public class BlockedSpotifyArtists
+    {
+        public List<BlockedArtist> Artists { get; set; } = [];
     }
 }

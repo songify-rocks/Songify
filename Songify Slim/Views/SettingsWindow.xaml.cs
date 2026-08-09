@@ -8,6 +8,7 @@ using Songify_Slim.Models.Twitch;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Spotify;
@@ -336,6 +337,7 @@ namespace Songify_Slim.Views
             NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
             TglBypassSpotifyFetchGate.IsOn = Settings.BypassSpotifyFetchGate;
             TglShowSpotifyToasts.IsOn = Settings.ShowSpotifyToasts;
+            LoadArtistBlocklistSyncControls();
             TbRequesterPrefix.Text = Settings.RequesterPrefix;
             TglDonationReminder.IsOn = Settings.DonationReminder;
             TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
@@ -1635,6 +1637,240 @@ namespace Songify_Slim.Views
         private void TglShowSpotifyToasts_OnToggled(object sender, RoutedEventArgs e)
         {
             Settings.ShowSpotifyToasts = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void LoadArtistBlocklistSyncControls()
+        {
+            if (TbArtistBlocklistSyncUrl != null)
+                TbArtistBlocklistSyncUrl.Text = Settings.ArtistBlocklistSyncUrl;
+
+            if (TglArtistBlocklistSyncEnabled != null)
+                TglArtistBlocklistSyncEnabled.IsOn = Settings.ArtistBlocklistSyncEnabled;
+
+            SeedArtistBlocklistColumnCombo(
+                CbxArtistBlocklistSyncNameColumn,
+                Settings.ArtistBlocklistSyncNameColumn,
+                includeNone: false);
+            SeedArtistBlocklistColumnCombo(
+                CbxArtistBlocklistSyncIdColumn,
+                Settings.ArtistBlocklistSyncIdColumn,
+                includeNone: true);
+
+            UpdateArtistBlocklistSyncStatusLabel();
+        }
+
+        private static void SeedArtistBlocklistColumnCombo(System.Windows.Controls.ComboBox combo, string selectedHeader, bool includeNone)
+        {
+            if (combo == null)
+                return;
+
+            List<ArtistCsvColumnOption> options = [];
+            if (includeNone)
+            {
+                options.Add(new ArtistCsvColumnOption
+                {
+                    Index = -1,
+                    Header = ArtistCsvImport.NoneColumn,
+                    Display = ArtistCsvImport.NoneColumn
+                });
+            }
+
+            if (!string.IsNullOrWhiteSpace(selectedHeader) &&
+                !options.Any(o => string.Equals(o.Header, selectedHeader, StringComparison.OrdinalIgnoreCase)))
+            {
+                options.Add(new ArtistCsvColumnOption
+                {
+                    Index = 0,
+                    Header = selectedHeader.Trim(),
+                    Display = selectedHeader.Trim()
+                });
+            }
+
+            combo.ItemsSource = options;
+            if (!string.IsNullOrWhiteSpace(selectedHeader))
+                combo.SelectedValue = selectedHeader.Trim();
+            else if (includeNone)
+                combo.SelectedValue = ArtistCsvImport.NoneColumn;
+        }
+
+        private void UpdateArtistBlocklistSyncStatusLabel()
+        {
+            if (TbArtistBlocklistSyncStatus == null)
+                return;
+
+            string last = Settings.ArtistBlocklistSyncLastUtc;
+            if (string.IsNullOrWhiteSpace(last))
+            {
+                TbArtistBlocklistSyncStatus.Text = "Last sync: never";
+                return;
+            }
+
+            if (DateTime.TryParse(last, null, DateTimeStyles.RoundtripKind, out DateTime utc))
+            {
+                DateTime local = utc.ToLocalTime();
+                TbArtistBlocklistSyncStatus.Text = $"Last sync: {local:g}";
+            }
+            else
+            {
+                TbArtistBlocklistSyncStatus.Text = $"Last sync: {last}";
+            }
+        }
+
+        private void TbArtistBlocklistSyncUrl_OnTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            // Persist on LostFocus to avoid writing config on every keystroke.
+        }
+
+        private void TbArtistBlocklistSyncUrl_OnLostFocus(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded || _isSettingControls)
+                return;
+            Settings.ArtistBlocklistSyncUrl = TbArtistBlocklistSyncUrl.Text?.Trim() ?? "";
+        }
+
+        private void CbxArtistBlocklistSyncColumn_OnSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (!IsLoaded || _isSettingControls)
+                return;
+
+            if (CbxArtistBlocklistSyncNameColumn?.SelectedValue is string nameHeader)
+                Settings.ArtistBlocklistSyncNameColumn = nameHeader;
+
+            if (CbxArtistBlocklistSyncIdColumn?.SelectedValue is string idHeader)
+                Settings.ArtistBlocklistSyncIdColumn = idHeader;
+        }
+
+        private void TglArtistBlocklistSyncEnabled_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded || _isSettingControls)
+                return;
+            Settings.ArtistBlocklistSyncEnabled = TglArtistBlocklistSyncEnabled.IsOn;
+        }
+
+        private async void BtnArtistBlocklistDetectColumns_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded || _isSettingControls)
+                return;
+
+            string url = TbArtistBlocklistSyncUrl.Text?.Trim() ?? "";
+            Settings.ArtistBlocklistSyncUrl = url;
+
+            Button btn = sender as Button;
+            if (btn != null)
+                btn.IsEnabled = false;
+
+            try
+            {
+                TbArtistBlocklistSyncStatus.Text = "Detecting columns…";
+                string csv = await ArtistCsvImport.DownloadCsvAsync(url);
+                if (!ArtistCsvImport.TryParse(csv, out List<string> headers, out _, out string error))
+                {
+                    TbArtistBlocklistSyncStatus.Text = error;
+                    await this.ShowMessageAsync("Detect columns", error);
+                    return;
+                }
+
+                List<ArtistCsvColumnOption> nameOptions = headers
+                    .Select((h, i) => new ArtistCsvColumnOption { Index = i, Header = h, Display = $"{i + 1}: {h}" })
+                    .ToList();
+
+                List<ArtistCsvColumnOption> idOptions =
+                [
+                    new ArtistCsvColumnOption
+                    {
+                        Index = -1,
+                        Header = ArtistCsvImport.NoneColumn,
+                        Display = ArtistCsvImport.NoneColumn
+                    }
+                ];
+                idOptions.AddRange(nameOptions);
+
+                _isSettingControls = true;
+                CbxArtistBlocklistSyncNameColumn.ItemsSource = nameOptions;
+                CbxArtistBlocklistSyncIdColumn.ItemsSource = idOptions;
+
+                int nameIdx = ArtistCsvImport.ResolveColumnIndex(headers, Settings.ArtistBlocklistSyncNameColumn, ArtistCsvImport.NameColumnHints);
+                if (nameIdx < 0)
+                    nameIdx = ArtistCsvImport.GuessColumnIndex(headers, ArtistCsvImport.NameColumnHints);
+                if (nameIdx < 0 && headers.Count > 0)
+                    nameIdx = 0;
+
+                int idIdx = ArtistCsvImport.ResolveColumnIndex(headers, Settings.ArtistBlocklistSyncIdColumn, ArtistCsvImport.IdColumnHints);
+                if (idIdx < 0 && string.IsNullOrWhiteSpace(Settings.ArtistBlocklistSyncIdColumn))
+                    idIdx = ArtistCsvImport.GuessColumnIndex(headers, ArtistCsvImport.IdColumnHints);
+
+                CbxArtistBlocklistSyncNameColumn.SelectedValue = nameIdx >= 0 ? headers[nameIdx] : null;
+                CbxArtistBlocklistSyncIdColumn.SelectedValue = idIdx >= 0 ? headers[idIdx] : ArtistCsvImport.NoneColumn;
+                _isSettingControls = false;
+
+                if (CbxArtistBlocklistSyncNameColumn.SelectedValue is string nameHeader)
+                    Settings.ArtistBlocklistSyncNameColumn = nameHeader;
+                if (CbxArtistBlocklistSyncIdColumn.SelectedValue is string idHeader)
+                    Settings.ArtistBlocklistSyncIdColumn = idHeader;
+
+                TbArtistBlocklistSyncStatus.Text = $"Detected {headers.Count} column(s). Mapping saved.";
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Core, "Failed to detect artist blocklist CSV columns", ex);
+                TbArtistBlocklistSyncStatus.Text = "Detect failed.";
+                await this.ShowMessageAsync("Detect columns", "Could not load the CSV. Check the URL and try again.");
+            }
+            finally
+            {
+                _isSettingControls = false;
+                if (btn != null)
+                    btn.IsEnabled = true;
+            }
+        }
+
+        private async void BtnArtistBlocklistSyncNow_Click(object sender, RoutedEventArgs e)
+        {
+            if (!IsLoaded || _isSettingControls)
+                return;
+
+            Settings.ArtistBlocklistSyncUrl = TbArtistBlocklistSyncUrl.Text?.Trim() ?? "";
+            if (CbxArtistBlocklistSyncNameColumn?.SelectedValue is string nameHeader)
+                Settings.ArtistBlocklistSyncNameColumn = nameHeader;
+            if (CbxArtistBlocklistSyncIdColumn?.SelectedValue is string idHeader)
+                Settings.ArtistBlocklistSyncIdColumn = idHeader;
+
+            Button btn = sender as Button;
+            if (btn != null)
+                btn.IsEnabled = false;
+
+            try
+            {
+                TbArtistBlocklistSyncStatus.Text = "Syncing…";
+                ArtistCsvSyncResult result = await ArtistCsvImport.SyncFromSettingsAsync();
+                UpdateArtistBlocklistSyncStatusLabel();
+                if (!result.Success)
+                {
+                    TbArtistBlocklistSyncStatus.Text = result.Message;
+                    await this.ShowMessageAsync("Artist blocklist sync", result.Message);
+                    return;
+                }
+
+                // Refresh open blacklist window if present
+                foreach (Window window in Application.Current.Windows)
+                {
+                    if (window is Window_Blacklist blacklist)
+                        blacklist.Dispatcher.Invoke(blacklist.RefreshArtistsFromExternal);
+                }
+
+                await this.ShowMessageAsync("Artist blocklist sync", result.Message);
+                UpdateArtistBlocklistSyncStatusLabel();
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Error, LogSource.Core, "Manual artist blocklist sync failed", ex);
+                await this.ShowMessageAsync("Artist blocklist sync", "Sync failed. Check the logs for details.");
+            }
+            finally
+            {
+                if (btn != null)
+                    btn.IsEnabled = true;
+            }
         }
 
         private async void BtnReloadPlaylists_Click(object sender, RoutedEventArgs e)

@@ -240,6 +240,12 @@
                             <Button
                                 MinWidth="120"
                                 Margin="0,0,10,0"
+                                Click="ImportArtists_Click"
+                                Content="Import Artist List" />
+
+                            <Button
+                                MinWidth="120"
+                                Margin="0,0,10,0"
                                 Click="RefreshArtists_Click"
                                 Content="{DynamicResource window_blocklist_refresh_ids}" />
 
