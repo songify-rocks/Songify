@@ -2687,7 +2687,7 @@
                                 Grid.Row="10"
                                 Margin="0,0,0,8"
                                 Opacity="0.75"
-                                Text="Hourly download a CSV (file URL / raw GitHub) and add new artists to the Spotify artist blocklist. Set column mapping once after Detect."
+                                Text="Hourly download an HTTPS CSV (e.g. raw GitHub) and add new artists to the Spotify artist blocklist. Set column mapping once after Detect."
                                 TextWrapping="Wrap" />
 
                             <DockPanel Grid.Row="11" Margin="0,0,0,8" LastChildFill="True">
@@ -2838,11 +2838,24 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="32" />
+                            <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                             <RowDefinition Height="32" />
                         </Grid.RowDefinitions>
-                        <Label
+                        <TextBlock
+                            x:Name="TbWebServerAdminWarning"
                             Grid.Row="0"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Margin="0,0,0,10"
+                            TextWrapping="Wrap"
+                            Visibility="Collapsed"
+                            Foreground="{DynamicResource MahApps.Brushes.Accent}"
+                            Text="Songify is running as Administrator. The web server will also listen on your LAN IP so a second PC can connect. Only do this on a trusted network, and consider enabling Require WebSocket password below." />
+                        <Label
+                            Grid.Row="1"
                             Grid.Column="0"
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
@@ -2850,7 +2863,7 @@
                             Content="{DynamicResource window_settings_webserver_port}" />
                         <controls:NumericUpDown
                             x:Name="NudServerPort"
-                            Grid.Row="0"
+                            Grid.Row="1"
                             Grid.Column="0"
                             Width="80"
                             HorizontalAlignment="Right"
@@ -2863,7 +2876,7 @@
                             ValueChanged="NudServerPort_ValueChanged" />
                         <Button
                             x:Name="BtnWebserverStart"
-                            Grid.Row="0"
+                            Grid.Row="1"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
@@ -2872,7 +2885,7 @@
                             Content="{DynamicResource window_settings_webserver_start}" />
                         <controls:ToggleSwitch
                             x:Name="TglAutoStartWebserver"
-                            Grid.Row="1"
+                            Grid.Row="2"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
                             Height="32"
@@ -2884,7 +2897,7 @@
                             Toggled="TglAutoStartWebserver_Toggled" />
                         <Button
                             x:Name="BtnWebserverOpenUrl"
-                            Grid.Row="1"
+                            Grid.Row="2"
                             Grid.Column="1"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center"
@@ -2892,6 +2905,34 @@
                             Click="BtnWebserverOpenUrl_OnClick"
                             Content="{DynamicResource window_settings_webserver_open_website}"
                             ToolTip="Track JSON: root URL — WebSocket tester: /ws-docs" />
+                        <controls:ToggleSwitch
+                            x:Name="TglWebServerPassword"
+                            Grid.Row="3"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Height="32"
+                            Margin="0,4,0,4"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Content="Require WebSocket password"
+                            ToolTip="When enabled, WebSocket control commands need the password (auth action, password field, or ?password= on the URL). Off by default. Does not affect reading /ws/data broadcasts."
+                            Toggled="TglWebServerPassword_Toggled" />
+                        <Label
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Content="WebSocket password" />
+                        <PasswordBox
+                            x:Name="PasswordBox_WebServer"
+                            Grid.Row="4"
+                            Grid.Column="0"
+                            Grid.ColumnSpan="2"
+                            Width="280"
+                            Margin="140,0,0,0"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            PasswordChanged="PasswordBox_WebServer_OnPasswordChanged" />
                     </Grid>
                 </Border>
             </TabItem>
@@ -3083,6 +3124,21 @@
                                 FontSize="12"
                                 TabIndex="8"
                                 Toggled="TglDebugLogging_OnToggled" />
+                            <DockPanel Margin="0,8,0,0" LastChildFill="False">
+                                <TextBlock
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Center"
+                                    Text="Keep last log files"
+                                    ToolTip="Number of daily log files to keep (normal and DEBUG separately). Older files are deleted. 0 = keep all." />
+                                <controls:NumericUpDown
+                                    x:Name="NudLogFileRetention"
+                                    Width="70"
+                                    VerticalAlignment="Center"
+                                    HideUpDownButtons="True"
+                                    Maximum="365"
+                                    Minimum="0"
+                                    ValueChanged="NudLogFileRetention_ValueChanged" />
+                            </DockPanel>
                         </StackPanel>
                     </ScrollViewer>
                 </Border>

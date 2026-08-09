@@ -519,6 +519,7 @@ namespace Songify_Slim.Util.Configuration
                 clonedConfig.AppConfig.YoutubeApiKey = null;
                 clonedConfig.AppConfig.SongifyApiKey = null;
                 clonedConfig.AppConfig.AccessKey = null;
+                clonedConfig.AppConfig.WebServerPassword = null;
 
                 // Strip sensitive information
                 clonedConfig.SpotifyCredentials = null;
@@ -926,6 +927,16 @@ namespace Songify_Slim.Util.Configuration
         public int TwSrPerUserCooldown { get; set; } = 0;
         public int TwSrUserLevel { get; set; } = 1;
         public int WebServerPort { get; set; } = 65530;
+
+        /// <summary>
+        /// When true, WebSocket control commands require <see cref="WebServerPassword"/>
+        /// (via auth action, per-command password field, or ?password= on the WS URL).
+        /// Off by default — localhost is treated as trusted unless the user opts in.
+        /// </summary>
+        public bool WebServerPasswordEnabled { get; set; }
+
+        /// <summary>Shared secret for optional WebSocket command authentication.</summary>
+        public string WebServerPassword { get; set; } = "";
         public List<RefundCondition> RefundConditons { get; set; } = [];
         public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
         public List<int> ReadNotificationIds { get; set; } = [];
@@ -993,6 +1004,13 @@ namespace Songify_Slim.Util.Configuration
         public string ArtistBlocklistSyncLastUtc { get; set; } = "";
 
         public bool DebugLogging { get; set; } = false;
+
+        /// <summary>
+        /// How many daily log files to keep per type (normal and DEBUG-). Older files are deleted.
+        /// 0 = keep all (no pruning).
+        /// </summary>
+        public int LogFileRetentionCount { get; set; } = 5;
+
         public string YoutubeApiKey { get; set; }
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();
         public List<string> TwRewardSkipPoll { get; set; } = [];

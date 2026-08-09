@@ -420,12 +420,17 @@
             <label class="field-label" for="wsPath">Path</label>
             <input class="text-input" type="text" id="wsPath" value="/ws" spellcheck="false" style="width:100%;" />
           </div>
+          <div style="flex:1;min-width:160px;max-width:240px;">
+            <label class="field-label" for="wsPassword">Password (optional)</label>
+            <input class="text-input" type="password" id="wsPassword" value="" spellcheck="false" style="width:100%;" placeholder="If protection enabled" />
+          </div>
           <div class="field-row" style="margin:0;">
             <button type="button" class="btn btn--primary" id="btnConnect">Connect</button>
             <button type="button" class="btn btn--ghost" id="btnDisconnect" disabled>Disconnect</button>
             <span id="wsStatus" style="font-size:13px;color:var(--scalar-color-3);padding-left:4px;">Disconnected</span>
           </div>
         </div>
+        <p style="margin:0 0 16px;color:var(--scalar-color-2);font-size:12px;">If Settings → WebServer → Require WebSocket password is on, connect with the password above (sent as ?password=) or send an auth message first.</p>
 
         <label class="field-label" for="payload">Message body</label>
         <textarea class="payload" id="payload" spellcheck="false">{"action":"skip"}</textarea>
@@ -448,6 +453,7 @@
       var btnDisconnect = document.getElementById('btnDisconnect');
       var btnSend = document.getElementById('btnSend');
       var wsPath = document.getElementById('wsPath');
+      var wsPassword = document.getElementById('wsPassword');
       var wsStatus = document.getElementById('wsStatus');
       var sidebarEl = document.getElementById('sidebar');
       var emptyState = document.getElementById('emptyState');
@@ -472,7 +478,12 @@
         var p = (wsPath.value || '/ws').trim();
         if (!p.startsWith('/')) p = '/' + p;
         var proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-        return proto + '//' + location.host + p;
+        var url = proto + '//' + location.host + p;
+        var pw = (wsPassword && wsPassword.value) ? wsPassword.value.trim() : '';
+        if (pw) {
+          url += (url.indexOf('?') >= 0 ? '&' : '?') + 'password=' + encodeURIComponent(pw);
+        }
+        return url;
       }
 
       function setConnected(c) {

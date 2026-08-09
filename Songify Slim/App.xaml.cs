@@ -65,6 +65,8 @@ namespace Songify_Slim
             {
                 Settings.Uuid = Guid.NewGuid().ToString();
             }
+
+            Logger.PruneOldLogFiles();
         }
 
         protected override void OnExit(ExitEventArgs e)
@@ -253,24 +255,51 @@ namespace Songify_Slim
 
         private static async void ImportToken(string token)
         {
-            Settings.SongifyApiKey = token;
-            if ((MainWindow)Current.MainWindow != null)
+            try
             {
-                MessageDialogResult result = await ((MainWindow)Current.MainWindow).ShowMessageAsync(
-               "Notification",
-               "Your Songify API Token has been imported successfully",
-               MessageDialogStyle.Affirmative, new MetroDialogSettings()
-               {
-                   AffirmativeButtonText = "OK",
-               }
-            );
-            }
+                if (Current.MainWindow is not MainWindow mainWindow)
+                {
+                    Logger.Warning(LogSource.Core, "DeepLink: cannot confirm Songify API token import — main window not ready.");
+                    return;
+                }
 
-            foreach (Window currentWindow in Current.Windows)
+                MessageDialogResult confirm = await mainWindow.ShowMessageAsync(
+                    "Import Songify API Token",
+                    "A Songify API token was received via deep link. Do you want to replace your current Songify API token?",
+                    MessageDialogStyle.AffirmativeAndNegative,
+                    new MetroDialogSettings
+                    {
+                        AffirmativeButtonText = "Import",
+                        NegativeButtonText = "Cancel"
+                    });
+
+                if (confirm != MessageDialogResult.Affirmative)
+                {
+                    Logger.Info(LogSource.Core, "DeepLink: Songify API token import cancelled by user.");
+                    return;
+                }
+
+                Settings.SongifyApiKey = token;
+
+                await mainWindow.ShowMessageAsync(
+                    "Notification",
+                    "Your Songify API Token has been imported successfully",
+                    MessageDialogStyle.Affirmative,
+                    new MetroDialogSettings
+                    {
+                        AffirmativeButtonText = "OK",
+                    });
+
+                foreach (Window currentWindow in Current.Windows)
+                {
+                    if (currentWindow is not Window_Settings settings)
+                        continue;
+                    await settings.SetControls();
+                }
+            }
+            catch (Exception e)
             {
-                if (currentWindow is not Window_Settings settings)
-                    continue;
-                await settings.SetControls();
+                Logger.Error(LogSource.Core, "Failed to import Songify API Token", e);
             }
         }
 

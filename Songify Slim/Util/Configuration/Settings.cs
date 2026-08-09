@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
@@ -117,6 +118,12 @@ namespace Songify_Slim.Util.Configuration
             set => SetDebugLogging(value);
         }
 
+        public static int LogFileRetentionCount
+        {
+            get => GetLogFileRetentionCount();
+            set => SetLogFileRetentionCount(value);
+        }
+
         private static void SetDebugLogging(bool value)
         {
             CurrentConfig.AppConfig.DebugLogging = value;
@@ -126,6 +133,18 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetDebugLogging()
         {
             return CurrentConfig.AppConfig.DebugLogging;
+        }
+
+        private static void SetLogFileRetentionCount(int value)
+        {
+            CurrentConfig.AppConfig.LogFileRetentionCount = Math.Max(0, value);
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+            Logger.PruneOldLogFiles();
+        }
+
+        private static int GetLogFileRetentionCount()
+        {
+            return CurrentConfig.AppConfig.LogFileRetentionCount;
         }
 
         public static string SongifyApiKey
@@ -962,6 +981,18 @@ namespace Songify_Slim.Util.Configuration
             set => SetWebServerPort(value);
         }
 
+        public static bool WebServerPasswordEnabled
+        {
+            get => GetWebServerPasswordEnabled();
+            set => SetWebServerPasswordEnabled(value);
+        }
+
+        public static string WebServerPassword
+        {
+            get => GetWebServerPassword();
+            set => SetWebServerPassword(value);
+        }
+
         public static string WebUserAgent => GetWebua();
         public static string YtmdToken { get => GetYtmdToken(); set => SetYtmdToken(value); }
         public static string BotCmdCommandsTrigger { get => GetBotCmdCommandsTrigger(); set => SetBotCmdCommandsTrigger(value); }
@@ -1340,6 +1371,7 @@ namespace Songify_Slim.Util.Configuration
                 ArtistBlocklistSyncIdColumn = GetArtistBlocklistSyncIdColumn(),
                 ArtistBlocklistSyncLastUtc = GetArtistBlocklistSyncLastUtc(),
                 DebugLogging = GetDebugLogging(),
+                LogFileRetentionCount = GetLogFileRetentionCount(),
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),
@@ -1376,6 +1408,8 @@ namespace Songify_Slim.Util.Configuration
                 UserLevelsReward = GetUserLevelsReward(),
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
+                WebServerPasswordEnabled = GetWebServerPasswordEnabled(),
+                WebServerPassword = GetWebServerPassword(),
                 WebUserAgent = GetWebua(),
                 YtmdToken = GetYtmdToken(),
                 YoutubeApiKey = GetYoutubeApiKey(),
@@ -1416,6 +1450,7 @@ namespace Songify_Slim.Util.Configuration
         public static async Task ImportCloudSave(Configuration config)
         {    // Cache the existing decrypted token
             string existingApiKey = SongifyApiKey;
+            string existingWebServerPassword = WebServerPassword;
 
             // Overwrite the config
             CurrentConfig.AppConfig = config.AppConfig;
@@ -1439,8 +1474,9 @@ namespace Songify_Slim.Util.Configuration
                 CurrentConfig.AppConfig.ArtistBlacklist.Clear();
             }
 
-            // Restore the token
+            // Restore secrets that are never uploaded
             SongifyApiKey = existingApiKey;
+            WebServerPassword = existingWebServerPassword;
 
             // Re-apply UI settings
             await Application.Current.Dispatcher.Invoke(async () =>
@@ -2185,6 +2221,16 @@ namespace Songify_Slim.Util.Configuration
         private static int GetWebServerPort()
         {
             return CurrentConfig.AppConfig.WebServerPort;
+        }
+
+        private static bool GetWebServerPasswordEnabled()
+        {
+            return CurrentConfig.AppConfig.WebServerPasswordEnabled;
+        }
+
+        private static string GetWebServerPassword()
+        {
+            return CurrentConfig.AppConfig.WebServerPassword ?? "";
         }
 
         private static string GetWebua()
@@ -3043,6 +3089,18 @@ namespace Songify_Slim.Util.Configuration
         private static void SetWebServerPort(int value)
         {
             CurrentConfig.AppConfig.WebServerPort = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetWebServerPasswordEnabled(bool value)
+        {
+            CurrentConfig.AppConfig.WebServerPasswordEnabled = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetWebServerPassword(string value)
+        {
+            CurrentConfig.AppConfig.WebServerPassword = value ?? "";
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

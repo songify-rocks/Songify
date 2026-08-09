@@ -365,6 +365,13 @@ namespace Songify_Slim.Util.General
 
                 Logger.Info(LogSource.Core, $"WebServer: Started on port {port}");
                 Logger.Info(LogSource.Core, $"WebSocket: Started on ws://127.0.0.1:{port}");
+                if (IsRunningAsAdministrator())
+                {
+                    string localIp = GetLocalIpAddress();
+                    if (!string.IsNullOrWhiteSpace(localIp))
+                        Logger.Info(LogSource.Core,
+                            $"WebServer: Also listening on LAN http://{localIp}:{port}/ (running as Administrator). Use a WebSocket password if this network is not fully trusted.");
+                }
 
                 while (Run)
                 {
@@ -395,6 +402,11 @@ namespace Songify_Slim.Util.General
             WebSocketContext webSocketContext = null;
             Guid clientId = Guid.NewGuid();
             string path = context.Request.Url.AbsolutePath;
+            WsClientAuthState authState = new()
+            {
+                Authenticated = !IsWebSocketAuthRequired() ||
+                                PasswordMatches(context.Request.QueryString["password"])
+            };
 
             try
             {
@@ -430,7 +442,7 @@ namespace Songify_Slim.Util.General
                         if (buffer.Array == null) continue;
                         if (socket.State != WebSocketState.Open) break;
                         string message = Encoding.UTF8.GetString(buffer.Array, buffer.Offset, result.Count);
-                        string response = await ProcessMessage(message);
+                        string response = await ProcessMessage(message, authState);
 
                         if (!string.IsNullOrEmpty(response))
                         {
@@ -526,7 +538,49 @@ namespace Songify_Slim.Util.General
         }
 
         // ---- New ProcessMessage using the router ----
-        private static async Task<string> ProcessMessage(string message)
+        private sealed class WsClientAuthState
+        {
+            public bool Authenticated;
+        }
+
+        private static bool IsWebSocketAuthRequired() => Settings.WebServerPasswordEnabled;
+
+        private static bool PasswordMatches(string provided)
+        {
+            string expected = Settings.WebServerPassword ?? "";
+            if (string.IsNullOrEmpty(expected) || provided == null)
+                return false;
+
+            byte[] a = Encoding.UTF8.GetBytes(provided);
+            byte[] b = Encoding.UTF8.GetBytes(expected);
+            if (a.Length != b.Length)
+                return false;
+
+            int diff = 0;
+            for (int i = 0; i < a.Length; i++)
+                diff |= a[i] ^ b[i];
+            return diff == 0;
+        }
+
+        private static string ExtractAuthPassword(WebSocketCommand command)
+        {
+            if (!string.IsNullOrEmpty(command.Password))
+                return command.Password;
+
+            if (command.Data == null)
+                return null;
+
+            try
+            {
+                return command.Data.Value<string>("password");
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        private static async Task<string> ProcessMessage(string message, WsClientAuthState authState)
         {
             if (string.IsNullOrWhiteSpace(message))
                 return "";
@@ -543,6 +597,37 @@ namespace Songify_Slim.Util.General
 
             if (command == null || string.IsNullOrWhiteSpace(command.Action))
                 return "Invalid command format.";
+
+            bool authRequired = IsWebSocketAuthRequired();
+
+            if (string.Equals(command.Action, "auth", StringComparison.OrdinalIgnoreCase))
+            {
+                if (!authRequired)
+                    return "Password protection is disabled; no auth needed.";
+
+                if (string.IsNullOrEmpty(Settings.WebServerPassword))
+                    return "Password protection is enabled but no password is set in Settings.";
+
+                if (PasswordMatches(ExtractAuthPassword(command)))
+                {
+                    authState.Authenticated = true;
+                    return "Authenticated.";
+                }
+
+                authState.Authenticated = false;
+                return "Authentication failed.";
+            }
+
+            if (authRequired && !authState.Authenticated)
+            {
+                if (string.IsNullOrEmpty(Settings.WebServerPassword))
+                    return "Unauthorized. Password protection is enabled but no password is set in Settings.";
+
+                if (PasswordMatches(ExtractAuthPassword(command)))
+                    authState.Authenticated = true;
+                else
+                    return "Unauthorized. Authenticate with {\"action\":\"auth\",\"data\":{\"password\":\"...\"}}, include \"password\" on the command, or connect with ?password=...";
+            }
 
             if (CommandMap.TryGetValue(command.Action, out CommandHandler handler))
             {
@@ -701,7 +786,7 @@ namespace Songify_Slim.Util.General
             return (from ip in host.AddressList where ip.AddressFamily == AddressFamily.InterNetwork select ip.ToString()).FirstOrDefault();
         }
 
-        private static bool IsRunningAsAdministrator()
+        public static bool IsRunningAsAdministrator()
         {
             try
             {

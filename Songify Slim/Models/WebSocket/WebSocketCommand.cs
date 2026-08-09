@@ -45,5 +45,12 @@ namespace Songify_Slim.Models.WebSocket
 
         [JsonProperty("data")]
         public JObject Data { get; set; }
+
+        /// <summary>
+        /// Optional shared secret when WebServer password protection is enabled.
+        /// Clients may also authenticate once via action "auth", or pass ?password= on the WS URL.
+        /// </summary>
+        [JsonProperty("password")]
+        public string Password { get; set; }
     }
 }

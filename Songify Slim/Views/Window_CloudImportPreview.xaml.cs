@@ -34,6 +34,20 @@ namespace Songify_Slim.Views
             List<string> diffs = ConfigComparer.GetDifferences(local, incoming);
             DiffCount = diffs.Count;
 
+            List<string> permissionWarnings = ConfigComparer.GetPermissionWideningWarnings(local, incoming);
+            if (permissionWarnings.Count > 0)
+            {
+                PermissionWarningBanner.Visibility = Visibility.Visible;
+                TbPermissionWarnings.Text =
+                    "This import widens who can use some Twitch commands or song requests:\n• " +
+                    string.Join("\n• ", permissionWarnings);
+            }
+            else
+            {
+                PermissionWarningBanner.Visibility = Visibility.Collapsed;
+                TbPermissionWarnings.Text = "";
+            }
+
             DiffTextBox.Document.Blocks.Clear();
 
             if (diffs.Count == 0)

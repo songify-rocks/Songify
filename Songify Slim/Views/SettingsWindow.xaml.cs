@@ -326,6 +326,11 @@ namespace Songify_Slim.Views
             NudServerPort.Value = Settings.WebServerPort;
             tgl_KeepCover.IsOn = Settings.KeepAlbumCover;
             TglAutoStartWebserver.IsOn = Settings.AutoStartWebServer;
+            TglWebServerPassword.IsOn = Settings.WebServerPasswordEnabled;
+            PasswordBox_WebServer.Password = Settings.WebServerPassword ?? "";
+            TbWebServerAdminWarning.Visibility = WebServer.IsRunningAsAdministrator()
+                ? Visibility.Visible
+                : Visibility.Collapsed;
             TglBetaUpdates.IsOn = Settings.BetaUpdates;
             TglOnlyWorkWhenLive.IsOn = Settings.BotOnlyWorkWhenLive;
             TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
@@ -342,6 +347,7 @@ namespace Songify_Slim.Views
             TglDonationReminder.IsOn = Settings.DonationReminder;
             TglsLongBadgeNames.IsOn = Settings.LongBadgeNames;
             TglDebugLogging.IsOn = Settings.DebugLogging;
+            NudLogFileRetention.Value = Settings.LogFileRetentionCount;
             TglOnlySkipNonSrRewards.IsOn = Settings.SkipOnlyNonSrSongs;
 
             BtnWebserverStart.Content = GlobalObjects.WebServer.Run
@@ -1451,6 +1457,17 @@ namespace Songify_Slim.Views
         private void TglAutoStartWebserver_Toggled(object sender, RoutedEventArgs e)
         {
             Settings.AutoStartWebServer = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void TglWebServerPassword_Toggled(object sender, RoutedEventArgs e)
+        {
+            Settings.WebServerPasswordEnabled = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void PasswordBox_WebServer_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (sender is not PasswordBox pb) return;
+            Settings.WebServerPassword = pb.Password;
         }
 
         private void BtnCreateNewReward_Click(object sender, RoutedEventArgs e)
@@ -2570,6 +2587,13 @@ namespace Songify_Slim.Views
             if (!IsLoaded || _isSettingControls)
                 return;
             Settings.DebugLogging = ((ToggleSwitch)sender).IsOn;
+        }
+
+        private void NudLogFileRetention_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        {
+            if (!IsLoaded || _isSettingControls || NudLogFileRetention.Value == null)
+                return;
+            Settings.LogFileRetentionCount = (int)NudLogFileRetention.Value;
         }
 
         private void PasswordBox_YoutubeApiKey_OnPasswordChanged(object sender, RoutedEventArgs e)

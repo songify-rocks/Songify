@@ -30,9 +30,9 @@ namespace Songify_Slim.Util.Songify
         {
             if (string.IsNullOrWhiteSpace(url) ||
                 !Uri.TryCreate(url.Trim(), UriKind.Absolute, out Uri uri) ||
-                (uri.Scheme != Uri.UriSchemeHttp && uri.Scheme != Uri.UriSchemeHttps))
+                uri.Scheme != Uri.UriSchemeHttps)
             {
-                throw new ArgumentException("Enter a valid http(s) URL to a raw CSV.");
+                throw new ArgumentException("Enter a valid https URL to a raw CSV.");
             }
 
             using HttpClient http = new();
@@ -40,6 +40,12 @@ namespace Songify_Slim.Util.Songify
             http.DefaultRequestHeaders.UserAgent.ParseAdd("Songify");
             using HttpResponseMessage response =
                 await http.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+
+            // Reject redirects that land on non-HTTPS (e.g. https → http).
+            Uri finalUri = response.RequestMessage?.RequestUri;
+            if (finalUri != null && finalUri.Scheme != Uri.UriSchemeHttps)
+                throw new InvalidOperationException("CSV download redirected to a non-HTTPS URL.");
+
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }

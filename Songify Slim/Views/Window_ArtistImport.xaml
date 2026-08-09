@@ -30,7 +30,7 @@
             Grid.Row="0"
             Margin="0,0,0,12"
             Opacity="0.75"
-            Text="Load a CSV from a file or raw GitHub URL, map Name/Id columns, then import."
+            Text="Load a CSV from a file or HTTPS raw URL (e.g. GitHub), map Name/Id columns, then import."
             TextWrapping="Wrap" />
 
         <StackPanel Grid.Row="1" Margin="0,0,0,12">

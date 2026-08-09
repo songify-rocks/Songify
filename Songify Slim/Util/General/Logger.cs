@@ -85,7 +85,56 @@ namespace Songify_Slim.Util.General
                 File.AppendAllText(fileName, "!! BETA !!" + Environment.NewLine);
             File.AppendAllText(fileName, "Date: " + date + Environment.NewLine);
             File.AppendAllText(fileName, "====================" + Environment.NewLine);
+            PruneOldLogFiles();
             return fileName;
+        }
+
+        /// <summary>
+        /// Deletes older daily log files, keeping the newest <see cref="Settings.LogFileRetentionCount"/>
+        /// files for normal logs and the same count for DEBUG- logs. 0 = keep all.
+        /// </summary>
+        public static void PruneOldLogFiles()
+        {
+            try
+            {
+                int keep = Settings.LogFileRetentionCount;
+                if (keep <= 0 || !Directory.Exists(LogDirectoryPath))
+                    return;
+
+                PruneLogGroup(
+                    Directory.EnumerateFiles(LogDirectoryPath, "*.txt")
+                        .Where(path =>
+                        {
+                            string name = Path.GetFileName(path);
+                            return !name.StartsWith("DEBUG-", StringComparison.OrdinalIgnoreCase);
+                        }),
+                    keep);
+
+                PruneLogGroup(
+                    Directory.EnumerateFiles(LogDirectoryPath, "DEBUG-*.txt"),
+                    keep);
+            }
+            catch
+            {
+                // Never break the app because of log cleanup.
+            }
+        }
+
+        private static void PruneLogGroup(IEnumerable<string> files, int keep)
+        {
+            foreach (string path in files
+                         .OrderByDescending(File.GetLastWriteTimeUtc)
+                         .Skip(keep))
+            {
+                try
+                {
+                    File.Delete(path);
+                }
+                catch
+                {
+                    // File may be locked; ignore.
+                }
+            }
         }
 
         // ------------- PUBLIC API (drop-in compatible) -------------

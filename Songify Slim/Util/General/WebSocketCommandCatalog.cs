@@ -63,6 +63,16 @@ namespace Songify_Slim.Util.General
         {
             new WebSocketDocCommand
             {
+                Group = "auth",
+                Action = "auth",
+                Aliases = Array.Empty<string>(),
+                Description =
+                    "Optional. When WebServer password protection is enabled in Settings, authenticate this connection. You can also pass ?password= on the WebSocket URL or include \"password\" on any command.",
+                DataRequired = true,
+                ExampleJson = "{\"action\":\"auth\",\"data\":{\"password\":\"your-password\"}}"
+            },
+            new WebSocketDocCommand
+            {
                 Group = "overlay",
                 Action = "youtube",
                 Aliases = Array.Empty<string>(),
