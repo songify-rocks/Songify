@@ -30,7 +30,6 @@ using Swan;
 using Swan.Formatters;
 using Application = System.Windows.Application;
 using Brushes = System.Windows.Media.Brushes;
-using ContextMenu = System.Windows.Forms.ContextMenu;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using MenuItem = System.Windows.Controls.MenuItem;
 using MessageBox = System.Windows.MessageBox;
@@ -82,7 +81,6 @@ namespace Songify_Slim.Views
         private DispatcherTimer _disclaimerTimer = new();
         private readonly DispatcherTimer _motdTimer = new();
         private int _secondsRemaining = 4;
-        private readonly ContextMenu _contextMenu = new();
         private static readonly Timer Timer = new(TimeSpan.FromMinutes(5).TotalMilliseconds);
         private static readonly Timer ArtistBlocklistSyncTimer = new(TimeSpan.FromHours(1).TotalMilliseconds);
         private static int _artistBlocklistSyncRunning;
@@ -386,17 +384,17 @@ namespace Songify_Slim.Views
         private void BtnDiscord_Click(object sender, RoutedEventArgs e)
         {
             // Opens Discord-Invite Link in Standard-Browser
-            Process.Start("https://discordapp.com/invite/H8nd4T4");
+            ShellHelper.OpenUrl("https://discordapp.com/invite/H8nd4T4");
         }
 
         private void BtnFAQ_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start($"{GlobalObjects.BaseUrl}/faq.html");
+            ShellHelper.OpenUrl($"{GlobalObjects.BaseUrl}/faq.html");
         }
 
         private void BtnGitHub_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/songify-rocks/Songify/issues");
+            ShellHelper.OpenUrl("https://github.com/songify-rocks/Songify/issues");
         }
 
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
@@ -413,14 +411,14 @@ namespace Songify_Slim.Views
             // Opens the Queue in the Browser
             else if (item.Tag.ToString().Contains("Browser"))
             {
-                Process.Start($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
+                ShellHelper.OpenUrl($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
             }
         }
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)
         {
             // links to the projects patreon page (the button name is old because I used to use paypal)
-            Process.Start("https://ko-fi.com/overcodetv");
+            ShellHelper.OpenUrl("https://ko-fi.com/overcodetv");
         }
 
         private void BtnSettings_Click(object sender, RoutedEventArgs e)
@@ -472,7 +470,7 @@ namespace Songify_Slim.Views
                 Settings.Upload = true;
             }
 
-            Process.Start("https://widget.songify.rocks/" + Settings.Uuid);
+            ShellHelper.OpenUrl("https://widget.songify.rocks/" + Settings.Uuid);
         }
 
         private async void Cbx_Source_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -828,7 +826,7 @@ namespace Songify_Slim.Views
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            ShellHelper.OpenUrl(e.Uri.AbsoluteUri);
             e.Handled = true;
         }
 
@@ -892,7 +890,7 @@ namespace Songify_Slim.Views
                     }
                 );
                 if (result == MessageDialogResult.Affirmative)
-                    Process.Start(
+                    ShellHelper.OpenUrl(
                         "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
                 Settings.UseOwnApp = true;
             }
@@ -1689,44 +1687,54 @@ namespace Songify_Slim.Views
 
         private void CreateSystrayIcon()
         {
-            _contextMenu.MenuItems.AddRange([
-                new System.Windows.Forms.MenuItem("Twitch", [
-                    new System.Windows.Forms.MenuItem("Connect", void (_, _) =>
-                    {
-                        try
-                        {
-                            TwitchHandler.ConnectTwitchChatClient();
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.LogExc(e);
-                        }
-                    }),
-                    new System.Windows.Forms.MenuItem("Disconnect", void (_, _) =>
-                    {
-                        try
-                        {
-                        }
-                        catch (Exception e)
-                        {
-                            Logger.LogExc(e);
-                        }
-                    })
-                ]),
-                new System.Windows.Forms.MenuItem("Show", (_, _) =>
+            // WinForms ContextMenu/MenuItem throw PlatformNotSupportedException on .NET Core+.
+            // NotifyIcon requires ContextMenuStrip + ToolStripMenuItem instead.
+            ToolStripMenuItem twitchConnect = new("Connect", null, (_, _) =>
+            {
+                try
                 {
-                    Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        Show();
-                        WindowState = WindowState.Normal;
-                    }));
-                }),
-                new System.Windows.Forms.MenuItem("Exit", (_, _) =>
+                    TwitchHandler.ConnectTwitchChatClient();
+                }
+                catch (Exception e)
                 {
-                    _forceClose = true;
-                    Close();
-                })
-            ]);
+                    Logger.LogExc(e);
+                }
+            });
+
+            ToolStripMenuItem twitchDisconnect = new("Disconnect", null, (_, _) =>
+            {
+                try
+                {
+                }
+                catch (Exception e)
+                {
+                    Logger.LogExc(e);
+                }
+            });
+
+            ToolStripMenuItem twitchMenu = new("Twitch");
+            twitchMenu.DropDownItems.Add(twitchConnect);
+            twitchMenu.DropDownItems.Add(twitchDisconnect);
+
+            ToolStripMenuItem showMenu = new("Show", null, (_, _) =>
+            {
+                Dispatcher.BeginInvoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    Show();
+                    WindowState = WindowState.Normal;
+                }));
+            });
+
+            ToolStripMenuItem exitMenu = new("Exit", null, (_, _) =>
+            {
+                _forceClose = true;
+                Close();
+            });
+
+            ContextMenuStrip trayMenu = new();
+            trayMenu.Items.Add(twitchMenu);
+            trayMenu.Items.Add(showMenu);
+            trayMenu.Items.Add(exitMenu);
 
             BitmapImage img = App.IsBeta
                 ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
@@ -1734,7 +1742,7 @@ namespace Songify_Slim.Views
             Icon icon = ImageConverter.ConvertBitmapImageToIcon(img);
 
             NotifyIcon.Icon = icon;
-            NotifyIcon.ContextMenu = _contextMenu;
+            NotifyIcon.ContextMenuStrip = trayMenu;
             NotifyIcon.Visible = true;
             NotifyIcon.DoubleClick += (_, _) =>
             {
@@ -1919,7 +1927,7 @@ namespace Songify_Slim.Views
             // Opens the Queue in the Browser
             else if (item.Header.ToString().Contains("Browser"))
             {
-                Process.Start($"{GlobalObjects.BaseUrl}/queue.php?id=" + Settings.Uuid);
+                ShellHelper.OpenUrl($"{GlobalObjects.BaseUrl}/queue.php?id=" + Settings.Uuid);
             }
         }
 
@@ -2220,7 +2228,7 @@ namespace Songify_Slim.Views
 
         private void BtnLogFolderClick(object sender, RoutedEventArgs e)
         {
-            Process.Start(Logger.LogDirectoryPath);
+            ShellHelper.OpenPath(Logger.LogDirectoryPath);
         }
 
         private void BtnMenuViewConsole_Click(object sender, RoutedEventArgs e)
@@ -2256,7 +2264,7 @@ namespace Songify_Slim.Views
         private void BtnWebServerUrl_Click(object sender, RoutedEventArgs e)
         {
             if (GlobalObjects.WebServer.Run)
-                Process.Start($"http://localhost:{Settings.WebServerPort}");
+                ShellHelper.OpenUrl($"http://localhost:{Settings.WebServerPort}");
         }
 
         private void BtnFontSizeUp_Click(object sender, RoutedEventArgs e)
@@ -2391,7 +2399,7 @@ namespace Songify_Slim.Views
         private void BtnAppFolderClick(object sender, RoutedEventArgs e)
         {
             string direcotry = Directory.GetCurrentDirectory();
-            Process.Start(direcotry);
+            ShellHelper.OpenPath(direcotry);
         }
 
         private async void ServiceToolTipOpening(object sender, ToolTipEventArgs e)
@@ -2590,7 +2598,7 @@ namespace Songify_Slim.Views
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/songify-rocks/Songify/wiki/Spotify-fetching,-Test-Mode,-and-live-gating");
+            ShellHelper.OpenUrl("https://github.com/songify-rocks/Songify/wiki/Spotify-fetching,-Test-Mode,-and-live-gating");
         }
     }
 }

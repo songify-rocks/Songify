@@ -729,6 +729,8 @@ public static class TwitchHandler
             Random random = new Random();
             int salt = random.Next(1, 1000);
 
+            // Release any previous listeners so retries don't hit "prefix already registered".
+            _activeOAuth?.Dispose();
             _activeOAuth = new ImplicitOAuth(salt);
             _pendingOAuthAccount = account;
 
@@ -792,6 +794,7 @@ public static class TwitchHandler
                 }
                 finally
                 {
+                    _activeOAuth?.Dispose();
                     _activeOAuth = null;
                     _pendingOAuthState = null;
                     _pendingOAuthAccount = null;

@@ -1,4 +1,4 @@
-﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Core;
 using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
@@ -203,7 +203,7 @@ namespace Songify_Slim.Views
 
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/songify-rocks/songify/releases");
+            ShellHelper.OpenUrl("https://github.com/songify-rocks/songify/releases");
         }
     }
 }

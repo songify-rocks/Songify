@@ -28,7 +28,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Windows.ApplicationModel.Resources.Core;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Pear;
 using Songify_Slim.Util.Configuration;

@@ -9,7 +9,7 @@ using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify.TwitchOAuth
 {
-    public class ImplicitOAuth(int stateSalt = 42)
+    public class ImplicitOAuth(int stateSalt = 42) : IDisposable
     {
         #region Variables
 
@@ -21,6 +21,8 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 
         // Listener for fetching info from the redirect listener.
         private readonly HttpListener _fetchListener = new();
+
+        private bool _disposed;
 
         // Events
         public delegate void UpdatedValuesEvent(string state, string token);
@@ -66,22 +68,7 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             // Open the browser and send the user to the implicit autentication page on Twitch.
             try
             {
-                if (File.Exists(@"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe") && !Settings.UseDefaultBrowser)
-                {
-                    Process process = new()
-                    {
-                        StartInfo = new ProcessStartInfo
-                        {
-                            FileName = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
-                            Arguments = $"--inprivate {TwitchAuthUrl}?{queryParams}"
-                        }
-                    };
-                    process.Start();
-                }
-                else
-                {
-                    Process.Start($"{TwitchAuthUrl}?{queryParams}");
-                }
+                OpenAuthorizationUrl($"{TwitchAuthUrl}?{queryParams}");
             }
             catch (Exception e)
             {
@@ -91,9 +78,48 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             return authStateVerify;
         }
 
+        public void Dispose()
+        {
+            if (_disposed)
+                return;
+
+            StopListener(_redirectListener);
+            StopListener(_fetchListener);
+            _disposed = true;
+            GC.SuppressFinalize(this);
+        }
+
         #endregion Public Methods
 
         #region Private Methods
+
+        private static void OpenAuthorizationUrl(string url)
+        {
+            const string edgeX86 = @"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe";
+            const string edgeX64 = @"C:\Program Files\Microsoft\Edge\Application\msedge.exe";
+
+            if (!Settings.UseDefaultBrowser)
+            {
+                string edgePath = File.Exists(edgeX86) ? edgeX86 : File.Exists(edgeX64) ? edgeX64 : null;
+                if (edgePath != null)
+                {
+                    Process.Start(new ProcessStartInfo
+                    {
+                        FileName = edgePath,
+                        Arguments = $"--inprivate {url}",
+                        UseShellExecute = true
+                    });
+                    return;
+                }
+            }
+
+            // .NET Core+ requires UseShellExecute to open URLs in the default browser.
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = url,
+                UseShellExecute = true
+            });
+        }
 
         /// <summary>
         /// Start 2 local HttpListeners and have them wait for data
@@ -108,27 +134,39 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
 
             try
             {
-                if (!_redirectListener.IsListening)
-                {
-                    _redirectListener.Prefixes.Add(ApplicationDetails.RedirectUri);
-                    _redirectListener.Start();
-                    _redirectListener.BeginGetContext(IncomingTwitchRequest, _redirectListener);
-
-                    Logger.Info(LogSource.Twitch, $"Started Twitch redirect listener on {ApplicationDetails.RedirectUri}");
-                }
-
-                if (!_fetchListener.IsListening)
-                {
-                    _fetchListener.Prefixes.Add(ApplicationDetails.FetchUri);
-                    _fetchListener.Start();
-                    _fetchListener.BeginGetContext(IncommingLocalRequest, _fetchListener);
-
-                    Logger.Info(LogSource.Twitch, $"Started Twitch fetch listener on {ApplicationDetails.FetchUri}");
-                }
+                StartListener(_redirectListener, ApplicationDetails.RedirectUri, IncomingTwitchRequest, "redirect");
+                StartListener(_fetchListener, ApplicationDetails.FetchUri, IncommingLocalRequest, "fetch");
             }
             catch (Exception e)
             {
                 Logger.LogExc(e);
+            }
+        }
+
+        private static void StartListener(HttpListener listener, string prefix, AsyncCallback callback, string name)
+        {
+            if (listener.IsListening)
+                return;
+
+            if (!listener.Prefixes.Contains(prefix))
+                listener.Prefixes.Add(prefix);
+
+            listener.Start();
+            listener.BeginGetContext(callback, listener);
+            Logger.Info(LogSource.Twitch, $"Started Twitch {name} listener on {prefix}");
+        }
+
+        private static void StopListener(HttpListener listener)
+        {
+            try
+            {
+                if (listener.IsListening)
+                    listener.Stop();
+                listener.Close();
+            }
+            catch
+            {
+                // Listener may already be stopped/closed after a successful OAuth redirect.
             }
         }
 

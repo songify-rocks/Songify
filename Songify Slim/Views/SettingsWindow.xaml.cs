@@ -859,7 +859,7 @@ namespace Songify_Slim.Views
 
         private void Btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
+            ShellHelper.OpenUrl("https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
         }
 
         private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)
@@ -874,7 +874,7 @@ namespace Songify_Slim.Views
             File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/TwitchCredentials.yaml");
             File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/SpotifyCredentials.yaml");
             Settings.ResetConfig();
-            Process.Start(Application.ResourceAssembly.Location);
+            ShellHelper.OpenPath(Environment.ProcessPath ?? Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
 
@@ -892,7 +892,7 @@ namespace Songify_Slim.Views
                         NegativeButtonText = "How to get Client ID and Secret"
                     });
                 if (result == MessageDialogResult.Negative)
-                    Process.Start(
+                    ShellHelper.OpenUrl(
                         "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
 
                 return;
@@ -945,7 +945,7 @@ namespace Songify_Slim.Views
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             // Opens twitchapps to generate a TMI oAuth Token
-            Process.Start("https://twitchtokengenerator.com/");
+            ShellHelper.OpenUrl("https://twitchtokengenerator.com/");
         }
 
         private void Chbx_AutoClear_Checked(object sender, RoutedEventArgs e)
@@ -1040,7 +1040,7 @@ namespace Songify_Slim.Views
             //// Update the current UI culture and settings
             //Settings.Language = selectedLanguageCode;
             //// Restart the application to apply the language change
-            //Process.Start(Application.ResourceAssembly.Location);
+            //ShellHelper.OpenPath(Environment.ProcessPath ?? Application.ResourceAssembly.Location);
             //Application.Current.Shutdown();
 
             if (CbxLanguage.SelectedValue is not string selectedLanguageCode)
@@ -1166,7 +1166,7 @@ namespace Songify_Slim.Views
             MessageDialogResult msgResult = await this.ShowMessageAsync("Warning", temp, MessageDialogStyle.Affirmative,
                 new MetroDialogSettings { AffirmativeButtonText = "Restart" });
             if (msgResult != MessageDialogResult.Affirmative) return;
-            Process.Start(Application.ResourceAssembly.Location);
+            ShellHelper.OpenPath(Environment.ProcessPath ?? Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
 
@@ -1589,7 +1589,7 @@ namespace Songify_Slim.Views
         private void BtnWebserverOpenUrl_OnClick(object sender, RoutedEventArgs e)
         {
             if (GlobalObjects.WebServer.Run)
-                Process.Start($"http://localhost:{Settings.WebServerPort}");
+                ShellHelper.OpenUrl($"http://localhost:{Settings.WebServerPort}");
         }
 
         private void Tgl_OnlyWorkWhenLive_OnToggled(object sender, RoutedEventArgs e)
@@ -2168,7 +2168,7 @@ namespace Songify_Slim.Views
             switch (msgResult)
             {
                 case MessageDialogResult.Negative:
-                    Process.Start("https://ko-fi.com/overcodetv");
+                    ShellHelper.OpenUrl("https://ko-fi.com/overcodetv");
                     return;
 
                 case MessageDialogResult.Affirmative:
@@ -2284,7 +2284,7 @@ namespace Songify_Slim.Views
 
         private void Hyperlink_OnRequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            Process.Start(new ProcessStartInfo(e.Uri.AbsoluteUri));
+            ShellHelper.OpenUrl(e.Uri.AbsoluteUri);
             e.Handled = true;
         }
 
@@ -2704,7 +2704,7 @@ namespace Songify_Slim.Views
 
         private void BtnApiToken_OnClick(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://v2.songify.rocks/faq/what-is-the-songify-api-token");
+            ShellHelper.OpenUrl("https://v2.songify.rocks/faq/what-is-the-songify-api-token");
         }
 
         private void TglDebugLogging_OnToggled(object sender, RoutedEventArgs e)

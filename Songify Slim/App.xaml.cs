@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
@@ -8,7 +8,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -97,7 +96,7 @@ namespace Songify_Slim
                 // Force Z-order bump
                 window.Activate();         // gives it input focus if possible
                 window.Topmost = true;     // push above others
-                window.Topmost = false;    // but don’t *stay* always-on-top
+                window.Topmost = false;    // but don?t *stay* always-on-top
             }
         }
 
@@ -259,7 +258,7 @@ namespace Songify_Slim
             {
                 if (Current.MainWindow is not MainWindow mainWindow)
                 {
-                    Logger.Warning(LogSource.Core, "DeepLink: cannot confirm Songify API token import — main window not ready.");
+                    Logger.Warning(LogSource.Core, "DeepLink: cannot confirm Songify API token import ? main window not ready.");
                     return;
                 }
 
@@ -441,7 +440,7 @@ namespace Songify_Slim
             // If the runtime is not actually terminating, just log and bail out.
             if (!args.IsTerminating) return;
 
-            // From here on it’s user interaction / restart logic
+            // From here on it?s user interaction / restart logic
             if (MessageBox.Show(
                     "Would you like to open the log file directory?\n\n" +
                     "Feel free to submit the log file in our Discord.",
@@ -449,7 +448,7 @@ namespace Songify_Slim
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Error) == MessageBoxResult.Yes)
             {
-                Process.Start(Logger.LogDirectoryPath);
+                ShellHelper.OpenPath(Logger.LogDirectoryPath);
             }
 
             if (MessageBox.Show(
@@ -464,9 +463,9 @@ namespace Songify_Slim
             // Pass an argument to indicate this is a restart
             var startInfo = new ProcessStartInfo
             {
-                FileName = Assembly.GetExecutingAssembly().Location,
+                FileName = Environment.ProcessPath ?? Assembly.GetEntryAssembly()?.Location,
                 Arguments = "--restart",
-                UseShellExecute = false
+                UseShellExecute = true
             };
 
             Process.Start(startInfo);
@@ -506,10 +505,9 @@ namespace Songify_Slim
             {
                 main.Show();
             }
-            catch (ConfigurationErrorsException)
+            catch (Exception ex)
             {
-                AskDeleteAndRelaunch();
-                // throw; // only reached if user said "No"
+                throw ex;
             }
         }
 
@@ -612,7 +610,7 @@ namespace Songify_Slim
             // --- Relaunch (Framework-safe) ---
             try
             {
-                string exe = Assembly.GetExecutingAssembly().Location;
+                string exe = Environment.ProcessPath ?? Assembly.GetEntryAssembly()?.Location;
                 string args = string.Join(" ", Environment.GetCommandLineArgs().Skip(1).Select(QuoteIfNeeded));
 
                 Process.Start(new ProcessStartInfo

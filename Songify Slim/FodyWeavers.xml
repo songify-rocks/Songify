@@ -1,4 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Weavers xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="FodyWeavers.xsd">
-  <Costura />
+  <Costura>
+    <!-- Section handlers are resolved by assembly-qualified type name; embedding breaks that. -->
+    <ExcludeAssemblies>
+      System.Configuration.ConfigurationManager
+    </ExcludeAssemblies>
+  </Costura>
 </Weavers>

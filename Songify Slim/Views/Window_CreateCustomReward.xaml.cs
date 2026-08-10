@@ -1,12 +1,12 @@
 using Songify_Slim.Util.Songify;
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
 using TwitchLib.Api.Helix.Models.ChannelPoints.CreateCustomReward;
 
@@ -53,7 +53,7 @@ namespace Songify_Slim.Views
             }
             LblStatus.Foreground = Brushes.ForestGreen;
             LblStatus.Text = Properties.Resources.window_createreward_success.Replace("{name}", name);
-            Process.Start("https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards");
+            ShellHelper.OpenUrl("https://dashboard.twitch.tv/viewer-rewards/channel-points/rewards");
             return response;
         }
 

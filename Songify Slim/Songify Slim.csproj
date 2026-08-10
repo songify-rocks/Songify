@@ -1,22 +1,11 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{79210295-B0CC-46F4-B77A-26C7D27F4754}</ProjectGuid>
+    <TargetFramework>net10.0-windows10.0.19041.0</TargetFramework>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
     <OutputType>WinExe</OutputType>
     <RootNamespace>Songify_Slim</RootNamespace>
     <AssemblyName>Songify</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <NuGetPackageImportStamp>
-    </NuGetPackageImportStamp>
     <IsWebBootstrapper>false</IsWebBootstrapper>
-    <TargetFrameworkProfile />
     <PublishUrl>publish\</PublishUrl>
     <Install>true</Install>
     <InstallFrom>Disk</InstallFrom>
@@ -32,28 +21,9 @@
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -75,476 +45,30 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugType>full</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
     <LangVersion>latest</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
-    <DebugType>pdbonly</DebugType>
-    <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>latest</LangVersion>
-    <ErrorReport>prompt</ErrorReport>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'">
-    <LangVersion>latest</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Costura, Version=5.7.0.0, Culture=neutral, processorArchitecture=MSIL" Condition=" '$(Configuration)' == 'Release' ">
-      <HintPath>..\packages\Costura.Fody.5.7.0\lib\netstandard1.0\Costura.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Configuration" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Drawing" />
     <Reference Include="System.IdentityModel" />
-    <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Numerics" />
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Security" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="UIAutomationClient" />
-    <Reference Include="UIAutomationTypes" />
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Models\Blocklist\BlockedArtist.cs" />
-    <Compile Include="Models\Blocklist\BlockedSong.cs" />
-    <Compile Include="Models\Blocklist\BlockedUser.cs" />
-    <Compile Include="Models\Blocklist\IBlacklistItem.cs" />
-    <Compile Include="Models\Pear\WebSocket\PearImage.cs" />
-    <Compile Include="Models\Pear\WebSocket\PearMessage.cs" />
-    <Compile Include="Models\Pear\WebSocket\PearSong.cs" />
-    <Compile Include="Models\Pear\WebSocket\PlayerStateChanged.cs" />
-    <Compile Include="Models\Pear\WebSocket\PositionChangedMessage .cs" />
-    <Compile Include="Models\Pear\WebSocket\VideoChangedMessage .cs" />
-    <Compile Include="Models\Responses\BotResponseItem.cs" />
-    <Compile Include="Models\Placeholders\PlaceholderContext.cs" />
-    <Compile Include="Models\Responses\PSA.cs" />
-    <Compile Include="Models\Spotify\PlaylistSnapshot.cs" />
-    <Compile Include="Models\Spotify\SpotifyPlaylistCache.cs" />
-    <Compile Include="Models\Spotify\SpotifyPlaylistItem.cs" />
-    <Compile Include="Models\Spotify\SpotifySnapshotResponse.cs" />
-    <Compile Include="Models\Spotify\SpotifyPersistentIssue.cs" />
-    <Compile Include="Models\Twitch\PollItem.cs" />
-    <Compile Include="Models\Twitch\TwitchChatAccount.cs" />
-    <Compile Include="Models\Twitch\TwitchPollSettings.cs" />
-    <Compile Include="Models\WebSocket\QueueAddData.cs" />
-    <Compile Include="Models\WebSocket\SrScopeData.cs" />
-    <Compile Include="Models\Queue\QueueItem.cs" />
-    <Compile Include="Models\Twitch\SimpleTwitchUser.cs" />
-    <Compile Include="Models\Twitch\TwitchCommand.cs" />
-    <Compile Include="Models\Twitch\TwitchCommandParams.cs" />
-    <Compile Include="Models\WebSocket\VolumeData.cs" />
-    <Compile Include="Models\WebSocket\WebSocketCommand.cs" />
-    <Compile Include="Models\WebSocket\YoutubeData.cs" />
-    <Compile Include="Models\Pear\Pear.cs" />
-    <Compile Include="Models\Pear\PearQueue.cs" />
-    <Compile Include="Models\Pear\PearResponse.cs" />
-    <Compile Include="Models\Pear\PearSearch.cs" />
-    <Compile Include="Properties\Resources.be-BY.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.be-BY.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.it-IT.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.it-IT.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.pl-PL.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.pl-PL.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.pt-BR.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.pt-BR.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.pt-PT.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.pt-PT.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\PsaControl.xaml.cs">
-      <DependentUpon>PsaControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UcUserLevelItem.xaml.cs">
-      <DependentUpon>UcUserLevelItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UC_AccountItem.xaml.cs">
-      <DependentUpon>UC_AccountItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UC_BlacklistEntry.xaml.cs">
-      <DependentUpon>UC_BlacklistEntry.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UC_CommandItem.xaml.cs">
-      <DependentUpon>UC_CommandItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UC_PlaylistItem.xaml.cs">
-      <DependentUpon>UC_PlaylistItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UC_TwitchReward.xaml.cs">
-      <DependentUpon>UC_TwitchReward.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Util\BooleanToVisibilityConverter.cs" />
-    <Compile Include="Util\Configuration\ListStringOrObjectConverter.cs" />
-    <Compile Include="Util\Configuration\SongBlacklistConverter .cs" />
-    <Compile Include="Util\General\DurationHelper.cs" />
-    <Compile Include="Util\i18n\Loc.cs" />
-    <Compile Include="Util\General\PipeMessenger.cs" />
-    <Compile Include="Util\General\ServiceIndicatorState.cs" />
-    <Compile Include="Util\General\ServiceToolTip.cs" />
-    <Compile Include="Util\General\HttpClientPatchExtensions.cs" />
-    <Compile Include="Util\General\CombineStringConverter.cs" />
-    <Compile Include="Util\General\EnumExtension.cs" />
-    <Compile Include="Util\General\EnumHelper.cs" />
-    <Compile Include="Util\General\Enums.cs" />
-    <Compile Include="Util\General\ImageConverter.cs" />
-    <Compile Include="Util\General\IOManager.cs" />
-    <Compile Include="Util\General\ListItemVisibilityConverter.cs" />
-    <Compile Include="Util\General\MathUtils.cs" />
-    <Compile Include="Util\General\RegisterFirewall.cs" />
-    <Compile Include="Util\General\SingleInstanceHelper.cs" />
-    <Compile Include="Util\General\SubtractConverter.cs" />
-    <Compile Include="Util\General\TaskQueue.cs" />
-    <Compile Include="Util\General\ThirdPartyLibrary.cs" />
-    <Compile Include="Util\General\ThumbnailConverter.cs" />
-    <Compile Include="Util\General\Utils.cs" />
-    <Compile Include="Util\Configuration\ConfigComparer.cs" />
-    <Compile Include="Util\Configuration\PlayerTypeYamlConverter.cs" />
-    <Compile Include="Util\Configuration\YamlTypeConverters.cs" />
-    <Compile Include="Util\Songify\ApiClient.cs" />
-    <Compile Include="Util\Songify\APIs\SongifyApi.cs" />
-    <Compile Include="Util\Songify\CanvasService.cs" />
-    <Compile Include="Util\Songify\Pear\PearApi.cs" />
-    <Compile Include="Util\Songify\PsaService.cs" />
-    <Compile Include="Util\Songify\QueueService.cs" />
-    <Compile Include="Util\Songify\SongifyService.cs" />
-    <Compile Include="Util\Songify\Twitch\SharedChatExtensions.cs" />
-    <Compile Include="Util\Songify\Twitch\TwitchApiHelper.cs" />
-    <Compile Include="Util\Songify\Twitch\TwitchCommandHandler.cs" />
-    <Compile Include="Util\Songify\Twitch\WebSocketHostedService.cs" />
-    <Compile Include="Util\Songify\WebTitleFetcher.cs" />
-    <Compile Include="Util\Spotify\ApiCallMeter.cs" />
-    <Compile Include="Util\Spotify\SpotifyUserNotifier.cs" />
-    <Compile Include="Util\Spotify\SpotifyEmbedNextData.cs" />
-    <Compile Include="Util\Spotify\SpotifyOEmbedClient.cs" />
-    <Compile Include="Util\Spotify\SpotifyPkceAuthService.cs" />
-    <Compile Include="Util\Youtube\Pear\PearWebSocketClient.cs" />
-    <Compile Include="Util\Youtube\Pear\QueueParser.cs" />
-    <Compile Include="Util\Youtube\Pear\YTHCHSearchParser.cs" />
-    <Compile Include="Util\Youtube\Pear\YtmDesktopClient.cs" />
-    <Compile Include="Util\Youtube\Youtube\YoutubeDataApiClient.cs" />
-    <Compile Include="Views\AboutWindow.xaml.cs">
-      <DependentUpon>AboutWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Models\RequestModel.cs" />
-    <Compile Include="Models\SongUploadPayload.cs" />
-    <Compile Include="Models\Spotify\SongInfo.cs" />
-    <Compile Include="Models\Spotify\TrackInfo.cs" />
-    <Compile Include="Properties\Resources.de-DE.Designer.cs">
-      <DependentUpon>Resources.de-DE.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Resources.fr.Designer.cs">
-      <DependentUpon>Resources.fr.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Properties\Resources.es.Designer.cs">
-      <DependentUpon>Resources.es.resx</DependentUpon>
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-    </Compile>
-    <Compile Include="Properties\Resources.ru-RU.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.ru-RU.resx</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UC_BotResponses.xaml.cs">
-      <DependentUpon>UC_BotResponses.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\UC_RewardItem.xaml.cs">
-      <DependentUpon>UC_RewardItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Util\General\GlobalObjects.cs" />
-    <Compile Include="Util\General\StringExtension.cs" />
-    <Compile Include="Util\General\WebServer.cs" />
-    <Compile Include="Util\General\WebSocketCommandCatalog.cs" />
-    <Compile Include="Util\Spotify\SpotifyApiHandler.cs" />
-    <Compile Include="Util\Configuration\ConfigHandler.cs" />
-    <Compile Include="Views\ApiChart.xaml.cs">
-      <DependentUpon>ApiChart.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ApiMetricsVm.cs" />
-    <Compile Include="Views\HistoryWindow.xaml.cs">
-      <DependentUpon>HistoryWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Util\General\Logger.cs" />
-    <Compile Include="Util\Configuration\Settings.cs" />
-    <Compile Include="Views\SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Util\Songify\ArtistCsvImport.cs" />
-    <Compile Include="Util\Songify\SongFetcher.cs" />
-    <Compile Include="Util\General\ThemeHandler.cs" />
-    <Compile Include="Util\Songify\Twitch\TwitchHandler.cs" />
-    <Compile Include="Util\Songify\TwitchOAuth\ApplicationDetails.cs" />
-    <Compile Include="Util\Songify\TwitchOAuth\ImplicitOAuth.cs" />
-    <Compile Include="Util\Songify\TwitchOAuth\Scopes.cs" />
-    <Compile Include="Util\Songify\WebHelper.cs" />
-    <Compile Include="Views\Window_ArtistImport.xaml.cs">
-      <DependentUpon>Window_ArtistImport.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_Blacklist.xaml.cs">
-      <DependentUpon>Window_Blacklist.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_CloudImportPreview.xaml.cs">
-      <DependentUpon>Window_CloudImportPreview.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_Console.xaml.cs">
-      <DependentUpon>Window_Console.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_CreateCustomReward.xaml.cs">
-      <DependentUpon>Window_CreateCustomReward.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_ManualTwitchLogin.xaml.cs">
-      <DependentUpon>Window_ManualTwitchLogin.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_Patchnotes.xaml.cs">
-      <DependentUpon>Window_Patchnotes.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_Queue.xaml.cs">
-      <DependentUpon>Window_Queue.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_ResponseParams.xaml.cs">
-      <DependentUpon>Window_ResponseParams.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_UniversalDialog.xaml.cs">
-      <DependentUpon>Window_UniversalDialog.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Window_Userlist.xaml.cs">
-      <DependentUpon>Window_Userlist.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Resources\CustomToolTipStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\PsaControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UcUserLevelItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UC_AccountItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UC_BlacklistEntry.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UC_CommandItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UC_PlaylistItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UC_TwitchReward.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\AboutWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ApiChart.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\HistoryWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Views\MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="Resources\Strings.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\SettingsWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UC_BotResponses.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\UC_RewardItem.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_ArtistImport.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_Blacklist.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_CloudImportPreview.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_Console.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_CreateCustomReward.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_ManualTwitchLogin.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_Patchnotes.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_Queue.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_ResponseParams.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_UniversalDialog.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\Window_Userlist.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.be-BY.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.be-BY.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.de-DE.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.de-DE.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.fr.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.fr.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.es.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.es.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.it-IT.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.it-IT.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.nl.resx" />
-    <EmbeddedResource Include="Properties\Resources.pl-PL.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.pl-PL.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.pt-BR.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.pt-BR.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.pt-PT.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.pt-PT.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <SubType>Designer</SubType>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Properties\Resources.ru-RU.resx">
-      <Generator>PublicResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.ru-RU.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-    <None Include="app.manifest" />
     <EmbeddedResource Include="Resources\thirdparty.json" />
     <EmbeddedResource Include="Resources\WebSocketDocs.html" />
   </ItemGroup>
@@ -602,20 +126,14 @@
     <PackageReference Include="HtmlAgilityPack">
       <Version>1.12.4</Version>
     </PackageReference>
-    <PackageReference Include="LiveCharts">
-      <Version>0.9.7</Version>
-    </PackageReference>
-    <PackageReference Include="LiveCharts.Wpf">
-      <Version>0.9.7</Version>
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF">
+      <Version>2.0.0-rc4.5</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro">
       <Version>2.4.11</Version>
     </PackageReference>
     <PackageReference Include="MahApps.Metro.IconPacks">
       <Version>6.2.1</Version>
-    </PackageReference>
-    <PackageReference Include="Microsoft.CSharp">
-      <Version>4.7.0</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Extensions.Hosting">
       <Version>10.0.7</Version>
@@ -629,26 +147,14 @@
     <PackageReference Include="Microsoft.Extensions.Options">
       <Version>10.0.7</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.NETCore.Platforms">
-      <Version>7.0.4</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp.Notifications">
       <Version>7.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.Web.WebView2">
       <Version>1.0.3912.50</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.Win32.Primitives">
-      <Version>4.3.0</Version>
-    </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
       <Version>1.1.142</Version>
-    </PackageReference>
-    <PackageReference Include="NETStandard.Library">
-      <Version>2.0.3</Version>
-    </PackageReference>
-    <PackageReference Include="NHttp">
-      <Version>0.1.9</Version>
     </PackageReference>
     <PackageReference Include="Resource.Embedder">
       <Version>2.2.0</Version>
@@ -659,128 +165,12 @@
     <PackageReference Include="SpotifyAPI.Web.Auth">
       <Version>7.4.2</Version>
     </PackageReference>
-    <PackageReference Include="System.AppContext">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Collections.Concurrent">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Console">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Diagnostics.Debug">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Diagnostics.Tools">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Diagnostics.Tracing">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Globalization">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Globalization.Calendars">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.IO.Compression">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.IO.Compression.ZipFile">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.IO.FileSystem">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Linq">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Linq.Expressions">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Primitives">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Net.Sockets">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.ObjectModel">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Reflection">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Reflection.Extensions">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Reflection.Primitives">
-      <Version>4.3.0</Version>
-    </PackageReference>
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.2" />
     <PackageReference Include="System.Resources.Extensions">
       <Version>10.0.7</Version>
     </PackageReference>
-    <PackageReference Include="System.Resources.ResourceManager">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.Extensions">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.Handles">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.InteropServices">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.InteropServices.RuntimeInformation">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Runtime.Numerics">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Security.Cryptography.Algorithms">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Security.Cryptography.X509Certificates">
-      <Version>4.3.2</Version>
-    </PackageReference>
-    <PackageReference Include="System.ServiceModel.Http">
-      <Version>10.0.652802</Version>
-    </PackageReference>
-    <PackageReference Include="System.ServiceModel.NetTcp">
-      <Version>10.0.652802</Version>
-    </PackageReference>
-    <PackageReference Include="System.Text.Encoding">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Text.Encoding.Extensions">
-      <Version>4.3.0</Version>
-    </PackageReference>
     <PackageReference Include="System.Text.Json">
       <Version>10.0.7</Version>
-    </PackageReference>
-    <PackageReference Include="System.Text.RegularExpressions">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Threading">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Threading.Tasks">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Threading.Timer">
-      <Version>4.3.0</Version>
-    </PackageReference>
-    <PackageReference Include="System.Xml.ReaderWriter">
-      <Version>4.3.1</Version>
-    </PackageReference>
-    <PackageReference Include="System.Xml.XDocument">
-      <Version>4.3.0</Version>
     </PackageReference>
     <PackageReference Include="TwitchLib.Api">
       <Version>3.10.2</Version>
@@ -829,12 +219,6 @@
     <EmbeddedResource Include="default_site\songify.png" />
     <EmbeddedResource Include="default_site\spotify.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-  </PropertyGroup>
-  <PropertyGroup>
-    <PostBuildEvent>powershell -ExecutionPolicy Bypass -File "$(ProjectDir)PostBuild.ps1"</PostBuildEvent>
-  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup />
 </Project>

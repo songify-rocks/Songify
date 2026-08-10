@@ -15,7 +15,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Windows.UI.Xaml.Controls.Primitives;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;

@@ -12,7 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using Windows.UI.Composition;
 using MahApps.Metro.IconPacks;
 using MahApps.Metro.IconPacks.Converter;
 using Songify_Slim.Util.Configuration;
