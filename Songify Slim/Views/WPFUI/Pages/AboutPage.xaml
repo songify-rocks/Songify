@@ -1,0 +1,14 @@
+<Page
+    x:Class="Songify_Slim.Views.WPFUI.Pages.AboutPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="About">
+    <StackPanel Margin="24">
+        <TextBlock FontSize="28" FontWeight="SemiBold" Text="About" Margin="0,0,0,24" />
+        <ui:Card Padding="20">
+            <ui:Button x:Name="BtnOpenAbout" Appearance="Secondary" Click="BtnOpenAbout_Click" />
+        </ui:Card>
+    </StackPanel>
+</Page>
