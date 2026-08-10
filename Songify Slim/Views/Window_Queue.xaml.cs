@@ -1,5 +1,5 @@
-using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.IconPacks;
+using SymbolIcon = Wpf.Ui.Controls.SymbolIcon;
+using SymbolRegular = Wpf.Ui.Controls.SymbolRegular;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
@@ -75,7 +75,7 @@ namespace Songify_Slim.Views
         }
 
         // This window shows the current Queue in a DataGrid
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             GlobalObjects.QueueUpdateQueueWindow();
 
@@ -114,15 +114,13 @@ namespace Songify_Slim.Views
             {
                 BorderPlayerControls.Visibility = Visibility.Collapsed;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 6);
-                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                { Kind = PackIconBootstrapIconsKind.ChevronUp };
+                BtnPlayerControlsVisibility.Content = new SymbolIcon { Symbol = SymbolRegular.ChevronUp24 };
             }
             else
             {
                 BorderPlayerControls.Visibility = Visibility.Visible;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 22);
-                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                { Kind = PackIconBootstrapIconsKind.ChevronDown };
+                BtnPlayerControlsVisibility.Content = new SymbolIcon { Symbol = SymbolRegular.ChevronDown24 };
             }
         }
 
@@ -197,10 +195,10 @@ namespace Songify_Slim.Views
         private async void BtnClearQueue_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
-            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.common_warning,
-                Properties.Resources.window_queue_clear_disclaimer, MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings { AffirmativeButtonText = Properties.Resources.dialog_yes, NegativeButtonText = Properties.Resources.dialog_no });
-            if (msgResult == MessageDialogResult.Affirmative)
+            AppDialogResult msgResult = await AppDialog.ShowAsync(Properties.Resources.common_warning,
+                Properties.Resources.window_queue_clear_disclaimer, AppDialogStyle.AffirmativeAndNegative,
+                new AppDialogSettings { AffirmativeButtonText = Properties.Resources.dialog_yes, NegativeButtonText = Properties.Resources.dialog_no });
+            if (msgResult == AppDialogResult.Affirmative)
             {
                 //GlobalObjects.ReqList.Clear();
                 //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
@@ -432,8 +430,8 @@ namespace Songify_Slim.Views
                     if (button.Tag.ToString() == "like")
                     {
                         button.Content = request.IsLiked ?
-                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.HeartFill } :
-                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.Heart };
+                            new SymbolIcon { Symbol = SymbolRegular.Heart24, Filled = true } :
+                            new SymbolIcon { Symbol = SymbolRegular.Heart24 };
                     }
                 }
             }
@@ -461,8 +459,8 @@ namespace Songify_Slim.Views
                     if (button.Tag != null && button.Tag.ToString() == "like")
                     {
                         button.Content = request.IsLiked ?
-                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.HeartFill } :
-                            new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.Heart };
+                            new SymbolIcon { Symbol = SymbolRegular.Heart24, Filled = true } :
+                            new SymbolIcon { Symbol = SymbolRegular.Heart24 };
                     }
                 }
             }
@@ -606,8 +604,8 @@ namespace Songify_Slim.Views
             if (!isPlaying)
                 grd.Margin = new Thickness(0, 0, 0, 0);
             grd.Children.Add(!isPlaying
-                ? new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PauseFill }
-                : new PackIconBootstrapIcons { Kind = PackIconBootstrapIconsKind.PlayFill });
+                ? new SymbolIcon { Symbol = SymbolRegular.Pause24 }
+                : new SymbolIcon { Symbol = SymbolRegular.Play24 });
             BtnPlayPause.Content = grd;
         }
 
@@ -617,16 +615,14 @@ namespace Songify_Slim.Views
             {
                 BorderPlayerControls.Visibility = Visibility.Collapsed;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 6);
-                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                { Kind = PackIconBootstrapIconsKind.ChevronUp };
+                BtnPlayerControlsVisibility.Content = new SymbolIcon { Symbol = SymbolRegular.ChevronUp24 };
                 Settings.SpotifyControlVisible = false;
             }
             else
             {
                 BorderPlayerControls.Visibility = Visibility.Visible;
                 BtnPlayerControlsVisibility.Margin = new Thickness(0, 0, 20, 22);
-                BtnPlayerControlsVisibility.Content = new PackIconBootstrapIcons
-                { Kind = PackIconBootstrapIconsKind.ChevronDown };
+                BtnPlayerControlsVisibility.Content = new SymbolIcon { Symbol = SymbolRegular.ChevronDown24 };
                 Settings.SpotifyControlVisible = true;
             }
         }

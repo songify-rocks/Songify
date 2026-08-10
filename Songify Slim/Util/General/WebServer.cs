@@ -1,4 +1,3 @@
-﻿using MahApps.Metro.IconPacks;
 using Newtonsoft.Json;
 using Songify_Slim.Models;
 using Songify_Slim.Models.WebSocket;
@@ -358,8 +357,7 @@ namespace Songify_Slim.Util.General
                 {
                     if (Application.Current.MainWindow == null) return;
                     // Assuming these UI elements and methods exist in your MainWindow
-                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.GreenYellow;
-                    //((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBoxIconsKind.SolidServer;
+                    AppShellBridge.Current?.SetWebServerRunning(true);
                 });
 
                 Logger.Info(LogSource.Core, $"WebServer: Started on port {port}");
@@ -806,8 +804,7 @@ namespace Songify_Slim.Util.General
             Application.Current.Dispatcher.Invoke(() =>
             {
                 if (Application.Current.MainWindow == null) return;
-                ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.DarkGray;
-                //((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBoxIconsKind.SolidServer;
+                AppShellBridge.Current?.SetWebServerRunning(false);
             });
             _listener.Stop();
         }

@@ -26,14 +26,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -42,7 +42,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_success}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_success}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -60,14 +60,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -76,7 +76,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_song_in_queue}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_song_in_queue}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -94,14 +94,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -110,7 +110,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_max_songs}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_max_songs}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -129,14 +129,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -145,7 +145,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_song_too_long}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_song_too_long}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -163,14 +163,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -179,7 +179,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_user_level_too_low_command}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_user_level_too_low_command}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -197,14 +197,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -213,7 +213,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_command_disabled}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_command_disabled}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -231,14 +231,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -247,7 +247,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_user_level_too_low_reward}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_user_level_too_low_reward}"
                         TextWrapping="Wrap" />
 
@@ -266,14 +266,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -282,7 +282,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_artist_blocked}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_artist_blocked}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -300,14 +300,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -316,7 +316,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_song_blocked}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_song_blocked}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -334,14 +334,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -350,7 +350,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_explicit_songs}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_explicit_songs}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -368,14 +368,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -384,7 +384,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_command_on_cooldown}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_command_on_cooldown}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -402,14 +402,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -418,7 +418,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_command_on_user_cooldown}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_command_on_user_cooldown}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -436,14 +436,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <!--<Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -451,7 +451,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_mod_skip}" d:Text="{DynamicResource window_botresponses_mod_skip}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -469,14 +469,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />-->
 
             <!--<Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -484,7 +484,7 @@
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_vote_skip}" d:Text="{DynamicResource window_botresponses_vote_skip}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -502,14 +502,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />-->
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -518,7 +518,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_song_not_in_playlist}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_song_not_in_playlist}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -537,14 +537,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -553,7 +553,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_fetch_error}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_fetch_error}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -571,14 +571,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -587,7 +587,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_no_song}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_no_song}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -605,14 +605,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -621,7 +621,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_no_track_found}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_no_track_found}"
                         TextWrapping="Wrap" />
                     <TextBox
@@ -640,14 +640,14 @@
             <Border
                 Margin="0,12,0,6"
                 VerticalAlignment="Bottom"
-                BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+                BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
                 BorderThickness="1" />
 
             <Border
                 MinWidth="60"
                 Margin="0,6"
                 Padding="6,6,6,8"
-                Background="{DynamicResource MahApps.Brushes.Accent}"
+                Background="{DynamicResource AccentFillColorDefaultBrush}"
                 CornerRadius="8">
                 <StackPanel Orientation="Vertical">
                     <TextBlock
@@ -656,7 +656,7 @@
                         VerticalAlignment="Center"
                         d:Text="{DynamicResource window_botresponses_refund}"
                         FontSize="14"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{DynamicResource window_botresponses_refund}"
                         TextWrapping="Wrap" />
                     <TextBox

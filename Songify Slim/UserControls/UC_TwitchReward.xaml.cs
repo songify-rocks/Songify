@@ -1,4 +1,4 @@
-﻿using Songify_Slim.Util.General;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
 using System;
 using System.Collections.Generic;
@@ -131,7 +131,7 @@ namespace Songify_Slim.UserControls
         {
             List<string> tmp = Settings.TwRewardId;
             string rewardId = _reward.Id;
-            if (TglRewardActive.IsOn)
+            if (TglRewardActive.IsChecked == true)
             {
                 // Only add if it's not already in the list
                 if (!tmp.Contains(rewardId))

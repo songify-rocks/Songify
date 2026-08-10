@@ -27,7 +27,7 @@ namespace Songify_Slim.Views
             InitializeComponent();
         }
 
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -245,7 +245,7 @@ namespace Songify_Slim.Views
             Lbl_Status.Content = "History URL copied to Clipboard";
         }
 
-        private void MetroWindow_Closed(object sender, EventArgs e)
+        private void Window_Closed(object sender, EventArgs e)
         {
             _watcher.Dispose();
         }

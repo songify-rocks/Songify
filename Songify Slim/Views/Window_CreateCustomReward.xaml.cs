@@ -35,7 +35,7 @@ namespace Songify_Slim.Views
                        Cost = cost,
                        IsEnabled = true,
                        BackgroundColor = "#1ed760",
-                       IsUserInputRequired = TglUserInputRequired.IsOn,
+                       IsUserInputRequired = TglUserInputRequired.IsChecked == true,
                        IsMaxPerStreamEnabled = false,
                        MaxPerStream = null,
                        IsMaxPerUserPerStreamEnabled = false,

@@ -1,22 +1,19 @@
-﻿using MahApps.Metro.IconPacks;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using TextBlock = System.Windows.Controls.TextBlock;
 using System.Windows.Media;
+using SymbolIcon = Wpf.Ui.Controls.SymbolIcon;
 
 namespace Songify_Slim.Util.General
 {
     public static class ServiceToolTip
     {
         public static ToolTip Build(
-        string header,
-        IEnumerable<(string Label, string Value)> rows,
-        Style style = null,
-        PackIconBoxIcons icon = null)
+            string header,
+            IEnumerable<(string Label, string Value)> rows,
+            Style style = null,
+            SymbolIcon icon = null)
         {
             Grid grid = new();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
@@ -25,7 +22,6 @@ namespace Songify_Slim.Util.General
             int r = 0;
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            // Header row with optional icon + text
             StackPanel headerPanel = new() { Orientation = Orientation.Horizontal, Margin = new Thickness(0, 0, 0, 6) };
 
             if (icon != null)
@@ -39,7 +35,7 @@ namespace Songify_Slim.Util.General
                 FontWeight = FontWeights.SemiBold,
                 VerticalAlignment = VerticalAlignment.Center,
                 Foreground =
-                    Application.Current.TryFindResource("MahApps.Brushes.ThemeForeground") as Brush
+                    Application.Current.TryFindResource("TextFillColorPrimaryBrush") as Brush
                     ?? SystemColors.ControlTextBrush,
             });
 
@@ -48,7 +44,6 @@ namespace Songify_Slim.Util.General
             grid.Children.Add(headerPanel);
             r++;
 
-            // Data rows
             foreach ((string label, string value) in rows)
             {
                 grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
@@ -60,7 +55,7 @@ namespace Songify_Slim.Util.General
                     Margin = new Thickness(0, 0, 8, 2),
                     VerticalAlignment = VerticalAlignment.Top,
                     Foreground =
-                        Application.Current.TryFindResource("MahApps.Brushes.ThemeForeground") as Brush
+                        Application.Current.TryFindResource("TextFillColorPrimaryBrush") as Brush
                         ?? SystemColors.ControlTextBrush,
                 };
                 Grid.SetRow(lbl, r);
@@ -68,11 +63,10 @@ namespace Songify_Slim.Util.General
 
                 TextBlock val = new()
                 {
-                    Text = value ?? "—",
-                    VerticalAlignment = VerticalAlignment.Top
-                    ,
+                    Text = value ?? "�",
+                    VerticalAlignment = VerticalAlignment.Top,
                     Foreground =
-                        Application.Current.TryFindResource("MahApps.Brushes.ThemeForeground") as Brush
+                        Application.Current.TryFindResource("TextFillColorPrimaryBrush") as Brush
                         ?? SystemColors.ControlTextBrush,
                 };
                 Grid.SetRow(val, r);
@@ -86,26 +80,21 @@ namespace Songify_Slim.Util.General
             return new ToolTip { Content = grid, Style = style };
         }
 
-        // Clone the passed icon so it can be used inside the tooltip
-        private static PackIconBoxIcons CloneIcon(PackIconBoxIcons src)
+        private static SymbolIcon CloneIcon(SymbolIcon src)
         {
-            // Height defaults to Width if not set; tweak as you like
-            PackIconBoxIcons clone = new()
+            return new SymbolIcon
             {
-                Kind = src.Kind,
+                Symbol = src.Symbol,
                 Width = src.Width > 0 ? src.Width : 14,
                 Height = src.Height > 0 ? src.Height : (src.Width > 0 ? src.Width : 14),
                 Foreground =
-                    Application.Current.TryFindResource("MahApps.Brushes.ThemeForeground") as Brush
+                    Application.Current.TryFindResource("TextFillColorPrimaryBrush") as Brush
                     ?? SystemColors.ControlTextBrush,
                 Opacity = src.Opacity,
                 Margin = new Thickness(0, 0, 6, 0),
                 VerticalAlignment = VerticalAlignment.Center,
+                Filled = src.Filled,
             };
-
-            // If you tint via Fill/Brushes elsewhere, mirror here as needed.
-
-            return clone;
         }
     }
 }

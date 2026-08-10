@@ -1,5 +1,4 @@
 using AutoUpdaterDotNET;
-using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
@@ -24,7 +23,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
-using MahApps.Metro.IconPacks;
+using SymbolIcon = Wpf.Ui.Controls.SymbolIcon;
+using SymbolRegular = Wpf.Ui.Controls.SymbolRegular;
 using Songify_Slim.UserControls;
 using Swan;
 using Swan.Formatters;
@@ -633,7 +633,7 @@ namespace Songify_Slim.Views
                 StkSpotifyTestMode.Visibility = Visibility.Collapsed;
                 _testModeTimer?.Stop();
                 GlobalObjects.TestMode = false;
-                TglTestMode.IsOn = false;
+                TglTestMode.IsChecked = false;
                 return;
             }
 
@@ -830,13 +830,13 @@ namespace Songify_Slim.Views
             e.Handled = true;
         }
 
-        private void MetroWindow_Closed(object sender, EventArgs e)
+        private void Window_Closed(object sender, EventArgs e)
         {
             StopWindowsMediaSessionListWatcher();
             PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
         }
 
-        private void MetroWindow_Closing(object sender, CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             if (_forceClose)
                 return;
@@ -858,7 +858,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private void MetroWindow_KeyDown(object sender, KeyEventArgs e)
+        private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             //If the user presses alt + F12 run Crash() method.
             //if (e.Key == Key.F12)
@@ -867,7 +867,7 @@ namespace Songify_Slim.Views
             //}
         }
 
-        private async void MetroWindowLoaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             InitialSetup();
             SetupUiAndThemes();
@@ -880,16 +880,16 @@ namespace Songify_Slim.Views
             {
                 GrdDisclaimer.Visibility = Visibility.Collapsed;
 
-                MessageDialogResult result = await this.ShowMessageAsync(
+                AppDialogResult result = await AppDialog.ShowAsync(
                     "Warning",
                     "Songify now needs your own Spotify credentials (Client ID and Secret). Please follow the linked guide to set them up. This will help you avoid Spotify rate limits and ensure faster updates.",
-                    MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
+                    AppDialogStyle.AffirmativeAndNegative, new AppDialogSettings()
                     {
                         AffirmativeButtonText = "Open Guide",
                         NegativeButtonText = Properties.Resources.common_ok,
                     }
                 );
-                if (result == MessageDialogResult.Affirmative)
+                if (result == AppDialogResult.Affirmative)
                     ShellHelper.OpenUrl(
                         "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
                 Settings.UseOwnApp = true;
@@ -897,40 +897,25 @@ namespace Songify_Slim.Views
 
             bool internetAvailable = await WaitForInternetConnectionAsync();
 
-            MetroDialogSettings dialogSettings = new()
+            AppDialogSettings dialogSettings = new()
             {
                 AffirmativeButtonText = "Retry",
-                NegativeButtonText = "Close",
-                FirstAuxiliaryButtonText = "Ignore and Continue"
+                NegativeButtonText = "Continue without internet"
             };
 
             while (!internetAvailable)
             {
-                // Show a dialog to the user that the app can't run without internet connection and wait for the user to click close or retry
-                MessageDialogResult msgResult = await this.ShowMessageAsync(
+                AppDialogResult msgResult = await AppDialog.ShowAsync(
                     "No Internet Connection",
-                    "It seems that no internet connection could be established.\n\nDo you want to retry, close Songify, or continue without internet?",
-                    MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary,
+                    "It seems that no internet connection could be established.\n\nRetry, or continue without internet?",
+                    AppDialogStyle.AffirmativeAndNegative,
                     dialogSettings
                 );
 
-                switch (msgResult)
-                {
-                    case MessageDialogResult.Canceled:
-                    case MessageDialogResult.Negative:
-                        Close();
-                        break;
-
-                    case MessageDialogResult.Affirmative:
-                        internetAvailable = await WaitForInternetConnectionAsync();
-                        break;
-
-                    case MessageDialogResult.FirstAuxiliary:
-                    case MessageDialogResult.SecondAuxiliary:
-                    default:
-                        internetAvailable = true; // skip check and break the loop
-                        break;
-                }
+                if (msgResult == AppDialogResult.Affirmative)
+                    internetAvailable = await WaitForInternetConnectionAsync();
+                else
+                    internetAvailable = true; // continue without internet
             }
 
             if (_selectedSource == PlayerType.Spotify)
@@ -1233,18 +1218,18 @@ namespace Songify_Slim.Views
             if (PsAs == null || PsAs.Count == 0)
             {
                 PnlMotds.Children.Clear();
-                Badge.Badge = null!;
-                BadgeIcon.Kind = PackIconBootstrapIconsKind.Bell;
+                BadgeText.Text = string.Empty;
+                BadgeIcon.Symbol = SymbolRegular.Alert24; BadgeIcon.Filled = false;
                 return;
             }
 
             SetUnreadBadge();
 
-            BadgeIcon.Kind = PackIconBootstrapIconsKind.BellFill;
+            BadgeIcon.Symbol = SymbolRegular.Alert24; BadgeIcon.Filled = true;
 
             if (PsAs.Any(motd => motd.Severity == "High"))
             {
-                Badge.BadgeBackground = new SolidColorBrush(Colors.IndianRed);
+                BadgeText.Background = new SolidColorBrush(Colors.IndianRed);
                 Psa highSeverityPsa = PsAs.First(motd => motd.Severity == "High");
                 string msg = highSeverityPsa.MessageText;
                 if (msg.Length > 190)
@@ -1275,10 +1260,10 @@ namespace Songify_Slim.Views
             }
             else if (PsAs.Any(motd => motd.Severity == "Medium"))
             {
-                Badge.BadgeBackground = new SolidColorBrush(Colors.Orange);
+                BadgeText.Background = new SolidColorBrush(Colors.Orange);
             }
             else
-                Badge.BadgeBackground = new SolidColorBrush(Colors.DarkGray);
+                BadgeText.Background = new SolidColorBrush(Colors.DarkGray);
 
             PnlMotds.Children.Clear();
             for (int i = 0; i < PsAs.Count; i++)
@@ -1309,16 +1294,16 @@ namespace Songify_Slim.Views
                     List<Psa> unreadMotds = PsAs.Where(m => !Settings.ReadNotificationIds.Contains(m.Id)).ToList();
                     if (unreadMotds.Count > 0)
                     {
-                        Badge.Badge = unreadMotds.Count;
+                        BadgeText.Text = unreadMotds.Count.ToString();
                     }
                     else
                     {
-                        Badge.Badge = null!;
+                        BadgeText.Text = string.Empty;
                     }
                 }
-                else if (Badge.Badge.ToString() != PsAs.Count.ToString())
+                else if (BadgeText.Text != PsAs.Count.ToString())
                 {
-                    Badge.Badge = PsAs.Count;
+                    BadgeText.Text = PsAs.Count.ToString();
                 }
             }
             catch (Exception e)
@@ -1631,16 +1616,20 @@ namespace Songify_Slim.Views
 
                     if (Settings.CurrentConfig.AppConfig.ArtistBlacklist.Count > 0)
                     {
-                        // Do this only one time to import blocked artist into new settings file.
-                        HashSet<string> existingIds = Settings.CurrentConfig.BlockedSpotifyArtists.Artists
+                        // One-time migrate legacy AppConfig artists into BlockedSpotifyArtists.yaml
+                        List<Models.Blocklist.BlockedArtist> list = Settings.ArtistBlacklist;
+                        HashSet<string> existingIds = list
                             .Select(x => x.Id)
+                            .Where(id => !string.IsNullOrEmpty(id))
                             .ToHashSet();
 
-                        Settings.CurrentConfig.BlockedSpotifyArtists.Artists.AddRange(
+                        list.AddRange(
                             Settings.CurrentConfig.AppConfig.ArtistBlacklist
-                                .Where(x => existingIds.Add(x.Id)));
+                                .Where(x => !string.IsNullOrEmpty(x.Id) && existingIds.Add(x.Id)));
 
+                        Settings.ArtistBlacklist = list;
                         Settings.CurrentConfig.AppConfig.ArtistBlacklist.Clear();
+                        Settings.UnloadArtistBlacklist();
                     }
                 }
             }
@@ -1874,7 +1863,7 @@ namespace Songify_Slim.Views
             Application.Current.Shutdown();
         }
 
-        private void MetroWindowStateChanged(object sender, EventArgs e)
+        private void Window_StateChanged(object sender, EventArgs e)
         {
             // if the window state changes to minimize check run MinimizeToSysTray()
             //if (WindowState != WindowState.Minimized) return;
@@ -1934,14 +1923,14 @@ namespace Songify_Slim.Views
         private async void Mi_QueueClear_Click(object sender, RoutedEventArgs e)
         {
             // After user confirmation sends a command to the webserver which clears the queue
-            MessageDialogResult msgResult = await this.ShowMessageAsync(Properties.Resources.common_warning,
-                Properties.Resources.window_queue_clear_disclaimer, MessageDialogStyle.AffirmativeAndNegative,
-                new MetroDialogSettings
+            AppDialogResult msgResult = await AppDialog.ShowAsync(Properties.Resources.common_warning,
+                Properties.Resources.window_queue_clear_disclaimer, AppDialogStyle.AffirmativeAndNegative,
+                new AppDialogSettings
                 {
                     AffirmativeButtonText = Properties.Resources.dialog_yes,
                     NegativeButtonText = Properties.Resources.dialog_no
                 });
-            if (msgResult != MessageDialogResult.Affirmative) return;
+            if (msgResult != AppDialogResult.Affirmative) return;
             //GlobalObjects.ReqList.Clear();
             //WebHelper.UpdateWebQueue("", "", "", "", "", "1", "c");
             GlobalObjects.ReqList.Clear();
@@ -2122,7 +2111,7 @@ namespace Songify_Slim.Views
             TwitchHandler.ApiConnect(Enums.TwitchAccount.Main);
         }
 
-        private void MetroWindow_LocationChanged(object sender, EventArgs e)
+        private void Window_LocationChanged(object sender, EventArgs e)
         {
             if (_consoleWindow == null) return;
             if (GlobalObjects.DetachConsole) return;
@@ -2335,7 +2324,7 @@ namespace Songify_Slim.Views
                 }
             }
 
-            FlyMotd.IsOpen = !FlyMotd.IsOpen;
+            FlyMotd.Visibility = FlyMotd.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
@@ -2345,7 +2334,7 @@ namespace Songify_Slim.Views
 
         private void BtnFlyOutClose_OnClick(object sender, RoutedEventArgs e)
         {
-            FlyMotd.IsOpen = false;
+            FlyMotd.Visibility = Visibility.Collapsed;
         }
 
         private void BtnFlyOutAllread_OnClick(object sender, RoutedEventArgs e)
@@ -2360,16 +2349,16 @@ namespace Songify_Slim.Views
 
             foreach (UIElement pnlMotdsChild in PnlMotds.Children)
             {
-                ((PsaControl)pnlMotdsChild).btnRead.Content = new PackIconMaterial()
+                ((PsaControl)pnlMotdsChild).btnRead.Content = new SymbolIcon
                 {
-                    Kind = PackIconMaterialKind.Check,
+                    Symbol = SymbolRegular.Checkmark24,
                     Width = 12,
                     Height = 12,
                     VerticalAlignment = VerticalAlignment.Center
                 };
             }
 
-            Badge.Badge = null!;
+            BadgeText.Text = string.Empty;
         }
 
         private void CoverCanvas_OnMediaEnded(object sender, RoutedEventArgs e)
@@ -2422,14 +2411,14 @@ namespace Songify_Slim.Views
                 // build rows dynamically (use your own data here)
                 List<(string Label, string Value)> rows;
                 string header;
-                PackIconBoxIcons icon = new();
+                SymbolIcon icon = new SymbolIcon { Width = 14, Height = 14 };
                 List<EventSubSubscription> subs;
 
                 switch ((string)btn.Tag)
                 {
                     case "TwitchBot":
                         header = "Twitch Chat Bot";
-                        icon.Kind = PackIconBoxIconsKind.BrandsTwitch;
+                        icon.Symbol = SymbolRegular.Live24;
                         subs = await TwitchApiHelper.GetEventSubscriptions();
                         IconTwitchBot.Foreground =
                             subs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled")
@@ -2444,7 +2433,7 @@ namespace Songify_Slim.Views
 
                     case "TwitchAPI":
                         header = "Twitch API";
-                        icon.Kind = PackIconBoxIconsKind.BrandsTwitch;
+                        icon.Symbol = SymbolRegular.Live24;
                         subs = await TwitchApiHelper.GetEventSubscriptions();
                         rows =
                         [
@@ -2456,20 +2445,20 @@ namespace Songify_Slim.Views
 
                     case "Spotify":
                         header = "Spotify";
-                        icon.Kind = PackIconBoxIconsKind.BrandsSpotify;
+                        icon.Symbol = SymbolRegular.MusicNote224;
                         UpdateSpotifyStatusIndicator();
                         rows = await BuildSpotifyStatusRowsAsync();
                         break;
 
                     case "PearDesktop":
                         header = "Pear Desktop";
-                        icon.Kind = PackIconBoxIconsKind.BrandsYoutubeMusic;
+                        icon.Symbol = SymbolRegular.PlayCircle24;
                         rows = BuildPearStatusRows();
                         break;
 
                     default:
                         header = "WebServer";
-                        icon.Kind = PackIconBoxIconsKind.SolidServer;
+                        icon.Symbol = SymbolRegular.Server24;
                         rows =
                         [
                             ("Status", IconWebServer.Foreground == Brushes.GreenYellow ? "Running" : "Not running"),
@@ -2562,7 +2551,7 @@ namespace Songify_Slim.Views
 
         private void TglTestMode_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (TglTestMode.IsOn)
+            if (TglTestMode.IsChecked == true)
             {
                 // Enable test mode
                 GlobalObjects.TestMode = true;
@@ -2583,7 +2572,7 @@ namespace Songify_Slim.Views
                     GlobalObjects.TestMode = false;
 
                     // Untoggle (this will fire Toggled again)
-                    TglTestMode.IsOn = false;
+                    TglTestMode.IsChecked = false;
                 };
 
                 _testModeTimer.Start();

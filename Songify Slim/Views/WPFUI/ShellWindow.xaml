@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:Songify_Slim.Views.WPFUI.Pages"
+    xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:util="clr-namespace:Songify_Slim.Util"
-    Title="Songify"
     Width="800"
     Height="500"
     MinWidth="800"
@@ -15,6 +15,7 @@
     Closing="ShellWindow_Closing"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
     ExtendsContentIntoTitleBar="True"
+    Icon="pack://application:,,,/Resources/songify.ico"
     Loaded="ShellWindow_Loaded"
     WindowBackdropType="Mica"
     mc:Ignorable="d">
@@ -25,11 +26,71 @@
     </ui:FluentWindow.Resources>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="32" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
-            <RowDefinition Height="28" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ui:TitleBar Title="Songify" CloseClicked="TitleBar_OnCloseClicked" />
+        <ui:TitleBar
+            x:Name="ShellTitleBar"
+            CloseClicked="TitleBar_OnCloseClicked">
+            <!--  Custom header: TitleBar.Icon/ImageIcon often clips .ico assets  -->
+            <ui:TitleBar.Header>
+                <StackPanel
+                    Margin="8,0,0,0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <Image
+                        x:Name="TitleBarLogo"
+                        Width="16"
+                        Height="16"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center"
+                        RenderOptions.BitmapScalingMode="HighQuality"
+                        Source="pack://application:,,,/Resources/songify.ico"
+                        Stretch="Uniform" />
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="13"
+                        Text="Songify" />
+                </StackPanel>
+            </ui:TitleBar.Header>
+            <ui:TitleBar.TrailingContent>
+                <ui:DropDownButton
+                    Margin="0,0,4,0"
+                    Padding="8,4"
+                    Appearance="Transparent"
+                    ToolTip="More">
+                    <ui:DropDownButton.Icon>
+                        <ui:SymbolIcon Symbol="MoreHorizontal24" />
+                    </ui:DropDownButton.Icon>
+                    <ui:DropDownButton.Flyout>
+                        <ContextMenu>
+                            <MenuItem Header="Tools" IsEnabled="False" />
+                            <MenuItem Click="MenuWidget_OnClick" Header="Widget" />
+                            <MenuItem Click="MenuWebServerUrl_OnClick" Header="Web server URL" />
+                            <MenuItem Click="MenuQueueBrowser_OnClick" Header="Queue (browser)" />
+                            <MenuItem Click="MenuHistoryBrowser_OnClick" Header="History (browser)" />
+                            <Separator />
+                            <MenuItem Header="Twitch" IsEnabled="False" />
+                            <MenuItem Click="MenuTwitchLogin_OnClick" Header="Login" />
+                            <MenuItem Click="MenuTwitchConnect_OnClick" Header="Connect" />
+                            <MenuItem Click="MenuTwitchOnline_OnClick" Header="Check online status" />
+                            <Separator />
+                            <MenuItem Header="Help" IsEnabled="False" />
+                            <MenuItem Click="MenuPatchNotes_OnClick" Header="Patch notes" />
+                            <MenuItem Click="MenuFaq_OnClick" Header="FAQ" />
+                            <MenuItem Click="MenuGitHub_OnClick" Header="GitHub" />
+                            <MenuItem Click="MenuDiscord_OnClick" Header="Discord" />
+                            <MenuItem Click="MenuLogFolder_OnClick" Header="Log folder" />
+                            <MenuItem Click="MenuAppFolder_OnClick" Header="App folder" />
+                            <MenuItem Click="MenuCheckUpdates_OnClick" Header="Check for updates" />
+                            <Separator />
+                            <MenuItem Click="MenuExit_OnClick" Header="Exit" />
+                        </ContextMenu>
+                    </ui:DropDownButton.Flyout>
+                </ui:DropDownButton>
+            </ui:TitleBar.TrailingContent>
+        </ui:TitleBar>
         <ui:NavigationView
             x:Name="RootNavigationView"
             Grid.Row="1"
@@ -125,6 +186,7 @@
         <!--  Status bar: always visible at bottom  -->
         <Border
             Grid.Row="2"
+            MinHeight="28"
             Padding="12,0,16,0"
             VerticalAlignment="Stretch"
             Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
@@ -158,5 +220,24 @@
                     Text="{Binding StatusBarVersion}" />
             </Grid>
         </Border>
+
+        <tray:NotifyIcon
+            x:Name="TrayIcon"
+            FocusOnLeftClick="True"
+            Icon="pack://application:,,,/Resources/songify.ico"
+            LeftDoubleClick="TrayIcon_OnLeftDoubleClick"
+            MenuOnRightClick="True"
+            TooltipText="Songify">
+            <tray:NotifyIcon.Menu>
+                <ContextMenu>
+                    <MenuItem Header="Twitch">
+                        <MenuItem Click="TrayConnect_OnClick" Header="Connect" />
+                        <MenuItem Click="TrayDisconnect_OnClick" Header="Disconnect" />
+                    </MenuItem>
+                    <MenuItem Click="TrayShow_OnClick" Header="Show" />
+                    <MenuItem Click="TrayExit_OnClick" Header="Exit" />
+                </ContextMenu>
+            </tray:NotifyIcon.Menu>
+        </tray:NotifyIcon>
     </Grid>
 </ui:FluentWindow>

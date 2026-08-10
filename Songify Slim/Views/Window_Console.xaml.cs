@@ -1,9 +1,9 @@
-﻿using MahApps.Metro.IconPacks;
 using Songify_Slim.Util.General;
 using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using SymbolRegular = Wpf.Ui.Controls.SymbolRegular;
 
 namespace Songify_Slim.Views
 {
@@ -18,12 +18,12 @@ namespace Songify_Slim.Views
             DataContext = GlobalObjects.ApiMetrics;
         }
 
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             richTextBox.Document = GlobalObjects.ConsoleDocument;
         }
 
-        private void MetroWindow_Closing(object sender, CancelEventArgs e)
+        private void Window_Closing(object sender, CancelEventArgs e)
         {
             e.Cancel = true;
             Hide();
@@ -34,7 +34,7 @@ namespace Songify_Slim.Views
             richTextBox.ScrollToEnd();
         }
 
-        private void MetroWindow_LostFocus(object sender, RoutedEventArgs e)
+        private void Window_LostFocus(object sender, RoutedEventArgs e)
         {
             e.Handled = true;
         }
@@ -42,8 +42,7 @@ namespace Songify_Slim.Views
         private void BtnAttachDetach_OnClick(object sender, RoutedEventArgs e)
         {
             GlobalObjects.DetachConsole = !GlobalObjects.DetachConsole;
-            IconDetach.Kind = GlobalObjects.DetachConsole ? PackIconBootstrapIconsKind.Fullscreen : PackIconBootstrapIconsKind.LayoutSidebar;
-            IsWindowDraggable = GlobalObjects.DetachConsole;
+            IconDetach.Symbol = GlobalObjects.DetachConsole ? SymbolRegular.FullScreenMaximize24 : SymbolRegular.PanelLeft24;
             if (GlobalObjects.DetachConsole) return;
             Left = Owner.Left + Owner.Width;
             Top = Owner.Top;

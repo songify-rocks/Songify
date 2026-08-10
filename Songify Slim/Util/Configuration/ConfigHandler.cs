@@ -474,6 +474,21 @@ namespace Songify_Slim.Util.Configuration
             }
 
             Settings.Import(config);
+            // Keep only compact ID/name indexes in RAM; full artist objects stay on disk until edited.
+            ArtistBlocklistStore.InitializeFromConfigAndUnload();
+        }
+
+        /// <summary>Load blocked artists from YAML without keeping them on <see cref="Settings.CurrentConfig"/>.</summary>
+        public static BlockedSpotifyArtists LoadBlockedSpotifyArtists(string path = null)
+        {
+            path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            IDeserializer deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))
+                .IgnoreUnmatchedProperties()
+                .Build();
+
+            return LoadOrCreateConfig<BlockedSpotifyArtists>(path, "BlockedSpotifyArtists", deserializer);
         }
 
         public static void WriteAllConfig(Configuration config, string path = null, bool isBackup = false)
@@ -490,6 +505,15 @@ namespace Songify_Slim.Util.Configuration
 
             foreach ((ConfigTypes type, object obj) in configsToWrite)
             {
+                // When the full artist list was unloaded from memory, CurrentConfig holds an empty list.
+                // Disk is the source of truth — do not overwrite BlockedSpotifyArtists.yaml with [].
+                if (type == ConfigTypes.BlockedSpotifyArtists &&
+                    ReferenceEquals(config, Settings.CurrentConfig) &&
+                    ArtistBlocklistStore.ShouldSkipConfigWrite())
+                {
+                    continue;
+                }
+
                 WriteConfig(type, obj, path, isBackup);
             }
         }
@@ -514,6 +538,12 @@ namespace Songify_Slim.Util.Configuration
             {
                 // Deep clone entire Configuration object
                 Configuration clonedConfig = DeepCloneYaml(config);
+
+                // Blocked artists may be unloaded from CurrentConfig — attach a fresh disk snapshot for cloud backup.
+                clonedConfig.BlockedSpotifyArtists = new BlockedSpotifyArtists
+                {
+                    Artists = ArtistBlocklistStore.LoadCopy()
+                };
 
                 // Exclude tokens and sensitive data
                 clonedConfig.AppConfig.YoutubeApiKey = null;
@@ -960,6 +990,8 @@ namespace Songify_Slim.Util.Configuration
         public PlaylistSnapshot SpotifyPlaylistId { get; set; } = new();
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public string Theme { get; set; } = "Dark";
+        /// <summary>WPF-UI window backdrop: None, Auto, Mica, Acrylic, Tabbed.</summary>
+        public string WindowBackdrop { get; set; } = "Mica";
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;

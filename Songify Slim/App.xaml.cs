@@ -1,4 +1,7 @@
-using MahApps.Metro.Controls.Dialogs;
+using Songify_Slim.Util.General;
+using MessageDialogResult = Songify_Slim.Util.General.AppDialogResult;
+using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
+using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Microsoft.Win32;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
@@ -58,6 +61,21 @@ namespace Songify_Slim
                     $"Couldn't set language '{Settings.Language}', reverting to English.",
                     e);
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
+            }
+
+            // Set before ShellWindow binds StatusBarVersion.
+            try
+            {
+                if (string.IsNullOrEmpty(GlobalObjects.AppVersion))
+                {
+                    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
+                    Version v = new(fvi.FileVersion);
+                    GlobalObjects.AppVersion = $"{v.Major}.{v.Minor}.{v.Build}";
+                }
+            }
+            catch
+            {
+                // leave empty; UI shows blank instead of crashing
             }
 
             if (string.IsNullOrEmpty(Settings.Uuid))
@@ -208,7 +226,7 @@ namespace Songify_Slim
         {
             try
             {
-                MessageDialogResult result = await ((MainWindow)Current.MainWindow).ShowMessageAsync(
+                MessageDialogResult result = await AppShellBridge.Current.ShowMessageAsync(
                     "Notification",
                     "Received Twitch Token. Do you want to use this account as Main or Bot?",
                     MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
@@ -256,13 +274,13 @@ namespace Songify_Slim
         {
             try
             {
-                if (Current.MainWindow is not MainWindow mainWindow)
+                if (AppShellBridge.Current == null)
                 {
-                    Logger.Warning(LogSource.Core, "DeepLink: cannot confirm Songify API token import ? main window not ready.");
+                    Logger.Warning(LogSource.Core, "DeepLink: cannot confirm Songify API token import ? shell not ready.");
                     return;
                 }
 
-                MessageDialogResult confirm = await mainWindow.ShowMessageAsync(
+                MessageDialogResult confirm = await AppShellBridge.Current.ShowMessageAsync(
                     "Import Songify API Token",
                     "A Songify API token was received via deep link. Do you want to replace your current Songify API token?",
                     MessageDialogStyle.AffirmativeAndNegative,
@@ -280,7 +298,7 @@ namespace Songify_Slim
 
                 Settings.SongifyApiKey = token;
 
-                await mainWindow.ShowMessageAsync(
+                await AppShellBridge.Current.ShowMessageAsync(
                     "Notification",
                     "Your Songify API Token has been imported successfully",
                     MessageDialogStyle.Affirmative,
@@ -486,20 +504,13 @@ namespace Songify_Slim
                 Console.WriteLine("Restarting Songify...");
             }
 
-            // Initialize and show the main window
-            MainWindow main = new()
+            // WPF-UI shell (FluentWindow + NavigationView). Legacy MainWindow remains for fallback/tools.
+            Views.WPFUI.ShellWindow main = new()
             {
                 Icon = IsBeta
                     ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
                     : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
             };
-
-            //Win_Main main2 = new()
-            //{
-            //    Icon = IsBeta
-            //        ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
-            //        : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
-            //};
 
             try
             {
@@ -507,7 +518,7 @@ namespace Songify_Slim
             }
             catch (Exception ex)
             {
-                throw ex;
+                throw;
             }
         }
 
@@ -558,9 +569,8 @@ namespace Songify_Slim
             // Your logic to restore the window from the tray.
             Window win = Current.MainWindow;
 
-            if (win is MainWindow)
+            if (win is Views.WPFUI.ShellWindow or Views.MainWindow)
             {
-                // For example:
                 win.Show();
                 win.WindowState = WindowState.Normal;
                 Thread.Sleep(1000);

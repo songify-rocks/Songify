@@ -76,7 +76,7 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
             Settings.SaveHistory = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(SaveToggleContent));
-            StatusMessage = value ? $"{Properties.Resources.s_Save} ✔️" : $"{Properties.Resources.s_Save} ❌";
+            StatusMessage = value ? $"{Properties.Resources.common_save} ✔️" : $"{Properties.Resources.common_save} ❌";
         }
     }
 
@@ -90,12 +90,12 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
             Settings.UploadHistory = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(UploadToggleContent));
-            StatusMessage = value ? $"{Properties.Resources.s_Upload} ✔️" : $"{Properties.Resources.s_Upload} ❌";
+            StatusMessage = value ? $"{Properties.Resources.common_upload} ✔️" : $"{Properties.Resources.common_upload} ❌";
         }
     }
 
-    public string SaveToggleContent => _saveHistory ? $"{Properties.Resources.s_Save} ✔️" : $"{Properties.Resources.s_Save} ❌";
-    public string UploadToggleContent => _uploadHistory ? $"{Properties.Resources.s_Upload} ✔️" : $"{Properties.Resources.s_Upload} ❌";
+    public string SaveToggleContent => _saveHistory ? $"{Properties.Resources.common_save} ✔️" : $"{Properties.Resources.common_save} ❌";
+    public string UploadToggleContent => _uploadHistory ? $"{Properties.Resources.common_upload} ✔️" : $"{Properties.Resources.common_upload} ❌";
 
     public string StatusMessage
     {

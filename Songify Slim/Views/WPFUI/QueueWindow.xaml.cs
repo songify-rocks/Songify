@@ -2,12 +2,9 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
-using ControlzEx.Theming;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views.WPFUI.ViewModels;
-using Wpf.Ui.Appearance;
-using Wpf.Ui.Controls;
 
 namespace Songify_Slim.Views.WPFUI;
 
@@ -21,7 +18,7 @@ public partial class QueueWindow
         InitializeComponent();
         _viewModel = new QueueWindowViewModel();
         DataContext = _viewModel;
-        ApplicationThemeManager.Apply(ApplicationTheme.Dark, WindowBackdropType.Mica, true);
+        ThemeHandler.ApplyTheme();
     }
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -32,12 +29,12 @@ public partial class QueueWindow
             BtnClearQueue.Content = "Clear Queue";
             BtnClearQueue.ToolTip = "Clear Queue";
         }
-        if (ChkQueueId != null) ChkQueueId.Content = Properties.Resources.Window_Queue_QueueId;
-        if (ChkArtist != null) ChkArtist.Content = Properties.Resources.bw_cbArtist;
-        if (ChkTitle != null) ChkTitle.Content = Properties.Resources.crw_RewardTitle;
-        if (ChkLength != null) ChkLength.Content = Properties.Resources.s_Length;
-        if (ChkRequester != null) ChkRequester.Content = Properties.Resources.s_Requester;
-        if (ChkActions != null) ChkActions.Content = Properties.Resources.WinQueue_Actions;
+        if (ChkQueueId != null) ChkQueueId.Content = Properties.Resources.window_queue_queue_id;
+        if (ChkArtist != null) ChkArtist.Content = Properties.Resources.common_artist;
+        if (ChkTitle != null) ChkTitle.Content = Properties.Resources.window_queue_song_request;
+        if (ChkLength != null) ChkLength.Content = Properties.Resources.common_length;
+        if (ChkRequester != null) ChkRequester.Content = Properties.Resources.common_requester;
+        if (ChkActions != null) ChkActions.Content = Properties.Resources.window_queue_actions;
 
         GlobalObjects.QueueUpdateQueueWindow();
         _viewModel.LoadColumnVisibility();

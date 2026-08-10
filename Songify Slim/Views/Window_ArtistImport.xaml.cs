@@ -1,5 +1,3 @@
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using Microsoft.Win32;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Util.Configuration;
@@ -166,7 +164,7 @@ namespace Songify_Slim.Views
 
                 if (nameIdx < 0 && idIdx < 0)
                 {
-                    await this.ShowMessageAsync("Import", "Select at least a Name or Id column.");
+                    await AppDialog.ShowAsync("Import", "Select at least a Name or Id column.");
                     return;
                 }
 
@@ -175,7 +173,7 @@ namespace Songify_Slim.Views
                 Settings.ArtistBlacklist = list;
                 ImportCompleted?.Invoke(this, EventArgs.Empty);
 
-                await this.ShowMessageAsync(
+                await AppDialog.ShowAsync(
                     "Import complete",
                     $"Added {merge.Added} artist(s).\nSkipped {merge.SkippedDuplicate} duplicate(s), {merge.SkippedEmpty} empty row(s).");
 
@@ -184,7 +182,7 @@ namespace Songify_Slim.Views
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, LogSource.Core, "Failed to import artists from CSV", ex);
-                await this.ShowMessageAsync("Error", "Import failed. Check the logs for details.");
+                await AppDialog.ShowAsync("Error", "Import failed. Check the logs for details.");
             }
         }
 

@@ -1,4 +1,4 @@
-﻿using MahApps.Metro.IconPacks;
+using Wpf.Ui.Controls;
 using Songify_Slim.Models;
 using Songify_Slim.Models.Responses;
 using Songify_Slim.Util.Configuration;
@@ -20,6 +20,9 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using TextBlock = System.Windows.Controls.TextBlock;
+using MessageBox = System.Windows.MessageBox;
+using MessageBoxButton = System.Windows.MessageBoxButton;
 
 namespace Songify_Slim.UserControls
 {
@@ -30,9 +33,9 @@ namespace Songify_Slim.UserControls
     {
         public Psa Psa;
 
-        private readonly PackIconMaterial _readIcon = new()
+        private readonly SymbolIcon _readIcon = new()
         {
-            Kind = PackIconMaterialKind.Check,
+            Symbol = SymbolRegular.Checkmark24,
             Width = 12,
             Height = 12,
             VerticalAlignment = VerticalAlignment.Center
@@ -166,9 +169,9 @@ namespace Songify_Slim.UserControls
                 // Add the truncated message to the TextBlock
                 TbMessage.Inlines.Add(new Run(truncatedMessage));
 
-                // Attempt to find the MahApps accent brush resource
+                // Attempt to find accent brush resource
                 // Check if the brush is found and apply it
-                Brush accentBrush = (Brush)TryFindResource("MahApps.Brushes.Accent") ?? Brushes.DodgerBlue;
+                Brush accentBrush = (Brush)TryFindResource("AccentFillColorDefaultBrush") ?? Brushes.DodgerBlue;
 
                 // Create a "Read More" Hyperlink
                 Hyperlink readMoreLink = new(new Run("read more"))

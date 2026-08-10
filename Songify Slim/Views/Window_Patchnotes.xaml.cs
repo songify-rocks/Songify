@@ -77,7 +77,7 @@ namespace Songify_Slim.Views
             WebBrowser.DefaultBackgroundColor = Color.FromArgb(13, 17, 23);
         }
 
-        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {

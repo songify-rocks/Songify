@@ -4,11 +4,125 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="User list">
-    <StackPanel Margin="24">
-        <TextBlock FontSize="28" FontWeight="SemiBold" Text="User list" Margin="0,0,0,24" />
-        <ui:Card Padding="20">
-            <ui:Button x:Name="BtnOpenUserList" Content="Open User list window" Appearance="Secondary" Click="BtnOpenUserList_Click" />
-        </ui:Card>
-    </StackPanel>
+    Title="User list"
+    ScrollViewer.CanContentScroll="False"
+    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock
+                FontSize="28"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="{DynamicResource window_userlist_title}" />
+            <ui:Button
+                x:Name="BtnRefresh"
+                HorizontalAlignment="Right"
+                Appearance="Secondary"
+                Click="BtnRefresh_OnClick"
+                Content="Refresh"
+                Icon="{ui:SymbolIcon ArrowSync24}" />
+        </Grid>
+
+        <DataGrid
+            x:Name="DgvViewers"
+            Grid.Row="1"
+            AutoGenerateColumns="False"
+            CanUserAddRows="False"
+            CanUserDeleteRows="False"
+            HeadersVisibility="Column"
+            IsReadOnly="True"
+            SelectionMode="Single"
+            SelectionUnit="FullRow">
+            <DataGrid.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Click="MenuItem_BlockSr_Click">
+                        <MenuItem.Style>
+                            <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="MenuItem">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PlacementTarget.SelectedItem.IsSrBlocked, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="True">
+                                        <Setter Property="Header" Value="Unblock User from SR" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding PlacementTarget.SelectedItem.IsSrBlocked, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="False">
+                                        <Setter Property="Header" Value="Block User from SR" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
+            <DataGrid.Columns>
+                <DataGridTemplateColumn Width="Auto" Header="{DynamicResource window_userlist_sr}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="✓" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSrBlocked}" Value="True">
+                                                <Setter Property="Text" Value="⛔" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding DisplayName, Mode=OneWay}"
+                    Header="{DynamicResource window_userlist_name}" />
+                <DataGridTextColumn
+                    Width="*"
+                    Binding="{Binding ReadableUserLevel, Mode=OneWay}"
+                    Header="{DynamicResource window_userlist_user_levels}" />
+                <DataGridTemplateColumn
+                    Width="Auto"
+                    MinWidth="70"
+                    Header="{DynamicResource window_userlist_sub_tier}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Text" Value="{Binding SubTier, Mode=OneWay}" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SubTier, Mode=OneWay}" Value="0">
+                                                <Setter Property="Text" Value="-" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+            <DataGrid.RowStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsSrBlocked}" Value="True">
+                            <Setter Property="Background" Value="#66CD5C5C" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.RowStyle>
+        </DataGrid>
+
+        <Grid
+            x:Name="GrdLoading"
+            Grid.Row="1"
+            Background="#88000000"
+            Visibility="Collapsed">
+            <ui:ProgressRing IsIndeterminate="True" />
+        </Grid>
+    </Grid>
 </Page>

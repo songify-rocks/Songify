@@ -11,6 +11,7 @@ using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
+using Songify_Slim.Views.WPFUI.Controls;
 using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using static Songify_Slim.Util.General.Enums;
@@ -786,6 +787,12 @@ namespace Songify_Slim.Util.Configuration
             set => SetTheme(value);
         }
 
+        public static string WindowBackdrop
+        {
+            get => GetWindowBackdrop();
+            set => SetWindowBackdrop(value);
+        }
+
         public static string TwAcc
         {
             get => GetTwAcc();
@@ -1376,6 +1383,7 @@ namespace Songify_Slim.Util.Configuration
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),
+                WindowBackdrop = GetWindowBackdrop(),
                 TwAutoConnect = GetTwAutoConnect(),
                 TwitchFetchPort = GetTwitchFetchPort(),
                 TwitchRedirectPort = GetTwitchRedirectPort(),
@@ -1425,9 +1433,10 @@ namespace Songify_Slim.Util.Configuration
                 Commands = CurrentConfig.TwitchCommands.Commands
             };
 
+            // Full list may be unloaded from CurrentConfig — always snapshot from disk/indexes for export.
             BlockedSpotifyArtists blockedSpotifyArtists = new()
             {
-                Artists = CurrentConfig.BlockedSpotifyArtists?.Artists ?? []
+                Artists = ArtistBlocklistStore.LoadCopy()
             };
 
             // Keep the in-memory legacy list empty so it cannot be re-persisted elsewhere.
@@ -1479,6 +1488,9 @@ namespace Songify_Slim.Util.Configuration
                 CurrentConfig.AppConfig.ArtistBlacklist.Clear();
             }
 
+            // Persist artists + rebuild compact indexes, then drop full objects from RAM.
+            ArtistBlocklistStore.ReplaceAndUnload(CurrentConfig.BlockedSpotifyArtists.Artists);
+
             // Restore secrets that are never uploaded
             SongifyApiKey = existingApiKey;
             WebServerPassword = existingWebServerPassword;
@@ -1498,12 +1510,31 @@ namespace Songify_Slim.Util.Configuration
                             break;
                     }
                 }
+
+                // In-shell SettingsPanel (SettingsPage)
+                foreach (SettingsPanel panel in FindVisualChildren<SettingsPanel>(Application.Current.MainWindow))
+                    await panel.SetControls();
             });
+        }
+
+        private static System.Collections.Generic.IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
+        {
+            if (parent == null) yield break;
+            int count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
+            for (int i = 0; i < count; i++)
+            {
+                DependencyObject child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+                if (child is T match)
+                    yield return match;
+                foreach (T nested in FindVisualChildren<T>(child))
+                    yield return nested;
+            }
         }
 
         public static void ResetConfig()
         {
             CurrentConfig = new Configuration();
+            ArtistBlocklistStore.InitializeFromConfigAndUnload();
         }
 
         private static string GetAccessKey()
@@ -1533,10 +1564,21 @@ namespace Songify_Slim.Util.Configuration
 
         private static List<BlockedArtist> GetArtistBlacklist()
         {
-            CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
-            CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
-            return CurrentConfig.BlockedSpotifyArtists.Artists;
+            // Loads from disk into CurrentConfig when the full list was previously unloaded.
+            return ArtistBlocklistStore.EnsureLoaded();
         }
+
+        /// <summary>Number of blocked artists (from compact index; does not load the full list).</summary>
+        public static int ArtistBlacklistCount => ArtistBlocklistStore.Count;
+
+        /// <summary>
+        /// Song-request check against compact ID/name indexes — does not load the full artist list into memory.
+        /// </summary>
+        public static bool IsArtistBlocked(IEnumerable<(string Id, string Name)> trackArtists, out string matchedArtistName)
+            => ArtistBlocklistStore.IsArtistBlocked(trackArtists, out matchedArtistName);
+
+        /// <summary>Drop full blocked-artist objects from memory after UI/export work. Lookups keep working.</summary>
+        public static void UnloadArtistBlacklist() => ArtistBlocklistStore.Unload();
 
         private static bool GetAutoClearQueue()
         {
@@ -2033,6 +2075,13 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.Theme;
         }
 
+        private static string GetWindowBackdrop()
+        {
+            return string.IsNullOrWhiteSpace(CurrentConfig.AppConfig.WindowBackdrop)
+                ? "Mica"
+                : CurrentConfig.AppConfig.WindowBackdrop;
+        }
+
         private static string GetTwAcc()
         {
             return CurrentConfig.TwitchCredentials.BotAccountName;
@@ -2280,9 +2329,8 @@ namespace Songify_Slim.Util.Configuration
 
         private static void SetArtistBlacklist(List<BlockedArtist> value)
         {
-            CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
-            CurrentConfig.BlockedSpotifyArtists.Artists = value ?? [];
-            ConfigHandler.WriteConfig(ConfigTypes.BlockedSpotifyArtists, CurrentConfig.BlockedSpotifyArtists);
+            // Persist to disk, refresh lookup indexes, then unload full objects from RAM.
+            ArtistBlocklistStore.ReplaceAndUnload(value);
         }
 
         private static void SetAutoClearQueue(bool value)
@@ -2864,6 +2912,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetTheme(string value)
         {
             CurrentConfig.AppConfig.Theme = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetWindowBackdrop(string value)
+        {
+            CurrentConfig.AppConfig.WindowBackdrop = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

@@ -1,11 +1,9 @@
-<controls:MetroWindow
+<Window
     x:Class="Songify_Slim.Views.Window_Blacklist"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Title="{DynamicResource window_blocklist_title}"
@@ -15,150 +13,12 @@
     WindowStartupLocation="CenterOwner"
     WindowStyle="ToolWindow"
     mc:Ignorable="d">
-    <controls:MetroWindow.Resources>
-        <mah:CustomDialog
-            x:Key="ArtistPickerDialog"
-            Title="{DynamicResource window_blocklist_select_artist}"
-            KeyDown="ArtistPickerDialog_OnKeyDown">
-            <mah:CustomDialog.Content>
-                <Grid
-                    MaxHeight="420"
-                    Margin="10"
-                    VerticalAlignment="Stretch">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock
-                        Grid.Row="0"
-                        Opacity="0.75"
-                        Text="{DynamicResource window_blocklist_multiple_artists_match}" />
-
-                    <DataGrid
-                        Grid.Row="1"
-                        Margin="0,10,0,10"
-                        AutoGenerateColumns="False"
-                        Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                        CanUserAddRows="False"
-                        Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
-                        IsReadOnly="True"
-                        ItemsSource="{Binding ArtistPickerItems}"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"
-                        SelectedItem="{Binding SelectedArtistPickerItem, Mode=TwoWay}"
-                        SelectionMode="Single"
-                        SelectionUnit="FullRow">
-                        <DataGrid.RowStyle>
-                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
-                                <EventSetter Event="MouseDoubleClick" Handler="ArtistsRow_DoubleClick" />
-                            </Style>
-                        </DataGrid.RowStyle>
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
-                                Width="50"
-                                Binding="{Binding Num}"
-                                Header="{DynamicResource common_column_number}" />
-                            <DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Artist}"
-                                Header="{DynamicResource common_artist}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <StackPanel
-                        Grid.Row="2"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
-                        <Button
-                            MinWidth="100"
-                            Margin="0,0,10,0"
-                            Click="ArtistDialog_Close_Click"
-                            Content="{DynamicResource common_close}" />
-                        <Button
-                            MinWidth="140"
-                            Click="ArtistDialog_Select_Click"
-                            Content="{DynamicResource window_blocklist_block_selected}" />
-                    </StackPanel>
-                </Grid>
-            </mah:CustomDialog.Content>
-        </mah:CustomDialog>
-        <mah:CustomDialog x:Key="ArtistResolveDialog" Title="{DynamicResource window_blocklist_resolve_artist_id}">
-            <mah:CustomDialog.Content>
-                <Grid
-                    Width="560"
-                    MaxHeight="440"
-                    Margin="0,10,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <TextBlock
-                        Grid.Row="0"
-                        Opacity="0.75"
-                        Text="{Binding ResolveDialogHint}" />
-
-                    <DataGrid
-                        Grid.Row="1"
-                        Margin="0,10,0,10"
-                        AutoGenerateColumns="False"
-                        CanUserAddRows="False"
-                        IsReadOnly="True"
-                        ItemsSource="{Binding ResolveCandidates}"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"
-                        SelectedItem="{Binding SelectedResolveCandidate, Mode=TwoWay}"
-                        SelectionMode="Single"
-                        SelectionUnit="FullRow">
-
-                        <!--  Keep MahApps selection visuals  -->
-                        <DataGrid.RowStyle>
-                            <Style BasedOn="{StaticResource MahApps.Styles.DataGridRow}" TargetType="DataGridRow">
-                                <EventSetter Event="MouseDoubleClick" Handler="ResolveRow_DoubleClick" />
-                            </Style>
-                        </DataGrid.RowStyle>
-
-                        <DataGrid.Columns>
-                            <DataGridTextColumn
-                                Width="*"
-                                Binding="{Binding Name}"
-                                Header="{DynamicResource common_artist}" />
-                            <DataGridTextColumn
-                                Width="260"
-                                Binding="{Binding Id}"
-                                Header="{DynamicResource common_id}" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-
-                    <StackPanel
-                        Grid.Row="2"
-                        HorizontalAlignment="Right"
-                        Orientation="Horizontal">
-                        <Button
-                            MinWidth="90"
-                            Margin="0,0,10,0"
-                            Click="Resolve_Skip_Click"
-                            Content="{DynamicResource window_blocklist_skip}" />
-
-                        <Button
-                            MinWidth="120"
-                            Click="Resolve_UseSelected_Click"
-                            Content="{DynamicResource window_blocklist_use_selected}" />
-                    </StackPanel>
-                </Grid>
-            </mah:CustomDialog.Content>
-        </mah:CustomDialog>
-    </controls:MetroWindow.Resources>
-
     <Grid Margin="8">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <!--  Header / hint  -->
         <StackPanel Grid.Row="0" Margin="0,0,0,10">
             <TextBlock
                 Margin="0,4,0,0"
@@ -166,13 +26,12 @@
                 Text="{DynamicResource window_blocklist_description}" />
         </StackPanel>
 
-        <controls:MetroAnimatedTabControl
+        <TabControl
             x:Name="BlacklistTabs"
             Grid.Row="1"
             TabStripPlacement="Top">
 
-            <!--  ===================== ARTISTS =====================  -->
-            <controls:MetroTabItem Header="{DynamicResource window_blocklist_tab_artists}">
+            <TabItem Header="{DynamicResource window_blocklist_tab_artists}">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -180,7 +39,6 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <!--  Add row  -->
                     <Grid Grid.Row="0" Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -200,7 +58,6 @@
                             Content="{DynamicResource common_add}" />
                     </Grid>
 
-                    <!--  List  -->
                     <ListBox
                         x:Name="ArtistList"
                         Grid.Row="1"
@@ -208,7 +65,6 @@
                         ScrollViewer.VerticalScrollBarVisibility="Auto">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <!--  Reusable row control  -->
                                 <userControls:UC_BlacklistEntry Loaded="ArtistEntry_Loaded" />
                             </DataTemplate>
                         </ListBox.ItemTemplate>
@@ -228,7 +84,6 @@
                         </ListBox.ItemContainerStyle>
                     </ListBox>
 
-                    <!--  Footer actions  -->
                     <DockPanel Grid.Row="2" LastChildFill="False">
                         <TextBlock
                             VerticalAlignment="Center"
@@ -256,10 +111,9 @@
                         </StackPanel>
                     </DockPanel>
                 </Grid>
-            </controls:MetroTabItem>
+            </TabItem>
 
-            <!--  ===================== SONGS =====================  -->
-            <controls:MetroTabItem Header="{DynamicResource window_blocklist_tab_songs}">
+            <TabItem Header="{DynamicResource window_blocklist_tab_songs}">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -267,7 +121,6 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <!--  Add row  -->
                     <Grid Grid.Row="0" Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -329,10 +182,9 @@
                         </StackPanel>
                     </DockPanel>
                 </Grid>
-            </controls:MetroTabItem>
+            </TabItem>
 
-            <!--  ===================== USERS =====================  -->
-            <controls:MetroTabItem Header="{DynamicResource window_blocklist_tab_users}">
+            <TabItem Header="{DynamicResource window_blocklist_tab_users}">
                 <Grid Margin="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -340,7 +192,6 @@
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
 
-                    <!--  Add row  -->
                     <Grid Grid.Row="0" Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
@@ -406,206 +257,169 @@
                         </StackPanel>
                     </DockPanel>
                 </Grid>
-            </controls:MetroTabItem>
-        </controls:MetroAnimatedTabControl>
+            </TabItem>
+        </TabControl>
 
-        <!--<TextBox
-            x:Name="tb_Blacklist"
-            Grid.RowSpan="1"
-            Height="26"
-            Margin="6"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Top"
-            KeyDown="Tb_Blacklist_KeyDown"
-            TabIndex="1"
-            TextWrapping="Wrap" />
-        <StackPanel
-            Grid.Row="0"
-            Grid.Column="2"
-            Margin="6"
-            HorizontalAlignment="Center"
-            Orientation="Horizontal">
-            <Button
-                x:Name="btn_Add"
-                Grid.Column="2"
-                Width="81"
-                Height="26"
-                Margin="0,0,6,0"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                d:Content="{DynamicResource window_blocklist_add}"
-                Click="Btn_Add_Click"
-                Content="{DynamicResource window_blocklist_add}"
-                TabIndex="3" />
-            <Button
-                x:Name="btn_Clear"
-                Grid.Column="2"
-                Width="65"
-                Height="26"
-                Padding="5,6"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Top"
-                d:Content="{DynamicResource window_blocklist_clear}"
-                Click="Btn_Clear_Click"
-                Content="{DynamicResource window_blocklist_clear}"
-                Grid.IsSharedSizeScope="True"
-                TabIndex="4" />
-        </StackPanel>
-
-        <ComboBox
-            x:Name="cbx_Type"
-            Grid.Row="0"
-            Grid.Column="1"
-            Margin="6"
-            HorizontalAlignment="Stretch"
-            VerticalAlignment="Center"
-            RenderTransformOrigin="0.5,0.5"
-            SelectedIndex="0"
-            SelectionChanged="Cbx_Type_SelectionChanged"
-            TabIndex="2">
-            <ComboBoxItem d:Content="{DynamicResource window_blocklist_artist}" Content="{DynamicResource window_blocklist_artist}" />
-            <ComboBoxItem d:Content="{DynamicResource window_blocklist_user}" Content="{DynamicResource window_blocklist_user}" />
-            <ComboBoxItem d:Content="{DynamicResource common_song}" Content="{DynamicResource common_song}" />
-        </ComboBox>
-        <ListBox
-            x:Name="ListView_Blacklist"
-            Grid.Row="2"
-            Grid.Column="0"
-            Margin="6"
-            BorderThickness="1"
-            KeyDown="ListView_Blacklist_KeyDown">
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem
-                        d:Header="{DynamicResource window_blocklist_delete}"
-                        Click="MenuItem_Click"
-                        Header="{DynamicResource window_blocklist_delete}" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
-        <ListBox
-            x:Name="ListView_UserBlacklist"
-            Grid.Row="2"
-            Grid.Column="1"
-            Margin="6"
-            BorderThickness="1"
-            KeyDown="ListView_UserBlacklist_KeyDown">
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem
-                        d:Header="{DynamicResource window_blocklist_delete}"
-                        Click="MenuItem_Click"
-                        Header="{DynamicResource window_blocklist_delete}" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
-        <ListBox
-            x:Name="ListView_SongBlacklist"
-            Grid.Row="2"
-            Grid.Column="2"
-            Margin="6"
-            BorderThickness="1"
-            DisplayMemberPath="ReadableName"
-            KeyDown="ListView_SongBlacklist_KeyDown"
-            SelectedValuePath="ReadableName">
-            <ListBox.ContextMenu>
-                <ContextMenu>
-                    <MenuItem
-                        d:Header="{DynamicResource window_blocklist_delete}"
-                        Click="MenuItem_Click"
-                        Header="{DynamicResource window_blocklist_delete}" />
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
-        <Label
-            Grid.Row="1"
-            Grid.Column="0"
-            HorizontalAlignment="Left"
-            VerticalAlignment="Top"
-            d:Content="{DynamicResource window_blocklist_blocked_artists}"
-            Content="{DynamicResource window_blocklist_blocked_artists}" />
-        <Label
-            Grid.Row="1"
-            Grid.Column="1"
-            VerticalAlignment="Top"
-            d:Content="{DynamicResource window_blocklist_blocked_users}"
-            Content="{DynamicResource window_blocklist_blocked_users}" />
-        <Label
-            Grid.Row="1"
-            Grid.Column="2"
-            VerticalAlignment="Top"
-            d:Content="{DynamicResource window_blocklist_blocked_songs}"
-            Content="{DynamicResource window_blocklist_blocked_songs}" />
-        <ContentControl
-            x:Name="cc_Content"
-            Grid.Row="1"
+        <!-- Artist picker overlay -->
+        <Border
+            x:Name="ArtistPickerOverlay"
             Grid.RowSpan="2"
-            Grid.Column="0"
-            Grid.ColumnSpan="3"
-            Panel.ZIndex="50"
-            Visibility="Collapsed">
-            <Grid Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}">
-                <TextBlock
-                    Width="330"
-                    Height="40"
-                    Margin="0,10,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    FontSize="16"
-                    Foreground="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"
-                    TextAlignment="Center"
-                    TextWrapping="Wrap"><Run Text="{DynamicResource window_blocklist_search_multi_select}" /></TextBlock>
-                <DataGrid
-                    x:Name="dgv_Artists"
-                    Height="323"
-                    Margin="15,55,15,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    CanUserReorderColumns="False"
-                    CanUserResizeColumns="False"
-                    CanUserSortColumns="False"
-                    SelectionMode="Single">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            Width="25"
-                            Binding="{Binding Path=Num}"
-                            Header="{DynamicResource common_column_number}"
-                            IsReadOnly="True" />
-                        <DataGridTextColumn
-                            Width="*"
-                            Binding="{Binding Path=Artist}"
-                            Header="{DynamicResource common_artist}"
-                            IsReadOnly="True" />
-                        <DataGridTemplateColumn Width="auto" IsReadOnly="False">
-                            <DataGridTemplateColumn.CellTemplate>
-                                <DataTemplate>
-                                    <CheckBox
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        IsChecked="{Binding Path=IsSelected, UpdateSourceTrigger=PropertyChanged}" />
-                                </DataTemplate>
-                            </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>
-                    </DataGrid.Columns>
-                </DataGrid>
-                <Button
-                    x:Name="btn_CancelArtists"
-                    Width="86"
-                    Margin="245,383,106,10"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Click="Btn_CancelArtists_Click"
-                    Content="{DynamicResource common_cancel}" />
+            Background="#AA000000"
+            KeyDown="ArtistPickerDialog_OnKeyDown"
+            Visibility="Collapsed"
+            Panel.ZIndex="100">
+            <Border
+                MaxWidth="560"
+                MaxHeight="420"
+                Margin="24"
+                Padding="12"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource ApplicationBackgroundBrush}"
+                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,0,0,8"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="{DynamicResource window_blocklist_select_artist}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Opacity="0.75"
+                        Text="{DynamicResource window_blocklist_multiple_artists_match}" />
+                    <DataGrid
+                        Grid.Row="2"
+                        Margin="0,10,0,10"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding ArtistPickerItems}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding SelectedArtistPickerItem, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow">
+                        <DataGrid.RowStyle>
+                            <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="ArtistsRow_DoubleClick" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="50"
+                                Binding="{Binding Num}"
+                                Header="{DynamicResource common_column_number}" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Artist}"
+                                Header="{DynamicResource common_artist}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel
+                        Grid.Row="3"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Button
+                            MinWidth="100"
+                            Margin="0,0,10,0"
+                            Click="ArtistDialog_Close_Click"
+                            Content="{DynamicResource common_close}" />
+                        <Button
+                            MinWidth="140"
+                            Click="ArtistDialog_Select_Click"
+                            Content="{DynamicResource window_blocklist_block_selected}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
 
-                <Button
-                    x:Name="btn_AddArtists"
-                    Width="86"
-                    Margin="336,383,15,10"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Click="Btn_AddArtists_Click"
-                    Content="{DynamicResource window_blocklist_add_selected}" />
-            </Grid>
-        </ContentControl>-->
+        <!-- Artist resolve overlay -->
+        <Border
+            x:Name="ArtistResolveOverlay"
+            Grid.RowSpan="2"
+            Background="#AA000000"
+            Visibility="Collapsed"
+            Panel.ZIndex="101">
+            <Border
+                Width="560"
+                MaxHeight="440"
+                Margin="24"
+                Padding="12"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource ApplicationBackgroundBrush}"
+                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,0,0,8"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Text="{DynamicResource window_blocklist_resolve_artist_id}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Opacity="0.75"
+                        Text="{Binding ResolveDialogHint}" />
+                    <DataGrid
+                        Grid.Row="2"
+                        Margin="0,10,0,10"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding ResolveCandidates}"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectedItem="{Binding SelectedResolveCandidate, Mode=TwoWay}"
+                        SelectionMode="Single"
+                        SelectionUnit="FullRow">
+                        <DataGrid.RowStyle>
+                            <Style BasedOn="{StaticResource {x:Type DataGridRow}}" TargetType="DataGridRow">
+                                <EventSetter Event="MouseDoubleClick" Handler="ResolveRow_DoubleClick" />
+                            </Style>
+                        </DataGrid.RowStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Name}"
+                                Header="{DynamicResource common_artist}" />
+                            <DataGridTextColumn
+                                Width="260"
+                                Binding="{Binding Id}"
+                                Header="{DynamicResource common_id}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel
+                        Grid.Row="3"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <Button
+                            MinWidth="90"
+                            Margin="0,0,10,0"
+                            Click="Resolve_Skip_Click"
+                            Content="{DynamicResource window_blocklist_skip}" />
+                        <Button
+                            MinWidth="120"
+                            Click="Resolve_UseSelected_Click"
+                            Content="{DynamicResource window_blocklist_use_selected}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
     </Grid>
-</controls:MetroWindow>
+</Window>

@@ -1,3 +1,5 @@
+using NumberBox = Wpf.Ui.Controls.NumberBox;
+using NumberBoxValueChangedEventArgs = Wpf.Ui.Controls.NumberBoxValueChangedEventArgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,8 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Models;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.Configuration;
@@ -125,7 +125,7 @@ namespace Songify_Slim.UserControls
                 ? new SolidColorBrush(Colors.Coral)
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString(Settings.TwitchUserColor)!);
             TbTrigger.Text = Command.Trigger;
-            TglEnabled.IsOn = Command.IsEnabled;
+            TglEnabled.IsChecked = Command.IsEnabled;
             TbResponse.Text = Command.Response;
             TbDescription.Text = Map.TryGetValue(Command.CommandType, out string description)
                 ? description
@@ -338,10 +338,11 @@ namespace Songify_Slim.UserControls
                 return;
             if (!IsLoaded)
                 return;
-            if (Command.IsEnabled == TglEnabled.IsOn)
+            bool enabled = TglEnabled.IsChecked == true;
+            if (Command.IsEnabled == enabled)
                 return;
 
-            Command.IsEnabled = TglEnabled.IsOn;
+            Command.IsEnabled = enabled;
             Settings.UpdateCommand(Command);
         }
 
@@ -521,13 +522,13 @@ namespace Songify_Slim.UserControls
             }
         }
 
-        private void NudSkipVoteCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        private void NudSkipVoteCount_ValueChanged(object sender, NumberBoxValueChangedEventArgs e)
         {
             if (_isUpdating)
                 return;
             if (!IsLoaded)
                 return;
-            double? d = ((NumericUpDown)sender).Value;
+            double? d = ((NumberBox)sender).Value;
             if (d == null) return;
             int value = (int)d;
             if (Command.CustomProperties.TryGetValue("SkipCount", out object skipCountObj) &&
@@ -572,12 +573,10 @@ namespace Songify_Slim.UserControls
                 if (_isUpdating)
                     return;
 
-                MetroWindow window = (MetroWindow)Window.GetWindow(this);
-                if (window == null) return;
-                string result = await window.ShowInputAsync($"Explicit user for !{Command.Trigger}",
+                string result = PromptInput($"Explicit user for !{Command.Trigger}",
                     "Enter the usernames (comma separated)");
 
-                if (result == null) return;
+                if (string.IsNullOrWhiteSpace(result)) return;
 
                 List<string> usersToAdd = result.Split(',')
                     .Select(user => user.Trim())
@@ -602,12 +601,12 @@ namespace Songify_Slim.UserControls
                     }
                     else
                     {
-                        await window.ShowMessageAsync("Info", "All selected users are already added.");
+                        await AppDialog.ShowAsync("Info", "All selected users are already added.");
                     }
                 }
                 else
                 {
-                    await window.ShowMessageAsync("Error", "No users found. Please check the usernames and try again.");
+                    await AppDialog.ShowAsync("Error", "No users found. Please check the usernames and try again.");
                 }
             }
             catch (Exception ex)
@@ -624,9 +623,7 @@ namespace Songify_Slim.UserControls
                     return;
                 if (_isUpdating)
                     return;
-                MetroWindow window = (MetroWindow)Window.GetWindow(this);
-                if (window == null) return;
-                string result = await window.ShowInputAsync($"Aliases for !{Command.Trigger}",
+                string result = PromptInput($"Aliases for !{Command.Trigger}",
                     "Enter aliases (comma separated)");
 
                 List<string> aliases = result?.Split(',')
@@ -650,13 +647,54 @@ namespace Songify_Slim.UserControls
                 }
                 else
                 {
-                    await window.ShowMessageAsync("Info", "All aliases are already added.");
+                    await AppDialog.ShowAsync("Info", "All aliases are already added.");
                 }
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Core, "Error adding command alias.", ex);
             }
+        }
+
+        private string PromptInput(string title, string message)
+        {
+            string result = null;
+            Window owner = Window.GetWindow(this);
+            Window dialog = new()
+            {
+                Title = title,
+                Width = 420,
+                Height = 160,
+                WindowStartupLocation = WindowStartupLocation.CenterOwner,
+                Owner = owner,
+                ResizeMode = ResizeMode.NoResize
+            };
+
+            Grid root = new() { Margin = new Thickness(12) };
+            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+
+            TextBlock label = new() { Text = message, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 8) };
+            TextBox input = new() { Margin = new Thickness(0, 0, 0, 12) };
+            StackPanel buttons = new() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
+            Button ok = new() { Content = "OK", MinWidth = 80, Margin = new Thickness(0, 0, 8, 0), IsDefault = true };
+            Button cancel = new() { Content = "Cancel", MinWidth = 80, IsCancel = true };
+            ok.Click += (_, _) => { result = input.Text; dialog.DialogResult = true; };
+            cancel.Click += (_, _) => { dialog.DialogResult = false; };
+            buttons.Children.Add(ok);
+            buttons.Children.Add(cancel);
+
+            Grid.SetRow(label, 0);
+            Grid.SetRow(input, 1);
+            Grid.SetRow(buttons, 2);
+            root.Children.Add(label);
+            root.Children.Add(input);
+            root.Children.Add(buttons);
+            dialog.Content = root;
+            dialog.Loaded += (_, _) => input.Focus();
+
+            return dialog.ShowDialog() == true ? result : null;
         }
     }
 }

@@ -1,5 +1,3 @@
-﻿using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
@@ -35,8 +33,7 @@ namespace Songify_Slim.Views
         public ArtistPickerRow SelectedArtistPickerItem { get; set; }
 
         private List<FullArtist> _artistSearchResults;
-        private CustomDialog _artistDialog;
-
+        
         private readonly ObservableCollection<BlockedArtist> _uiArtists = [];
         private readonly ObservableCollection<BlockedSong> _uiSongs = [];
         private readonly ObservableCollection<BlockedUser> _uiUsers = [];
@@ -233,7 +230,7 @@ namespace Songify_Slim.Views
                 }
                 else
                 {
-                    await this.ShowMessageAsync("Song Not Found", "Could not find the specified song on Spotify.");
+                    await AppDialog.ShowAsync("Song Not Found", "Could not find the specified song on Spotify.");
                 }
             }
             catch (Exception ex)
@@ -276,7 +273,7 @@ namespace Songify_Slim.Views
                 User[] twitchUsers = await TwitchApiHelper.GetTwitchUsersAsync(users);
                 if (twitchUsers.Length == 0)
                 {
-                    await this.ShowMessageAsync("User Not Found", "Could not find the specified user on Twitch.");
+                    await AppDialog.ShowAsync("User Not Found", "Could not find the specified user on Twitch.");
                     return;
                 }
                 foreach (User twitchUser in twitchUsers)
@@ -326,7 +323,7 @@ namespace Songify_Slim.Views
                 // If the API is not connected just don't do anything?
                 if (SpotifyApiHandler.Client == null)
                 {
-                    await this.ShowMessageAsync("Notification",
+                    await AppDialog.ShowAsync("Notification",
                         "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
                     return;
                 }
@@ -357,9 +354,8 @@ namespace Songify_Slim.Views
                             // keep the FullArtist list around so we can map selection -> ID
                             _artistSearchResults = searchItem;
 
-                            _artistDialog ??= (CustomDialog)Resources["ArtistPickerDialog"];
-                            _artistDialog.DataContext = this;   // <-- important
-                            await this.ShowMetroDialogAsync(_artistDialog);
+                            DataContext = this;
+                            ArtistPickerOverlay.Visibility = Visibility.Visible;
 
                             break;
                         }
@@ -383,7 +379,7 @@ namespace Songify_Slim.Views
             }
         }
 
-        private async void ArtistDialog_Select_Click(object sender, RoutedEventArgs e)
+        private void ArtistDialog_Select_Click(object sender, RoutedEventArgs e)
         {
             if (SelectedArtistPickerItem == null)
                 return;
@@ -396,16 +392,14 @@ namespace Songify_Slim.Views
 
             AddToBlacklist(Settings.ArtistBlacklist, artist, () => Settings.ArtistBlacklist = Settings.ArtistBlacklist, RefreshArtists);
 
-            if (_artistDialog != null)
-                await this.HideMetroDialogAsync(_artistDialog);
+            ArtistPickerOverlay.Visibility = Visibility.Collapsed;
         }
 
         #endregion Artists
 
-        private async void ArtistDialog_Close_Click(object sender, RoutedEventArgs e)
+        private void ArtistDialog_Close_Click(object sender, RoutedEventArgs e)
         {
-            if (_artistDialog != null)
-                await this.HideMetroDialogAsync(_artistDialog);
+            ArtistPickerOverlay.Visibility = Visibility.Collapsed;
         }
 
         private void ArtistsRow_DoubleClick(object sender, MouseButtonEventArgs e)
@@ -428,11 +422,11 @@ namespace Songify_Slim.Views
                 SelectedArtistPickerItem = item;
         }
 
-        private async void ArtistPickerDialog_OnKeyDown(object sender, KeyEventArgs e)
+        private void ArtistPickerDialog_OnKeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Escape && _artistDialog != null)
+            if (e.Key == Key.Escape)
             {
-                await this.HideMetroDialogAsync(_artistDialog);
+                ArtistPickerOverlay.Visibility = Visibility.Collapsed;
                 e.Handled = true;
             }
         }
@@ -446,14 +440,13 @@ namespace Songify_Slim.Views
             }
         }
 
-        private CustomDialog _resolveDialog;
         private TaskCompletionSource<ArtistResolveCandidate> _resolveTcs;
 
         private async Task RefreshArtistsInteractiveAsync()
         {
             if (SpotifyApiHandler.Client == null)
             {
-                await this.ShowMessageAsync("Notification",
+                await AppDialog.ShowAsync("Notification",
                     "Spotify is not connected. Connect Spotify to refresh artist IDs.");
                 return;
             }
@@ -464,13 +457,11 @@ namespace Songify_Slim.Views
 
             if (missing.Count == 0)
             {
-                await this.ShowMessageAsync("Refresh IDs", "No legacy artist entries found.");
+                await AppDialog.ShowAsync("Refresh IDs", "No legacy artist entries found.");
                 return;
             }
 
-            _resolveDialog ??= (CustomDialog)Resources["ArtistResolveDialog"];
-            _resolveDialog.DataContext = this;
-
+            DataContext = this;
             int fixedCount = 0;
 
             for (int i = 0; i < missing.Count; i++)
@@ -501,11 +492,11 @@ namespace Songify_Slim.Views
 
                 // Show and wait for user choice
                 _resolveTcs = new TaskCompletionSource<ArtistResolveCandidate>();
-                await this.ShowMetroDialogAsync(_resolveDialog);
+                ArtistResolveOverlay.Visibility = Visibility.Visible;
 
                 ArtistResolveCandidate chosen = await _resolveTcs.Task;
 
-                await this.HideMetroDialogAsync(_resolveDialog);
+                ArtistResolveOverlay.Visibility = Visibility.Collapsed;
 
                 if (chosen == null)
                     continue; // user skipped
@@ -521,7 +512,7 @@ namespace Songify_Slim.Views
                 RefreshArtists();
             }
 
-            await this.ShowMessageAsync("Refresh complete",
+            await AppDialog.ShowAsync("Refresh complete",
                 $"Resolved {fixedCount} of {missing.Count} legacy artist entries.");
         }
 
@@ -561,7 +552,7 @@ namespace Songify_Slim.Views
 
                 if (missing.Count == 0)
                 {
-                    await this.ShowMessageAsync("Refresh IDs", "No legacy user entries found.");
+                    await AppDialog.ShowAsync("Refresh IDs", "No legacy user entries found.");
                     return;
                 }
 
@@ -584,7 +575,7 @@ namespace Songify_Slim.Views
 
                 if (twitchUsers == null || twitchUsers.Length == 0)
                 {
-                    await this.ShowMessageAsync("Refresh IDs", "No users were found on Twitch for the legacy entries.");
+                    await AppDialog.ShowAsync("Refresh IDs", "No users were found on Twitch for the legacy entries.");
                     return;
                 }
 
@@ -624,14 +615,14 @@ namespace Songify_Slim.Views
                 Settings.UserBlacklist = Settings.UserBlacklist;
                 RefreshUsers();
 
-                await this.ShowMessageAsync(
+                await AppDialog.ShowAsync(
                     "Refresh complete",
                     $"Updated {fixedCount} of {missing.Count} user entries.");
             }
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, LogSource.Core, "Failed to refresh user blacklist IDs", ex);
-                await this.ShowMessageAsync("Error", "Failed to refresh user IDs. Check the logs for details.");
+                await AppDialog.ShowAsync("Error", "Failed to refresh user IDs. Check the logs for details.");
             }
         }
 

@@ -45,7 +45,7 @@ namespace Songify_Slim.Views
             e.Handled = true;
         }
 
-        private void MetroWindow_Loaded(object sender, System.Windows.RoutedEventArgs e)
+        private void Window_Loaded(object sender, System.Windows.RoutedEventArgs e)
         {
             LoadThirdPartyLibraries();
         }

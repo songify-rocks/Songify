@@ -344,17 +344,13 @@ namespace Songify_Slim.Util.Songify
                 // if error occurs write text to the status asynchronous
                 Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
+                    AppShellBridge.Current?.SetStatusText("Error uploading Song information");
                 }));
             }
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.ImgCover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    main.SetTextPreview(output);
-                }));
+                AppShellBridge.Current?.SetTextPreview(output);
             });
         }
 
@@ -385,11 +381,10 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MainWindow main = Application.Current.MainWindow as MainWindow;
-                        main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
-                            main.SetTextPreview(Settings.CustomPauseText);
-                        }));
+                            AppShellBridge.Current?.SetTextPreview(Settings.CustomPauseText);
+                        });
                     });
                     break;
 
@@ -409,11 +404,10 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MainWindow main = Application.Current.MainWindow as MainWindow;
-                        main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
-                            main.SetTextPreview("");
-                        }));
+                            AppShellBridge.Current?.SetTextPreview("");
+                        });
                     });
                     break;
 
@@ -1146,11 +1140,10 @@ namespace Songify_Slim.Util.Songify
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            MainWindow main = Application.Current.MainWindow as MainWindow;
-                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                main.SetTextPreview(Settings.CustomPauseText);
-                            }));
+                                AppShellBridge.Current?.SetTextPreview(Settings.CustomPauseText);
+                            });
                         });
                         return;
 
@@ -1178,11 +1171,10 @@ namespace Songify_Slim.Util.Songify
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            MainWindow main = Application.Current.MainWindow as MainWindow;
-                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                main.SetTextPreview("");
-                            }));
+                                AppShellBridge.Current?.SetTextPreview("");
+                            });
                         });
                         return;
 
@@ -1333,7 +1325,7 @@ namespace Songify_Slim.Util.Songify
                 // if error occurs write text to the status asynchronous
                 Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading Song information";
+                    AppShellBridge.Current?.SetStatusText("Error uploading Song information");
                 }));
             }
 
@@ -1393,7 +1385,7 @@ namespace Songify_Slim.Util.Songify
                     // Writing to the statusstrip label
                     Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                     {
-                        (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading history";
+                        AppShellBridge.Current?.SetStatusText("Error uploading history");
                     }));
                 }
             }
@@ -1423,16 +1415,12 @@ namespace Songify_Slim.Util.Songify
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                if (currentSongOutput.Trim().StartsWith("-"))
                 {
-                    if (currentSongOutput.Trim().StartsWith("-"))
-                    {
-                        currentSongOutput = currentSongOutput.Remove(0, 1).Trim();
-                    }
+                    currentSongOutput = currentSongOutput.Remove(0, 1).Trim();
+                }
 
-                    main.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
-                }));
+                AppShellBridge.Current?.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
             });
         }
 
@@ -1883,8 +1871,7 @@ namespace Songify_Slim.Util.Songify
 
             Application.Current?.Dispatcher.Invoke(() =>
             {
-                if (Application.Current.MainWindow is MainWindow main)
-                    main.SetTextPreview(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                    AppShellBridge.Current?.SetTextPreview(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
             });
         }
 

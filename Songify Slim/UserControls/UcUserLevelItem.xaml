@@ -3,7 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:local="clr-namespace:Songify_Slim.UserControls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     x:Name="RootUserControl"
@@ -14,7 +14,7 @@
             <Setter Property="Background" Value="Transparent" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-3">
-                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent}" />
+                    <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
                     <Setter Property="ToolTip" Value="{Binding UserName, RelativeSource={RelativeSource AncestorType=UserControl}}" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
@@ -60,41 +60,41 @@
             </Style.Triggers>
         </Style>
         <!--  Icon style  -->
-        <Style x:Key="UserLevelIconStyle" TargetType="iconPacks:PackIconMaterial">
+        <Style x:Key="UserLevelIconStyle" TargetType="ui:SymbolIcon">
             <Style.Triggers>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-3">
-                    <Setter Property="Kind" Value="None" />
+                    <Setter Property="Visibility" Value="Collapsed" />
                     <Setter Property="Visibility" Value="Collapsed" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-2">
-                    <Setter Property="Kind" Value="Account" />
+                    <Setter Property="Symbol" Value="Person24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="-1">
-                    <Setter Property="Kind" Value="AccountPlus" />
+                    <Setter Property="Symbol" Value="PersonAdd24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="0">
-                    <Setter Property="Kind" Value="Eye" />
+                    <Setter Property="Symbol" Value="Eye24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="1">
-                    <Setter Property="Kind" Value="AccountCheck" />
+                    <Setter Property="Symbol" Value="PersonAvailable24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="2">
-                    <Setter Property="Kind" Value="Star" />
+                    <Setter Property="Symbol" Value="Star24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="3">
-                    <Setter Property="Kind" Value="Star" />
+                    <Setter Property="Symbol" Value="Star24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="4">
-                    <Setter Property="Kind" Value="Star" />
+                    <Setter Property="Symbol" Value="Star24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="5">
-                    <Setter Property="Kind" Value="Diamond" />
+                    <Setter Property="Symbol" Value="Diamond24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="6">
-                    <Setter Property="Kind" Value="Sword" />
+                    <Setter Property="Symbol" Value="Shield24" />
                 </DataTrigger>
                 <DataTrigger Binding="{Binding UserLevel, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="7">
-                    <Setter Property="Kind" Value="Video" />
+                    <Setter Property="Symbol" Value="Video24" />
                 </DataTrigger>
             </Style.Triggers>
         </Style>
@@ -255,7 +255,7 @@
             CornerRadius="8"
             Style="{StaticResource UserLevelBorderStyle}">
             <StackPanel Orientation="Horizontal">
-                <iconPacks:PackIconMaterial
+                <ui:SymbolIcon
                     x:Name="Icon"
                     Width="12"
                     Height="12"
@@ -331,7 +331,7 @@
                         FontSize="6"
                         FontWeight="Black"
                         Foreground="Black"
-                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}" />
+                         />
                 </Border>
             </StackPanel>
         </Border>

@@ -225,8 +225,8 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
     {
         var result = MessageBox.Show(
             Application.Current.MainWindow,
-            Songify_Slim.Properties.Resources.mw_clearQueueDisclaimer,
-            Songify_Slim.Properties.Resources.s_Warning,
+            Songify_Slim.Properties.Resources.window_queue_clear_disclaimer,
+            Songify_Slim.Properties.Resources.common_warning,
             MessageBoxButton.YesNo,
             MessageBoxImage.Question);
         if (result != MessageBoxResult.Yes) return;
@@ -357,7 +357,7 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
                 Title = fromQueue.Title ?? "",
                 Artist = fromQueue.Artist ?? "",
                 Albumcover = fromQueue.Albumcover,
-                AlbumcoverImageSource = fromQueue.AlbumcoverImageSource ?? UrlToImageSourceConverter.FromUrl(fromQueue.Albumcover)
+                AlbumcoverImageSource = UrlToImageSourceConverter.FromUrl(fromQueue.Albumcover)
             };
             return;
         }

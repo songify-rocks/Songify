@@ -1,198 +1,35 @@
-<controls:MetroWindow
+<Window
     x:Class="Songify_Slim.Views.MainWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dialog="clr-namespace:MahApps.Metro.Controls.Dialogs;assembly=MahApps.Metro"
     xmlns:general="clr-namespace:Songify_Slim.Util.General"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:local="clr-namespace:Songify_Slim.Properties"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{DynamicResource window_main_title}"
     Width="600"
     Height="285"
     MinWidth="600"
     MinHeight="285"
     d:Title="{x:Static local:Resources.window_main_title}"
-    Closed="MetroWindow_Closed"
-    Closing="MetroWindow_Closing"
+    Closed="Window_Closed"
+    Closing="Window_Closing"
     DataContext="{Binding RelativeSource={RelativeSource Self}}"
-    KeyDown="MetroWindow_KeyDown"
-    Loaded="MetroWindowLoaded"
-    LocationChanged="MetroWindow_LocationChanged"
+    KeyDown="Window_KeyDown"
+    Loaded="Window_Loaded"
+    LocationChanged="Window_LocationChanged"
     RenderOptions.BitmapScalingMode="NearestNeighbor"
     ResizeMode="CanResizeWithGrip"
-    SaveWindowPosition="True"
-    ShowDialogsOverTitleBar="False"
-    ShowIconOnTitleBar="False"
     SizeChanged="MainWindow_OnSizeChanged"
-    StateChanged="MetroWindowStateChanged"
+    StateChanged="Window_StateChanged"
     TextOptions.TextFormattingMode="Display"
     WindowStartupLocation="Manual"
     mc:Ignorable="d">
-    <controls:MetroWindow.Resources>
-        <Style
-            x:Key="NewCustomMessageDialogStyle"
-            BasedOn="{StaticResource {x:Type dialog:BaseMetroDialog}}"
-            TargetType="{x:Type dialog:MessageDialog}">
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type dialog:BaseMetroDialog}">
-                        <ControlTemplate.Resources>
-                            <Storyboard x:Key="DialogShownStoryboard">
-                                <DoubleAnimation
-                                    AccelerationRatio=".9"
-                                    BeginTime="0:0:0"
-                                    Storyboard.TargetProperty="Opacity"
-                                    To="1"
-                                    Duration="0:0:0.2" />
-                            </Storyboard>
-                        </ControlTemplate.Resources>
-                        <Grid Background="{TemplateBinding Background}">
-                            <Border FocusVisualStyle="{x:Null}" Focusable="False">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="*" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
-                                    <ContentPresenter Grid.Row="0" Content="{TemplateBinding DialogTop}" />
-                                    <Grid Grid.Row="1">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="10*" />
-                                            <ColumnDefinition Width="80*" />
-                                            <ColumnDefinition Width="10*" />
-                                        </Grid.ColumnDefinitions>
-                                        <!--  Content area  -->
-                                        <Grid Grid.Column="1" Margin="0,10,0,0">
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto" />
-                                                <RowDefinition Height="*" />
-                                            </Grid.RowDefinitions>
-                                            <TextBlock
-                                                Grid.Row="0"
-                                                FontSize="{DynamicResource DialogTitleFontSize}"
-                                                Foreground="{TemplateBinding Foreground}"
-                                                Text="{TemplateBinding Title}"
-                                                TextWrapping="Wrap" />
-                                            <ContentPresenter Grid.Row="1" Content="{TemplateBinding Content}" />
-                                        </Grid>
-                                    </Grid>
-                                    <ContentPresenter Grid.Row="2" Content="{TemplateBinding DialogBottom}" />
-                                </Grid>
-                            </Border>
-                        </Grid>
-                        <ControlTemplate.Triggers>
-                            <EventTrigger RoutedEvent="Loaded">
-                                <EventTrigger.Actions>
-                                    <BeginStoryboard Storyboard="{StaticResource DialogShownStoryboard}" />
-                                </EventTrigger.Actions>
-                            </EventTrigger>
-                        </ControlTemplate.Triggers>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
-        <Style BasedOn="{StaticResource NewCustomMessageDialogStyle}" TargetType="{x:Type dialog:MessageDialog}" />
-        <!--  Custom Flyout Header Template with Close Button  -->
-        <ControlTemplate x:Key="CustomFlyoutHeaderTemplate" TargetType="controls:Flyout">
-            <Grid
-                Height="30"
-                VerticalAlignment="Top"
-                Background="{DynamicResource MahApps.Brushes.FlyoutTitleBackground}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*" />
-                    <ColumnDefinition Width="Auto" />
-                </Grid.ColumnDefinitions>
-
-                <!--  Header Text  -->
-                <TextBlock
-                    Grid.Column="0"
-                    Padding="5"
-                    VerticalAlignment="Center"
-                    FontSize="14"
-                    FontWeight="Bold"
-                    Foreground="{DynamicResource MahApps.Brushes.FlyoutTitleForeground}"
-                    Text="{Binding Header, RelativeSource={RelativeSource TemplatedParent}}" />
-
-                <!--  Close Button  -->
-                <Button
-                    Grid.Column="1"
-                    Width="20"
-                    Height="20"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    d:Content="{x:Static local:Resources.common_close}"
-                    Background="Transparent"
-                    BorderBrush="{x:Null}"
-                    Command="{Binding IsOpen, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource BooleanToCloseFlyoutCommandConverter}}"
-                    Content="{DynamicResource common_close}"
-                    Foreground="{DynamicResource MahApps.Brushes.FlyoutTitleForeground}" />
-            </Grid>
-        </ControlTemplate>
+    <Window.Resources>
         <general:CombineStringConverter x:Key="CombineStringConverter" />
-    </controls:MetroWindow.Resources>
-    <controls:MetroWindow.RightWindowCommands>
-        <controls:WindowCommands ShowSeparators="False">
-            <Button
-                x:Name="BtnFontSizeDown"
-                Height="26"
-                Padding="5,5,5,5"
-                Click="BtnFontSizeDown_Click"
-                Focusable="False"
-                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
-                <iconPacks:PackIconMaterial
-                    Width="15"
-                    Height="15"
-                    Margin="-1,-1,-1,-1"
-                    Kind="FormatFontSizeDecrease" />
-            </Button>
-            <Button
-                x:Name="BtnFontSizeUp"
-                Height="26"
-                Padding="5,5,5,5"
-                Click="BtnFontSizeUp_Click"
-                Focusable="False"
-                Style="{DynamicResource MahApps.Styles.Button.WindowCommands}">
-                <iconPacks:PackIconMaterial
-                    Width="15"
-                    Height="15"
-                    Margin="-1,-1,-1,-1"
-                    Kind="FormatFontSizeIncrease" />
-            </Button>
-            <TextBlock
-                x:Name="TbFontSize"
-                Margin="3,0,12,0"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Style="{DynamicResource MahApps.Styles.TextBlock.Watermark}" />
-        </controls:WindowCommands>
-    </controls:MetroWindow.RightWindowCommands>
-    <controls:MetroWindow.LeftWindowCommands>
-        <controls:WindowCommands ShowSeparators="False">
-            <Image x:Name="AppIcon" Margin="3" />
-            <Border
-                x:Name="BetaPanel"
-                Width="60"
-                Margin="6"
-                Padding="0"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Top"
-                Background="Black"
-                CornerRadius="10"
-                Visibility="Collapsed">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    d:Text="{x:Static local:Resources.common_beta}"
-                    FontSize="15"
-                    FontWeight="Bold"
-                    Foreground="White"
-                    Text="{DynamicResource common_beta}" />
-            </Border>
-        </controls:WindowCommands>
-    </controls:MetroWindow.LeftWindowCommands>
+        <util:BooleanToVisibilityConverter xmlns:util="clr-namespace:Songify_Slim.Util" x:Key="BooleanToVisibilityConverter" />
+    </Window.Resources>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -204,15 +41,66 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        <Image
+            x:Name="AppIcon"
+            Width="0"
+            Height="0"
+            Visibility="Collapsed" />
+        <Border
+            x:Name="BetaPanel"
+            Width="60"
+            Margin="6"
+            Padding="0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Background="Black"
+            CornerRadius="10"
+            Visibility="Collapsed"
+            Panel.ZIndex="50">
+            <TextBlock
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                d:Text="{x:Static local:Resources.common_beta}"
+                FontSize="15"
+                FontWeight="Bold"
+                Foreground="White"
+                Text="{DynamicResource common_beta}" />
+        </Border>
+        <StackPanel
+            Margin="0,4,8,0"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Orientation="Horizontal"
+            Panel.ZIndex="50">
+            <Button
+                x:Name="BtnFontSizeDown"
+                Height="26"
+                Padding="8,2"
+                Click="BtnFontSizeDown_Click"
+                Content="A-"
+                Focusable="False" />
+            <Button
+                x:Name="BtnFontSizeUp"
+                Height="26"
+                Margin="4,0,0,0"
+                Padding="8,2"
+                Click="BtnFontSizeUp_Click"
+                Content="A+"
+                Focusable="False" />
+            <TextBlock
+                x:Name="TbFontSize"
+                Margin="8,0,4,0"
+                VerticalAlignment="Center" />
+        </StackPanel>
         <Grid
             x:Name="GrdDisclaimer"
             Grid.Row="0"
             Grid.RowSpan="3"
             Grid.Column="0"
             Grid.ColumnSpan="2"
-            Background="{DynamicResource MahApps.Brushes.Control.Background}"
+            Background="{DynamicResource ControlFillColorDefaultBrush}"
             Visibility="Collapsed"
-            ZIndex="1001">
+            Panel.ZIndex="1001">
             <Button
                 x:Name="BtnDisclaimerClose"
                 Width="26"
@@ -248,13 +136,7 @@
                     Foreground="White">
                     <Button.Content>
                         <StackPanel Orientation="Horizontal">
-                            <iconPacks:PackIconForkAwesome
-                                Width="18"
-                                Height="18"
-                                Margin="0,0,5,0"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Kind="Buymeacoffee" />
+                            <ui:SymbolIcon Symbol="Info24" />
                             <TextBlock
                                 d:Text="{x:Static local:Resources.window_main_support_kofi}"
                                 FontSize="18"
@@ -420,7 +302,7 @@
             BorderThickness="1"
             CornerRadius="4"
             Visibility="Collapsed">
-            <Grid ZIndex="100000">
+            <Grid Panel.ZIndex="100000">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
@@ -489,32 +371,19 @@
                     IsTabStop="False"
                     SelectedIndex="0"
                     SelectedValuePath="Value" />
-                <controls:Badged
-                    x:Name="Badge"
-                    Margin="12,0,8,0"
-                    Badge=""
-                    BadgeFontSize="12">
-                    <Button
+                <Grid x:Name="Badge" Margin="12,0,8,0"><Button
                         Width="26"
                         Height="26"
-                        Click="BtnMotd_Click"
-                        Style="{DynamicResource MahApps.Styles.Button.Chromeless}">
+                        Click="BtnMotd_Click">
                         <Button.Content>
                             <StackPanel
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 Orientation="Horizontal">
-                                <iconPacks:BootstrapIcons
-                                    x:Name="BadgeIcon"
-                                    Width="12"
-                                    Height="12"
-                                    Kind="BellFill"
-                                    Spin="False"
-                                    SpinAutoReverse="False" />
+                                <ui:SymbolIcon x:Name="BadgeIcon" Width="12" Height="12" Symbol="Alert24" />
                             </StackPanel>
                         </Button.Content>
-                    </Button>
-                </controls:Badged>
+                    </Button><TextBlock x:Name="BadgeText" HorizontalAlignment="Right" VerticalAlignment="Top" FontSize="10" Margin="0,-4,-4,0" /></Grid>
             </StackPanel>
             <StackPanel
                 x:Name="StkSpotifyTestMode"
@@ -522,15 +391,14 @@
                 HorizontalAlignment="Right"
                 Orientation="Horizontal"
                 Visibility="Visible">
-                <controls:ToggleSwitch
+                <ui:ToggleSwitch
                     x:Name="TglTestMode"
                     MinWidth="0"
                     MinHeight="0"
                     Margin="0"
                     Padding="0"
                     Content="Test Mode"
-                    ContentDirection="LeftToRight"
-                    Toggled="TglTestMode_OnToggled" />
+                    Checked="TglTestMode_OnToggled" Unchecked="TglTestMode_OnToggled" />
                 <Button
                     Width="10"
                     MinWidth="0"
@@ -539,7 +407,6 @@
                     VerticalAlignment="Center"
                     Click="ButtonBase_OnClick"
                     Content="?"
-                    Style="{DynamicResource MahApps.Styles.Button.Chromeless}"
                     ToolTip="To help combat Spotify Rate Limits, Spotify fetching is now limited to either being live on Twitch or enabled Test Mode (disables after 5 minutes)." />
             </StackPanel>
             <StackPanel
@@ -576,10 +443,7 @@
                     Click="BtnWindowsMediaSessionRefresh_Click"
                     Focusable="False"
                     ToolTip="{DynamicResource window_main_windows_media_session_refresh_tooltip}">
-                    <iconPacks:PackIconMaterial
-                        Width="16"
-                        Height="16"
-                        Kind="Refresh" />
+                    <ui:SymbolIcon Width="16" Height="16" Symbol="ArrowSync24" />
                 </Button>
             </StackPanel>
         </StackPanel>
@@ -591,64 +455,21 @@
             Grid.ColumnSpan="2"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
-            ZIndex="100">
-            <controls:Flyout
-                x:Name="FlyMotd"
-                Width="{Binding ElementName=MainWindow, Path=ActualWidth}"
-                d:Header="{x:Static local:Resources.menu_notifications}"
-                Background="{DynamicResource {x:Static SystemColors.WindowBrushKey}}"
-                Header="{DynamicResource menu_notifications}"
-                IsOpen="false"
-                Position="Right">
-                <controls:Flyout.HeaderTemplate>
-                    <DataTemplate>
-                        <Grid Height="28">
-                            <TextBlock
-                                Padding="5"
-                                VerticalAlignment="Center"
-                                FontSize="20"
-                                FontWeight="Bold"
-                                Text="{Binding}" />
-                            <StackPanel
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Top"
-                                Orientation="Horizontal">
-                                <Button
-                                    x:Name="BtnFlyOutAllread"
-                                    Width="40"
-                                    Height="28"
-                                    Margin="10,0"
-                                    d:ToolTip="{x:Static local:Resources.common_mark_all_read}"
-                                    Click="BtnFlyOutAllread_OnClick"
-                                    Style="{DynamicResource MahApps.Styles.Button.WindowCommands}"
-                                    ToolTip="{DynamicResource common_mark_all_read}"
-                                    Visibility="Hidden">
-                                    <Button.Content>
-                                        <iconPacks:Material
-                                            Width="18"
-                                            Height="18"
-                                            Kind="Read" />
-                                    </Button.Content>
-                                </Button>
-                                <Button
-                                    x:Name="BtnFlyOutClose"
-                                    Width="28"
-                                    Height="28"
-                                    Margin="0"
-                                    Click="BtnFlyOutClose_OnClick"
-                                    Style="{DynamicResource MahApps.Styles.Button.Circle}">
-                                    <Button.Content>
-                                        <iconPacks:FontAwesome Kind="ArrowRightSolid" />
-                                    </Button.Content>
-                                </Button>
-                            </StackPanel>
-                        </Grid>
-                    </DataTemplate>
-                </controls:Flyout.HeaderTemplate>
-                <ScrollViewer Margin="8">
-                    <StackPanel x:Name="PnlMotds" />
-                </ScrollViewer>
-            </controls:Flyout>
+            Panel.ZIndex="100">
+            <Border x:Name="FlyMotd" Width="320" HorizontalAlignment="Right" Background="{DynamicResource ApplicationBackgroundBrush}" BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}" BorderThickness="1,0,0,0" Visibility="Collapsed">
+                <DockPanel>
+                    <DockPanel DockPanel.Dock="Top" Margin="8,4" LastChildFill="True">
+                        <TextBlock VerticalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{DynamicResource menu_notifications}" />
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <Button x:Name="BtnFlyOutAllread" Width="40" Height="28" Margin="10,0" Click="BtnFlyOutAllread_OnClick" ToolTip="{DynamicResource common_mark_all_read}" Visibility="Hidden" Content="All" />
+                            <Button x:Name="BtnFlyOutClose" Width="28" Height="28" Click="BtnFlyOutClose_OnClick" Content="X" />
+                        </StackPanel>
+                    </DockPanel>
+                    <ScrollViewer Margin="8">
+                        <StackPanel x:Name="PnlMotds" />
+                    </ScrollViewer>
+                </DockPanel>
+            </Border>
         </Grid>
         <Grid
             Grid.Row="1"
@@ -657,7 +478,7 @@
             Grid.ColumnSpan="2"
             HorizontalAlignment="Left"
             VerticalAlignment="Center"
-            ZIndex="-1">
+            Panel.ZIndex="-1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -734,13 +555,7 @@
             ToolTip="{DynamicResource window_main_spotify_idle_polling_tooltip}"
             Visibility="Collapsed">
             <StackPanel Orientation="Horizontal">
-                <iconPacks:PackIconMaterial
-                    Width="12"
-                    Height="12"
-                    Margin="0,0,4,0"
-                    VerticalAlignment="Center"
-                    Foreground="IndianRed"
-                    Kind="SpeedometerSlow" />
+                <ui:SymbolIcon Width="12" Height="12" Margin="0,0,4,0" VerticalAlignment="Center" Foreground="IndianRed" Symbol="Gauge24" />
                 <TextBlock
                     x:Name="TbSpotifyIdleBackoff"
                     VerticalAlignment="Center"
@@ -757,19 +572,7 @@
             Margin="0,20,0,-5"
             Orientation="Horizontal"
             Visibility="Collapsed">
-            <iconPacks:PackIconForkAwesome
-                Margin="36,7,-8,0"
-                Kind="ArrowDown"
-                RenderTransformOrigin="0.5,0.5">
-                <iconPacks:PackIconForkAwesome.RenderTransform>
-                    <TransformGroup>
-                        <ScaleTransform ScaleX="0.5" ScaleY="0.5" />
-                        <SkewTransform />
-                        <RotateTransform />
-                        <TranslateTransform />
-                    </TransformGroup>
-                </iconPacks:PackIconForkAwesome.RenderTransform>
-            </iconPacks:PackIconForkAwesome>
+            <!-- removed decorative arrow -->
             <Label d:Content="{x:Static local:Resources.window_main_pubsub_disabled}" Content="{DynamicResource window_main_pubsub_disabled}" />
         </StackPanel>
         <Button
@@ -784,16 +587,15 @@
             BorderThickness="0"
             Click="BtnPaypal_Click"
             Cursor="Hand"
-            Foreground="White"
-            Style="{DynamicResource MahApps.Styles.Button.Dialogs}">
+            Foreground="White">
             <Button.Content>
                 <Border
                     Padding="10,3"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    Background="{DynamicResource AccentFillColorDefaultBrush}"
                     CornerRadius="5"
                     Cursor="Hand">
                     <StackPanel Orientation="Horizontal">
-                        <iconPacks:PackIconForkAwesome Margin="0,0,5,0" Kind="Buymeacoffee" />
+                        <ui:SymbolIcon Margin="0,0,5,0" Symbol="Heart24" />
                         <TextBlock
                             VerticalAlignment="Center"
                             d:Text="{x:Static local:Resources.cta_support}"
@@ -843,10 +645,10 @@
                 <Style TargetType="DockPanel">
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="False">
-                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle.NonActive}" />
+                            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush.NonActive}" />
                         </DataTrigger>
                         <DataTrigger Binding="{Binding Path=IsActive, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Value="True">
-                            <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.WindowTitle}" />
+                            <Setter Property="Background" Value="{DynamicResource AccentFillColorDefaultBrush}" />
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
@@ -869,12 +671,7 @@
                                 Tag="TwitchBot"
                                 ToolTip=""
                                 ToolTipOpening="ServiceToolTipOpening">
-                                <iconPacks:PackIconBoxIcons
-                                    x:Name="IconTwitchBot"
-                                    Width="14"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="SolidCircle" />
+                                <ui:SymbolIcon x:Name="IconTwitchBot" Width="14" Symbol="Live24" />
                             </Button>
 
                             <Button
@@ -884,12 +681,7 @@
                                 Tag="TwitchAPI"
                                 ToolTip=""
                                 ToolTipOpening="ServiceToolTipOpening">
-                                <iconPacks:PackIconBoxIcons
-                                    x:Name="IconTwitchApi"
-                                    Width="14"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="SolidCircle" />
+                                <ui:SymbolIcon x:Name="IconTwitchApi" Width="14" Symbol="Live24" />
                             </Button>
 
                             <Button
@@ -899,12 +691,7 @@
                                 Tag="Spotify"
                                 ToolTip=""
                                 ToolTipOpening="ServiceToolTipOpening">
-                                <iconPacks:PackIconBoxIcons
-                                    x:Name="IconWebSpotify"
-                                    Width="14"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="SolidCircle" />
+                                <ui:SymbolIcon x:Name="IconWebSpotify" Width="14" Symbol="MusicNote224" />
                             </Button>
 
 
@@ -916,12 +703,7 @@
                                 Tag="PearDesktop"
                                 ToolTip=""
                                 ToolTipOpening="ServiceToolTipOpening">
-                                <iconPacks:PackIconBoxIcons
-                                    x:Name="IconPearDesktop"
-                                    Width="14"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="SolidCircle" />
+                                <ui:SymbolIcon x:Name="IconPearDesktop" Width="14" Symbol="PlayCircle24" />
                             </Button>
 
                             <Button
@@ -930,12 +712,7 @@
                                 Tag="WebServer"
                                 ToolTip=""
                                 ToolTipOpening="ServiceToolTipOpening">
-                                <iconPacks:PackIconBoxIcons
-                                    x:Name="IconWebServer"
-                                    Width="14"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Kind="SolidCircle" />
+                                <ui:SymbolIcon x:Name="IconWebServer" Width="14" Symbol="Server24" />
                             </Button>
                         </StackPanel>
                     </StatusBarItem>
@@ -949,7 +726,7 @@
 
                         <StatusBarItem
                             x:Name="LblStatus"
-                            Foreground="{DynamicResource MahApps.Brushes.IdealForeground}"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                             Visibility="Collapsed">
                             <StatusBar />
                         </StatusBarItem>
@@ -958,23 +735,23 @@
                             Padding="0"
                             HorizontalAlignment="Right"
                             DockPanel.Dock="Right"
-                            Foreground="{DynamicResource MahApps.Brushes.IdealForeground}">
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}">
                             <StackPanel Orientation="Horizontal">
                                 <StatusBarItem
                                     x:Name="LblCopyright"
                                     d:Content="{x:Static local:Resources.window_main_copyright}"
                                     Content="{DynamicResource window_main_copyright}"
-                                    Foreground="{DynamicResource MahApps.Brushes.IdealForeground}" />
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}" />
                                 <StatusBarItem
                                     x:Name="LblCopyrightLink"
                                     FontStyle="Italic"
-                                    Foreground="{DynamicResource MahApps.Brushes.Control.Background}">
+                                    Foreground="{DynamicResource ControlFillColorDefaultBrush}">
                                     <Hyperlink
                                         FontStyle="Normal"
                                         NavigateUri="https://songify.rocks"
                                         RequestNavigate="Hyperlink_RequestNavigate">
                                         <Hyperlink.Foreground>
-                                            <SolidColorBrush Color="{DynamicResource MahApps.Colors.IdealForeground}" />
+                                            <SolidColorBrush Color="{DynamicResource TextFillColorPrimary}" />
                                         </Hyperlink.Foreground>
                                         Songify.Rocks
                                     </Hyperlink>
@@ -986,4 +763,4 @@
             </Border>
         </DockPanel>
     </Grid>
-</controls:MetroWindow>
+</Window>

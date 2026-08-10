@@ -1,8 +1,7 @@
-<controls:MetroWindow
+<Window
     x:Class="Songify_Slim.Views.Window_CloudImportPreview"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -42,7 +41,7 @@
                 <TextBlock
                     x:Name="TbPermissionWarnings"
                     Margin="0,6,0,0"
-                    Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                     TextWrapping="Wrap" />
             </StackPanel>
         </Border>
@@ -58,7 +57,7 @@
             BorderThickness="0"
             FontFamily="Consolas"
             FontSize="13"
-            Foreground="{DynamicResource MahApps.Brushes.ThemeForeground}"
+            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
             IsReadOnly="True"
             VerticalScrollBarVisibility="Auto" />
 
@@ -81,4 +80,4 @@
                 Content="{DynamicResource window_cloudimport_import}" />
         </StackPanel>
     </Grid>
-</controls:MetroWindow>
+</Window>

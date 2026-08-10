@@ -33,7 +33,7 @@ namespace Songify_Slim.Views
             InitializeComponent();
         }
 
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadItems();
         }
@@ -207,7 +207,7 @@ namespace Songify_Slim.Views
             return new Border
             {
                 BorderThickness = new Thickness(0),
-                Background = Application.Current.TryFindResource("MahApps.Brushes.Accent") as Brush,
+                Background = Application.Current.TryFindResource("AccentFillColorDefaultBrush") as Brush,
                 Margin = new Thickness(5),
                 Padding = new Thickness(5),
                 CornerRadius = new CornerRadius(5),
@@ -283,10 +283,10 @@ namespace Songify_Slim.Views
             if (!IsLoaded)
                 return;
             if (Owner is not Window_Settings settings) return;
-            settings.LocationChanged -= settings.MetroWindow_LocationChanged;
+            settings.LocationChanged -= settings.Window_LocationChanged;
             settings.Left = Left - settings.Width;
             settings.Top = Top;
-            settings.LocationChanged += settings.MetroWindow_LocationChanged;
+            settings.LocationChanged += settings.Window_LocationChanged;
         }
     }
 }

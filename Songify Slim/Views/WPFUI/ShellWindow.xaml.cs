@@ -1,30 +1,27 @@
 using System;
 using System.ComponentModel;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views;
-using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
-using MessageBox = System.Windows.MessageBox;
-using MessageBoxButton = System.Windows.MessageBoxButton;
-using MessageBoxResult = System.Windows.MessageBoxResult;
+using Wpf.Ui.Tray.Controls;
 
 namespace Songify_Slim.Views.WPFUI;
 
 public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 {
+    private bool _forceClose;
+
     public ShellWindow()
     {
         InitializeComponent();
         DataContext = this;
-        // Dark theme with Mica (app-wide WPF-UI is already Dark from App.xaml; ensure Mica for this window)
-        ApplicationThemeManager.Apply(ApplicationTheme.Dark, WindowBackdropType.Mica, true);
+        ThemeHandler.ApplyTheme();
         // Don't navigate here: NavigationView's frame may not be ready until Loaded
     }
 
@@ -47,14 +44,29 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         : _spotifyState == SpotifyIndicatorState.Free ? Brushes.DarkOrange
         : Brushes.Gray;
 
+    /// <summary>Allow Exit / AppActions to bypass minimize-to-tray.</summary>
+    public void RequestForceClose() => _forceClose = true;
+
     private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
     {
         AppShellBridge.Register(this);
         Title = "Songify";
-        if (App.IsBeta)
-            Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"));
-        else
-            Icon = new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"));
+
+        string iconPack = App.IsBeta
+            ? "pack://application:,,,/Resources/songifyBeta.ico"
+            : "pack://application:,,,/Resources/songify.ico";
+        var bitmap = new BitmapImage();
+        bitmap.BeginInit();
+        bitmap.UriSource = new Uri(iconPack);
+        bitmap.DecodePixelWidth = 32;
+        bitmap.CacheOption = BitmapCacheOption.OnLoad;
+        bitmap.EndInit();
+        bitmap.Freeze();
+        Icon = bitmap;
+        if (TitleBarLogo != null)
+            TitleBarLogo.Source = bitmap;
+        if (TrayIcon != null)
+            TrayIcon.Icon = bitmap;
 
         // Restore position
         if (Settings.PosX != 0 || Settings.PosY != 0)
@@ -62,6 +74,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             Left = Settings.PosX;
             Top = Settings.PosY;
         }
+
+        StateChanged += ShellWindow_OnStateChanged;
 
         // Navigate to Overview once the window and NavigationView are fully loaded
         if (RootNavigationView != null)
@@ -78,24 +92,87 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         }
     }
 
+    private void ShellWindow_OnStateChanged(object sender, EventArgs e)
+    {
+        if (WindowState == WindowState.Minimized && Settings.Systray)
+            MinimizeToTray();
+    }
+
     private void ShellWindow_Closing(object sender, CancelEventArgs e)
     {
+        if (!_forceClose && Settings.Systray)
+        {
+            e.Cancel = true;
+            MinimizeToTray();
+            return;
+        }
+
         AppShellBridge.Unregister(this);
         Settings.PosX = Left;
         Settings.PosY = Top;
         Util.Songify.AppFetchService.Stop();
+        try
+        {
+            TrayIcon?.Unregister();
+            TrayIcon?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
     }
+
+    private void MinimizeToTray()
+    {
+        Hide();
+        WindowState = WindowState.Normal;
+    }
+
+    private void RestoreFromTray()
+    {
+        Show();
+        WindowState = WindowState.Normal;
+        Activate();
+    }
+
+    #region TitleBar menu
+
+    private void MenuWidget_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWidget();
+    private void MenuWebServerUrl_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWebServerUrl();
+    private void MenuQueueBrowser_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenQueueInBrowser();
+    private void MenuHistoryBrowser_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenHistoryInBrowser();
+    private void MenuTwitchLogin_OnClick(object sender, RoutedEventArgs e) => AppActions.TwitchLoginMain();
+    private void MenuTwitchConnect_OnClick(object sender, RoutedEventArgs e) => AppActions.TwitchConnect();
+    private async void MenuTwitchOnline_OnClick(object sender, RoutedEventArgs e) => await AppActions.CheckTwitchOnlineStatusAsync();
+    private void MenuPatchNotes_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenPatchNotes();
+    private void MenuFaq_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenFaq();
+    private void MenuGitHub_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenGitHubIssues();
+    private void MenuDiscord_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenDiscord();
+    private void MenuLogFolder_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenLogFolder();
+    private void MenuAppFolder_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenAppFolder();
+    private void MenuCheckUpdates_OnClick(object sender, RoutedEventArgs e) => AppActions.CheckForUpdates();
+    private void MenuExit_OnClick(object sender, RoutedEventArgs e) => AppActions.ExitApplication();
+
+    #endregion TitleBar menu
+
+    #region Tray
+
+    private void TrayIcon_OnLeftDoubleClick(NotifyIcon sender, RoutedEventArgs e) => RestoreFromTray();
+    private void TrayShow_OnClick(object sender, RoutedEventArgs e) => RestoreFromTray();
+    private void TrayConnect_OnClick(object sender, RoutedEventArgs e) => AppActions.TwitchConnect();
+    private async void TrayDisconnect_OnClick(object sender, RoutedEventArgs e) => await AppActions.TwitchDisconnectAsync();
+    private void TrayExit_OnClick(object sender, RoutedEventArgs e) => AppActions.ExitApplication();
+
+    #endregion Tray
 
     #region IAppShell (no-op or fallback when Shell is main window)
 
-    public Task<MessageDialogResult> ShowMessageAsync(string title, string message, MessageDialogStyle style = MessageDialogStyle.Affirmative, MetroDialogSettings settings = null)
-    {
-        MessageBoxButton buttons = style == MessageDialogStyle.AffirmativeAndNegative || style == MessageDialogStyle.AffirmativeAndNegativeAndSingleAuxiliary
-            ? MessageBoxButton.YesNo
-            : MessageBoxButton.OK;
-        MessageBoxResult result = MessageBox.Show(message, title ?? "Songify", buttons, MessageBoxImage.None);
-        return Task.FromResult(result == MessageBoxResult.Yes || result == MessageBoxResult.OK ? MessageDialogResult.Affirmative : MessageDialogResult.Negative);
-    }
+    public Task<AppDialogResult> ShowMessageAsync(
+        string title,
+        string message,
+        AppDialogStyle style = AppDialogStyle.Primary,
+        AppDialogSettings settings = null)
+        => AppDialog.ShowMessageBoxAsync(title, message, style, settings);
 
     public void SetStatusText(string text)
     {
@@ -157,8 +234,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     public void OpenSettings()
     {
-        var settings = new Window_Settings { Owner = this };
-        settings.ShowDialog();
+        RootNavigationView.Navigate(typeof(Pages.SettingsPage));
     }
 
     public async void ConnectTwitch()
@@ -173,26 +249,16 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         }
     }
 
-    private WindowConsole _consoleWindow;
-
     public void OpenConsole()
     {
-        _consoleWindow ??= new WindowConsole
-        {
-            Owner = this,
-            Left = Left + Width,
-            Top = Top
-        };
-        if (_consoleWindow.IsVisible)
-            _consoleWindow.Hide();
-        else
-            _consoleWindow.Show();
+        RootNavigationView.Navigate(typeof(Pages.ConsolePage));
     }
 
     private void TitleBar_OnCloseClicked(TitleBar sender, RoutedEventArgs args)
     {
         Settings.PosX = Left;
         Settings.PosY = Top;
+        // Closing event handles Systray cancel / force close
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

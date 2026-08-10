@@ -1,16 +1,15 @@
-<controls:MetroWindow
+<Window
     x:Class="Songify_Slim.Views.AboutWindow"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{DynamicResource window_about_title}"
     Width="710"
     Height="490"
     MaxWidth="710"
-    Loaded="MetroWindow_Loaded"
+    Loaded="Window_Loaded"
     ResizeMode="CanResizeWithGrip"
     mc:Ignorable="d">
     <Grid>
@@ -84,10 +83,12 @@
                     VerticalAlignment="Center"
                     Content="{DynamicResource window_about_thank_you}"
                     FontWeight="Bold" />
-                <iconPacks:PackIconBootstrapIcons
-                    HorizontalAlignment="Center"
+                <ui:SymbolIcon
+                    Width="16"
+                    Height="16"
+                    Margin="4,0,0,0"
                     VerticalAlignment="Center"
-                    Kind="Heart" />
+                    Symbol="Heart24" />
             </StackPanel>
             <TextBlock
                 Margin="6,0"
@@ -99,4 +100,4 @@
                 TextWrapping="Wrap" />
         </StackPanel>
     </Grid>
-</controls:MetroWindow>
+</Window>

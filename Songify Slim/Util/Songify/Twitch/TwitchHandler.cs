@@ -1,5 +1,8 @@
-using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.IconPacks;
+using Songify_Slim.Util.General;
+using MessageDialogResult = Songify_Slim.Util.General.AppDialogResult;
+using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
+using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
+using SymbolRegular = Wpf.Ui.Controls.SymbolRegular;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Songify_Slim.Models;
@@ -540,19 +543,13 @@ public static class TwitchHandler
 
         await Application.Current.Dispatcher.Invoke(async () =>
         {
-            foreach (Window window in Application.Current.Windows)
+            if (account == Enums.TwitchAccount.Main)
+                AppShellBridge.Current?.SetTwitchApiState(ConnectionIndicatorState.Error);
+
+            IAppShell shell = AppShellBridge.Current;
+            if (shell != null)
             {
-                if (window is not MainWindow mainWindow)
-                    continue;
-
-                if (account == Enums.TwitchAccount.Main)
-                {
-                    mainWindow.IconTwitchApi.Foreground = Brushes.IndianRed;
-                    mainWindow.IconTwitchApi.Kind = PackIconBoxIconsKind.SolidCircle;
-                    mainWindow.MiTwitchApi.IsEnabled = false;
-                }
-
-                MessageDialogResult msgResult = await mainWindow.ShowMessageAsync(
+                MessageDialogResult msgResult = await shell.ShowMessageAsync(
                     "Twitch Account Issues",
                     GetExpiredTokenMessage(account),
                     MessageDialogStyle.AffirmativeAndNegative,
@@ -566,6 +563,19 @@ public static class TwitchHandler
                 {
                     reconnectRequested = true;
                     ApiConnect(account);
+                }
+            }
+
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is not MainWindow mainWindow)
+                    continue;
+
+                if (account == Enums.TwitchAccount.Main)
+                {
+                    mainWindow.IconTwitchApi.Foreground = Brushes.IndianRed;
+                    mainWindow.IconTwitchApi.Symbol = SymbolRegular.Live24;
+                    mainWindow.MiTwitchApi.IsEnabled = false;
                 }
 
                 break;
@@ -584,7 +594,7 @@ public static class TwitchHandler
         if (mainWindow == null)
             return false;
 
-        MessageDialogResult msgResult = await mainWindow.ShowMessageAsync(
+        MessageDialogResult msgResult = await AppDialog.ShowAsync(
             "Missing Twitch Scopes",
             $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved by logging out of Twitch and re-login.\n\nWould you like to logout now?",
             MessageDialogStyle.AffirmativeAndNegative,
@@ -619,6 +629,8 @@ public static class TwitchHandler
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
+            AppShellBridge.Current?.SetTwitchApiState(ConnectionIndicatorState.Connected);
+
             foreach (Window window in Application.Current.Windows)
             {
                 if (window is not MainWindow mainWindow)
@@ -953,6 +965,7 @@ public static class TwitchHandler
             {
                 Application.Current?.Dispatcher?.Invoke(() =>
                 {
+                    AppShellBridge.Current?.SetStatusText("Please fill in Twitch credentials.");
                     foreach (Window window in Application.Current.Windows)
                     {
                         if (window is MainWindow mw)
@@ -2889,6 +2902,12 @@ public static class TwitchHandler
             // Update UI hints
             Application.Current?.Dispatcher?.Invoke(() =>
             {
+                if (account == Enums.TwitchAccount.Main)
+                    AppShellBridge.Current?.SetTwitchApiState(ConnectionIndicatorState.Error);
+                else
+                    AppShellBridge.Current?.SetTwitchBotState(ConnectionIndicatorState.Error);
+                AppShellBridge.Current?.SetStatusText("Twitch credentials cleared.");
+
                 foreach (Window window in Application.Current.Windows)
                 {
                     if (window is not MainWindow mw) continue;
@@ -4220,21 +4239,22 @@ public static class TwitchHandler
 
         try
         {
-            foreach (BlockedArtist artist in Settings.ArtistBlacklist.Where(a => Array.IndexOf(track.Artists.Select(x => x.Id).ToArray(), a.Id) != -1))
+            // Compact HashSet lookup — does not load the full ~thousands of BlockedArtist objects.
+            if (!Settings.IsArtistBlocked(
+                    track.Artists.Select(a => (a.Id, a.Name)),
+                    out string artistName))
             {
-                string artistName = track.Artists.FirstOrDefault(a => a.Id == artist.Id)?.Name
-                                    ?? artist.Name
-                                    ?? "";
-
-                response = Settings.BotRespBlacklist;
-                response = response.Replace("{user}", e.DisplayName);
-                response = response.Replace("{artist}", artistName);
-                response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", "");
-                response = response.Replace("{errormsg}", "");
-                response = CleanFormatString(response);
-                return true;
+                return false;
             }
+
+            response = Settings.BotRespBlacklist;
+            response = response.Replace("{user}", e?.DisplayName ?? "");
+            response = response.Replace("{artist}", artistName ?? "");
+            response = response.Replace("{title}", "");
+            response = response.Replace("{maxreq}", "");
+            response = response.Replace("{errormsg}", "");
+            response = CleanFormatString(response);
+            return true;
         }
         catch (Exception ex)
         {

@@ -73,7 +73,7 @@
                                 IsReadOnly="True"
                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                                TextChanged="RtbConsole_TextChanged" />
+                                TextChanged="RtbConsole_TextChanged" FontFamily="Segoe UI" />
                         </Grid>
                     </TabItem>
                     <TabItem Header="API metrics">

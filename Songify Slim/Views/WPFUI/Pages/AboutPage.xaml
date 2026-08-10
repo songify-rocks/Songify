@@ -4,11 +4,283 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="About">
-    <StackPanel Margin="24">
-        <TextBlock FontSize="28" FontWeight="SemiBold" Text="About" Margin="0,0,0,24" />
-        <ui:Card Padding="20">
-            <ui:Button x:Name="BtnOpenAbout" Appearance="Secondary" Click="BtnOpenAbout_Click" />
-        </ui:Card>
-    </StackPanel>
+    Title="About"
+    Loaded="AboutPage_OnLoaded"
+    ScrollViewer.CanContentScroll="False"
+    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+    <Page.Resources>
+        <Storyboard x:Key="IntroStoryboard">
+            <DoubleAnimation
+                Storyboard.TargetName="HeroBlock"
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:0.45" />
+            <ThicknessAnimation
+                Storyboard.TargetName="HeroBlock"
+                Storyboard.TargetProperty="Margin"
+                From="0,18,0,28"
+                To="0,0,0,28"
+                Duration="0:0:0.45">
+                <ThicknessAnimation.EasingFunction>
+                    <QuadraticEase EasingMode="EaseOut" />
+                </ThicknessAnimation.EasingFunction>
+            </ThicknessAnimation>
+            <DoubleAnimation
+                BeginTime="0:0:0.12"
+                Storyboard.TargetName="ContentBlock"
+                Storyboard.TargetProperty="Opacity"
+                From="0"
+                To="1"
+                Duration="0:0:0.4" />
+        </Storyboard>
+    </Page.Resources>
+
+    <Grid>
+        <!--  Soft atmospheric wash (dark shell–friendly, not flat)  -->
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Offset="0" Color="#FF14181E" />
+                <GradientStop Offset="0.55" Color="#FF1A222C" />
+                <GradientStop Offset="1" Color="#FF12161C" />
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <!--  Accent glow (top-left)  -->
+        <Ellipse
+            Width="420"
+            Height="420"
+            Margin="-120,-160,0,0"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            IsHitTestVisible="False"
+            Opacity="0.35">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0" Color="#5522C55E" />
+                    <GradientStop Offset="1" Color="#0022C55E" />
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <!--  Accent glow (bottom-right)  -->
+        <Ellipse
+            Width="360"
+            Height="360"
+            Margin="0,0,-100,-120"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Bottom"
+            IsHitTestVisible="False"
+            Opacity="0.22">
+            <Ellipse.Fill>
+                <RadialGradientBrush>
+                    <GradientStop Offset="0" Color="#44E8A838" />
+                    <GradientStop Offset="1" Color="#00E8A838" />
+                </RadialGradientBrush>
+            </Ellipse.Fill>
+        </Ellipse>
+
+        <Grid Margin="28,20,28,20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <!--  Brand hero  -->
+            <StackPanel
+                x:Name="HeroBlock"
+                Grid.Row="0"
+                Margin="0,0,0,28"
+                Opacity="0">
+                <StackPanel Orientation="Horizontal">
+                    <Border
+                        Width="64"
+                        Height="64"
+                        Margin="0,0,16,0"
+                        ClipToBounds="True"
+                        CornerRadius="14">
+                        <Border.Effect>
+                            <DropShadowEffect
+                                BlurRadius="18"
+                                Opacity="0.35"
+                                ShadowDepth="2"
+                                Color="#000000" />
+                        </Border.Effect>
+                        <Image
+                            x:Name="ImgLogo"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Stretch="UniformToFill" />
+                    </Border>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock
+                            FontSize="34"
+                            FontWeight="Bold"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                            Text="Songify" />
+                        <TextBlock
+                            x:Name="TxtVersion"
+                            Margin="0,2,0,0"
+                            FontSize="13"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="v—" />
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock
+                    MaxWidth="560"
+                    Margin="0,18,0,16"
+                    HorizontalAlignment="Left"
+                    FontSize="14"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    LineHeight="22"
+                    Text="{DynamicResource window_about_gpl_notice}"
+                    TextWrapping="Wrap" />
+
+                <StackPanel Orientation="Horizontal">
+                    <ui:Button
+                        Margin="0,0,8,0"
+                        Appearance="Primary"
+                        Click="BtnDiscord_Click"
+                        Content="Discord"
+                        Icon="{ui:SymbolIcon Chat24}" />
+                    <ui:Button
+                        Margin="0,0,8,0"
+                        Appearance="Secondary"
+                        Click="BtnWebsite_Click"
+                        Content="Website"
+                        Icon="{ui:SymbolIcon Globe24}" />
+                    <ui:Button
+                        Appearance="Secondary"
+                        Click="BtnSupport_Click"
+                        Content="Support"
+                        Icon="{ui:SymbolIcon Heart24,
+                                             Filled=True}" />
+                </StackPanel>
+            </StackPanel>
+
+            <!--  Content: libraries | credits  -->
+            <Grid
+                x:Name="ContentBlock"
+                Grid.Row="1"
+                Opacity="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.2*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  Third-party  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="0"
+                    Background="#22FFFFFF"
+                    BorderBrush="#33FFFFFF"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                        </Grid.RowDefinitions>
+                        <StackPanel Margin="18,16,18,10">
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource window_about_licenses}" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="{DynamicResource window_about_libraries_intro}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                        <ScrollViewer
+                            Grid.Row="1"
+                            Margin="6,0,6,10"
+                            VerticalScrollBarVisibility="Auto">
+                            <ItemsControl x:Name="ThirdPartyItems" Margin="10,0,10,8">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border
+                                            Margin="0,0,0,8"
+                                            Padding="12,10"
+                                            Background="#18FFFFFF"
+                                            BorderBrush="#22FFFFFF"
+                                            BorderThickness="1"
+                                            CornerRadius="8">
+                                            <StackPanel>
+                                                <TextBlock
+                                                    FontSize="13"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                    Text="{Binding Name}" />
+                                                <TextBlock
+                                                    Margin="0,2,0,0"
+                                                    FontSize="11"
+                                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}">
+                                                    <Run Text="{DynamicResource window_about_license_label}" />
+                                                    <Run Text="{Binding License}" />
+                                                </TextBlock>
+                                                <TextBlock Margin="0,4,0,0" FontSize="11">
+                                                    <Hyperlink
+                                                        Foreground="#FF6BCB8A"
+                                                        NavigateUri="{Binding Url}"
+                                                        RequestNavigate="Hyperlink_RequestNavigate"
+                                                        TextDecorations="None">
+                                                        <Run Text="{Binding Url}" />
+                                                    </Hyperlink>
+                                                </TextBlock>
+                                            </StackPanel>
+                                        </Border>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </ScrollViewer>
+                    </Grid>
+                </Border>
+
+                <!--  Credits  -->
+                <Border
+                    Grid.Column="2"
+                    Padding="18"
+                    Background="#22FFFFFF"
+                    BorderBrush="#33FFFFFF"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource window_about_thank_you}" />
+                            <TextBlock
+                                Margin="0,6,0,16"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="{DynamicResource window_about_discord_invite}"
+                                TextWrapping="Wrap" />
+                            <Border
+                                Height="1"
+                                Margin="0,0,0,14"
+                                Background="#33FFFFFF" />
+                            <TextBlock
+                                FontSize="13"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                LineHeight="20"
+                                Text="{DynamicResource Credits}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Margin="0,20,0,0"
+                                FontSize="11"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="{DynamicResource window_about_license_notice}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
 </Page>

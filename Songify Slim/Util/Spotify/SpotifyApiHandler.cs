@@ -1,6 +1,8 @@
-﻿using FuzzySharp;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
+using FuzzySharp;
+using Songify_Slim.Util.General;
+using MessageDialogResult = Songify_Slim.Util.General.AppDialogResult;
+using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
+using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
@@ -807,11 +809,11 @@ namespace Songify_Slim.Util.Spotify
             };
 
             // You need a reference to the dialog host (usually the main window)
-            MetroWindow mainWindow = (Application.Current.MainWindow as MetroWindow);
+            Window mainWindow = Application.Current.MainWindow;
             if (mainWindow == null)
                 return;
 
-            MessageDialogResult result = await mainWindow.ShowMessageAsync(
+            MessageDialogResult result = await AppDialog.ShowAsync(
                 "Spotify Premium required",
                 "Spotify Premium is required to perform song requests. Songify was unable to verify your Spotify Premium status.",
                 MessageDialogStyle.AffirmativeAndNegative,

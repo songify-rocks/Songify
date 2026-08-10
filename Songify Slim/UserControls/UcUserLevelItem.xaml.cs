@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,8 +12,6 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using MahApps.Metro.IconPacks;
-using MahApps.Metro.IconPacks.Converter;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using YamlDotNet.Core.Tokens;
