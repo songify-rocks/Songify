@@ -12,17 +12,25 @@ public static class AppIcons
     public const string Twitch = "IconTwitchGeometry";
     public const string Discord = "IconDiscordGeometry";
 
-    public static FrameworkElement Fluent(SymbolRegular symbol, double size = 14, Brush? foreground = null) =>
-        new SymbolIcon
+    public static FrameworkElement Fluent(SymbolRegular symbol, double size = 14, Brush? foreground = null)
+    {
+        var icon = new SymbolIcon
         {
             Symbol = symbol,
             FontSize = size,
             Width = size,
             Height = size,
             Filled = false,
-            Foreground = foreground ?? TryBrush("TextFillColorSecondaryBrush") ?? Brushes.Gray,
             VerticalAlignment = VerticalAlignment.Center
         };
+
+        if (foreground != null)
+            icon.Foreground = foreground;
+        else
+            icon.SetResourceReference(Control.ForegroundProperty, "TextFillColorSecondaryBrush");
+
+        return icon;
+    }
 
     /// <summary>Scalable brand mark from <c>Resources/Icons/BrandIcons.xaml</c>.</summary>
     public static FrameworkElement Brand(string geometryKey, double size = 14, Brush? fill = null)
@@ -30,10 +38,14 @@ public static class AppIcons
         var path = new Path
         {
             Data = Application.Current?.TryFindResource(geometryKey) as Geometry,
-            Fill = fill ?? TryBrush("TextFillColorSecondaryBrush") ?? Brushes.Gray,
             Stretch = Stretch.Uniform,
             SnapsToDevicePixels = true
         };
+
+        if (fill != null)
+            path.Fill = fill;
+        else
+            path.SetResourceReference(Shape.FillProperty, "TextFillColorSecondaryBrush");
 
         return new Viewbox
         {
@@ -52,7 +64,4 @@ public static class AppIcons
             return null;
         return Brand(geometryKey, size, fill);
     }
-
-    private static Brush? TryBrush(string key) =>
-        Application.Current?.TryFindResource(key) as Brush;
 }

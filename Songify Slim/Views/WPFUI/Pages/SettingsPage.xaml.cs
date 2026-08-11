@@ -134,24 +134,23 @@ public partial class SettingsPage : Page
 
     private static ListBoxItem CreateGroupHeader(string title, SymbolRegular? fluent, string? brandKey)
     {
-        Brush secondary = TryBrush("TextFillColorSecondaryBrush") ?? Brushes.Gray;
-
+        // Use DynamicResource so headers follow theme switches (light/dark) like normal nav items.
         FrameworkElement? icon = null;
         if (!string.IsNullOrEmpty(brandKey))
-            icon = AppIcons.TryBrand(brandKey, 12, secondary);
+            icon = AppIcons.TryBrand(brandKey, 12);
         else if (fluent is { } symbol)
-            icon = AppIcons.Fluent(symbol, 12, secondary);
+            icon = AppIcons.Fluent(symbol, 12);
 
         var label = new TextBlock
         {
             Text = title.ToUpperInvariant(),
             FontSize = 11,
             FontWeight = FontWeights.SemiBold,
-            Foreground = secondary,
             Opacity = 0.9,
             VerticalAlignment = VerticalAlignment.Center,
             Margin = new Thickness(icon != null ? 8 : 8, 0, 0, 0)
         };
+        label.SetResourceReference(TextBlock.ForegroundProperty, "TextFillColorSecondaryBrush");
 
         var row = new StackPanel
         {
@@ -166,7 +165,7 @@ public partial class SettingsPage : Page
         {
             Content = row,
             Tag = title, // section name for SelectSection lookups
-            IsEnabled = false,
+            // Keep enabled so DynamicResource foreground isn't coerced to GrayText in light theme.
             IsHitTestVisible = false,
             Focusable = false,
             Padding = new Thickness(4, 14, 4, 2),
@@ -180,9 +179,6 @@ public partial class SettingsPage : Page
         Content = HumanizeTag(tag),
         Tag = tab
     };
-
-    private static Brush TryBrush(string key) =>
-        Application.Current?.TryFindResource(key) as Brush;
 
     private static string HumanizeTag(string tag) => tag switch
     {
