@@ -232,7 +232,8 @@
             <ui:Card
                 Grid.Column="1"
                 Padding="14"
-                VerticalAlignment="Stretch">
+                VerticalAlignment="Stretch"
+                VerticalContentAlignment="Top">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />

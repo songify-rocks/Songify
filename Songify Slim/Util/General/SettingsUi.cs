@@ -92,6 +92,19 @@ internal static class SettingsUi
         }
     }
 
+    /// <summary>
+    /// Updates the bot-response preview box on all live settings hosts.
+    /// </summary>
+    public static void SetBotResponsePreview(string text)
+    {
+        string value = text ?? "";
+        foreach (SettingsPanel panel in GetLivePanels())
+        {
+            if (panel.LblPreview != null)
+                panel.LblPreview.Text = value;
+        }
+    }
+
     private static List<SettingsPanel> GetLivePanels()
     {
         lock (Gate)

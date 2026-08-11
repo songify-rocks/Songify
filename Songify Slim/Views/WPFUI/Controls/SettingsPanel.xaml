@@ -76,7 +76,7 @@
                 Header="{DynamicResource window_settings_tab_system}"
                 Tag="System">
                 <ScrollViewer Padding="0,0,4,0">
-                    <StackPanel MaxWidth="720" Margin="0,0,0,12">
+                    <StackPanel MaxWidth="720" Margin="0,0,15,12">
                         <!--  Language  -->
                         <ui:Card Margin="0,0,0,12" Padding="16">
                             <Grid>
@@ -84,15 +84,15 @@
                                     <ColumnDefinition Width="*" />
                                     <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <StackPanel VerticalAlignment="Center">
+                                <StackPanel VerticalAlignment="Center" Orientation="Vertical">
                                     <TextBlock
                                         FontSize="14"
                                         FontWeight="SemiBold"
                                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                         Text="{DynamicResource window_settings_system_language}" />
-                                    <TextBlock FontSize="12" Foreground="{DynamicResource TextFillColorSecondaryBrush}">
+                                    <TextBlock VerticalAlignment="Center" FontSize="12">
                                         <Hyperlink NavigateUri="https://translate.songify.rocks/" RequestNavigate="Hyperlink_OnRequestNavigate">
-                                            Translate!
+                                            Help us Translate!
                                         </Hyperlink>
                                     </TextBlock>
                                 </StackPanel>
@@ -246,7 +246,7 @@
                 d:Header="{x:Static local:Resources.window_settings_tab_output}"
                 Header="{DynamicResource window_settings_tab_output}"
                 Tag="Output">
-                <ScrollViewer Padding="0,0,4,0">
+                <ScrollViewer Padding="0,0,15,0">
                     <StackPanel MaxWidth="720" Margin="0,0,0,12">
                         <!--  Directory  -->
                         <ui:Card Margin="0,0,0,12" Padding="16">
@@ -573,7 +573,7 @@
                 Header="{DynamicResource window_settings_tab_integration}"
                 Tag="Twitch">
                 <ScrollViewer Padding="0,0,4,0">
-                    <StackPanel MaxWidth="720" Margin="0,0,0,12">
+                    <StackPanel MaxWidth="720" Margin="0,0,15,12">
                         <!--  Accounts  -->
                         <ui:Card Margin="0,0,0,12" Padding="16">
                             <StackPanel>
@@ -1241,7 +1241,7 @@
                 d:Header="{x:Static local:Resources.window_settings_tab_polls}"
                 Header="{DynamicResource window_settings_tab_polls}"
                 Tag="TwitchPolls">
-                <ScrollViewer Padding="0,0,4,0">
+                <ScrollViewer Padding="0,0,15,0">
                     <StackPanel
                         x:Name="GrdTwitchPoll"
                         MaxWidth="720"
@@ -1379,7 +1379,7 @@
                     <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
                         <StackPanel
                             MaxWidth="720"
-                            Margin="0,0,0,16"
+                            Margin="0,0,15,16"
                             VerticalAlignment="Top"
                             Orientation="Vertical">
                             <TextBlock
@@ -2146,7 +2146,10 @@
                             </Grid>
                         </ui:Card>
                         <ScrollViewer Grid.Row="1" Padding="0,0,4,0">
-                            <StackPanel x:Name="StackCommands" Orientation="Vertical" Margin="0,0,15,0" />
+                            <StackPanel
+                                x:Name="StackCommands"
+                                Margin="0,0,15,0"
+                                Orientation="Vertical" />
                         </ScrollViewer>
                     </Grid>
                 </Border>
@@ -2202,7 +2205,7 @@
             </TabItem>
             <TabItem Header="{DynamicResource window_settings_tab_spotify}" Tag="Spotify">
                 <ScrollViewer Padding="0,0,4,0">
-                    <StackPanel MaxWidth="720" Margin="0,0,0,12">
+                    <StackPanel MaxWidth="720" Margin="0,0,15,12">
                         <ui:Card Margin="0,0,0,12" Padding="16">
                             <Grid>
                                 <DockPanel
@@ -2451,7 +2454,7 @@
             </TabItem>
             <TabItem Header="{DynamicResource window_settings_tab_youtube}" Tag="Youtube">
                 <ScrollViewer Padding="0,0,4,0">
-                    <StackPanel MaxWidth="720" Margin="0,0,0,12">
+                    <StackPanel MaxWidth="720" Margin="0,0,15,12">
                         <ui:Card Padding="16">
                             <StackPanel>
                                 <TextBlock
@@ -2575,7 +2578,7 @@
                 Header="{DynamicResource window_settings_tab_config}"
                 Tag="Config">
                 <ScrollViewer Padding="0,0,4,0">
-                    <StackPanel MaxWidth="720" Margin="0,0,0,12">
+                    <StackPanel MaxWidth="720" Margin="0,0,15,12">
                         <ui:Card Margin="0,0,0,12" Padding="16">
                             <StackPanel>
                                 <TextBlock
