@@ -247,18 +247,10 @@ namespace Songify_Slim
                 foreach (Window currentWindow in Current.Windows)
                 {
                     if (currentWindow is WindowManualTwitchLogin login)
-                    {
                         login.Close();
-                    }
                 }
 
-                foreach (Window currentWindow in Current.Windows)
-                {
-                    if (currentWindow is Window_Settings settings)
-                    {
-                        await settings.SetControls();
-                    }
-                }
+                await SettingsUi.RefreshAsync(resetTwitch: true);
             }
             catch (Exception e)
             {
@@ -303,12 +295,7 @@ namespace Songify_Slim
                         AffirmativeButtonText = "OK",
                     });
 
-                foreach (Window currentWindow in Current.Windows)
-                {
-                    if (currentWindow is not Window_Settings settings)
-                        continue;
-                    await settings.SetControls();
-                }
+                await SettingsUi.RefreshAsync();
             }
             catch (Exception e)
             {

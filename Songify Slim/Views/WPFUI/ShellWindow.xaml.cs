@@ -13,9 +13,11 @@ using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Youtube.Pear;
 using Songify_Slim.Views;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Tray.Controls;
+using static Songify_Slim.Util.General.Enums;
 using Button = System.Windows.Controls.Button;
 using TextBlock = Wpf.Ui.Controls.TextBlock;
 
@@ -45,14 +47,29 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private ConnectionIndicatorState _twitchBotState = ConnectionIndicatorState.Unknown;
     private bool _webServerRunning;
     private SpotifyIndicatorState _spotifyState = SpotifyIndicatorState.Disconnected;
+    private Brush _pearBrush = Brushes.Gray;
+    private string _pearStatusText = "Inactive";
 
     public Brush TwitchApiBrush => _twitchApiState == ConnectionIndicatorState.Connected ? Brushes.GreenYellow : Brushes.IndianRed;
     public Brush TwitchBotBrush => _twitchBotState == ConnectionIndicatorState.Connected ? Brushes.GreenYellow : Brushes.IndianRed;
     public Brush WebServerBrush => _webServerRunning ? Brushes.GreenYellow : Brushes.DarkGray;
 
-    public Brush SpotifyBrush => _spotifyState == SpotifyIndicatorState.Premium ? Brushes.GreenYellow
-        : _spotifyState == SpotifyIndicatorState.Free ? Brushes.DarkOrange
-        : Brushes.Gray;
+    /// <summary>Spotify stays visible even when Pear is selected (same as main); gray = not the active player.</summary>
+    public Brush SpotifyBrush
+    {
+        get
+        {
+            if (Settings.Player != PlayerType.Spotify)
+                return Brushes.Gray;
+
+            return _spotifyState == SpotifyIndicatorState.Premium ? Brushes.GreenYellow
+                : _spotifyState == SpotifyIndicatorState.Free ? Brushes.DarkOrange
+                : Brushes.IndianRed;
+        }
+    }
+
+    public Brush PearBrush => _pearBrush;
+    public string PearStatusText => _pearStatusText;
 
     /// <summary>Allow Exit / AppActions to bypass minimize-to-tray.</summary>
     public void RequestForceClose() => _forceClose = true;
@@ -89,7 +106,13 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         SetupSpotifyPersistentIssueBanner();
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
         AppFetchService.IdleBackoffChanged += OnSpotifyIdleBackoffChanged;
+        AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
+        AppFetchService.PlayerSourceChanged += OnPlayerSourceChanged;
+        PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
+        PearWebSocketClient.ConnectionStateChanged += OnPearConnectionStateChanged;
         UpdateSpotifyIdleBackoffIndicator();
+        UpdatePearStatusIndicator();
+        OnPropertyChanged(nameof(SpotifyBrush));
 
         // Navigate to Overview once the window and NavigationView are fully loaded
         if (RootNavigationView != null)
@@ -123,6 +146,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
         TeardownSpotifyPersistentIssueBanner();
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
+        AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
+        PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
         AppShellBridge.Unregister(this);
         Settings.PosX = Left;
         Settings.PosY = Top;
@@ -158,6 +183,45 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         UpdateSpotifyIdleBackoffIndicator();
     }
 
+    private void OnPlayerSourceChanged()
+    {
+        void Apply()
+        {
+            UpdatePearStatusIndicator();
+            OnPropertyChanged(nameof(SpotifyBrush));
+            UpdateSpotifyIdleBackoffIndicator();
+        }
+
+        if (!Dispatcher.CheckAccess())
+            _ = Dispatcher.BeginInvoke(Apply);
+        else
+            Apply();
+    }
+
+    private void OnPearConnectionStateChanged()
+    {
+        if (!Dispatcher.CheckAccess())
+            _ = Dispatcher.BeginInvoke(UpdatePearStatusIndicator);
+        else
+            UpdatePearStatusIndicator();
+    }
+
+    private void UpdatePearStatusIndicator()
+    {
+        ServiceIndicatorState state = new(
+            isSelected: Settings.Player == PlayerType.Pear,
+            isConnecting: PearWebSocketClient.IsConnecting,
+            isConnected: PearWebSocketClient.IsConnected,
+            showInactiveStatusWhenUnselected: false);
+
+        _pearBrush = state.Foreground;
+        _pearStatusText = Settings.Player == PlayerType.Pear
+            ? state.StatusText
+            : "Inactive (not selected)";
+        OnPropertyChanged(nameof(PearBrush));
+        OnPropertyChanged(nameof(PearStatusText));
+    }
+
     private void UpdateSpotifyIdleBackoffIndicator()
     {
         void Apply()
@@ -165,7 +229,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             if (BtnSpotifyIdleBackoff == null || TbSpotifyIdleBackoff == null)
                 return;
 
-            bool show = Settings.Player == Enums.PlayerType.Spotify && AppFetchService.IsSpotifyIdleBackoffActive;
+            bool show = Settings.Player == PlayerType.Spotify && AppFetchService.IsSpotifyIdleBackoffActive;
             BtnSpotifyIdleBackoff.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
             if (!show)
                 return;

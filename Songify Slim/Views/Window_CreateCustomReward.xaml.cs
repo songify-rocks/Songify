@@ -71,13 +71,10 @@ namespace Songify_Slim.Views
                     LblStatus.Text = "Unable to create Reward.";
                     return;
                 }
-                foreach (Window window in Application.Current.Windows)
-                    if (window.GetType() == typeof(Window_Settings))
-                    {
-                        Settings.TwRewardId.Add(response.Data[0].Id);
-                        Settings.TwRewardId = Settings.TwRewardId;
-                        await ((Window_Settings)window).LoadRewards();
-                    }
+
+                Settings.TwRewardId.Add(response.Data[0].Id);
+                Settings.TwRewardId = Settings.TwRewardId;
+                await SettingsUi.RefreshAsync(fullReload: false, loadRewards: true);
             }
             catch (Exception ex)
             {

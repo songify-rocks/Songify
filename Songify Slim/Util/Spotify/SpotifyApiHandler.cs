@@ -751,23 +751,17 @@ namespace Songify_Slim.Util.Spotify
 
                     foreach (Window window in Application.Current.Windows)
                     {
-                        switch (window)
+                        if (window is MainWindow mw)
                         {
-                            case MainWindow mw:
-                                mw.UpdateSpotifyStatusIndicator();
-                                if (Settings.Player == PlayerType.Spotify)
-                                    mw.SetIdleNowPlayingPromptIfPlaceholder();
-                                if (!Settings.BypassSpotifyFetchGate)
-                                {
-                                    mw.SetBypassNotice();
-                                }
-                                break;
-
-                            case Window_Settings ws:
-                                await ws.SetControls();
-                                break;
+                            mw.UpdateSpotifyStatusIndicator();
+                            if (Settings.Player == PlayerType.Spotify)
+                                mw.SetIdleNowPlayingPromptIfPlaceholder();
+                            if (!Settings.BypassSpotifyFetchGate)
+                                mw.SetBypassNotice();
                         }
                     }
+
+                    await SettingsUi.RefreshAsync();
                 }
                 catch (Exception ex)
                 {

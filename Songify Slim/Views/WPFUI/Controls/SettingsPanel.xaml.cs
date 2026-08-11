@@ -1240,6 +1240,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private async void SettingsPanel_Loaded(object sender, RoutedEventArgs e)
         {
+            SettingsUi.Register(this);
+
             // assign mw to mainwindow for calling methods and setting texts etc
             foreach (Window window in Application.Current.Windows)
                 if (window.GetType() == typeof(MainWindow))

@@ -11,7 +11,6 @@ using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
-using Songify_Slim.Views.WPFUI.Controls;
 using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using static Songify_Slim.Util.General.Enums;
@@ -1495,40 +1494,17 @@ namespace Songify_Slim.Util.Configuration
             SongifyApiKey = existingApiKey;
             WebServerPassword = existingWebServerPassword;
 
-            // Re-apply UI settings
+            // Re-apply UI settings (shell SettingsPanel + any Window_Settings host)
             await Application.Current.Dispatcher.Invoke(async () =>
             {
                 foreach (Window window in Application.Current.Windows)
                 {
-                    switch (window)
-                    {
-                        case Window_Settings settingsWindow:
-                            await settingsWindow.SetControls();
-                            break;
-                        case Window_Blacklist blockListWindow:
-                            blockListWindow.RefreshArtists();
-                            break;
-                    }
+                    if (window is Window_Blacklist blockListWindow)
+                        blockListWindow.RefreshArtists();
                 }
 
-                // In-shell SettingsPanel (SettingsPage)
-                foreach (SettingsPanel panel in FindVisualChildren<SettingsPanel>(Application.Current.MainWindow))
-                    await panel.SetControls();
+                await SettingsUi.RefreshAsync();
             });
-        }
-
-        private static System.Collections.Generic.IEnumerable<T> FindVisualChildren<T>(DependencyObject parent) where T : DependencyObject
-        {
-            if (parent == null) yield break;
-            int count = System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent);
-            for (int i = 0; i < count; i++)
-            {
-                DependencyObject child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
-                if (child is T match)
-                    yield return match;
-                foreach (T nested in FindVisualChildren<T>(child))
-                    yield return nested;
-            }
         }
 
         public static void ResetConfig()

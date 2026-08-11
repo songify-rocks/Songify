@@ -53,12 +53,7 @@ namespace Songify_Slim.Views
                         break;
                 }
 
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window.GetType() != typeof(Window_Settings)) continue;
-                    await ((Window_Settings)window).SetControls();
-                    await ((Window_Settings)window).ResetTwitchConnection();
-                }
+                await SettingsUi.RefreshAsync(resetTwitch: true);
             }
             catch (Exception exception)
             {

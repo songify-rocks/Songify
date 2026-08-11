@@ -831,23 +831,8 @@ public static class TwitchHandler
         }
     }
 
-    private static async Task RefreshSettingsWindowAsync()
-    {
-        if (Application.Current == null)
-            return;
-
-        await Application.Current.Dispatcher.Invoke(async () =>
-        {
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is Window_Settings settingsWindow)
-                {
-                    await settingsWindow.SetControls();
-                    break;
-                }
-            }
-        });
-    }
+    private static Task RefreshSettingsWindowAsync() =>
+        SettingsUi.RefreshAsync(resetTwitch: true);
 
     public static async Task InitializeApi(Enums.TwitchAccount twitchAccount)
     {
@@ -2735,11 +2720,7 @@ public static class TwitchHandler
 
             await Application.Current.Dispatcher.Invoke(async () =>
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is not Window_Settings settingsWindow) continue;
-                    await settingsWindow.LoadCommands();
-                }
+                await SettingsUi.RefreshAsync(fullReload: false, loadCommands: true);
             });
         }
         catch (Exception e)

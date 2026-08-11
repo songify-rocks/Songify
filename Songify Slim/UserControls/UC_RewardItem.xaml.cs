@@ -71,13 +71,7 @@ namespace Songify_Slim.UserControls
             Settings.TwRewardId = Settings.TwRewardId;
             try
             {
-                foreach (Window currentWindow in Application.Current.Windows)
-                {
-                    if (currentWindow is Window_Settings settings)
-                    {
-                        await settings.LoadRewards();
-                    }
-                }
+                await SettingsUi.RefreshAsync(fullReload: false, loadRewards: true);
             }
             catch (Exception exception)
             {

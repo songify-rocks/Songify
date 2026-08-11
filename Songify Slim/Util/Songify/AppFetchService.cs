@@ -5,6 +5,7 @@ using System.Windows;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Youtube.Pear;
 using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Songify;
@@ -22,6 +23,9 @@ public static class AppFetchService
     /// <summary>Raised when Spotify idle backoff stage/interval may have changed (UI should refresh).</summary>
     public static event Action IdleBackoffChanged;
 
+    /// <summary>Raised after the active player source changes (e.g. Spotify ↔ Pear).</summary>
+    public static event Action PlayerSourceChanged;
+
     public static bool IsSpotifyIdleBackoffActive => Sf.IsSpotifyIdleBackoffActive;
 
     public static int GetEffectiveSpotifyFetchIntervalSeconds() =>
@@ -31,6 +35,7 @@ public static class AppFetchService
     {
         if (_running) return;
         _running = true;
+        SyncPearAutoConnect();
         RunGetCurrentSongAsync();
         SetTimer();
         RaiseIdleBackoffChanged();
@@ -52,6 +57,21 @@ public static class AppFetchService
     }
 
     /// <summary>
+    /// Apply player-source side effects (Pear WebSocket auto-connect / cleanup) then restart the fetch timer.
+    /// </summary>
+    public static async Task ApplyPlayerSourceAsync(PlayerType previous, PlayerType selected)
+    {
+        if (previous == PlayerType.Pear && selected != PlayerType.Pear)
+            await Sf.NotifyPearPlayerInactiveAsync().ConfigureAwait(true);
+
+        PearWebSocketClient.AutoConnectEnabled = selected == PlayerType.Pear;
+
+        Stop();
+        Start();
+        RaisePlayerSourceChanged();
+    }
+
+    /// <summary>
     /// Clears Spotify idle fetch backoff and restarts the fetch timer at the settings interval.
     /// Used when Twitch commands/rewards or the status-bar chip indicate activity.
     /// </summary>
@@ -63,6 +83,23 @@ public static class AppFetchService
         Sf.RestoreSpotifyFetchRate(reason);
         ApplySpotifyFetchTimerInterval();
         RaiseIdleBackoffChanged();
+    }
+
+    private static void SyncPearAutoConnect()
+    {
+        PearWebSocketClient.AutoConnectEnabled = Settings.Player == PlayerType.Pear;
+    }
+
+    private static void RaisePlayerSourceChanged()
+    {
+        try
+        {
+            PlayerSourceChanged?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
     }
 
     private static void SetTimer()

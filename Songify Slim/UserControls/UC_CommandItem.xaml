@@ -229,7 +229,7 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     MinWidth="70"
-                    MaxWidth="70"
+                    MaxWidth="200"
                     Margin="0,0,6,0"
                     Padding="6,3"
                     VerticalAlignment="Center"

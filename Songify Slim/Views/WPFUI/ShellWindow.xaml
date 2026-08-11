@@ -344,6 +344,19 @@
                         Width="8"
                         Height="8"
                         VerticalAlignment="Center"
+                        Fill="{Binding PearBrush}"
+                        ToolTip="{Binding PearStatusText}" />
+                    <TextBlock
+                        Margin="6,0,12,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="Pear"
+                        ToolTip="{Binding PearStatusText}" />
+                    <Ellipse
+                        Width="8"
+                        Height="8"
+                        VerticalAlignment="Center"
                         Fill="{Binding WebServerBrush}" />
                     <TextBlock
                         Margin="6,0,0,0"

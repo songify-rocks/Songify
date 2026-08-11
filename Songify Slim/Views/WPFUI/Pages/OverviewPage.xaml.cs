@@ -90,7 +90,7 @@ public partial class OverviewPage : Page
         _playerDropdownInitialized = true;
     }
 
-    private void CbxPlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    private async void CbxPlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
         if (!_playerDropdownInitialized || !IsLoaded)
             return;
@@ -101,11 +101,11 @@ public partial class OverviewPage : Page
         if (Settings.Player == selected)
             return;
 
+        PlayerType previous = Settings.Player;
         Settings.Player = selected;
 
-        // Apply new fetch interval/source immediately.
-        Util.Songify.AppFetchService.Stop();
-        Util.Songify.AppFetchService.Start();
+        // Apply new fetch interval/source immediately (also enables Pear WebSocket auto-connect).
+        await Util.Songify.AppFetchService.ApplyPlayerSourceAsync(previous, selected);
 
         // Force refresh visuals (cover might change source semantics).
         _lastCoverUrl = null;
