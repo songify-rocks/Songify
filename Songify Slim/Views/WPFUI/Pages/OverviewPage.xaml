@@ -8,13 +8,20 @@
     Title="Overview"
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
-        <StackPanel
+        <Grid
             MaxWidth="800"
             Margin="24"
             VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
             <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <TextBlock
@@ -28,13 +35,16 @@
                     x:Name="CbxPlayer"
                     Grid.Column="1"
                     MinWidth="190"
+                    Margin="0,0,8,0"
                     VerticalAlignment="Center"
                     SelectionChanged="CbxPlayer_SelectionChanged" />
+
             </Grid>
 
             <!--  Now playing: compact card, no stretched empty space  -->
             <ui:Card
-                Margin="0,0,0,20"
+                Grid.Row="1"
+                Margin="0,0,0,16"
                 Padding="16"
                 HorizontalAlignment="Stretch">
                 <Grid HorizontalAlignment="Stretch">
@@ -50,7 +60,6 @@
                             CornerRadius="12"
                             RenderOptions.BitmapScalingMode="HighQuality"
                             Stretch="UniformToFill" />
-
                         <ui:Card
                             x:Name="CoverPlaceholder"
                             Width="120"
@@ -82,116 +91,152 @@
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                             Text=""
                             TextWrapping="Wrap" />
-                        <StackPanel
-                            x:Name="PlayingStatePanel"
-                            Margin="0,8,0,0"
-                            Orientation="Horizontal">
-                            <Border
-                                x:Name="PlayingBadge"
-                                Padding="6,2"
-                                Background="{DynamicResource AccentFillColorDefaultBrush}"
-                                CornerRadius="4"
-                                Visibility="Collapsed">
-                                <TextBlock
-                                    x:Name="TxtPlayState"
-                                    FontSize="11"
-                                    Foreground="White"
-                                    Text="Playing" />
-                            </Border>
+                        <Grid x:Name="PlayingStatePanel" Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
                             <TextBlock
-                                x:Name="TxtDuration"
-                                Margin="8,0,0,0"
+                                x:Name="TxtElapsed"
                                 VerticalAlignment="Center"
                                 FontSize="12"
                                 Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                 Text="" />
-                        </StackPanel>
+                            <ProgressBar
+                                x:Name="TrackProgressBar"
+                                Grid.Column="1"
+                                Height="6"
+                                Margin="6,0"
+                                VerticalAlignment="Center"
+                                Maximum="100"
+                                Minimum="0"
+                                Visibility="Collapsed"
+                                Value="0" />
+                            <TextBlock
+                                x:Name="TxtDuration"
+                                Grid.Column="2"
+                                Margin="4,0,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="" />
+                        </Grid>
+
                     </StackPanel>
                 </Grid>
             </ui:Card>
-            <!--  Quick actions  -->
-            <TextBlock
-                Margin="0,0,0,12"
-                FontSize="16"
-                FontWeight="SemiBold"
-                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                Text="Quick actions"
+
+            <!--  Up next (next 3 from playback queue)  -->
+            <ui:Card
+                Grid.Row="2"
+                Margin="0,0,0,16"
+                Padding="14"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,10" LastChildFill="False">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="Up next" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Cursor="Hand"
+                            DockPanel.Dock="Right"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            MouseLeftButtonUp="UpNextCard_MouseLeftButtonUp"
+                            Text="Open queue" />
+                    </DockPanel>
+                    <ItemsControl x:Name="UpNextList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,12,0" Orientation="Horizontal">
+                                    <Border
+                                        Width="64"
+                                        Height="64"
+                                        HorizontalAlignment="Left"
+                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                        ClipToBounds="True"
+                                        CornerRadius="8">
+                                        <ui:Image
+                                            CornerRadius="8"
+                                            RenderOptions.BitmapScalingMode="HighQuality"
+                                            Source="{Binding CoverUrl}"
+                                            Stretch="UniformToFill" />
+                                    </Border>
+                                    <StackPanel Margin="6,0,0,0">
+                                        <TextBlock
+                                            Margin="0,8,0,0"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{Binding Position, StringFormat='#{0}'}"
+                                            TextWrapping="WrapWithOverflow"
+                                            Visibility="Collapsed" />
+                                        <TextBlock
+                                            MaxWidth="150"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{Binding Title}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
+                                        <TextBlock
+                                            MaxWidth="140"
+                                            HorizontalAlignment="Left"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{Binding Subtitle}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
+                                    </StackPanel>
+
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock
+                        x:Name="TxtUpNextEmpty"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        Text="Nothing queued"
+                        Visibility="Collapsed" />
+                </StackPanel>
+            </ui:Card>
+
+            <ui:Button
+                x:Name="BtnSupport"
+                Grid.Row="3"
+                Padding="10,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Appearance="Secondary"
+                Click="BtnSupport_Click"
+                Content="Support" />
+
+            <!--  Kept for code-behind / localization hooks  -->
+            <!--<ui:Button
+                x:Name="BtnSettings"
+                Click="BtnSettings_Click"
                 Visibility="Collapsed" />
-            <WrapPanel Margin="0,0,0,0" Visibility="Collapsed">
-                <ui:Button
-                    x:Name="BtnSettings"
-                    Margin="0,0,12,12"
-                    Appearance="Secondary"
-                    Click="BtnSettings_Click"
-                    Content="Settings" />
-                <ui:Button
-                    x:Name="BtnQueue"
-                    Margin="0,0,12,12"
-                    Appearance="Secondary"
-                    Click="BtnQueue_Click"
-                    Content="Queue" />
-                <ui:Button
-                    x:Name="BtnTwitchConnect"
-                    Margin="0,0,12,12"
-                    Appearance="Secondary"
-                    Click="BtnTwitchConnect_Click"
-                    Content="Connect" />
-                <ui:Button
-                    x:Name="BtnSupport"
-                    Margin="0,0,12,12"
-                    Appearance="Primary"
-                    Click="BtnSupport_Click"
-                    Content="Support" />
-            </WrapPanel>
-
-            <StackPanel
-                Margin="0,0,0,20"
-                VerticalAlignment="Bottom"
-                Orientation="Horizontal">
-                <Ellipse
-                    Width="10"
-                    Height="10"
-                    VerticalAlignment="Center"
-                    Fill="{Binding TwitchApiBrush}" />
-                <TextBlock
-                    Margin="6,0,14,0"
-                    VerticalAlignment="Center"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="Twitch API" />
-
-                <Ellipse
-                    Width="10"
-                    Height="10"
-                    VerticalAlignment="Center"
-                    Fill="{Binding TwitchBotBrush}" />
-                <TextBlock
-                    Margin="6,0,14,0"
-                    VerticalAlignment="Center"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="Twitch Bot" />
-
-                <Ellipse
-                    Width="10"
-                    Height="10"
-                    VerticalAlignment="Center"
-                    Fill="{Binding SpotifyBrush}" />
-                <TextBlock
-                    Margin="6,0,14,0"
-                    VerticalAlignment="Center"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="Spotify" />
-
-                <Ellipse
-                    Width="10"
-                    Height="10"
-                    VerticalAlignment="Center"
-                    Fill="{Binding WebServerBrush}" />
-                <TextBlock
-                    Margin="6,0,0,0"
-                    VerticalAlignment="Center"
-                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="WebServer" />
-            </StackPanel>
-        </StackPanel>
+            <ui:Button
+                x:Name="BtnQueue"
+                Click="BtnQueue_Click"
+                Visibility="Collapsed" />
+            <ui:Button
+                x:Name="BtnTwitchConnect"
+                Click="BtnTwitchConnect_Click"
+                Visibility="Collapsed" />-->
+        </Grid>
     </ScrollViewer>
 </Page>

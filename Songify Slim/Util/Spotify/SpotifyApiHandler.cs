@@ -747,6 +747,7 @@ namespace Songify_Slim.Util.Spotify
                     }
 
                     ApiCallMeter.ReleaseRateLimit();
+                    RefreshShellSpotifyIndicator();
 
                     foreach (Window window in Application.Current.Windows)
                     {
@@ -789,6 +790,8 @@ namespace Songify_Slim.Util.Spotify
                 if (AuthTimer.Enabled)
                     AuthTimer.Stop();
 
+                RefreshShellSpotifyIndicator();
+
                 if (Application.Current?.MainWindow is MainWindow mw)
                     mw.UpdateSpotifyStatusIndicator();
             }
@@ -796,6 +799,21 @@ namespace Songify_Slim.Util.Spotify
             {
                 Logger.LogExc(ex);
             }
+        }
+
+        /// <summary>Push Spotify connection/premium state to the WPF-UI shell status bar.</summary>
+        public static void RefreshShellSpotifyIndicator()
+        {
+            if (Client == null)
+            {
+                AppShellBridge.Current?.SetSpotifyState(SpotifyIndicatorState.Disconnected);
+                return;
+            }
+
+            string product = Settings.SpotifyProfile?.Product ?? GlobalObjects.SpotifyProfile?.Product;
+            bool premium = string.Equals(product, "premium", StringComparison.OrdinalIgnoreCase);
+            AppShellBridge.Current?.SetSpotifyState(
+                premium ? SpotifyIndicatorState.Premium : SpotifyIndicatorState.Free);
         }
 
         public static async Task ShowPremiumRequiredDialogAsync()

@@ -25,7 +25,19 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
+    <!-- WinForms is still referenced (folder pickers / legacy MainWindow tray). Trimming hard-fails (NETSDK1175). -->
+    <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
+  <!-- PublishSingleFile already bundles deps; Costura would double-embed and confuse publish. -->
+  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
+    <DisableFody>true</DisableFody>
+  </PropertyGroup>
+  <!-- Drop IntelliSense XML from the publish folder (WebView2 etc.). -->
+  <Target Name="Songify_RemoveXmlFromPublish" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.xml'" />
+    </ItemGroup>
+  </Target>
   <PropertyGroup>
     <ApplicationIcon>Resources\songify.ico</ApplicationIcon>
   </PropertyGroup>
@@ -44,12 +56,10 @@
   <PropertyGroup>
     <SignManifests>false</SignManifests>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <OutputPath>bin\x64\Debug\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <OutputPath>bin\x64\Release\</OutputPath>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <LangVersion>latest</LangVersion>
   </PropertyGroup>
   <PropertyGroup>
@@ -155,13 +165,6 @@
     </PackageReference>
     <PackageReference Include="SpotifyAPI.Web.Auth">
       <Version>7.4.2</Version>
-    </PackageReference>
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="10.0.2" />
-    <PackageReference Include="System.Resources.Extensions">
-      <Version>10.0.7</Version>
-    </PackageReference>
-    <PackageReference Include="System.Text.Json">
-      <Version>10.0.7</Version>
     </PackageReference>
     <PackageReference Include="TwitchLib.Api">
       <Version>3.10.2</Version>

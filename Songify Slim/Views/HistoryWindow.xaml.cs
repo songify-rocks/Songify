@@ -18,7 +18,7 @@ namespace Songify_Slim.Views
     /// </summary>
     public partial class HistoryWindow
     {
-        private readonly string _path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "\\history.shr";
+        private readonly string _path = Path.Combine(AppPaths.GetAppDirectory(), "history.shr");
         private XDocument _doc;
         private FileSystemWatcher _watcher;
 
@@ -42,7 +42,7 @@ namespace Songify_Slim.Views
                 // listen to changes made to the history.shr file
                 _watcher = new FileSystemWatcher
                 {
-                    Path = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location),
+                    Path = AppPaths.GetAppDirectory(),
                     NotifyFilter = NotifyFilters.LastWrite,
                     Filter = "history.shr",
                     EnableRaisingEvents = true

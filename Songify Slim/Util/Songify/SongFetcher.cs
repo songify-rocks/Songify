@@ -695,7 +695,13 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.ForceUpdate = true;
                 }
 
+                // Always keep playback clock in sync (same track pause/resume/seek).
+                // Overview and overlays interpolate between polls from these fields.
                 GlobalObjects.CurrentSong.IsPlaying = songInfo.IsPlaying;
+                GlobalObjects.CurrentSong.Progress = songInfo.Progress;
+                GlobalObjects.CurrentSong.DurationMs = songInfo.DurationMs;
+                GlobalObjects.CurrentSong.DurationTotal = songInfo.DurationTotal;
+                GlobalObjects.CurrentSong.DurationPercentage = songInfo.DurationPercentage;
 
                 if (_trackChanged || GlobalObjects.ForceUpdate)
                 {
@@ -1337,8 +1343,7 @@ namespace Songify_Slim.Util.Songify
                 int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
 
                 //save the history file
-                string historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" +
-                                     "history.shr";
+                string historyPath = Path.Combine(AppPaths.GetAppDirectory(), "history.shr");
                 XDocument doc;
                 if (!File.Exists(historyPath))
                 {

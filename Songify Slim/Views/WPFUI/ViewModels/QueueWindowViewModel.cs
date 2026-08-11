@@ -223,13 +223,12 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
 
     private async Task ClearQueueAsync()
     {
-        var result = MessageBox.Show(
-            Application.Current.MainWindow,
-            Songify_Slim.Properties.Resources.window_queue_clear_disclaimer,
+        AppDialogResult result = await AppDialog.ShowAsync(
             Songify_Slim.Properties.Resources.common_warning,
-            MessageBoxButton.YesNo,
-            MessageBoxImage.Question);
-        if (result != MessageBoxResult.Yes) return;
+            Songify_Slim.Properties.Resources.window_queue_clear_disclaimer,
+            AppDialogStyle.PrimaryAndSecondary,
+            new AppDialogSettings { PrimaryButtonText = "Yes", SecondaryButtonText = "No" });
+        if (result != AppDialogResult.Primary) return;
 
         GlobalObjects.ReqList.Clear();
         var payload = new { uuid = Settings.Uuid, key = Settings.AccessKey };

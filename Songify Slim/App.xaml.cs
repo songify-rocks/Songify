@@ -67,11 +67,7 @@ namespace Songify_Slim
             try
             {
                 if (string.IsNullOrEmpty(GlobalObjects.AppVersion))
-                {
-                    FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(Assembly.GetExecutingAssembly().Location);
-                    Version v = new(fvi.FileVersion);
-                    GlobalObjects.AppVersion = $"{v.Major}.{v.Minor}.{v.Build}";
-                }
+                    GlobalObjects.AppVersion = AppPaths.GetFileVersionThreePart() ?? "?";
             }
             catch
             {
@@ -359,7 +355,7 @@ namespace Songify_Slim
             currentDomain.UnhandledException += MyHandler;
             base.OnStartup(e);
 
-            string exePath = Assembly.GetEntryAssembly()?.Location;
+            string exePath = AppPaths.GetExecutablePath();
 
             // Determine the default culture. You can use CultureInfo.CurrentUICulture or a fixed one like "en".
             CultureInfo defaultCulture = CultureInfo.CurrentUICulture;
@@ -391,13 +387,13 @@ namespace Songify_Slim
 
                 using (RegistryKey defaultIcon = newKey?.CreateSubKey("DefaultIcon"))
                 {
-                    string iconPath = Assembly.GetExecutingAssembly().Location;
+                    string iconPath = AppPaths.GetExecutablePath();
                     defaultIcon?.SetValue("", $"\"{iconPath}\",1", RegistryValueKind.String);
                 }
 
                 using (RegistryKey commandKey = newKey?.CreateSubKey(@"shell\open\command"))
                 {
-                    string exePath = Assembly.GetExecutingAssembly().Location;
+                    string exePath = AppPaths.GetExecutablePath();
                     commandKey?.SetValue("", $"\"{exePath}\" \"%1\"", RegistryValueKind.String);
                 }
             }
@@ -481,7 +477,7 @@ namespace Songify_Slim
             // Pass an argument to indicate this is a restart
             var startInfo = new ProcessStartInfo
             {
-                FileName = Environment.ProcessPath ?? Assembly.GetEntryAssembly()?.Location,
+                FileName = AppPaths.GetExecutablePath(),
                 Arguments = "--restart",
                 UseShellExecute = true
             };
@@ -620,7 +616,7 @@ namespace Songify_Slim
             // --- Relaunch (Framework-safe) ---
             try
             {
-                string exe = Environment.ProcessPath ?? Assembly.GetEntryAssembly()?.Location;
+                string exe = AppPaths.GetExecutablePath();
                 string args = string.Join(" ", Environment.GetCommandLineArgs().Skip(1).Select(QuoteIfNeeded));
 
                 Process.Start(new ProcessStartInfo

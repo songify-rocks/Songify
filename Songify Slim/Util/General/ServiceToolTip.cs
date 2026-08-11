@@ -63,7 +63,7 @@ namespace Songify_Slim.Util.General
 
                 TextBlock val = new()
                 {
-                    Text = value ?? "—",
+                    Text = value ?? "ï¿½",
                     VerticalAlignment = VerticalAlignment.Top,
                     Foreground =
                         Application.Current.TryFindResource("TextFillColorPrimaryBrush") as Brush

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using AutoUpdaterDotNET;
@@ -25,22 +24,25 @@ namespace Songify_Slim.Util.General;
 public static class AppStartup
 {
     /// <summary>
-    /// Run the full startup sequence. Use <paramref name="useShellWindow"/> true when the main window is ShellWindow (uses MessageBox for dialogs).
+    /// Run the full startup sequence. Use <paramref name="useShellWindow"/> true when the main window is ShellWindow.
     /// </summary>
     public static async Task RunAsync(Window owner, bool useShellWindow)
     {
         EnsureAppVersionSet();
-        CheckAndNotifyConfigurationIssues();
-        await RunUseOwnAppDialogAsync(useShellWindow);
+        if (!await CheckAndNotifyConfigurationIssuesAsync())
+            return;
+
+        await RunUseOwnAppDialogAsync();
         bool internetAvailable = await WaitForInternetConnectionAsync();
         if (!internetAvailable)
         {
-            await RunInternetCheckDialogAsync(owner, useShellWindow);
+            await RunInternetCheckDialogAsync(owner);
             return;
         }
 
         Logger.Info(LogSource.Spotify, "Starting Spotify init");
         await RunSpotifyInitAsync();
+        Util.Spotify.SpotifyApiHandler.RefreshShellSpotifyIndicator();
         Logger.Info(LogSource.Spotify, "Spotify init done");
 
         Logger.Info(LogSource.Twitch, "Starting Twitch init");
@@ -48,67 +50,71 @@ public static class AppStartup
         Logger.Info(LogSource.Twitch, "Twitch init done");
 
         Logger.Info(LogSource.Core, "Starting Final Setup");
-        await RunFinalSetupAsync(owner, useShellWindow);
+        await RunFinalSetupAsync(owner);
         Logger.Info(LogSource.Core, "Final Setup done");
     }
 
-    private static void CheckAndNotifyConfigurationIssues()
+    /// <returns><c>false</c> if startup should abort (app shutting down).</returns>
+    private static async Task<bool> CheckAndNotifyConfigurationIssuesAsync()
     {
-        Logger.Info(LogSource.Core, $"LOCATION: {Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}");
+        Logger.Info(LogSource.Core, $"LOCATION: {AppPaths.GetAppDirectory()}");
 
-        string assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
-        if (assemblyLocation != null && assemblyLocation.Contains(".zip"))
+        string assemblyLocation = AppPaths.GetAppDirectory();
+        if (!string.IsNullOrEmpty(assemblyLocation) && assemblyLocation.Contains(".zip"))
         {
-            MessageBox.Show(
-                "Please extract Songify to a directory. The app can't save the config when run directly from the zip file.\nWe suggest a folder on the Desktop or in Documents.",
-                "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            await AppDialog.ShowAsync(
+                "Warning",
+                "Please extract Songify to a directory. The app can't save the config when run directly from the zip file.\nWe suggest a folder on the Desktop or in Documents.");
             Application.Current.Shutdown();
-            return;
+            return false;
         }
 
-        if (assemblyLocation == null || (!assemblyLocation.Contains(@"C:\Program Files") &&
-                                         !assemblyLocation.Contains(@"C:\Program Files (x86)") &&
-                                         !assemblyLocation.Contains(@"C:\ProgramData")))
-            return;
+        if (string.IsNullOrEmpty(assemblyLocation) ||
+            (!assemblyLocation.Contains(@"C:\Program Files") &&
+             !assemblyLocation.Contains(@"C:\Program Files (x86)") &&
+             !assemblyLocation.Contains(@"C:\ProgramData")))
+            return true;
 
         try
         {
             File.WriteAllText(Path.Combine(assemblyLocation, "test.txt"), "test");
             File.Delete(Path.Combine(assemblyLocation, "test.txt"));
+            return true;
         }
         catch (Exception)
         {
-            MessageBox.Show(
-                "Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.",
-                "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
+            await AppDialog.ShowAsync(
+                "Warning",
+                "Please move Songify to a different directory. The app can't save the config when run from this directory.\nWe suggest a folder on the Desktop or in Documents.");
             Application.Current.Shutdown();
+            return false;
         }
     }
 
     private static void EnsureAppVersionSet()
     {
         if (!string.IsNullOrEmpty(GlobalObjects.AppVersion)) return;
-        Assembly assembly = Assembly.GetExecutingAssembly();
-        FileVersionInfo fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
-        Version v = new(fvi.FileVersion);
-        GlobalObjects.AppVersion = $"{v.Major}.{v.Minor}.{v.Build}";
+        GlobalObjects.AppVersion = AppPaths.GetFileVersionThreePart() ?? "?";
     }
 
-    private static async Task RunUseOwnAppDialogAsync(bool useShellWindow)
+    private static async Task RunUseOwnAppDialogAsync()
     {
         if (Settings.UseOwnApp) return;
 
-        var result = MessageBox.Show(
-            Application.Current.MainWindow,
-            "Songify now needs your own Spotify credentials (Client ID and Secret). Please follow the linked guide to set them up. This will help you avoid Spotify rate limits and ensure faster updates.",
+        AppDialogResult result = await AppDialog.ShowAsync(
             "Warning",
-            MessageBoxButton.OKCancel,
-            MessageBoxImage.Warning);
-        if (result == MessageBoxResult.OK)
+            "Songify now needs your own Spotify credentials (Client ID and Secret). Please follow the linked guide to set them up. This will help you avoid Spotify rate limits and ensure faster updates.",
+            AppDialogStyle.PrimaryAndSecondary,
+            new AppDialogSettings
+            {
+                PrimaryButtonText = "Open guide",
+                SecondaryButtonText = "OK"
+            });
+
+        if (result == AppDialogResult.Primary)
             Process.Start(new ProcessStartInfo("https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup") { UseShellExecute = true });
 
         Settings.UseOwnApp = true;
-        await Task.CompletedTask;
     }
 
     private static async Task<bool> WaitForInternetConnectionAsync()
@@ -130,19 +136,22 @@ public static class AppStartup
         return false;
     }
 
-    private static async Task RunInternetCheckDialogAsync(Window owner, bool useShellWindow)
+    private static async Task RunInternetCheckDialogAsync(Window owner)
     {
         var win = owner ?? Application.Current.MainWindow;
         while (true)
         {
-            MessageBoxResult result = MessageBox.Show(
-                win,
-                "It seems that no internet connection could be established.\n\nDo you want to retry or close Songify?",
+            AppDialogResult result = await AppDialog.ShowAsync(
                 "No Internet Connection",
-                MessageBoxButton.OKCancel,
-                MessageBoxImage.Warning);
+                "It seems that no internet connection could be established.\n\nDo you want to retry or close Songify?",
+                AppDialogStyle.PrimaryAndSecondary,
+                new AppDialogSettings
+                {
+                    PrimaryButtonText = "Retry",
+                    SecondaryButtonText = "Close"
+                });
 
-            if (result == MessageBoxResult.Cancel)
+            if (result != AppDialogResult.Primary)
             {
                 win?.Close();
                 return;
@@ -196,7 +205,7 @@ public static class AppStartup
         new WindowQueue().Show();
     }
 
-    private static async Task RunFinalSetupAsync(Window owner, bool useShellWindow)
+    private static async Task RunFinalSetupAsync(Window owner)
     {
         try
         {
@@ -211,14 +220,17 @@ public static class AppStartup
 
             if (Settings.UpdateRequired)
             {
-                var result = MessageBox.Show(
-                    owner ?? Application.Current.MainWindow,
-                    "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog from the navigation.",
+                AppDialogResult result = await AppDialog.ShowAsync(
                     "Songify just updated",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question);
+                    "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog from the navigation.",
+                    AppDialogStyle.PrimaryAndSecondary,
+                    new AppDialogSettings
+                    {
+                        PrimaryButtonText = "Yes",
+                        SecondaryButtonText = "No"
+                    });
 
-                if (result == MessageBoxResult.Yes)
+                if (result == AppDialogResult.Primary)
                     OpenPatchNotes(owner);
 
                 Settings.UpdateRequired = false;

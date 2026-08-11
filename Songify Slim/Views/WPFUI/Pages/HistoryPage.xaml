@@ -5,115 +5,315 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:util="clr-namespace:Songify_Slim.Util"
     Title="History"
     ScrollViewer.CanContentScroll="False"
     mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <util:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <Style x:Key="HistoryDateItemStyle" TargetType="ListBoxItem">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border
+                                x:Name="Bd"
+                                Padding="10,8"
+                                Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                                    <Setter TargetName="Bd" Property="BorderThickness" Value="2" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+            <Style x:Key="HistorySongItemStyle" TargetType="ListBoxItem">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0,0,0,8" />
+                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                <Setter Property="Background" Value="Transparent" />
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="ListBoxItem">
+                            <Border
+                                x:Name="Bd"
+                                Padding="12,10"
+                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <ContentPresenter />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                                </Trigger>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                                    <Setter TargetName="Bd" Property="BorderThickness" Value="2" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+
     <Grid Margin="24" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" MinHeight="120" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <!--  Toolbar: Save toggle, Upload toggle, Copy URL, Refresh  -->
-        <StackPanel
-            Grid.Row="0"
+
+        <!--  Header  -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock
+                    x:Name="TxtTitle"
+                    FontSize="28"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="History" />
+                <TextBlock
+                    Margin="0,2,0,0"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="Songs played across recent days" />
+            </StackPanel>
+            <StackPanel
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
+                <ui:Button
+                    Margin="0,0,8,0"
+                    Appearance="Secondary"
+                    Command="{Binding CopyHistoryUrlCommand}"
+                    Content="Copy URL"
+                    ToolTip="Copy the public history URL" />
+                <ui:Button
+                    Appearance="Secondary"
+                    Command="{Binding RefreshCommand}"
+                    Content="Refresh"
+                    ToolTip="Reload history file" />
+            </StackPanel>
+        </Grid>
+
+        <!--  Options  -->
+        <ui:Card
+            Grid.Row="1"
             Margin="0,0,0,16"
-            Orientation="Horizontal">
-            <ui:ToggleSwitch
-                x:Name="TglSave"
-                Margin="0,0,12,0"
-                Content="{Binding SaveToggleContent}"
-                IsChecked="{Binding SaveHistory, Mode=TwoWay}"
-                ToolTip="Save history locally" />
-            <ui:ToggleSwitch
-                x:Name="TglUpload"
-                Margin="0,0,12,0"
-                Content="{Binding UploadToggleContent}"
-                IsChecked="{Binding UploadHistory, Mode=TwoWay}"
-                ToolTip="Upload history" />
-            <ui:Button
-                Margin="0,0,12,0"
-                Appearance="Secondary"
-                Command="{Binding CopyHistoryUrlCommand}"
-                Content="Copy history URL"
-                ToolTip="Copy the history URL." />
-            <ui:Button
-                Appearance="Secondary"
-                Command="{Binding RefreshCommand}"
-                Content="Refresh"
-                ToolTip="Reload history file" />
-        </StackPanel>
-        <!--  Main: left = date list, right = songs grid  -->
-        <Grid Grid.Row="1">
+            Padding="14,10">
+            <StackPanel Orientation="Horizontal">
+                <ui:ToggleSwitch
+                    Margin="0,0,20,0"
+                    Content="Save locally"
+                    IsChecked="{Binding SaveHistory, Mode=TwoWay}"
+                    ToolTip="Save history to disk" />
+                <ui:ToggleSwitch
+                    Content="Upload"
+                    IsChecked="{Binding UploadHistory, Mode=TwoWay}"
+                    ToolTip="Upload history to Songify" />
+            </StackPanel>
+        </ui:Card>
+
+        <!--  Main: dates | tracks  -->
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="160" />
-                <ColumnDefinition Width="*" MinWidth="200" />
+                <ColumnDefinition Width="200" />
+                <ColumnDefinition Width="*" MinWidth="220" />
             </Grid.ColumnDefinitions>
-            <!--  Date list (left)  -->
+
             <ui:Card
                 Grid.Column="0"
                 Margin="0,0,12,0"
-                Padding="0"
+                Padding="10"
                 VerticalAlignment="Stretch"
                 VerticalContentAlignment="Top">
-                <ListBox
-                    x:Name="LbxHistory"
-                    Padding="8"
-                    VerticalAlignment="Stretch"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    ItemsSource="{Binding DateList}"
-                    SelectedItem="{Binding SelectedDate, Mode=TwoWay}">
-                    <ListBox.ContextMenu>
-                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                            <MenuItem Command="{Binding DeleteDateCommand}" Header="Delete" />
-                        </ContextMenu>
-                    </ListBox.ContextMenu>
-                </ListBox>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Margin="2,0,0,10"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="DAYS" />
+                    <ListBox
+                        x:Name="LbxHistory"
+                        Grid.Row="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemContainerStyle="{StaticResource HistoryDateItemStyle}"
+                        ItemsSource="{Binding DateList}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectedItem="{Binding SelectedDate, Mode=TwoWay}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                <MenuItem Command="{Binding DeleteDateCommand}" Header="Delete day" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border
+                                        Width="44"
+                                        Height="44"
+                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                        CornerRadius="8">
+                                        <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                FontSize="16"
+                                                FontWeight="SemiBold"
+                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                Text="{Binding Day}" />
+                                            <TextBlock
+                                                HorizontalAlignment="Center"
+                                                FontSize="10"
+                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                Text="{Binding Month}" />
+                                        </StackPanel>
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{Binding Weekday}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{Binding CountLabel}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock
+                        Grid.Row="1"
+                        Margin="4,12,4,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        Text="No history yet"
+                        TextWrapping="Wrap"
+                        Visibility="{Binding HasDates, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}" />
+                </Grid>
             </ui:Card>
-            <!--  Songs grid (right)  -->
+
             <ui:Card
                 Grid.Column="1"
-                Padding="0"
-                VerticalAlignment="Stretch"
-                VerticalContentAlignment="Top">
-                <DataGrid
-                    x:Name="DgvHistorySongs"
-                    AutoGenerateColumns="False"
-                    CanUserAddRows="False"
-                    CanUserDeleteRows="False"
-                    CanUserReorderColumns="False"
-                    CanUserResizeColumns="True"
-                    CanUserSortColumns="False"
-                    HeadersVisibility="Column"
-                    ItemsSource="{Binding Songs}"
-                    SelectedItem="{Binding SelectedSong, Mode=TwoWay}"
-                    SelectionMode="Single">
-                    <DataGrid.Columns>
-                        <DataGridTextColumn
-                            x:Name="ColTime"
-                            Width="80"
-                            Binding="{Binding Time}"
-                            Header="Time"
-                            IsReadOnly="True" />
-                        <DataGridTextColumn
-                            x:Name="ColName"
-                            Width="*"
-                            Binding="{Binding Name}"
-                            Header="Name"
-                            IsReadOnly="True" />
-                    </DataGrid.Columns>
-                    <DataGrid.ContextMenu>
-                        <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                            <MenuItem Command="{Binding DeleteSongCommand}" Header="Delete" />
-                        </ContextMenu>
-                    </DataGrid.ContextMenu>
-                </DataGrid>
+                Padding="14"
+                VerticalAlignment="Stretch">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <DockPanel Margin="0,0,0,12" LastChildFill="False">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="16"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                            Text="{Binding SelectedDateTitle}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            DockPanel.Dock="Right"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="{Binding SelectedDate.CountLabel}" />
+                    </DockPanel>
+
+                    <ListBox
+                        x:Name="DgvHistorySongs"
+                        Grid.Row="1"
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemContainerStyle="{StaticResource HistorySongItemStyle}"
+                        ItemsSource="{Binding Songs}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectedItem="{Binding SelectedSong, Mode=TwoWay}"
+                        Visibility="{Binding HasSongs, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <ListBox.ContextMenu>
+                            <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
+                                <MenuItem Command="{Binding DeleteSongCommand}" Header="Delete song" />
+                            </ContextMenu>
+                        </ListBox.ContextMenu>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="72" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontFamily="Consolas"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                        Text="{Binding Time}" />
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{Binding Title}"
+                                            TextTrimming="CharacterEllipsis" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{Binding Artist}"
+                                            TextTrimming="CharacterEllipsis" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                    <TextBlock
+                        Grid.Row="1"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        FontSize="13"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        Text="No songs for this day"
+                        Visibility="{Binding HasNoSongs, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </Grid>
             </ui:Card>
         </Grid>
-        <!--  Status  -->
+
         <Border
-            Grid.Row="2"
+            Grid.Row="3"
             Margin="0,12,0,0"
             Padding="0,6,0,0"
             BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"

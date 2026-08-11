@@ -79,7 +79,7 @@ namespace Songify_Slim.Util.General
         public static ApiMetricsVm ApiMetrics { get; } = new ApiMetricsVm();
 
         public static string RootDirectory => string.IsNullOrEmpty(Settings.Directory)
-            ? Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)
+            ? AppPaths.GetAppDirectory()
             : Settings.Directory;
 
         public static SimpleTwitchUser FullRequester { get; set; }

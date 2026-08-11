@@ -12,6 +12,7 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Strings.xaml" />
                 <ResourceDictionary Source="/Resources/CustomToolTipStyle.xaml" />
+                <ResourceDictionary Source="/Resources/Icons/BrandIcons.xaml" />
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>

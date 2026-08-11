@@ -60,7 +60,7 @@
                     Margin="0,5"
                     VerticalAlignment="Center"
                     Content="{DynamicResource window_createreward_cost}" />
-                <ui:NumberBox
+                <ui:NumberBox                                             ClearButtonEnabled="False"
                     x:Name="NudRewardCost"
                     Grid.Row="2"
                     Grid.Column="1"

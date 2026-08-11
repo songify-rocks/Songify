@@ -297,18 +297,25 @@ namespace Songify_Slim.Util.General
                         }
                     }
 
-                    // Add new paragraph
+                    // Keep console typography consistent (shared FlowDocument hosts across windows).
+                    GlobalObjects.ConsoleDocument.FontFamily = new FontFamily("Consolas");
+                    GlobalObjects.ConsoleDocument.FontSize = 12;
+
                     GlobalObjects.ConsoleDocument.Blocks.Add(new Paragraph
                     {
                         TextAlignment = TextAlignment.Left,
                         Margin = new Thickness(0),
+                        FontFamily = new FontFamily("Consolas"),
+                        FontSize = 12,
                         Inlines =
                         {
                             new Run
                             {
                                 Text =
                                     $"[{DateTime.Now.ToString(GlobalObjects.TimeFormat, CultureInfo.InvariantCulture)}] | (1) |  {s}",
-                                Foreground = new SolidColorBrush(GetForegroundColor(source))
+                                Foreground = new SolidColorBrush(GetForegroundColor(source)),
+                                FontFamily = new FontFamily("Consolas"),
+                                FontSize = 12
                             }
                         }
                     });

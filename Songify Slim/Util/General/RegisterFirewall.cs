@@ -23,7 +23,7 @@ namespace Songify_Slim.Util.General
                     ProcessStartInfo startInfo = new()
                     {
                         FileName = "cmd.exe",
-                        Arguments = $"/C choice /C Y /N /D Y /T 3 & start \"\" \"{Assembly.GetExecutingAssembly().Location}\"",
+                        Arguments = $"/C choice /C Y /N /D Y /T 3 & start \"\" \"{AppPaths.GetExecutablePath()}\"",
                         WindowStyle = ProcessWindowStyle.Hidden,
                         Verb = "runas"
                     };
@@ -50,7 +50,7 @@ namespace Songify_Slim.Util.General
 
         private static void AddFirewallRule()
         {
-            string applicationPath = Assembly.GetExecutingAssembly().Location;
+            string applicationPath = AppPaths.GetExecutablePath();
             ProcessStartInfo startInfo = new("netsh", $"advfirewall firewall add rule name=\"{RuleName}\" dir=in action=allow program=\"{applicationPath}\" enable=yes")
             {
                 Verb = "runas", // Request elevation

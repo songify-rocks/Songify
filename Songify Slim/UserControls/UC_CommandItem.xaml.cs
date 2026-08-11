@@ -272,6 +272,10 @@ namespace Songify_Slim.UserControls
                     // Optionally, update StartPoint and EndPoint if needed:
                     brush.StartPoint = new Point(0, 0);
                     brush.EndPoint = new Point(0, 1);
+
+                    var bgBrush = brush;
+                    bgBrush.Opacity = 0.1;
+                    CmdBorder.Background = bgBrush;
                 }
             }
             else if (CmdBorder.BorderBrush is LinearGradientBrush brush)

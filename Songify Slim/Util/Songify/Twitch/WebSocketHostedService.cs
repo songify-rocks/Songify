@@ -488,6 +488,9 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
+                    AppShellBridge.Current?.SetTwitchBotState(
+                        chatEnabled ? ConnectionIndicatorState.Connected : ConnectionIndicatorState.Error);
+
                     MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
                     if (mainWindow?.IconTwitchBot != null)
                         mainWindow.IconTwitchBot.Foreground = chatEnabled ? Brushes.GreenYellow : Brushes.IndianRed;
@@ -503,6 +506,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             _logger.LogError("Websocket {SessionId} disconnected!", _eventSubWebsocketClient.SessionId);
             Logger.Info(LogSource.Twitch, "EventSub websocket disconnected.");
+            AppShellBridge.Current?.SetTwitchBotState(ConnectionIndicatorState.Error);
 
             if (_isStopping)
             {

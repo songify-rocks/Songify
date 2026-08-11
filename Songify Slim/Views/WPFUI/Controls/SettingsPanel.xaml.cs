@@ -845,7 +845,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             fbd.Description = @"Select the folder containing the config files";
             fbd.ShowNewFolderButton = false; // Optional, prevents creating new folders
             // set the apps directory as the default directory
-            fbd.SelectedPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            fbd.SelectedPath = AppPaths.GetAppDirectory();
             if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             // Get the selected folder path and call the config handler
             string selectedFolder = fbd.SelectedPath;
@@ -871,13 +871,13 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 "Are you sure you want to reset all settings?", AppDialogStyle.PrimaryAndSecondary,
                 new AppDialogSettings { PrimaryButtonText = "Yes", NegativeButtonText = "No" });
             if (msgResult != AppDialogResult.Primary) return;
-            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/config.xml");
-            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/AppConfig.yaml");
-            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/BotConfig.yaml");
-            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/TwitchCredentials.yaml");
-            File.Delete(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/SpotifyCredentials.yaml");
+            File.Delete(AppPaths.GetAppDirectory() + "/config.xml");
+            File.Delete(AppPaths.GetAppDirectory() + "/AppConfig.yaml");
+            File.Delete(AppPaths.GetAppDirectory() + "/BotConfig.yaml");
+            File.Delete(AppPaths.GetAppDirectory() + "/TwitchCredentials.yaml");
+            File.Delete(AppPaths.GetAppDirectory() + "/SpotifyCredentials.yaml");
             Settings.ResetConfig();
-            ShellHelper.OpenPath(Environment.ProcessPath ?? Application.ResourceAssembly.Location);
+            ShellHelper.OpenPath(AppPaths.GetExecutablePath());
             Application.Current.Shutdown();
         }
 
@@ -920,9 +920,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             // Copies the txt path to the clipboard and shows a notification
             if (string.IsNullOrEmpty(Settings.Directory))
-                Clipboard.SetDataObject(
-                    Assembly.GetEntryAssembly()?.Location.Replace("Songify Slim.exe", "Songify.txt") ??
-                    throw new InvalidOperationException());
+                Clipboard.SetDataObject(Path.Combine(AppPaths.GetAppDirectory(), "Songify.txt"));
             else
                 Clipboard.SetDataObject(Settings.Directory + "\\Songify.txt");
         }
@@ -937,7 +935,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             // Where the user wants the text file to be saved in
             _fbd.Description = @"Path where the text file will be located.";
-            _fbd.SelectedPath = Assembly.GetExecutingAssembly().Location;
+            _fbd.SelectedPath = AppPaths.GetAppDirectory();
 
             if (_fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
                 return;
@@ -1157,7 +1155,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             AppDialogResult msgResult = await ShowMsgAsync("Warning", temp, AppDialogStyle.Primary,
                 new AppDialogSettings { PrimaryButtonText = "Restart" });
             if (msgResult != AppDialogResult.Primary) return false;
-            ShellHelper.OpenPath(Environment.ProcessPath ?? Application.ResourceAssembly.Location);
+            ShellHelper.OpenPath(AppPaths.GetExecutablePath());
             Application.Current.Shutdown();
             return false;
         }

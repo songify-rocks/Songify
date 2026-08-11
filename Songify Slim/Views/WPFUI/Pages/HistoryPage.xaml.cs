@@ -23,9 +23,8 @@ public partial class HistoryPage : Page
 
     private void HistoryPage_Loaded(object sender, RoutedEventArgs e)
     {
-        Title = Properties.Resources.window_history_title;
-        if (ColTime != null) ColTime.Header = Properties.Resources.common_time;
-        if (ColName != null) ColName.Header = Properties.Resources.common_name;
+        if (TxtTitle != null)
+            TxtTitle.Text = Properties.Resources.window_history_title;
 
         _viewModel.ApplySettings();
         _viewModel.LoadFile();

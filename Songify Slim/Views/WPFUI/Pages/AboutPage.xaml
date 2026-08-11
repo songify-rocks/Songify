@@ -128,21 +128,33 @@
 
                 <TextBlock
                     MaxWidth="560"
-                    Margin="0,18,0,16"
+                    Margin="0,18,0,0"
                     HorizontalAlignment="Left"
                     FontSize="14"
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                     LineHeight="22"
                     Text="{DynamicResource window_about_gpl_notice}"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"
+                    Visibility="Collapsed" />
 
-                <StackPanel Orientation="Horizontal">
-                    <ui:Button
-                        Margin="0,0,8,0"
-                        Appearance="Primary"
-                        Click="BtnDiscord_Click"
-                        Content="Discord"
-                        Icon="{ui:SymbolIcon Chat24}" />
+                <StackPanel Margin="0,18,0,0" Orientation="Horizontal">
+                    <ui:Button Margin="0,0,8,0" Click="BtnDiscord_Click">
+                        <ui:Button.Content>
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <Viewbox
+                                    Width="16"
+                                    Height="16"
+                                    Margin="0,0,8,0"
+                                    VerticalAlignment="Center">
+                                    <Path
+                                        Data="{StaticResource IconDiscordGeometry}"
+                                        Fill="White"
+                                        Stretch="Uniform" />
+                                </Viewbox>
+                                <TextBlock VerticalAlignment="Center" Text="Discord" />
+                            </StackPanel>
+                        </ui:Button.Content>
+                    </ui:Button>
                     <ui:Button
                         Margin="0,0,8,0"
                         Appearance="Secondary"
@@ -199,7 +211,7 @@
                             Grid.Row="1"
                             Margin="6,0,6,10"
                             VerticalScrollBarVisibility="Auto">
-                            <ItemsControl x:Name="ThirdPartyItems" Margin="10,0,10,8">
+                            <ItemsControl x:Name="ThirdPartyItems" Margin="10,0,20,8">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <Border
@@ -249,35 +261,37 @@
                     BorderThickness="1"
                     CornerRadius="12">
                     <ScrollViewer VerticalScrollBarVisibility="Auto">
-                        <StackPanel>
-                            <TextBlock
-                                FontSize="16"
-                                FontWeight="SemiBold"
-                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                Text="{DynamicResource window_about_thank_you}" />
-                            <TextBlock
-                                Margin="0,6,0,16"
-                                FontSize="12"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="{DynamicResource window_about_discord_invite}"
-                                TextWrapping="Wrap" />
-                            <Border
-                                Height="1"
-                                Margin="0,0,0,14"
-                                Background="#33FFFFFF" />
-                            <TextBlock
-                                FontSize="13"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                LineHeight="20"
-                                Text="{DynamicResource Credits}"
-                                TextWrapping="Wrap" />
-                            <TextBlock
-                                Margin="0,20,0,0"
-                                FontSize="11"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="{DynamicResource window_about_license_notice}"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
+                        <Grid Margin="0,0,20,0">
+                            <StackPanel>
+                                <TextBlock
+                                    FontSize="16"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{DynamicResource window_about_thank_you}" />
+                                <TextBlock
+                                    Margin="0,6,0,16"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                    Text="{DynamicResource window_about_discord_invite}"
+                                    TextWrapping="Wrap" />
+                                <Border
+                                    Height="1"
+                                    Margin="0,0,0,14"
+                                    Background="#33FFFFFF" />
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    LineHeight="20"
+                                    Text="{DynamicResource Credits}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="0,20,0,0"
+                                    FontSize="11"
+                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                    Text="{DynamicResource window_about_license_notice}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
+                        </Grid>
                     </ScrollViewer>
                 </Border>
             </Grid>

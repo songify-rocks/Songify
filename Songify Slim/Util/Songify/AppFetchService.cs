@@ -19,12 +19,21 @@ public static class AppFetchService
     private static Timer _timer;
     private static bool _running;
 
+    /// <summary>Raised when Spotify idle backoff stage/interval may have changed (UI should refresh).</summary>
+    public static event Action IdleBackoffChanged;
+
+    public static bool IsSpotifyIdleBackoffActive => Sf.IsSpotifyIdleBackoffActive;
+
+    public static int GetEffectiveSpotifyFetchIntervalSeconds() =>
+        Sf.GetEffectiveSpotifyFetchIntervalSeconds();
+
     public static void Start()
     {
         if (_running) return;
         _running = true;
         RunGetCurrentSongAsync();
         SetTimer();
+        RaiseIdleBackoffChanged();
     }
 
     public static void Stop()
@@ -42,6 +51,20 @@ public static class AppFetchService
         }
     }
 
+    /// <summary>
+    /// Clears Spotify idle fetch backoff and restarts the fetch timer at the settings interval.
+    /// Used when Twitch commands/rewards or the status-bar chip indicate activity.
+    /// </summary>
+    public static void NotifySpotifyRelatedActivity(string reason = "Twitch command or reward")
+    {
+        if (Settings.Player != PlayerType.Spotify)
+            return;
+
+        Sf.RestoreSpotifyFetchRate(reason);
+        ApplySpotifyFetchTimerInterval();
+        RaiseIdleBackoffChanged();
+    }
+
     private static void SetTimer()
     {
         try
@@ -51,7 +74,7 @@ public static class AppFetchService
         }
         catch { /* ignore */ }
 
-        PlayerType player = (PlayerType)Settings.Player;
+        PlayerType player = Settings.Player;
         int intervalMs;
         switch (player)
         {
@@ -63,7 +86,7 @@ public static class AppFetchService
                 break;
 
             case PlayerType.Spotify:
-                intervalMs = MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30) * 1000;
+                intervalMs = Sf.GetEffectiveSpotifyFetchIntervalMs();
                 break;
 
             case PlayerType.BrowserCompanion:
@@ -74,6 +97,26 @@ public static class AppFetchService
         _timer = new Timer(intervalMs);
         _timer.Elapsed += OnTimedEvent;
         _timer.Enabled = true;
+    }
+
+    private static void ApplySpotifyFetchTimerInterval()
+    {
+        if (_timer == null || Settings.Player != PlayerType.Spotify)
+            return;
+
+        try
+        {
+            // Changing Interval while Enabled restarts the countdown with the restored rate.
+            _timer.Interval = Sf.GetEffectiveSpotifyFetchIntervalMs();
+        }
+        catch (ObjectDisposedException)
+        {
+            // Timer may be mid-recreate during source switches.
+        }
+        catch (ArgumentException)
+        {
+            // Interval must be > 0.
+        }
     }
 
     private static async void OnTimedEvent(object sender, ElapsedEventArgs e)
@@ -94,6 +137,12 @@ public static class AppFetchService
                 {
                     if (_running && _timer != null)
                     {
+                        if (Settings.Player == PlayerType.Spotify)
+                        {
+                            ApplySpotifyFetchTimerInterval();
+                            RaiseIdleBackoffChanged();
+                        }
+
                         _timer.Elapsed += OnTimedEvent;
                         _timer.Enabled = true;
                     }
@@ -113,7 +162,7 @@ public static class AppFetchService
 
     private static async Task RunGetCurrentSongAsync()
     {
-        PlayerType player = (PlayerType)Settings.Player;
+        PlayerType player = Settings.Player;
         try
         {
             switch (player)
@@ -145,6 +194,18 @@ public static class AppFetchService
                 default:
                     break;
             }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
+    private static void RaiseIdleBackoffChanged()
+    {
+        try
+        {
+            IdleBackoffChanged?.Invoke();
         }
         catch (Exception ex)
         {

@@ -224,7 +224,7 @@ namespace Songify_Slim.Util.Configuration
 
         public static void WriteConfig(ConfigTypes configType, object o, string path = null, bool isBackup = false)
         {
-            path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            path ??= AppPaths.GetAppDirectory();
             Directory.CreateDirectory(path);
 
             ISerializer serializer = new SerializerBuilder()
@@ -368,7 +368,7 @@ namespace Songify_Slim.Util.Configuration
 
         public static void ReadConfig(string path = null)
         {
-            path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            path ??= AppPaths.GetAppDirectory();
             IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 //.WithTypeConverter(new SingleStringToListConverter())
@@ -481,7 +481,7 @@ namespace Songify_Slim.Util.Configuration
         /// <summary>Load blocked artists from YAML without keeping them on <see cref="Settings.CurrentConfig"/>.</summary>
         public static BlockedSpotifyArtists LoadBlockedSpotifyArtists(string path = null)
         {
-            path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            path ??= AppPaths.GetAppDirectory();
             IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))

@@ -44,23 +44,6 @@
                 Margin="0,0,12,0"
                 Appearance="Secondary"
                 Command="{Binding ClearQueueCommand}" />
-            <ui:Button
-                Margin="0,0,12,0"
-                Appearance="Secondary"
-                Command="{Binding FontSizeDownCommand}"
-                Content="A-" />
-            <TextBlock
-                MinWidth="24"
-                Margin="0,0,12,0"
-                VerticalAlignment="Center"
-                FontSize="{Binding FontSize}"
-                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                Text="{Binding FontSize}" />
-            <ui:Button
-                Margin="0,0,12,0"
-                Appearance="Secondary"
-                Command="{Binding FontSizeUpCommand}"
-                Content="A+" />
         </StackPanel>
         <!--  Fixed row: currently playing (compact; Border avoids Card Content-set-twice designer issue)  -->
         <Border
@@ -228,7 +211,7 @@
                                     VerticalAlignment="Center"
                                     Orientation="Vertical">
                                     <TextBlock
-                                        FontSize="{Binding DataContext.FontSize, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        FontSize="16"
                                         FontWeight="SemiBold"
                                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                         Text="{Binding Title}"

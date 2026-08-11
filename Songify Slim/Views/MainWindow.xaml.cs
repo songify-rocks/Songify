@@ -319,7 +319,7 @@ namespace Songify_Slim.Views
 
                 if (isChecked)
                 {
-                    string appPath = Assembly.GetEntryAssembly()?.Location;
+                    string appPath = AppPaths.GetExecutablePath();
                     if (string.IsNullOrEmpty(appPath))
                     {
                         throw new InvalidOperationException("Cannot determine application path.");
@@ -1323,10 +1323,10 @@ namespace Songify_Slim.Views
             GrdDisclaimer.Visibility = Settings.DonationReminder ? Visibility.Collapsed : Visibility.Visible;
             if (!string.IsNullOrEmpty(Settings.Directory))
                 if (!Directory.Exists(Settings.Directory) && MessageBox.Show(
-                        $"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}\".",
+                        $"The directory \"{Settings.Directory}\" doesn't exist.\nThe output directory has been set to \"{AppPaths.GetAppDirectory()}\".",
                         "Directory doesn't exist", MessageBoxButton.OK, MessageBoxImage.Error) == MessageBoxResult.OK)
                 {
-                    Settings.Directory = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+                    Settings.Directory = AppPaths.GetAppDirectory();
                 }
 
             Settings.MsgLoggingEnabled = false;
@@ -1539,9 +1539,9 @@ namespace Songify_Slim.Views
 
         private static void CheckAndNotifyConfigurationIssues()
         {
-            Logger.Info(LogSource.Core, $"LOCATION: {Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location)}");
+            Logger.Info(LogSource.Core, $"LOCATION: {AppPaths.GetAppDirectory()}");
 
-            string assemblyLocation = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            string assemblyLocation = AppPaths.GetAppDirectory();
             if (assemblyLocation != null && assemblyLocation.Contains(".zip"))
             {
                 MessageBox.Show(
@@ -1788,10 +1788,10 @@ namespace Songify_Slim.Views
 
         public void UpdateSpotifyStatusIndicator()
         {
-            if (IconWebSpotify == null)
-                return;
+            if (IconWebSpotify != null)
+                IconWebSpotify.Foreground = GetSpotifyIndicatorState().Foreground;
 
-            IconWebSpotify.Foreground = GetSpotifyIndicatorState().Foreground;
+            Util.Spotify.SpotifyApiHandler.RefreshShellSpotifyIndicator();
         }
 
         private async Task<List<(string Label, string Value)>> BuildSpotifyStatusRowsAsync()

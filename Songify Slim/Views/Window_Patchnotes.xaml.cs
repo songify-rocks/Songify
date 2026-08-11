@@ -73,6 +73,7 @@ namespace Songify_Slim.Views
         public WindowPatchnotes()
         {
             InitializeComponent();
+            ThemeHandler.ApplyTheme();
             // Set webview2 background color to #0d1117
             WebBrowser.DefaultBackgroundColor = Color.FromArgb(13, 17, 23);
         }
@@ -136,11 +137,9 @@ namespace Songify_Slim.Views
                 }
                 catch (WebView2RuntimeNotFoundException)
                 {
-                    MessageBox.Show(
-                        "WebView2 Runtime is not installed. Opening patch notes in your browser instead.",
+                    await AppDialog.ShowAsync(
                         "Missing WebView2",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                        "WebView2 Runtime is not installed. Opening patch notes in your browser instead.");
 
                     // Fallback: prefer the actual GitHub release page if we have it
                     string url = string.IsNullOrWhiteSpace(ro.Url)

@@ -27,12 +27,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ui:TitleBar
-            x:Name="ShellTitleBar"
-            CloseClicked="TitleBar_OnCloseClicked">
+        <ui:TitleBar x:Name="ShellTitleBar" CloseClicked="TitleBar_OnCloseClicked">
             <!--  Custom header: TitleBar.Icon/ImageIcon often clips .ico assets  -->
             <ui:TitleBar.Header>
                 <StackPanel
@@ -55,45 +54,143 @@
                 </StackPanel>
             </ui:TitleBar.Header>
             <ui:TitleBar.TrailingContent>
-                <ui:DropDownButton
-                    Margin="0,0,4,0"
-                    Padding="8,4"
-                    Appearance="Transparent"
-                    ToolTip="More">
-                    <ui:DropDownButton.Icon>
-                        <ui:SymbolIcon Symbol="MoreHorizontal24" />
-                    </ui:DropDownButton.Icon>
-                    <ui:DropDownButton.Flyout>
-                        <ContextMenu>
-                            <MenuItem Header="Tools" IsEnabled="False" />
-                            <MenuItem Click="MenuWidget_OnClick" Header="Widget" />
-                            <MenuItem Click="MenuWebServerUrl_OnClick" Header="Web server URL" />
-                            <MenuItem Click="MenuQueueBrowser_OnClick" Header="Queue (browser)" />
-                            <MenuItem Click="MenuHistoryBrowser_OnClick" Header="History (browser)" />
-                            <Separator />
-                            <MenuItem Header="Twitch" IsEnabled="False" />
-                            <MenuItem Click="MenuTwitchLogin_OnClick" Header="Login" />
-                            <MenuItem Click="MenuTwitchConnect_OnClick" Header="Connect" />
-                            <MenuItem Click="MenuTwitchOnline_OnClick" Header="Check online status" />
-                            <Separator />
-                            <MenuItem Header="Help" IsEnabled="False" />
-                            <MenuItem Click="MenuPatchNotes_OnClick" Header="Patch notes" />
-                            <MenuItem Click="MenuFaq_OnClick" Header="FAQ" />
-                            <MenuItem Click="MenuGitHub_OnClick" Header="GitHub" />
-                            <MenuItem Click="MenuDiscord_OnClick" Header="Discord" />
-                            <MenuItem Click="MenuLogFolder_OnClick" Header="Log folder" />
-                            <MenuItem Click="MenuAppFolder_OnClick" Header="App folder" />
-                            <MenuItem Click="MenuCheckUpdates_OnClick" Header="Check for updates" />
-                            <Separator />
-                            <MenuItem Click="MenuExit_OnClick" Header="Exit" />
-                        </ContextMenu>
-                    </ui:DropDownButton.Flyout>
-                </ui:DropDownButton>
+                <StackPanel Margin="0,0,4,0" Orientation="Horizontal">
+                    <ui:DropDownButton
+                        MinWidth="72"
+                        Margin="0,0,4,0"
+                        Padding="12,6"
+                        Appearance="Transparent"
+                        Content="Tools"
+                        FontSize="13">
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu>
+                                <MenuItem Click="MenuWidget_OnClick" Header="Widget" />
+                                <MenuItem Click="MenuWebServerUrl_OnClick" Header="Web server URL" />
+                                <MenuItem Click="MenuQueueBrowser_OnClick" Header="Queue (browser)" />
+                                <MenuItem Click="MenuHistoryBrowser_OnClick" Header="History (browser)" />
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+
+                    <ui:DropDownButton
+                        MinWidth="72"
+                        Margin="0,0,4,0"
+                        Padding="12,6"
+                        Appearance="Transparent"
+                        Content="Twitch"
+                        FontSize="13">
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu>
+                                <MenuItem Click="MenuTwitchLogin_OnClick" Header="{DynamicResource menu_twitch_login}" />
+                                <MenuItem
+                                    x:Name="MiTwitchConnect"
+                                    Click="MenuTwitchConnect_OnClick"
+                                    Header="{DynamicResource menu_twitch_connect}" />
+                                <MenuItem
+                                    x:Name="MiTwitchCheckOnlineStatus"
+                                    Click="MenuTwitchOnline_OnClick"
+                                    Header="{DynamicResource menu_twitch_check_online_status}" />
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+
+                    <ui:DropDownButton
+                        MinWidth="72"
+                        Padding="12,6"
+                        Appearance="Transparent"
+                        Content="Help"
+                        FontSize="13">
+                        <ui:DropDownButton.Flyout>
+                            <ContextMenu>
+                                <MenuItem Click="MenuPatchNotes_OnClick" Header="Patch notes" />
+                                <MenuItem Click="MenuFaq_OnClick" Header="FAQ" />
+                                <MenuItem Click="MenuGitHub_OnClick" Header="GitHub" />
+                                <MenuItem Click="MenuDiscord_OnClick" Header="Discord">
+                                    <MenuItem.Icon>
+                                        <Viewbox Width="14" Height="14">
+                                            <Path
+                                                Data="{StaticResource IconDiscordGeometry}"
+                                                Fill="{StaticResource BrandDiscordBrush}"
+                                                Stretch="Uniform" />
+                                        </Viewbox>
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Click="MenuLogFolder_OnClick" Header="Log folder" />
+                                <MenuItem Click="MenuAppFolder_OnClick" Header="App folder" />
+                                <MenuItem Click="MenuCheckUpdates_OnClick" Header="Check for updates" />
+                            </ContextMenu>
+                        </ui:DropDownButton.Flyout>
+                    </ui:DropDownButton>
+                </StackPanel>
             </ui:TitleBar.TrailingContent>
         </ui:TitleBar>
+
+        <!--  Persistent Spotify API / rate-limit banner  -->
+        <Border
+            x:Name="BrdSpotifyPersistentIssue"
+            Grid.Row="1"
+            Margin="12,0,12,8"
+            Padding="12,10"
+            Background="{DynamicResource ControlFillColorSecondaryBrush}"
+            BorderBrush="#CD5C5C"
+            BorderThickness="1"
+            CornerRadius="8"
+            Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueTitle"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueBody"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueEta"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        TextWrapping="Wrap" />
+                    <Expander
+                        x:Name="ExpSpotifyPersistentIssues"
+                        Margin="0,8,0,0"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Header="More…"
+                        IsExpanded="False"
+                        Visibility="Collapsed">
+                        <ScrollViewer MaxHeight="140">
+                            <StackPanel x:Name="PnlSpotifyPersistentIssues" />
+                        </ScrollViewer>
+                    </Expander>
+                </StackPanel>
+                <ui:Button
+                    Grid.Column="1"
+                    Width="32"
+                    Height="32"
+                    Margin="8,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Top"
+                    Appearance="Transparent"
+                    Click="BtnSpotifyPersistentIssueDismiss_Click"
+                    Content="×"
+                    FontSize="16"
+                    ToolTip="Dismiss" />
+            </Grid>
+        </Border>
+
         <ui:NavigationView
             x:Name="RootNavigationView"
-            Grid.Row="1"
+            Grid.Row="2"
             ClipToBounds="True"
             IsBackButtonVisible="Collapsed"
             IsPaneOpen="False"
@@ -130,14 +227,7 @@
                         <ui:SymbolIcon Symbol="MusicNote224" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
-                <ui:NavigationViewItem
-                    Content="History"
-                    TargetPageTag="history"
-                    TargetPageType="{x:Type pages:HistoryPage}">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="History48" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
+
                 <ui:NavigationViewItem
                     Content="Block list"
                     TargetPageTag="blacklist"
@@ -146,7 +236,14 @@
                         <ui:SymbolIcon Symbol="ShieldDismiss24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
-
+                <ui:NavigationViewItem
+                    Content="History"
+                    TargetPageTag="history"
+                    TargetPageType="{x:Type pages:HistoryPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Symbol="History48" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
                 <ui:NavigationViewItem
                     Content="User list"
                     TargetPageTag="userlist"
@@ -185,7 +282,7 @@
         </ui:NavigationView>
         <!--  Status bar: always visible at bottom  -->
         <Border
-            Grid.Row="2"
+            Grid.Row="3"
             MinHeight="28"
             Padding="12,0,16,0"
             VerticalAlignment="Stretch"
@@ -210,7 +307,81 @@
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         Text="{Binding ApiMetrics.TotalRequestsPerMinute, StringFormat=API: {0} rpm}"
                         Visibility="{Binding ApiMetrics.ShowTotalInStatusbar, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Ellipse
+                        Width="8"
+                        Height="8"
+                        VerticalAlignment="Center"
+                        Fill="{Binding TwitchApiBrush}" />
+                    <TextBlock
+                        Margin="6,0,12,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="Twitch API" />
+                    <Ellipse
+                        Width="8"
+                        Height="8"
+                        VerticalAlignment="Center"
+                        Fill="{Binding TwitchBotBrush}" />
+                    <TextBlock
+                        Margin="6,0,12,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="Twitch Bot" />
+                    <Ellipse
+                        Width="8"
+                        Height="8"
+                        VerticalAlignment="Center"
+                        Fill="{Binding SpotifyBrush}" />
+                    <TextBlock
+                        Margin="6,0,12,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="Spotify" />
+                    <Ellipse
+                        Width="8"
+                        Height="8"
+                        VerticalAlignment="Center"
+                        Fill="{Binding WebServerBrush}" />
+                    <TextBlock
+                        Margin="6,0,0,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="WebServer" />
                 </StackPanel>
+                <ui:Button
+                    x:Name="BtnSpotifyIdleBackoff"
+                    Grid.Column="1"
+                    MinHeight="22"
+                    Margin="12,0"
+                    Padding="8,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Appearance="Transparent"
+                    Click="BtnSpotifyIdleBackoff_Click"
+                    Cursor="Hand"
+                    ToolTip="Spotify fetch slowed while idle to save API quota. Click to restore the normal rate from Settings."
+                    Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon
+                            Width="12"
+                            Height="12"
+                            Margin="0,0,6,0"
+                            VerticalAlignment="Center"
+                            Foreground="IndianRed"
+                            Symbol="Gauge24" />
+                        <TextBlock
+                            x:Name="TbSpotifyIdleBackoff"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Foreground="IndianRed"
+                            Text="Polling 20s (idle)" />
+                    </StackPanel>
+                </ui:Button>
                 <TextBlock
                     x:Name="LblCopyright"
                     Grid.Column="2"

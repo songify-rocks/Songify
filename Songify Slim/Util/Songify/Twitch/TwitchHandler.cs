@@ -119,6 +119,10 @@ public static class TwitchHandler
 
         void Apply()
         {
+            // Shell path (AppFetchService owns the timer when ShellWindow is main).
+            AppFetchService.NotifySpotifyRelatedActivity();
+
+            // Legacy MainWindow path when it still owns its own SongFetcher timer.
             if (app.MainWindow is MainWindow mw)
                 mw.NotifySpotifyRelatedActivity();
         }

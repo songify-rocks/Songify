@@ -28,6 +28,7 @@ namespace Songify_Slim.Views
         public Window_ArtistImport()
         {
             InitializeComponent();
+            ThemeHandler.ApplyTheme();
             DataContext = this;
             ImportSource_Checked(null, null);
         }

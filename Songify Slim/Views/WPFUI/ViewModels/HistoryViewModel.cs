@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,10 +17,30 @@ using Songify_Slim.Views;
 
 namespace Songify_Slim.Views.WPFUI.ViewModels;
 
+public sealed class HistoryDateItem
+{
+    public string DateKey { get; init; }
+    public string Day { get; init; }
+    public string Month { get; init; }
+    public string Weekday { get; init; }
+    public int SongCount { get; init; }
+    public string CountLabel => SongCount == 1 ? "1 song" : $"{SongCount} songs";
+}
+
+public sealed class HistorySongItem
+{
+    public string Time { get; init; }
+    public string Title { get; init; }
+    public string Artist { get; init; }
+    public string FullName { get; init; }
+    public long UnixTimeStamp { get; init; }
+    public Song Source { get; init; }
+}
+
 public sealed class HistoryViewModel : INotifyPropertyChanged
 {
-    private string _selectedDate;
-    private Song _selectedSong;
+    private HistoryDateItem _selectedDate;
+    private HistorySongItem _selectedSong;
     private bool _saveHistory;
     private bool _uploadHistory;
     private string _statusMessage = "";
@@ -26,40 +48,49 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
 
     public HistoryViewModel()
     {
-        HistoryPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) ?? "", "history.shr");
-        DateList = new ObservableCollection<string>();
-        Songs = new ObservableCollection<Song>();
+        HistoryPath = Path.Combine(AppPaths.GetAppDirectory(), "history.shr");
+        DateList = new ObservableCollection<HistoryDateItem>();
+        Songs = new ObservableCollection<HistorySongItem>();
 
         RefreshCommand = new RelayCommand(Refresh);
         CopyHistoryUrlCommand = new RelayCommand(CopyHistoryUrl);
-        DeleteDateCommand = new RelayCommand(DeleteSelectedDate, () => !string.IsNullOrEmpty(SelectedDate));
+        DeleteDateCommand = new RelayCommand(DeleteSelectedDate, () => SelectedDate != null);
         DeleteSongCommand = new RelayCommand(DeleteSelectedSong, () => SelectedSong != null);
     }
 
     public string HistoryPath { get; }
 
-    public ObservableCollection<string> DateList { get; }
-    public ObservableCollection<Song> Songs { get; }
+    public ObservableCollection<HistoryDateItem> DateList { get; }
+    public ObservableCollection<HistorySongItem> Songs { get; }
 
-    public string SelectedDate
+    public bool HasDates => DateList.Count > 0;
+    public bool HasSongs => Songs.Count > 0;
+    public bool HasNoSongs => SelectedDate != null && Songs.Count == 0;
+    public string SelectedDateTitle => SelectedDate == null
+        ? "Select a day"
+        : $"{SelectedDate.Weekday}, {SelectedDate.Day} {SelectedDate.Month}";
+
+    public HistoryDateItem SelectedDate
     {
         get => _selectedDate;
         set
         {
-            if (_selectedDate == value) return;
+            if (ReferenceEquals(_selectedDate, value)) return;
             _selectedDate = value;
             OnPropertyChanged();
+            OnPropertyChanged(nameof(SelectedDateTitle));
+            OnPropertyChanged(nameof(HasNoSongs));
             CommandManager.InvalidateRequerySuggested();
             LoadSongsForSelectedDate();
         }
     }
 
-    public Song SelectedSong
+    public HistorySongItem SelectedSong
     {
         get => _selectedSong;
         set
         {
-            if (_selectedSong == value) return;
+            if (ReferenceEquals(_selectedSong, value)) return;
             _selectedSong = value;
             OnPropertyChanged();
             CommandManager.InvalidateRequerySuggested();
@@ -75,8 +106,7 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
             _saveHistory = value;
             Settings.SaveHistory = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(SaveToggleContent));
-            StatusMessage = value ? $"{Properties.Resources.common_save} ✔️" : $"{Properties.Resources.common_save} ❌";
+            StatusMessage = value ? "Saving history locally" : "Local history saving is off";
         }
     }
 
@@ -89,13 +119,9 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
             _uploadHistory = value;
             Settings.UploadHistory = value;
             OnPropertyChanged();
-            OnPropertyChanged(nameof(UploadToggleContent));
-            StatusMessage = value ? $"{Properties.Resources.common_upload} ✔️" : $"{Properties.Resources.common_upload} ❌";
+            StatusMessage = value ? "Uploading history" : "History upload is off";
         }
     }
-
-    public string SaveToggleContent => _saveHistory ? $"{Properties.Resources.common_save} ✔️" : $"{Properties.Resources.common_save} ❌";
-    public string UploadToggleContent => _uploadHistory ? $"{Properties.Resources.common_upload} ✔️" : $"{Properties.Resources.common_upload} ❌";
 
     public string StatusMessage
     {
@@ -124,30 +150,54 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
                 _doc.Save(HistoryPath);
             }
 
+            string keepKey = _selectedDate?.DateKey;
             DateList.Clear();
             Songs.Clear();
 
             _doc = XDocument.Load(HistoryPath);
-            var list = new System.Collections.Generic.List<DateTime>();
-            var dateList = new System.Collections.Generic.List<string>();
+            var dates = new List<(DateTime Dt, string Key, int Count)>();
 
             if (_doc.Root != null)
             {
                 foreach (XElement elem in _doc.Root.Elements())
                 {
-                    dateList.AddRange(elem.Name.ToString().Replace("d_", "").Split('.'));
-                    list.Add(new DateTime(int.Parse(dateList[2]), int.Parse(dateList[1]), int.Parse(dateList[0])));
-                    dateList.Clear();
+                    string key = elem.Name.ToString().Replace("d_", "");
+                    string[] parts = key.Split('.');
+                    if (parts.Length != 3) continue;
+                    if (!int.TryParse(parts[0], out int day) ||
+                        !int.TryParse(parts[1], out int month) ||
+                        !int.TryParse(parts[2], out int year))
+                        continue;
+
+                    int count = elem.Elements("Song").Count(s => !string.IsNullOrEmpty(s.Attribute("Time")?.Value));
+                    dates.Add((new DateTime(year, month, day), key, count));
                 }
             }
 
-            foreach (DateTime time in list.OrderByDescending(t => t.Date))
-                DateList.Add(time.ToString("dd.MM.yyyy"));
+            foreach ((DateTime dt, string key, int count) in dates.OrderByDescending(t => t.Dt.Date))
+            {
+                DateList.Add(new HistoryDateItem
+                {
+                    DateKey = key,
+                    Day = dt.Day.ToString("00"),
+                    Month = dt.ToString("MMM", CultureInfo.CurrentCulture),
+                    Weekday = dt.ToString("ddd", CultureInfo.CurrentCulture),
+                    SongCount = count
+                });
+            }
 
-            if (DateList.Count > 0 && string.IsNullOrEmpty(SelectedDate))
-                SelectedDate = DateList[0];
-            else if (DateList.Count > 0 && SelectedDate != null && DateList.Contains(SelectedDate))
-                LoadSongsForSelectedDate();
+            OnPropertyChanged(nameof(HasDates));
+
+            if (DateList.Count == 0)
+            {
+                SelectedDate = null;
+                return;
+            }
+
+            HistoryDateItem restore = keepKey != null
+                ? DateList.FirstOrDefault(d => d.DateKey == keepKey)
+                : null;
+            SelectedDate = restore ?? DateList[0];
         }
         catch (Exception ex)
         {
@@ -159,24 +209,73 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
     private void LoadSongsForSelectedDate()
     {
         Songs.Clear();
-        if (string.IsNullOrEmpty(SelectedDate) || _doc == null) return;
+        SelectedSong = null;
+        if (SelectedDate == null || _doc == null)
+        {
+            OnPropertyChanged(nameof(HasSongs));
+            OnPropertyChanged(nameof(HasNoSongs));
+            return;
+        }
 
-        XElement root = _doc.Descendants("d_" + SelectedDate).FirstOrDefault();
-        if (root == null) return;
+        XElement root = _doc.Descendants("d_" + SelectedDate.DateKey).FirstOrDefault();
+        if (root == null)
+        {
+            OnPropertyChanged(nameof(HasSongs));
+            OnPropertyChanged(nameof(HasNoSongs));
+            return;
+        }
 
-        var nodes = root.Elements().Reverse().ToList();
-        foreach (XElement node in nodes)
+        foreach (XElement node in root.Elements().Reverse())
         {
             if (node.Name != "Song") continue;
             string timeVal = node.Attribute("Time")?.Value;
             if (string.IsNullOrEmpty(timeVal)) continue;
-            var data = new Song
+            if (!double.TryParse(timeVal, NumberStyles.Float, CultureInfo.InvariantCulture, out double unix) &&
+                !double.TryParse(timeVal, out unix))
+                continue;
+
+            string fullName = node.Value ?? "";
+            SplitTrackName(fullName, out string title, out string artist);
+
+            var source = new Song
             {
-                Time = UnixTimeStampToDateTime(double.Parse(timeVal)).ToLongTimeString(),
-                Name = node.Value,
-                UnixTimeStamp = long.Parse(timeVal)
+                Time = UnixTimeStampToDateTime(unix).ToLongTimeString(),
+                Name = fullName,
+                UnixTimeStamp = (long)unix
             };
-            Songs.Add(data);
+
+            Songs.Add(new HistorySongItem
+            {
+                Time = source.Time,
+                Title = title,
+                Artist = artist,
+                FullName = fullName,
+                UnixTimeStamp = source.UnixTimeStamp,
+                Source = source
+            });
+        }
+
+        OnPropertyChanged(nameof(HasSongs));
+        OnPropertyChanged(nameof(HasNoSongs));
+    }
+
+    private static void SplitTrackName(string fullName, out string title, out string artist)
+    {
+        title = fullName?.Trim() ?? "";
+        artist = "";
+        if (string.IsNullOrEmpty(title))
+            return;
+
+        int sep = title.IndexOf(" - ", StringComparison.Ordinal);
+        if (sep <= 0)
+            return;
+
+        artist = title[..sep].Trim();
+        title = title[(sep + 3)..].Trim();
+        if (string.IsNullOrEmpty(title))
+        {
+            title = fullName.Trim();
+            artist = "";
         }
     }
 
@@ -186,17 +285,14 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
         return dt.AddSeconds(unixTimeStamp).ToLocalTime();
     }
 
-    private void Refresh()
-    {
-        LoadFile();
-    }
+    private void Refresh() => LoadFile();
 
     private void CopyHistoryUrl()
     {
         try
         {
             Clipboard.SetDataObject($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
-            StatusMessage = "History URL copied to Clipboard";
+            StatusMessage = "History URL copied to clipboard";
         }
         catch (Exception ex)
         {
@@ -206,10 +302,10 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
 
     private void DeleteSelectedDate()
     {
-        if (string.IsNullOrEmpty(SelectedDate)) return;
+        if (SelectedDate == null) return;
         try
         {
-            string key = "d_" + SelectedDate;
+            string key = "d_" + SelectedDate.DateKey;
             var xdoc = XDocument.Load(HistoryPath);
             xdoc.Descendants(key).Remove();
             xdoc.Save(HistoryPath);
@@ -223,13 +319,13 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
 
     private void DeleteSelectedSong()
     {
-        if (SelectedSong == null || string.IsNullOrEmpty(SelectedDate)) return;
+        if (SelectedSong == null || SelectedDate == null) return;
         try
         {
             long key = SelectedSong.UnixTimeStamp;
             var xdoc = XDocument.Load(HistoryPath);
             xdoc.Element("History")
-                ?.Element("d_" + SelectedDate)
+                ?.Element("d_" + SelectedDate.DateKey)
                 ?.Elements("Song")
                 .Where(x => (string)x.Attribute("Time") == key.ToString())
                 .Remove();
@@ -248,8 +344,6 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
         _uploadHistory = Settings.UploadHistory;
         OnPropertyChanged(nameof(SaveHistory));
         OnPropertyChanged(nameof(UploadHistory));
-        OnPropertyChanged(nameof(SaveToggleContent));
-        OnPropertyChanged(nameof(UploadToggleContent));
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

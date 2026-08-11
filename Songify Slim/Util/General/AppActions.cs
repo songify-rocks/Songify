@@ -83,11 +83,12 @@ internal static class AppActions
     public static void TwitchLoginMain() =>
         TwitchHandler.ApiConnect(TwitchAccount.Main);
 
-    public static void TwitchConnect()
+    /// <summary>Same as main-window Twitch → Connect: start/restart EventSub host.</summary>
+    public static async Task TwitchConnectAsync()
     {
         try
         {
-            TwitchHandler.ConnectTwitchChatClient();
+            await TwitchHandler.StartOrRestartAsync();
         }
         catch (Exception ex)
         {
@@ -95,6 +96,7 @@ internal static class AppActions
         }
     }
 
+    /// <summary>Tray / explicit stop. Main menu uses Connect only (ForceDisconnect path).</summary>
     public static async Task TwitchDisconnectAsync()
     {
         try
@@ -108,20 +110,20 @@ internal static class AppActions
         }
     }
 
-    public static async Task CheckTwitchOnlineStatusAsync()
+    /// <summary>Returns whether the channel is live after refreshing <see cref="Settings.IsLive"/>.</summary>
+    public static async Task<bool> CheckTwitchOnlineStatusAsync()
     {
         try
         {
             Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
             Logger.Info(LogSource.Twitch, $"Stream is {(Settings.IsLive ? "Live" : "Offline")}");
             AppShellBridge.Current?.SetStatusText(Settings.IsLive ? "Stream is Up!" : "Stream is offline.");
-            await AppDialog.ShowAsync(
-                "Twitch status",
-                Settings.IsLive ? "Stream is live." : "Stream is offline.");
+            return Settings.IsLive;
         }
         catch (Exception ex)
         {
             Logger.LogExc(ex);
+            return false;
         }
     }
 
