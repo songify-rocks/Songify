@@ -979,7 +979,6 @@ namespace Songify_Slim.Util.Configuration
         public bool TwSrUnlimitedSr { get; set; }
         public bool UpdateRequired { get; set; } = true;
         public bool Upload { get; set; }
-        public bool UploadHistory { get; set; }
         public bool UseDefaultBrowser { get; set; }
         public bool UseOwnApp { get; set; }
         public PauseOptions PauseOption { get; set; } = PauseOptions.Nothing;

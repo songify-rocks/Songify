@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views.WPFUI.ViewModels;
 
@@ -21,10 +22,13 @@ public partial class HistoryPage : Page
         Unloaded += HistoryPage_Unloaded;
     }
 
-    private void HistoryPage_Loaded(object sender, RoutedEventArgs e)
+    private async void HistoryPage_Loaded(object sender, RoutedEventArgs e)
     {
         if (TxtTitle != null)
             TxtTitle.Text = Properties.Resources.window_history_title;
+
+        Window owner = Window.GetWindow(this);
+        await HistoryStore.MigrateLegacyIfNeededAsync(owner);
 
         _viewModel.ApplySettings();
         _viewModel.LoadFile();
@@ -33,11 +37,12 @@ public partial class HistoryPage : Page
         {
             string dir = Path.GetDirectoryName(_viewModel.HistoryPath);
             if (string.IsNullOrEmpty(dir)) return;
+            _watcher?.Dispose();
             _watcher = new FileSystemWatcher
             {
                 Path = dir,
                 NotifyFilter = NotifyFilters.LastWrite,
-                Filter = "history.shr",
+                Filter = Path.GetFileName(_viewModel.HistoryPath),
                 EnableRaisingEvents = true
             };
             _watcher.Changed += (s, args) =>

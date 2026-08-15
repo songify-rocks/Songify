@@ -2207,4 +2207,7 @@ gwyden - Hertz - karimawii
     <value>Nenhum CSV carregado.</value>
     <comment>Context: Status when artist import has no CSV loaded yet.</comment>
   </data>
+
+  <data name="window_history_migrate_title" xml:space="preserve"><value>Updating history</value><comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment></data>
+  <data name="window_history_migrate_body" xml:space="preserve"><value>Converting your song history to the new format...</value><comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment></data>
 </root>

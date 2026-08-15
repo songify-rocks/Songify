@@ -32,7 +32,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Threading;
-using System.Xml.Linq;
 using Windows.Media.Control;
 using Windows.Storage.Streams;
 using Image = SpotifyAPI.Web.Image;
@@ -1335,64 +1334,13 @@ namespace Songify_Slim.Util.Songify
                 }));
             }
 
-            //Write History
+            // Write local history (YAML, date-grouped)
             string historySongOutput = $"{songInfo.Artists} - {songInfo.Title}";
             if (Settings.SaveHistory && !string.IsNullOrEmpty(historySongOutput) &&
                 historySongOutput.Trim() != Settings.CustomPauseText)
             {
                 int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-
-                //save the history file
-                string historyPath = Path.Combine(AppPaths.GetAppDirectory(), "history.shr");
-                XDocument doc;
-                if (!File.Exists(historyPath))
-                {
-                    doc = new XDocument(new XElement("History",
-                        new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
-                    doc.Save(historyPath);
-                }
-
-                doc = XDocument.Load(historyPath);
-                if (!doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).Any())
-                    doc.Descendants("History").FirstOrDefault()
-                        ?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
-
-                XElement elem = new("Song", historySongOutput);
-                elem.Add(new XAttribute("Time", unixTimestamp));
-                XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
-                XNode lastNode = x?.LastNode;
-                if (lastNode != null)
-                {
-                    if (historySongOutput != ((XElement)lastNode).Value)
-                        x.Add(elem);
-                }
-                else
-                {
-                    x?.Add(elem);
-                }
-                doc.Save(historyPath);
-            }
-
-            //Upload History
-            if (Settings.UploadHistory && !string.IsNullOrEmpty(currentSongOutput.Trim()) &&
-                currentSongOutput.Trim() != Settings.CustomPauseText)
-            {
-                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-
-                // Upload Song
-                try
-                {
-                    await SongifyService.UploadHistory(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), unixTimestamp);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                    // Writing to the statusstrip label
-                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        AppShellBridge.Current?.SetStatusText("Error uploading history");
-                    }));
-                }
+                HistoryStore.AppendSong(historySongOutput.Trim(), unixTimestamp);
             }
 
             // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
@@ -1846,7 +1794,7 @@ namespace Songify_Slim.Util.Songify
 
         /// <summary>
         /// Refresh MainWindow now-playing text without executing full WriteSongInfo side effects
-        /// (history upload/chat announce/files). Used for Pear same-song state updates.
+        /// (local history/chat announce/files). Used for Pear same-song state updates.
         /// </summary>
         private static void UpdatePearNowPlayingPreviewOnly(TrackInfo track)
         {

@@ -943,12 +943,6 @@ namespace Songify_Slim.Util.Configuration
             set => SetUpload(value);
         }
 
-        public static bool UploadHistory
-        {
-            get => GetUploadHistory();
-            set => SetUploadHistory(value);
-        }
-
         public static bool UseDefaultBrowser { get => GetUseDefaultBrowser(); set => SetUseDefaultBrowser(value); }
 
         public static bool UseOwnApp
@@ -1408,7 +1402,6 @@ namespace Songify_Slim.Util.Configuration
                 UnlimitedSrUserlevelsReward = GetUnlimitedSrUserlevelsReward(),
                 UpdateRequired = GetUpdateRequired(),
                 Upload = GetUpload(),
-                UploadHistory = GetUploadHistory(),
                 UseDefaultBrowser = GetUseDefaultBrowser(),
                 UseOwnApp = GetUseOwnApp(),
                 UserBlacklist = GetUserBlacklist(),
@@ -2216,11 +2209,6 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetUpload()
         {
             return CurrentConfig.AppConfig.Upload;
-        }
-
-        private static bool GetUploadHistory()
-        {
-            return CurrentConfig.AppConfig.UploadHistory;
         }
 
         private static bool GetUseDefaultBrowser()
@@ -3081,12 +3069,6 @@ namespace Songify_Slim.Util.Configuration
         private static void SetUpload(bool value)
         {
             CurrentConfig.AppConfig.Upload = value;
-            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
-        }
-
-        private static void SetUploadHistory(bool value)
-        {
-            CurrentConfig.AppConfig.UploadHistory = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

@@ -127,6 +127,16 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         if (RootNavigationView != null)
             RootNavigationView.Navigate(typeof(Pages.OverviewPage));
 
+        // Migrate legacy history.shr → history.yaml before the fetcher starts writing.
+        try
+        {
+            await HistoryStore.MigrateLegacyIfNeededAsync(this);
+        }
+        catch (Exception ex)
+        {
+            Util.General.Logger.LogExc(ex);
+        }
+
         // Run app startup logic (config checks, Spotify/Twitch init, song fetcher timer)
         try
         {
@@ -519,8 +529,6 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private void MenuWebServerUrl_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWebServerUrl();
 
     private void MenuQueueBrowser_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenQueueInBrowser();
-
-    private void MenuHistoryBrowser_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenHistoryInBrowser();
 
     private void MenuTwitchLogin_OnClick(object sender, RoutedEventArgs e) => AppActions.TwitchLoginMain();
 

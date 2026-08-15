@@ -77,9 +77,6 @@ internal static class AppActions
     public static void OpenQueueInBrowser() =>
         ShellHelper.OpenUrl($"{GlobalObjects.BaseUrl}/queue.php?id=" + Settings.Uuid);
 
-    public static void OpenHistoryInBrowser() =>
-        ShellHelper.OpenUrl($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
-
     public static void TwitchLoginMain() =>
         TwitchHandler.ApiConnect(TwitchAccount.Main);
 

@@ -99,22 +99,13 @@
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                     Text="{DynamicResource window_history_subtitle}" />
             </StackPanel>
-            <StackPanel
+            <ui:Button
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Orientation="Horizontal">
-                <ui:Button
-                    Margin="0,0,8,0"
-                    Appearance="Secondary"
-                    Command="{Binding CopyHistoryUrlCommand}"
-                    Content="{DynamicResource window_history_copy_url}"
-                    ToolTip="{DynamicResource window_history_copy_url_tooltip}" />
-                <ui:Button
-                    Appearance="Secondary"
-                    Command="{Binding RefreshCommand}"
-                    Content="{DynamicResource common_refresh}"
-                    ToolTip="{DynamicResource window_history_refresh_tooltip}" />
-            </StackPanel>
+                Appearance="Secondary"
+                Command="{Binding RefreshCommand}"
+                Content="{DynamicResource common_refresh}"
+                ToolTip="{DynamicResource window_history_refresh_tooltip}" />
         </Grid>
 
         <!--  Options  -->
@@ -122,17 +113,10 @@
             Grid.Row="1"
             Margin="0,0,0,16"
             Padding="14,10">
-            <StackPanel Orientation="Horizontal">
-                <ui:ToggleSwitch
-                    Margin="0,0,20,0"
-                    Content="{DynamicResource window_history_save_locally}"
-                    IsChecked="{Binding SaveHistory, Mode=TwoWay}"
-                    ToolTip="{DynamicResource window_history_save_tooltip}" />
-                <ui:ToggleSwitch
-                    Content="{DynamicResource common_upload}"
-                    IsChecked="{Binding UploadHistory, Mode=TwoWay}"
-                    ToolTip="{DynamicResource window_history_upload_tooltip}" />
-            </StackPanel>
+            <ui:ToggleSwitch
+                Content="{DynamicResource window_history_save_locally}"
+                IsChecked="{Binding SaveHistory, Mode=TwoWay}"
+                ToolTip="{DynamicResource window_history_save_tooltip}" />
         </ui:Card>
 
         <!--  Main: dates | tracks  -->

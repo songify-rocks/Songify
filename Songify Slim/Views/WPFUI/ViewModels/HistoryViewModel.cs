@@ -1,15 +1,10 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
-using System.IO;
-using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
-using System.Xml.Linq;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.ViewModels;
@@ -42,18 +37,15 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
     private HistoryDateItem _selectedDate;
     private HistorySongItem _selectedSong;
     private bool _saveHistory;
-    private bool _uploadHistory;
     private string _statusMessage = "";
-    private XDocument _doc;
 
     public HistoryViewModel()
     {
-        HistoryPath = Path.Combine(AppPaths.GetAppDirectory(), "history.shr");
+        HistoryPath = HistoryStore.FilePath;
         DateList = new ObservableCollection<HistoryDateItem>();
         Songs = new ObservableCollection<HistorySongItem>();
 
         RefreshCommand = new RelayCommand(Refresh);
-        CopyHistoryUrlCommand = new RelayCommand(CopyHistoryUrl);
         DeleteDateCommand = new RelayCommand(DeleteSelectedDate, () => SelectedDate != null);
         DeleteSongCommand = new RelayCommand(DeleteSelectedSong, () => SelectedSong != null);
     }
@@ -112,21 +104,6 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
         }
     }
 
-    public bool UploadHistory
-    {
-        get => _uploadHistory;
-        set
-        {
-            if (_uploadHistory == value) return;
-            _uploadHistory = value;
-            Settings.UploadHistory = value;
-            OnPropertyChanged();
-            StatusMessage = value
-                ? (Application.Current?.TryFindResource("window_history_upload_on") as string ?? "Uploading history")
-                : (Application.Current?.TryFindResource("window_history_upload_off") as string ?? "History upload is off");
-        }
-    }
-
     public string StatusMessage
     {
         get => _statusMessage;
@@ -134,7 +111,6 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
     }
 
     public ICommand RefreshCommand { get; }
-    public ICommand CopyHistoryUrlCommand { get; }
     public ICommand DeleteDateCommand { get; }
     public ICommand DeleteSongCommand { get; }
 
@@ -147,38 +123,13 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
     {
         try
         {
-            if (!File.Exists(HistoryPath))
-            {
-                _doc = new XDocument(new XElement("History",
-                    new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
-                _doc.Save(HistoryPath);
-            }
+            HistoryStore.EnsureReady();
 
             string keepKey = _selectedDate?.DateKey;
             DateList.Clear();
             Songs.Clear();
 
-            _doc = XDocument.Load(HistoryPath);
-            var dates = new List<(DateTime Dt, string Key, int Count)>();
-
-            if (_doc.Root != null)
-            {
-                foreach (XElement elem in _doc.Root.Elements())
-                {
-                    string key = elem.Name.ToString().Replace("d_", "");
-                    string[] parts = key.Split('.');
-                    if (parts.Length != 3) continue;
-                    if (!int.TryParse(parts[0], out int day) ||
-                        !int.TryParse(parts[1], out int month) ||
-                        !int.TryParse(parts[2], out int year))
-                        continue;
-
-                    int count = elem.Elements("Song").Count(s => !string.IsNullOrEmpty(s.Attribute("Time")?.Value));
-                    dates.Add((new DateTime(year, month, day), key, count));
-                }
-            }
-
-            foreach ((DateTime dt, string key, int count) in dates.OrderByDescending(t => t.Dt.Date))
+            foreach ((string key, DateTime dt, int count) in HistoryStore.GetDateSummaries())
             {
                 DateList.Add(new HistoryDateItem
                 {
@@ -199,7 +150,7 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
             }
 
             HistoryDateItem restore = keepKey != null
-                ? DateList.FirstOrDefault(d => d.DateKey == keepKey)
+                ? FirstDateOrDefault(keepKey)
                 : null;
             SelectedDate = restore ?? DateList[0];
         }
@@ -210,42 +161,38 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
         }
     }
 
+    private HistoryDateItem FirstDateOrDefault(string keepKey)
+    {
+        foreach (HistoryDateItem d in DateList)
+        {
+            if (d.DateKey == keepKey)
+                return d;
+        }
+
+        return null;
+    }
+
     private void LoadSongsForSelectedDate()
     {
         Songs.Clear();
         SelectedSong = null;
-        if (SelectedDate == null || _doc == null)
+        if (SelectedDate == null)
         {
             OnPropertyChanged(nameof(HasSongs));
             OnPropertyChanged(nameof(HasNoSongs));
             return;
         }
 
-        XElement root = _doc.Descendants("d_" + SelectedDate.DateKey).FirstOrDefault();
-        if (root == null)
+        foreach (HistorySongRecord record in HistoryStore.GetSongsForDate(SelectedDate.DateKey))
         {
-            OnPropertyChanged(nameof(HasSongs));
-            OnPropertyChanged(nameof(HasNoSongs));
-            return;
-        }
-
-        foreach (XElement node in root.Elements().Reverse())
-        {
-            if (node.Name != "Song") continue;
-            string timeVal = node.Attribute("Time")?.Value;
-            if (string.IsNullOrEmpty(timeVal)) continue;
-            if (!double.TryParse(timeVal, NumberStyles.Float, CultureInfo.InvariantCulture, out double unix) &&
-                !double.TryParse(timeVal, out unix))
-                continue;
-
-            string fullName = node.Value ?? "";
+            string fullName = record.Song ?? "";
             SplitTrackName(fullName, out string title, out string artist);
 
             var source = new Song
             {
-                Time = UnixTimeStampToDateTime(unix).ToLongTimeString(),
+                Time = UnixTimeStampToDateTime(record.Time).ToLongTimeString(),
                 Name = fullName,
-                UnixTimeStamp = (long)unix
+                UnixTimeStamp = record.Time
             };
 
             Songs.Add(new HistorySongItem
@@ -291,29 +238,12 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
 
     private void Refresh() => LoadFile();
 
-    private void CopyHistoryUrl()
-    {
-        try
-        {
-            Clipboard.SetDataObject($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
-            StatusMessage = Application.Current?.TryFindResource("window_history_url_copied") as string
-                            ?? "History URL copied to clipboard";
-        }
-        catch (Exception ex)
-        {
-            Logger.LogExc(ex);
-        }
-    }
-
     private void DeleteSelectedDate()
     {
         if (SelectedDate == null) return;
         try
         {
-            string key = "d_" + SelectedDate.DateKey;
-            var xdoc = XDocument.Load(HistoryPath);
-            xdoc.Descendants(key).Remove();
-            xdoc.Save(HistoryPath);
+            HistoryStore.DeleteDate(SelectedDate.DateKey);
             LoadFile();
         }
         catch (Exception ex)
@@ -327,14 +257,7 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
         if (SelectedSong == null || SelectedDate == null) return;
         try
         {
-            long key = SelectedSong.UnixTimeStamp;
-            var xdoc = XDocument.Load(HistoryPath);
-            xdoc.Element("History")
-                ?.Element("d_" + SelectedDate.DateKey)
-                ?.Elements("Song")
-                .Where(x => (string)x.Attribute("Time") == key.ToString())
-                .Remove();
-            xdoc.Save(HistoryPath);
+            HistoryStore.DeleteSong(SelectedDate.DateKey, SelectedSong.UnixTimeStamp);
             LoadFile();
         }
         catch (Exception ex)
@@ -346,9 +269,7 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
     public void ApplySettings()
     {
         _saveHistory = Settings.SaveHistory;
-        _uploadHistory = Settings.UploadHistory;
         OnPropertyChanged(nameof(SaveHistory));
-        OnPropertyChanged(nameof(UploadHistory));
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

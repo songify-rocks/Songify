@@ -24,26 +24,5 @@ namespace Songify_Slim.Util.Songify
                 Logger.Error(LogSource.Api, "Error uploading Song information", e);
             }
         }
-
-        public static async Task UploadHistory(string currSong, int unixTimestamp)
-        {
-            try
-            {
-                string song = GlobalObjects.CurrentSong == null ? currSong : $"{GlobalObjects.CurrentSong.Artists} - {GlobalObjects.CurrentSong.Title}";
-
-                dynamic payload = new
-                {
-                    id = Settings.Uuid,
-                    tst = unixTimestamp,
-                    song,
-                    key = Settings.AccessKey
-                };
-                await SongifyApi.PostHistoryAsync(Json.Serialize(payload));
-            }
-            catch (Exception e)
-            {
-                Logger.Error(LogSource.Api, "Error uploading history information", e);
-            }
-        }
     }
 }

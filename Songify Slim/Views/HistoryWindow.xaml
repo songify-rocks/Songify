@@ -29,24 +29,6 @@
                     Checked="Tglbtn_Save_Checked"
                     Content="Save"
                     Unchecked="Tglbtn_Save_Checked" />
-                <ToggleButton
-                    x:Name="Tglbtn_Upload"
-                    Margin="0,0,6,0"
-                    Padding="8,2"
-                    Checked="Tglbtn_Upload_Checked"
-                    Content="Upload"
-                    Unchecked="Tglbtn_Upload_Checked" />
-                <Button
-                    x:Name="Btn_CpyHistoryURL"
-                    Margin="0,0,6,0"
-                    Padding="6,2"
-                    Click="Btn_CpyHistoryURL_Click"
-                    ToolTip="{DynamicResource window_history_copy_url_tooltip}">
-                    <ui:SymbolIcon
-                        Width="15"
-                        Height="15"
-                        Symbol="Link24" />
-                </Button>
                 <Button
                     x:Name="BtnRefresh"
                     Padding="6,2"

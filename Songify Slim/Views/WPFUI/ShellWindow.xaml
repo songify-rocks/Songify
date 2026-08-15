@@ -67,7 +67,6 @@
                                 <MenuItem Click="MenuWidget_OnClick" Header="{DynamicResource menu_file_widget}" />
                                 <MenuItem Click="MenuWebServerUrl_OnClick" Header="{DynamicResource menu_view_webserver_url}" />
                                 <MenuItem Click="MenuQueueBrowser_OnClick" Header="{DynamicResource menu_song_requests_queue_browser}" />
-                                <MenuItem Click="MenuHistoryBrowser_OnClick" Header="{DynamicResource menu_history_browser}" />
                             </ContextMenu>
                         </ui:DropDownButton.Flyout>
                     </ui:DropDownButton>

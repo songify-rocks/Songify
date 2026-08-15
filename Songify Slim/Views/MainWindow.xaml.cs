@@ -399,20 +399,9 @@ namespace Songify_Slim.Views
 
         private void BtnHistory_Click(object sender, RoutedEventArgs e)
         {
-            // Opens the History in either Window or Browser
-            MenuItem item = (MenuItem)sender;
-            if (item.Tag.ToString().Contains("Window"))
-            {
-                if (IsWindowOpen<HistoryWindow>()) return;
-                // Opens the 'History'-Window
-                HistoryWindow hW = new() { Top = Top, Left = Left };
-                hW.ShowDialog();
-            }
-            // Opens the Queue in the Browser
-            else if (item.Tag.ToString().Contains("Browser"))
-            {
-                ShellHelper.OpenUrl($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
-            }
+            if (IsWindowOpen<HistoryWindow>()) return;
+            HistoryWindow hW = new() { Top = Top, Left = Left };
+            hW.ShowDialog();
         }
 
         private void BtnPaypal_Click(object sender, RoutedEventArgs e)

@@ -264,11 +264,6 @@
                     Click="BtnHistory_Click"
                     Header="{DynamicResource menu_history_window}"
                     Tag="Window" />
-                <MenuItem
-                    d:Header="{x:Static local:Resources.menu_history_browser}"
-                    Click="BtnHistory_Click"
-                    Header="{DynamicResource menu_history_browser}"
-                    Tag="Browser" />
             </MenuItem>
             <MenuItem d:Header="{x:Static local:Resources.menu_view}" Header="{DynamicResource menu_view}">
                 <MenuItem

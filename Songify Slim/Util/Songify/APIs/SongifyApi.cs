@@ -44,8 +44,6 @@ namespace Songify_Slim.Util.Songify.APIs
 
         public static Task PostSongAsync(string body) => ApiClient.Post("song", body);
 
-        public static Task PostHistoryAsync(string body) => ApiClient.Post("history", body);
-
         public static Task<string> GetMotdAsync() => ApiClient.Get("motd", "");
 
         public static Task<string> GetCanvasRawAsync(string id) => ApiClient.GetCanvas(id);
