@@ -7,8 +7,11 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 using System.Windows.Threading;
+using Songify_Slim.Models.Responses;
 using Songify_Slim.Models.Spotify;
+using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
@@ -123,6 +126,15 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         UpdatePearStatusIndicator();
         OnPropertyChanged(nameof(SpotifyBrush));
 
+        PsaManager.Changed -= OnPsaChanged;
+        PsaManager.Changed += OnPsaChanged;
+        PsaManager.ListUpdated -= OnPsaListUpdated;
+        PsaManager.ListUpdated += OnPsaListUpdated;
+        PsaManager.Start();
+        RebuildPsaPanel();
+        UpdatePsaBadge();
+        UpdatePsaMarkAllReadVisibility();
+
         // Navigate to Overview once the window and NavigationView are fully loaded
         if (RootNavigationView != null)
             RootNavigationView.Navigate(typeof(Pages.OverviewPage));
@@ -167,6 +179,9 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
         PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
+        PsaManager.Changed -= OnPsaChanged;
+        PsaManager.ListUpdated -= OnPsaListUpdated;
+        PsaManager.Stop();
         AppShellBridge.Unregister(this);
         Settings.PosX = Left;
         Settings.PosY = Top;
@@ -704,6 +719,111 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         Settings.PosY = Top;
         // Closing event handles Systray cancel / force close
     }
+
+    #region PSAs / notifications
+
+    private async void BtnPsa_OnClick(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            await PsaManager.RefreshAsync();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+
+        RebuildPsaPanel();
+        UpdatePsaBadge();
+        UpdatePsaMarkAllReadVisibility();
+        FlyPsa.Visibility = FlyPsa.Visibility == Visibility.Visible
+            ? Visibility.Collapsed
+            : Visibility.Visible;
+    }
+
+    private void BtnPsaClose_OnClick(object sender, RoutedEventArgs e)
+    {
+        FlyPsa.Visibility = Visibility.Collapsed;
+    }
+
+    private void BtnPsaMarkAllRead_OnClick(object sender, RoutedEventArgs e)
+    {
+        PsaManager.MarkAllAsRead();
+    }
+
+    private void OnPsaChanged()
+    {
+        UpdatePsaBadge();
+        UpdatePsaMarkAllReadVisibility();
+        foreach (UIElement child in PnlPsas.Children)
+        {
+            if (child is PsaControl control)
+                control.ApplyReadState();
+        }
+    }
+
+    private void OnPsaListUpdated()
+    {
+        RebuildPsaPanel();
+        UpdatePsaBadge();
+        UpdatePsaMarkAllReadVisibility();
+    }
+
+    private void RebuildPsaPanel()
+    {
+        if (PnlPsas == null)
+            return;
+
+        PnlPsas.Children.Clear();
+        IReadOnlyList<Psa> psas = PsaManager.Current;
+        for (int i = 0; i < psas.Count; i++)
+        {
+            PnlPsas.Children.Add(new PsaControl(psas[i]));
+            if (i < psas.Count - 1)
+            {
+                PnlPsas.Children.Add(new Rectangle
+                {
+                    Height = 1,
+                    Fill = (Brush)TryFindResource("ControlStrokeColorDefaultBrush") ?? Brushes.Gray,
+                    Margin = new Thickness(0, 6, 0, 6)
+                });
+            }
+        }
+    }
+
+    private void UpdatePsaBadge()
+    {
+        if (PsaBadgeIcon == null || PsaBadgePill == null || PsaBadgeText == null)
+            return;
+
+        bool hasAny = PsaManager.HasAny();
+        PsaBadgeIcon.Filled = hasAny;
+
+        int unread = PsaManager.GetUnreadCount();
+        if (unread > 0)
+        {
+            PsaBadgeText.Text = unread.ToString();
+            PsaBadgePill.Background = PsaManager.GetSeverityBadgeBrush();
+            PsaBadgePill.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            PsaBadgeText.Text = string.Empty;
+            PsaBadgePill.Visibility = Visibility.Collapsed;
+        }
+    }
+
+    private void UpdatePsaMarkAllReadVisibility()
+    {
+        if (BtnPsaMarkAllRead == null)
+            return;
+
+        BtnPsaMarkAllRead.Visibility = PsaManager.HasUnread()
+            ? Visibility.Visible
+            : Visibility.Collapsed;
+    }
+
+    #endregion
 
     public event PropertyChangedEventHandler PropertyChanged;
 

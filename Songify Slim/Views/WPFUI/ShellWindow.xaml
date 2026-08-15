@@ -55,6 +55,45 @@
             </ui:TitleBar.Header>
             <ui:TitleBar.TrailingContent>
                 <StackPanel Margin="0,0,4,0" Orientation="Horizontal">
+                    <Grid
+                        Width="36"
+                        Height="32"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center">
+                        <ui:Button
+                            x:Name="BtnPsa"
+                            Padding="6"
+                            Appearance="Transparent"
+                            Click="BtnPsa_OnClick"
+                            ToolTip="{DynamicResource menu_notifications}">
+                            <ui:SymbolIcon
+                                x:Name="PsaBadgeIcon"
+                                Width="16"
+                                Height="16"
+                                Symbol="Alert24" />
+                        </ui:Button>
+                        <Border
+                            x:Name="PsaBadgePill"
+                            MinWidth="16"
+                            Height="16"
+                            Margin="0,-2,-2,0"
+                            Padding="4,0"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Top"
+                            Background="IndianRed"
+                            CornerRadius="8"
+                            Visibility="Collapsed">
+                            <TextBlock
+                                x:Name="PsaBadgeText"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="10"
+                                FontWeight="SemiBold"
+                                Foreground="White"
+                                Text="0" />
+                        </Border>
+                    </Grid>
+
                     <ui:DropDownButton
                         MinWidth="72"
                         Margin="0,0,4,0"
@@ -278,6 +317,54 @@
                 </ui:NavigationViewItem>
             </ui:NavigationView.FooterMenuItems>
         </ui:NavigationView>
+
+        <!--  PSA / notifications panel (overlays content, below title bar)  -->
+        <Border
+            x:Name="FlyPsa"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Width="360"
+            HorizontalAlignment="Right"
+            Background="{DynamicResource ApplicationBackgroundBrush}"
+            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="1,0,0,0"
+            Panel.ZIndex="100"
+            Visibility="Collapsed">
+            <DockPanel>
+                <DockPanel
+                    Margin="12,10"
+                    DockPanel.Dock="Top"
+                    LastChildFill="True">
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Text="{DynamicResource menu_notifications}" />
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                        <ui:Button
+                            x:Name="BtnPsaMarkAllRead"
+                            MinWidth="40"
+                            Height="28"
+                            Margin="8,0"
+                            Appearance="Transparent"
+                            Click="BtnPsaMarkAllRead_OnClick"
+                            Content="All"
+                            ToolTip="{DynamicResource common_mark_all_read}"
+                            Visibility="Collapsed" />
+                        <ui:Button
+                            Width="28"
+                            Height="28"
+                            Appearance="Transparent"
+                            Click="BtnPsaClose_OnClick"
+                            Content="✕" />
+                    </StackPanel>
+                </DockPanel>
+                <ScrollViewer Margin="8,0,8,8" VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="PnlPsas" />
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
         <!--  Status bar: always visible at bottom  -->
         <Border
             Grid.Row="3"

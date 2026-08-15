@@ -308,13 +308,11 @@ namespace Songify_Slim.Views
 
         public void Window_ResponseParams_OnLocationChanged(object sender, EventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || Owner is not Window owner)
                 return;
-            if (Owner is not Window_Settings settings) return;
-            settings.LocationChanged -= settings.Window_LocationChanged;
-            settings.Left = Left - settings.Width;
-            settings.Top = Top;
-            settings.LocationChanged += settings.Window_LocationChanged;
+
+            owner.Left = Left - owner.ActualWidth;
+            owner.Top = Top;
         }
     }
 }

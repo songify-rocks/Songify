@@ -12,7 +12,7 @@ using static Songify_Slim.Util.General.Enums;
 namespace Songify_Slim.Util.General;
 
 /// <summary>
-/// Shared shell/menu actions so ShellWindow (and tray) do not depend on MainWindow handlers.
+/// Shared shell/menu actions for ShellWindow (and tray).
 /// </summary>
 internal static class AppActions
 {

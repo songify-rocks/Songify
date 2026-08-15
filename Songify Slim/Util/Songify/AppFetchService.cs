@@ -12,7 +12,7 @@ namespace Songify_Slim.Util.Songify;
 
 /// <summary>
 /// Application-wide song fetch logic: runs SongFetcher on a timer and updates GlobalObjects.CurrentSong.
-/// Use this when the main window is ShellWindow (or any context where MainWindow's fetch timer is not used).
+/// Owns the song-fetch timer for the Fluent shell.
 /// </summary>
 public static class AppFetchService
 {

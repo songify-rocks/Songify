@@ -9,9 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using Songify_Slim.Util.Configuration;
-using Songify_Slim.Views;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Core.Exceptions;
@@ -490,10 +488,6 @@ namespace Songify_Slim.Util.Songify.Twitch
                 {
                     AppShellBridge.Current?.SetTwitchBotState(
                         chatEnabled ? ConnectionIndicatorState.Connected : ConnectionIndicatorState.Error);
-
-                    MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-                    if (mainWindow?.IconTwitchBot != null)
-                        mainWindow.IconTwitchBot.Foreground = chatEnabled ? Brushes.GreenYellow : Brushes.IndianRed;
                 });
             }
             catch (Exception ex)

@@ -19,7 +19,7 @@ namespace Songify_Slim.Util.General;
 
 /// <summary>
 /// Runs application startup logic (config checks, dialogs, Spotify/Twitch init, fetch timer).
-/// Call from ShellWindow or MainWindow so song fetcher and services start regardless of which window is used.
+/// Call from ShellWindow so song fetcher and services start with the Fluent shell.
 /// </summary>
 public static class AppStartup
 {
@@ -46,12 +46,14 @@ public static class AppStartup
         Logger.Info(LogSource.Spotify, "Spotify init done");
 
         Logger.Info(LogSource.Twitch, "Starting Twitch init");
-        await RunTwitchInitAsync(useShellWindow);
+        await RunTwitchInitAsync(useShellWindow, owner);
         Logger.Info(LogSource.Twitch, "Twitch init done");
 
         Logger.Info(LogSource.Core, "Starting Final Setup");
         await RunFinalSetupAsync(owner);
         Logger.Info(LogSource.Core, "Final Setup done");
+
+        ArtistBlocklistSyncService.Start();
     }
 
     /// <returns><c>false</c> if startup should abort (app shutting down).</returns>
@@ -175,13 +177,13 @@ public static class AppStartup
         }
     }
 
-    private static async Task RunTwitchInitAsync(bool useShellWindow)
+    private static async Task RunTwitchInitAsync(bool useShellWindow, Window owner)
     {
         if (Settings.AutoStartWebServer)
             GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
 
-        if (!useShellWindow && Settings.OpenQueueOnStartup)
-            OpenQueueLegacy();
+        if (useShellWindow && Settings.OpenQueueOnStartup && owner is Views.WPFUI.ShellWindow shell)
+            shell.NavigateToQueue();
 
         if (Settings.TwAutoConnect)
             TwitchHandler.ConnectTwitchChatClient();
@@ -197,12 +199,6 @@ public static class AppStartup
             await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
         if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
             await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
-    }
-
-    private static void OpenQueueLegacy()
-    {
-        if (Application.Current.Windows.OfType<WindowQueue>().Any()) return;
-        new WindowQueue().Show();
     }
 
     private static async Task RunFinalSetupAsync(Window owner)

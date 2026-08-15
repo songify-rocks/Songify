@@ -8,7 +8,6 @@ namespace Songify_Slim.Util.General;
 
 /// <summary>
 /// Reloads open settings UI after account login, imports, reward changes, etc.
-/// Covers both the legacy <c>Window_Settings</c> host and the in-shell <see cref="SettingsPanel"/>.
 /// </summary>
 internal static class SettingsUi
 {

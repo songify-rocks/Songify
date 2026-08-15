@@ -10,7 +10,6 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using static Songify_Slim.Util.General.Enums;
@@ -1492,15 +1491,10 @@ namespace Songify_Slim.Util.Configuration
             YoutubeApiKey = existingYoutubeApiKey;
             AccessKey = existingAccessKey;
 
-            // Re-apply UI settings (shell SettingsPanel + any Window_Settings host)
+            // Re-apply UI settings and refresh blocklist pages
             await Application.Current.Dispatcher.Invoke(async () =>
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is Window_Blacklist blockListWindow)
-                        blockListWindow.RefreshArtists();
-                }
-
+                await BlocklistUi.RefreshArtistsAsync();
                 await SettingsUi.RefreshAsync();
             });
         }

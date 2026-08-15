@@ -77,7 +77,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private readonly Dictionary<Enums.RefundCondition, ToggleSwitch> _toggleMap = new();
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
         private readonly FolderBrowserDialog _fbd = new();
-        private Window _mW;
         private Window_ResponseParams _wRp;
         private bool _showPassword;
         private bool _isSettingControls;
@@ -1025,7 +1024,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             bool? chbxAutostartIsChecked = ChbxAutostart.IsChecked == true;
-            MainWindow.RegisterInStartup((bool)chbxAutostartIsChecked);
+            AutostartHelper.RegisterInStartup((bool)chbxAutostartIsChecked);
         }
 
         private void ChbxCover_Checked(object sender, RoutedEventArgs e)
@@ -1079,7 +1078,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 return;
             // enables / disables upload
             Settings.Upload = ChbxUpload.IsChecked == true;
-            //((MainWindow)_mW).UploadSong(((MainWindow)_mW).CurrSong);
         }
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1288,11 +1286,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private async void SettingsPanel_Loaded(object sender, RoutedEventArgs e)
         {
             SettingsUi.Register(this);
-
-            // assign mw to mainwindow for calling methods and setting texts etc
-            foreach (Window window in Application.Current.Windows)
-                if (window.GetType() == typeof(MainWindow))
-                    _mW = window;
 
             // Theme + window backdrop (WPF-UI system accent; no custom accent color list)
             ThemeToggleSwitch.IsChecked = Settings.Theme is "BaseDark" or "Dark";
@@ -1789,9 +1782,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             Settings.BypassSpotifyFetchGate = ((ToggleSwitch)sender).IsChecked == true;
-            MainWindow main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault()
-                              ?? (Application.Current.MainWindow as MainWindow);
-            main?.RefreshSpotifyTestModeControlsVisibility();
+            AppFetchService.NotifySpotifyRelatedActivity("bypass Spotify fetch gate toggled");
         }
 
         private void TglShowSpotifyToasts_OnToggled(object sender, RoutedEventArgs e)
@@ -2019,12 +2010,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     return;
                 }
 
-                // Refresh open blacklist UIs if present
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is Window_Blacklist blacklist)
-                        blacklist.Dispatcher.Invoke(blacklist.RefreshArtistsFromExternal);
-                }
+                // Refresh open blocklist UI if present
+                await BlocklistUi.RefreshArtistsAsync();
 
                 await ShowMsgAsync(Loc("window_settings_artist_sync_title", "Artist blocklist sync"), result.Message);
                 UpdateArtistBlocklistSyncStatusLabel();

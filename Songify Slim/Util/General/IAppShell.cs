@@ -4,7 +4,7 @@ namespace Songify_Slim.Util.General;
 
 /// <summary>
 /// Abstraction for the main application shell (ShellWindow).
-/// Service/worker code must use this via <see cref="AppShellBridge"/> instead of referencing MainWindow directly.
+/// Service/worker code must use this via <see cref="AppShellBridge"/> instead of referencing a concrete window type.
 /// </summary>
 public interface IAppShell
 {

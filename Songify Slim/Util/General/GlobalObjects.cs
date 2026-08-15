@@ -231,16 +231,6 @@ namespace Songify_Slim.Util.General
                             await Application.Current.Dispatcher.InvokeAsync(() =>
                             {
                                 QueueTracks.Clear();
-
-                                foreach (Window window in Application.Current.Windows)
-                                {
-                                    if (window is WindowQueue windowQueue)
-                                    {
-                                        if (windowQueue.dgv_Queue.ItemsSource != QueueTracks)
-                                            windowQueue.dgv_Queue.ItemsSource = QueueTracks;
-                                        windowQueue.UpdateQueueIcons();
-                                    }
-                                }
                             });
                             return;
                         }
@@ -389,36 +379,26 @@ namespace Songify_Slim.Util.General
                                     QueueTracks.Add(item);
                                 }
 
-                                foreach (Window window in Application.Current.Windows)
+                                if (CurrentSong == null)
+                                    return;
+
+                                bool isInLikedPlaylist = isLikedSongsPlaylist
+                                    ? isInLikedSongs.TryGetValue(CurrentSong.SongId, out bool liked) && liked
+                                    : LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == CurrentSong.SongId);
+
+                                QueueTracks.Insert(0, new RequestObject
                                 {
-                                    if (window is not WindowQueue windowQueue)
-                                        continue;
-
-                                    if (windowQueue.dgv_Queue.ItemsSource != QueueTracks)
-                                    {
-                                        windowQueue.dgv_Queue.ItemsSource = QueueTracks;
-                                    }
-
-                                    bool isInLikedPlaylist = isLikedSongsPlaylist
-                                        ? isInLikedSongs.TryGetValue(CurrentSong.SongId, out bool liked) && liked
-                                        : LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == CurrentSong.SongId);
-
-                                    QueueTracks.Insert(0, new RequestObject
-                                    {
-                                        Queueid = 0,
-                                        Uuid = Settings.Uuid,
-                                        Trackid = CurrentSong.SongId,
-                                        Artist = CurrentSong.Artists,
-                                        Title = CurrentSong.Title,
-                                        Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
-                                        Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
-                                        Played = -1,
-                                        Albumcover = null,
-                                        IsLiked = isInLikedPlaylist
-                                    });
-
-                                    windowQueue.UpdateQueueIcons();
-                                }
+                                    Queueid = 0,
+                                    Uuid = Settings.Uuid,
+                                    Trackid = CurrentSong.SongId,
+                                    Artist = CurrentSong.Artists,
+                                    Title = CurrentSong.Title,
+                                    Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
+                                    Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
+                                    Played = -1,
+                                    Albumcover = null,
+                                    IsLiked = isInLikedPlaylist
+                                });
                             }
                             catch (Exception ex)
                             {
@@ -477,23 +457,11 @@ namespace Songify_Slim.Util.General
                         tempQueueList2.First().Played = -1;
                     }
 
-                    QueueTracks = new ObservableCollection<RequestObject>(tempQueueList2);
-
                     await Application.Current.Dispatcher.InvokeAsync(() =>
                     {
-                        // Check if the queue window is open and update it accordingly
-                        foreach (Window window in Application.Current.Windows)
-                        {
-                            if (window.GetType() != typeof(WindowQueue))
-                                continue;
-
-                            if (window is not WindowQueue windowQueue) continue;
-                            // Set the DataGrid's ItemsSource to the ObservableCollection (only done once)
-                            windowQueue.dgv_Queue.ItemsSource = QueueTracks;
-                            windowQueue.UpdateQueueIcons();
-                        }
-
-                        return Task.CompletedTask;
+                        QueueTracks.Clear();
+                        foreach (RequestObject item in tempQueueList2)
+                            QueueTracks.Add(item);
                     });
 
                     break;

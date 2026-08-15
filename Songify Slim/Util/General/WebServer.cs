@@ -356,7 +356,6 @@ namespace Songify_Slim.Util.General
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     if (Application.Current.MainWindow == null) return;
-                    // Assuming these UI elements and methods exist in your MainWindow
                     AppShellBridge.Current?.SetWebServerRunning(true);
                 });
 
@@ -739,14 +738,7 @@ namespace Songify_Slim.Util.General
                 });
             Settings.SongBlacklist = Settings.SongBlacklist;
             await SpotifyApiHandler.SkipSong();
-            // If Window_Blacklist is open, call LoadBlacklists();
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                //foreach (Window window in Application.Current.Windows)
-                //    if (window.GetType() == typeof(Window_Blacklist))
-                //        ((Window_Blacklist)window).LoadBlacklists();
-            });
+            await BlocklistUi.RefreshArtistsAsync();
         }
 
         private static void BlockAllArtists()

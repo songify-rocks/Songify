@@ -1,9 +1,9 @@
 namespace Songify_Slim.Util.General;
 
 /// <summary>
-/// Static bridge to the current application shell. Set by MainWindow or ShellWindow on Loaded; cleared on Closing.
+/// Static bridge to the current application shell. Set by ShellWindow on Loaded; cleared on Closing.
 /// Services (TwitchHandler, WebServer, SpotifyApiHandler, SongFetcher, IOManager, etc.) must use this
-/// instead of casting Application.Current.MainWindow to MainWindow.
+/// instead of casting Application.Current.MainWindow to a concrete window type.
 /// </summary>
 public static class AppShellBridge
 {

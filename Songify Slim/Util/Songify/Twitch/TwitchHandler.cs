@@ -2,7 +2,6 @@ using Songify_Slim.Util.General;
 using MessageDialogResult = Songify_Slim.Util.General.AppDialogResult;
 using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
 using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
-using SymbolRegular = Wpf.Ui.Controls.SymbolRegular;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Songify_Slim.Models;
@@ -20,7 +19,6 @@ using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using Swan;
 using Swan.Formatters;
@@ -39,7 +37,6 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Songify_Slim.Util.Youtube.Youtube;
 using TwitchLib.Api;
@@ -119,12 +116,7 @@ public static class TwitchHandler
 
         void Apply()
         {
-            // Shell path (AppFetchService owns the timer when ShellWindow is main).
             AppFetchService.NotifySpotifyRelatedActivity();
-
-            // Legacy MainWindow path when it still owns its own SongFetcher timer.
-            if (app.MainWindow is MainWindow mw)
-                mw.NotifySpotifyRelatedActivity();
         }
 
         if (app.Dispatcher.CheckAccess())
@@ -569,21 +561,6 @@ public static class TwitchHandler
                     ApiConnect(account);
                 }
             }
-
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is not MainWindow mainWindow)
-                    continue;
-
-                if (account == Enums.TwitchAccount.Main)
-                {
-                    mainWindow.IconTwitchApi.Foreground = Brushes.IndianRed;
-                    mainWindow.IconTwitchApi.Symbol = SymbolRegular.Live24;
-                    mainWindow.MiTwitchApi.IsEnabled = false;
-                }
-
-                break;
-            }
         });
 
         return reconnectRequested;
@@ -592,10 +569,6 @@ public static class TwitchHandler
     private static async Task<bool> HandleMissingScopesAsync(Enums.TwitchAccount account, List<string> missingItems)
     {
         if (missingItems == null || !missingItems.Any())
-            return false;
-
-        MainWindow mainWindow = Application.Current?.MainWindow as MainWindow;
-        if (mainWindow == null)
             return false;
 
         MessageDialogResult msgResult = await AppDialog.ShowAsync(
@@ -629,22 +602,12 @@ public static class TwitchHandler
         return true;
     }
 
-    private static async Task UpdateMainWindowTwitchApiStateAsync(User user)
+    private static async Task UpdateShellTwitchApiStateAsync(User user)
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
             AppShellBridge.Current?.SetTwitchApiState(ConnectionIndicatorState.Connected);
-
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is not MainWindow mainWindow)
-                    continue;
-
-                mainWindow.IconTwitchApi.Foreground = Brushes.GreenYellow;
-                mainWindow.MiTwitchApi.IsEnabled = false;
-
-                Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
-            }
+            Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
         });
     }
 
@@ -909,7 +872,7 @@ public static class TwitchHandler
             Settings.TwitchChannelId = user.Id;
             Settings.TwChannel = user.Login;
 
-            await UpdateMainWindowTwitchApiStateAsync(user);
+            await UpdateShellTwitchApiStateAsync(user);
 
             GetUserChatColorResponse chatColorResponse =
                 await api.Helix.Chat.GetUserChatColorAsync(
@@ -955,11 +918,6 @@ public static class TwitchHandler
                 Application.Current?.Dispatcher?.Invoke(() =>
                 {
                     AppShellBridge.Current?.SetStatusText("Please fill in Twitch credentials.");
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is MainWindow mw)
-                            mw.LblStatus.Content = "Please fill in Twitch credentials.";
-                    }
                 });
                 return;
             }
@@ -2892,26 +2850,6 @@ public static class TwitchHandler
                 else
                     AppShellBridge.Current?.SetTwitchBotState(ConnectionIndicatorState.Error);
                 AppShellBridge.Current?.SetStatusText("Twitch credentials cleared.");
-
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is not MainWindow mw) continue;
-
-                    // API icon to red when main reset; bot icon to red when bot reset
-                    if (account == Enums.TwitchAccount.Main)
-                    {
-                        mw.IconTwitchApi.Foreground = Brushes.IndianRed;
-                        mw.MiTwitchApi.IsEnabled = false;
-                    }
-                    else
-                    {
-                        mw.IconTwitchBot.Foreground = Brushes.IndianRed;
-                    }
-
-                    // Reflect chat disconnect availability
-                    mw.MiTwitchConnect.IsEnabled = true;
-                    mw.LblStatus.Content = "Twitch credentials cleared.";
-                }
             });
 
             Logger.Info(LogSource.Twitch, $"Cleared {(account == Enums.TwitchAccount.Main ? "main" : "bot")} account credentials.");
@@ -3677,14 +3615,13 @@ public static class TwitchHandler
         string song = "";
         Application.Current.Dispatcher.Invoke(() =>
         {
-            MainWindow mainWindow = Application.Current.Windows
-                .OfType<MainWindow>()
-                .FirstOrDefault();
+            song = AppShellBridge.Current?.GetCurrentSongDisplayString() ?? "";
+            if (!string.IsNullOrWhiteSpace(song))
+                return;
 
-            if (mainWindow != null)
-            {
-                song = $"{mainWindow.SongArtist} - {mainWindow.SongTitle}";
-            }
+            var s = GlobalObjects.CurrentSong;
+            if (s != null)
+                song = $"{s.Artists} - {s.Title}";
         });
         return song;
     }

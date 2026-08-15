@@ -25,7 +25,7 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
-    <!-- WinForms is still referenced (folder pickers / legacy MainWindow tray). Trimming hard-fails (NETSDK1175). -->
+    <!-- WinForms is still referenced (folder pickers). Trimming hard-fails (NETSDK1175). -->
     <PublishTrimmed>false</PublishTrimmed>
   </PropertyGroup>
   <!-- PublishSingleFile already bundles deps; Costura would double-embed and confuse publish. -->

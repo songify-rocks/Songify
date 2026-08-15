@@ -6,7 +6,6 @@ using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using System;
@@ -749,18 +748,6 @@ namespace Songify_Slim.Util.Spotify
                     ApiCallMeter.ReleaseRateLimit();
                     RefreshShellSpotifyIndicator();
 
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is MainWindow mw)
-                        {
-                            mw.UpdateSpotifyStatusIndicator();
-                            if (Settings.Player == PlayerType.Spotify)
-                                mw.SetIdleNowPlayingPromptIfPlaceholder();
-                            if (!Settings.BypassSpotifyFetchGate)
-                                mw.SetBypassNotice();
-                        }
-                    }
-
                     await SettingsUi.RefreshAsync();
                 }
                 catch (Exception ex)
@@ -785,9 +772,6 @@ namespace Songify_Slim.Util.Spotify
                     AuthTimer.Stop();
 
                 RefreshShellSpotifyIndicator();
-
-                if (Application.Current?.MainWindow is MainWindow mw)
-                    mw.UpdateSpotifyStatusIndicator();
             }
             catch (Exception ex)
             {
@@ -820,9 +804,7 @@ namespace Songify_Slim.Util.Spotify
                 AnimateHide = true,
             };
 
-            // You need a reference to the dialog host (usually the main window)
-            Window mainWindow = Application.Current.MainWindow;
-            if (mainWindow == null)
+            if (Application.Current.MainWindow == null)
                 return;
 
             MessageDialogResult result = await AppDialog.ShowAsync(

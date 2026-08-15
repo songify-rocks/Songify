@@ -1,25 +1,17 @@
 using Wpf.Ui.Controls;
-using Songify_Slim.Models;
 using Songify_Slim.Models.Responses;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Views;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
-using System.Windows.Shapes;
 using TextBlock = System.Windows.Controls.TextBlock;
 using MessageBox = System.Windows.MessageBox;
 using MessageBoxButton = System.Windows.MessageBoxButton;
@@ -50,7 +42,6 @@ namespace Songify_Slim.UserControls
             TbSeverity.Text = Psa.Severity;
 
             string message = IoManager.InterpretEscapeCharacters(Psa.MessageText);
-            // Instead of TbMessage.Text = message;
             SetTextWithHyperlinks(TbMessage, message);
 
             if (!byPassLimit)
@@ -61,21 +52,22 @@ namespace Songify_Slim.UserControls
                 "Low" => Brushes.ForestGreen,
                 "Medium" => Brushes.DarkOrange,
                 "High" => Brushes.IndianRed,
-                _ => throw new ArgumentOutOfRangeException()
+                _ => Brushes.Gray
             };
 
             BorderSeverity.BorderBrush = severitybrush;
             BorderSeverity.Background = severitybrush;
 
             if (Psa.Severity == "High")
-            {
                 BorderMotd.BorderBrush = severitybrush;
-            }
 
-            if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(psa.Id))
-            {
+            ApplyReadState();
+        }
+
+        public void ApplyReadState()
+        {
+            if (Settings.ReadNotificationIds != null && Settings.ReadNotificationIds.Contains(Psa.Id))
                 btnRead.Content = _readIcon;
-            }
         }
 
         private static readonly Regex UrlRegex = new Regex(
@@ -195,31 +187,13 @@ namespace Songify_Slim.UserControls
 
         private void OpenFullMessageWindow()
         {
-            // Create a new window to display the full message
-            WindowUniversalDialog messageWindow = new(Psa, "Notification")
-            {
-                Owner = Application.Current.MainWindow,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                FontSize = 14
-            };
-            messageWindow.Show();
+            PsaManager.ShowPsaDialog(Psa);
         }
 
         private void BtnRead_OnClick(object sender, RoutedEventArgs e)
         {
             btnRead.Content = _readIcon;
-            List<int> readNotificationIds = Settings.ReadNotificationIds;
-            if (readNotificationIds != null && readNotificationIds.Contains(Psa.Id))
-                return;
-            readNotificationIds ??= [];
-            readNotificationIds.Add(Psa.Id);
-            Settings.ReadNotificationIds = readNotificationIds;
-
-            Window mainWin = Application.Current.MainWindow;
-            if (mainWin is MainWindow mainWindow)
-            {
-                mainWindow.SetUnreadBadge();
-            }
+            PsaManager.MarkAsRead(Psa.Id);
         }
     }
 }

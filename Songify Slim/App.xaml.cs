@@ -487,7 +487,7 @@ namespace Songify_Slim
                 Console.WriteLine("Restarting Songify...");
             }
 
-            // WPF-UI shell (FluentWindow + NavigationView). Legacy MainWindow remains for fallback/tools.
+            // WPF-UI shell (FluentWindow + NavigationView).
             Views.WPFUI.ShellWindow main = new()
             {
                 Icon = IsBeta
@@ -552,7 +552,7 @@ namespace Songify_Slim
             // Your logic to restore the window from the tray.
             Window win = Current.MainWindow;
 
-            if (win is Views.WPFUI.ShellWindow or Views.MainWindow)
+            if (win is Views.WPFUI.ShellWindow)
             {
                 win.Show();
                 win.WindowState = WindowState.Normal;

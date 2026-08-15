@@ -16,7 +16,14 @@ public partial class BlacklistPage : Page
     public BlacklistPage()
     {
         InitializeComponent();
+        if (DataContext is BlocklistViewModel vm)
+            BlocklistUi.Register(vm);
         IsVisibleChanged += BlacklistPage_OnIsVisibleChanged;
+        Unloaded += (_, _) =>
+        {
+            if (DataContext is BlocklistViewModel registered)
+                BlocklistUi.Unregister(registered);
+        };
     }
 
     private void CategoryTitle_Loaded(object sender, RoutedEventArgs e)

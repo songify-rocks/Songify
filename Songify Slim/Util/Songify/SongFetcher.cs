@@ -11,7 +11,6 @@ using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.Pear;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Http;
 using Swan.Formatters;
@@ -675,17 +674,6 @@ namespace Songify_Slim.Util.Songify
                         } while (GlobalObjects.ReqList.Contains(previous));
 
                         Logger.Info(LogSource.Core, $"Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            foreach (Window window in Application.Current.Windows)
-                                            {
-                                                if (window.GetType() != typeof(WindowQueue))
-                                                    continue;
-                                                //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                                                (window as WindowQueue)?.dgv_Queue.Items.Refresh();
-                                            }
-                                        });
                     }
                 }
 

@@ -11,7 +11,7 @@ using Songify_Slim.Models;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
-using Songify_Slim.Views;
+using Songify_Slim.Views.WPFUI;
 using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Views.WPFUI.Pages;
@@ -320,8 +320,6 @@ public partial class OverviewPage : Page
     {
         if (Application.Current.MainWindow is ShellWindow shell)
             shell.OpenSettings();
-        else
-            new Window_Settings { Owner = Application.Current.MainWindow }.ShowDialog();
     }
 
     private void BtnQueue_Click(object sender, RoutedEventArgs e)
