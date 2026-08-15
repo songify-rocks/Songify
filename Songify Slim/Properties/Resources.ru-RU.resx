@@ -369,9 +369,6 @@
   <data name="window_createreward_create" xml:space="preserve">
     <value>Создать награду</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Заголовок</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Стоимость</value>
   </data>
@@ -1478,5 +1475,56 @@
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Всплывающие уведомления Windows о лимитах запросов Spotify, проблемах со входом в систему и ошибках API. Баннер в приложении по-прежнему отображается, даже если эта функция отключена.</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Создать награду для канала</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Общий</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Пределы</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Биты</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Больше вариантов</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Ничего не выбрано</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Передовой</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Резервная копия</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Облако</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Порты аутентификации Twitch</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Обновить страницу входа в Twitch</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Щелкните правой кнопкой мыши, чтобы вставить токены форматирования (исполнитель, название, заказчик и т. д.).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Синхронизация со всеми уровнями пользователей</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Опрос {0} секунд (простой)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Опрос 1 мин (простой)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Скорость загрузки данных в Spotify снижена в режиме ожидания для экономии квоты API. Нажмите, чтобы восстановить нормальную скорость в настройках.</value>
   </data>
 </root>

@@ -371,9 +371,6 @@
   <data name="window_createreward_create" xml:space="preserve">
     <value>Utwórz nagrodę</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Tytuł</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Koszt</value>
   </data>
@@ -1477,5 +1474,56 @@
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Powiadomienia w systemie Windows dotyczące limitów przepustowości Spotify, problemów z logowaniem i błędów API. Baner w aplikacji nadal się wyświetla, gdy ta opcja jest wyłączona.</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Utwórz nagrodę kanałową</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Ogólny</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Ograniczenia</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Filtry</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Bity</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Więcej opcji</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Nie wybrano</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Zaawansowany</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Kopia zapasowa</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Chmura</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Porty autoryzacji Twitch</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Odśwież logowanie do Twitcha</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Kliknij prawym przyciskiem myszy, aby wstawić tokeny formatu (artysta, tytuł, wnioskodawca, …).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Synchronizuj ze wszystkimi poziomami użytkownika</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Odpytywanie {0}s (bezczynność)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Sondowanie 1 min (bezczynność)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Pobieranie Spotify zostało spowolnione w stanie bezczynności, aby zaoszczędzić limit API. Kliknij, aby przywrócić normalną prędkość w Ustawieniach.</value>
   </data>
 </root>

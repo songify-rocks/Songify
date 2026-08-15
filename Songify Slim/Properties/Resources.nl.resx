@@ -509,9 +509,6 @@
   <data name="window_createreward_create" xml:space="preserve">
     <value>Beloning creëren</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Titel</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Kosten</value>
   </data>
@@ -1531,5 +1528,56 @@
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Windows-meldingen verschijnen voor Spotify-gebruikslimieten, inlogproblemen en API-fouten. De banner in de app blijft wel zichtbaar, zelfs als deze functie is uitgeschakeld.</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Maak een kanaalbeloning aan</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Algemeen</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Grenzen</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Filters</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Stukjes</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Meer opties</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Geen geselecteerd</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Geavanceerd</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Back-up</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Wolk</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Twitch-authenticatiepoorten</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Vernieuw je Twitch-login</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Klik met de rechtermuisknop om opmaaktokens in te voegen (artiest, titel, aanvrager, …).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Synchroniseer met alle gebruikersniveaus</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Polling {0}s (inactief)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Polling 1 min (inactief)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Spotify-downloads worden vertraagd wanneer de API inactief is om API-quota te besparen. Klik hier in de instellingen om de normale snelheid te herstellen.</value>
   </data>
 </root>

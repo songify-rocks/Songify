@@ -371,9 +371,6 @@
   <data name="window_createreward_create" xml:space="preserve">
     <value>Crea ricompensa</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Titolo</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Costo</value>
   </data>
@@ -1477,5 +1474,56 @@
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Notifiche popup di Windows per limiti di utilizzo di Spotify, problemi di accesso ed errori API. Il banner in-app viene comunque visualizzato anche quando questa opzione è disattivata.</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Crea un premio per il canale</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Generale</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Limiti</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Filtri</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Bit</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Altre opzioni</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Nessuna selezione</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Avanzato</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Backup</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Nuvola</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>porte di autenticazione Twitch</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Aggiorna le credenziali di accesso a Twitch</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Fai clic con il pulsante destro del mouse per inserire i token di formato (artista, titolo, richiedente, …).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Sincronizzazione con tutti i livelli utente</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Polling {0}s (inattivo)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Sondaggio 1 min (inattivo)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Spotify rallenta il download quando non in uso per risparmiare quote API. Fai clic su Impostazioni per ripristinare la velocità normale.</value>
   </data>
 </root>

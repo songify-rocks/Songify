@@ -366,9 +366,6 @@
   <data name="window_createreward_create" xml:space="preserve">
     <value>Crear Recompensa</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Título</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Costo</value>
   </data>
@@ -1478,5 +1475,56 @@
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Las notificaciones emergentes de Windows informan sobre los límites de uso de Spotify, problemas de inicio de sesión y errores de la API. El banner dentro de la aplicación sigue apareciendo incluso cuando esta opción está desactivada.</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Crear recompensa de canal</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Límites</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Filtros</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Bits</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Más opciones</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Ninguno seleccionado</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Avanzado</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Respaldo</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Nube</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Puertos de autenticación de Twitch</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Actualizar sesión en Twitch</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Haz clic con el botón derecho para insertar tokens de formato (artista, título, solicitante, …).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Sincronización con todos los niveles de usuario</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Sondeo {0}s (inactivo)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Sondeo de 1 min (inactivo)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>La velocidad de descarga de Spotify se ha reducido mientras el sistema está inactivo para ahorrar cuota de API. Haz clic aquí para restaurar la velocidad normal desde Configuración.</value>
   </data>
 </root>

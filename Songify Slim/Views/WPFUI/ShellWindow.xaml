@@ -200,8 +200,7 @@
             ScrollViewer.PanningMode="None"
             ScrollViewer.VerticalScrollBarVisibility="Disabled">
             <ui:NavigationView.Resources>
-                <!--  SymbolIcon: Filled when parent NavigationViewItem is selected, otherwise not filled  -->
-                <Style TargetType="ui:SymbolIcon">
+                <Style x:Key="NavSymbolIconStyle" TargetType="ui:SymbolIcon">
                     <Setter Property="Filled" Value="False" />
                     <Style.Triggers>
                         <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" Value="True">
@@ -212,11 +211,11 @@
             </ui:NavigationView.Resources>
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem
-                    Content="Overview"
+                    Content="Home"
                     TargetPageTag="overview"
                     TargetPageType="{x:Type pages:OverviewPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="Home48" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Home48" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
@@ -224,7 +223,7 @@
                     TargetPageTag="queue"
                     TargetPageType="{x:Type pages:QueuePage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="MusicNote224" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="List28" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
@@ -233,7 +232,7 @@
                     TargetPageTag="blacklist"
                     TargetPageType="{x:Type pages:BlacklistPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="ShieldDismiss24" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="ShieldDismiss24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
@@ -241,7 +240,7 @@
                     TargetPageTag="history"
                     TargetPageType="{x:Type pages:HistoryPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="History48" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="History48" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
@@ -249,7 +248,7 @@
                     TargetPageTag="userlist"
                     TargetPageType="{x:Type pages:UserListPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="People48" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="People48" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
@@ -259,7 +258,7 @@
                     TargetPageTag="settings"
                     TargetPageType="{x:Type pages:SettingsPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="Settings48" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Settings48" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
@@ -267,7 +266,7 @@
                     TargetPageTag="console"
                     TargetPageType="{x:Type pages:ConsolePage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="CodeBlock28" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="CodeBlock28" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
@@ -275,7 +274,7 @@
                     TargetPageTag="about"
                     TargetPageType="{x:Type pages:AboutPage}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Symbol="Info24" />
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Info24" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.FooterMenuItems>

@@ -2670,6 +2670,25 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Settings.SkipOnlyNonSrSongs = ((ToggleSwitch)sender).IsChecked == true;
         }
 
+        private void BtnRewardsSegmentChannel_Click(object sender, RoutedEventArgs e)
+            => SetRewardsSegment(showChannelRewards: true);
+
+        private void BtnRewardsSegmentRefund_Click(object sender, RoutedEventArgs e)
+            => SetRewardsSegment(showChannelRewards: false);
+
+        private void SetRewardsSegment(bool showChannelRewards)
+        {
+            BtnRewardsSegmentChannel.Appearance = showChannelRewards
+                ? ControlAppearance.Primary
+                : ControlAppearance.Secondary;
+            BtnRewardsSegmentRefund.Appearance = showChannelRewards
+                ? ControlAppearance.Secondary
+                : ControlAppearance.Primary;
+
+            ListboxRewards.Visibility = showChannelRewards ? Visibility.Visible : Visibility.Collapsed;
+            PnlRefundConditions.Visibility = showChannelRewards ? Visibility.Collapsed : Visibility.Visible;
+        }
+
         private void Tglsw_BitsForSr_OnToggled(object sender, RoutedEventArgs e)
         {
             if (IgnoreControlEvents)

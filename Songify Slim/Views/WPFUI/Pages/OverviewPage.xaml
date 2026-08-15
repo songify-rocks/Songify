@@ -30,7 +30,7 @@
                     FontSize="28"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                    Text="Overview" />
+                    Text="Home" />
                 <ComboBox
                     x:Name="CbxPlayer"
                     Grid.Column="1"
@@ -38,7 +38,6 @@
                     Margin="0,0,8,0"
                     VerticalAlignment="Center"
                     SelectionChanged="CbxPlayer_SelectionChanged" />
-
             </Grid>
 
             <!--  Now playing: compact card, no stretched empty space  -->
@@ -123,7 +122,6 @@
                                 Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                 Text="" />
                         </Grid>
-
                     </StackPanel>
                 </Grid>
             </ui:Card>
@@ -200,7 +198,6 @@
                                             TextTrimming="CharacterEllipsis"
                                             TextWrapping="NoWrap" />
                                     </StackPanel>
-
                                 </StackPanel>
                             </DataTemplate>
                         </ItemsControl.ItemTemplate>

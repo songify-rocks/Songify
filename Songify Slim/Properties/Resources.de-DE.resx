@@ -372,9 +372,6 @@
   <data name="window_createreward_error" xml:space="preserve">
     <value>Fehler beim Erstellen der Belohnung. Bitte stelle sicher, dass der Name für die Belohung nicht schon genutzt wird.</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Titel</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Kosten</value>
   </data>
@@ -1529,5 +1526,8 @@
   </data>
   <data name="window_settings_sync_user_levels" xml:space="preserve">
     <value>Zu allen Benutzer Leveln Synchronisieren</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Kanalbelohnung erstellen</value>
   </data>
 </root>

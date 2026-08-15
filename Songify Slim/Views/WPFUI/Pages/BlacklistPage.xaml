@@ -13,6 +13,37 @@
     ScrollViewer.VerticalScrollBarVisibility="Disabled">
     <Page.Resources>
         <util:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Style x:Key="BlocklistCategoryItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Margin" Value="0,0,14,8" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <Border
+                            x:Name="Bd"
+                            Padding="10,8"
+                            Background="{DynamicResource ControlFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                            <ContentPresenter />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{DynamicResource SubtleFillColorSecondaryBrush}" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                                <Setter TargetName="Bd" Property="BorderThickness" Value="2" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Page.Resources>
     <Page.DataContext>
         <viewModels:BlocklistViewModel />
@@ -20,15 +51,22 @@
     <Grid Margin="24">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*" MinHeight="120" />
         </Grid.RowDefinitions>
 
         <Grid Grid.Row="0" Margin="0,0,0,16">
-            <TextBlock
-                FontSize="28"
-                FontWeight="SemiBold"
-                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                Text="Block list" />
+            <StackPanel VerticalAlignment="Center">
+                <TextBlock
+                    FontSize="28"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="Block list" />
+                <TextBlock
+                    Margin="0,2,0,0"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="Blocked artists, users, and songs" />
+            </StackPanel>
             <TextBlock
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
@@ -38,224 +76,399 @@
         </Grid>
 
         <!--
-          NavigationView hosts pages inside a ScrollViewer. If the ListBox measures with infinite height,
-          virtualization dies and WPF creates a visual for every artist (~6k) — that freezes the PC.
-          Page ScrollViewer.* = Disabled (above) + list in a * row with its own scrollbar keeps height finite.
+            NavigationView hosts pages inside a ScrollViewer. If the ListBox measures with infinite height,
+            virtualization dies and WPF creates a visual for every artist (~6k) — that freezes the PC.
+            Page ScrollViewer.* = Disabled (above) + list in a * row with its own scrollbar keeps height finite.
         -->
-        <TabControl Grid.Row="1" Background="Transparent">
-            <TabItem Header="Artists">
-                <Grid Margin="0,12,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220" />
+                <ColumnDefinition Width="*" MinWidth="220" />
+            </Grid.ColumnDefinitions>
 
-                    <Grid Grid.Row="0" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ui:TextBox
-                            Margin="0,0,12,0"
-                            PlaceholderText="Add artist name"
-                            Text="{Binding NewArtistName, UpdateSourceTrigger=PropertyChanged}" />
-                        <ui:Button
-                            Grid.Column="1"
-                            Appearance="Primary"
-                            Command="{Binding AddArtistCommand}"
-                            Content="Add" />
-                    </Grid>
-
-                    <Grid Grid.Row="1" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ui:TextBox
-                            Margin="0,0,12,0"
-                            PlaceholderText="Filter artists…"
-                            Text="{Binding ArtistFilter, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Opacity="0.7"
-                            Text="{Binding ArtistStatusText}" />
-                    </Grid>
-
-                    <ListBox
-                        Grid.Row="2"
-                        VirtualizingPanel.IsVirtualizing="True"
-                        VirtualizingPanel.VirtualizationMode="Recycling"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding VisibleArtists}"
-                        ScrollViewer.CanContentScroll="True"
-                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto"
-                        SelectedItem="{Binding SelectedArtist}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                    </ListBox>
-
-                    <StackPanel
-                        Grid.Row="3"
-                        Margin="0,12,0,0"
-                        Orientation="Horizontal">
-                        <ui:Button
-                            Margin="0,0,8,0"
-                            Appearance="Secondary"
-                            Click="BtnImportArtists_OnClick"
-                            Content="Import" />
-                        <ui:Button
-                            Margin="0,0,8,0"
-                            Appearance="Secondary"
-                            Click="BtnRefreshArtistIds_OnClick"
-                            Content="Refresh IDs" />
-                        <ui:Button
-                            Margin="0,0,8,0"
-                            Appearance="Secondary"
-                            Command="{Binding RemoveSelectedArtistCommand}"
-                            Content="Remove selected" />
-                        <ui:Button
-                            Appearance="Secondary"
-                            Command="{Binding ClearArtistsCommand}"
-                            Content="Clear artists" />
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-
-            <TabItem Header="Users">
-                <Grid Margin="0,12,0,0">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                    </Grid.RowDefinitions>
-
-                    <Grid Grid.Row="0" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ui:TextBox
-                            Margin="0,0,12,0"
-                            PlaceholderText="Add username"
-                            Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}" />
-                        <ui:Button
-                            Grid.Column="1"
-                            Appearance="Primary"
-                            Command="{Binding AddUserCommand}"
-                            Content="Add" />
-                    </Grid>
-
-                    <Grid Grid.Row="1" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ui:TextBox
-                            Margin="0,0,12,0"
-                            PlaceholderText="Filter users…"
-                            Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Opacity="0.7"
-                            Text="{Binding UserStatusText}" />
-                    </Grid>
-
-                    <ListBox
-                        Grid.Row="2"
-                        VirtualizingPanel.IsVirtualizing="True"
-                        VirtualizingPanel.VirtualizationMode="Recycling"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding VisibleUsers}"
-                        ScrollViewer.CanContentScroll="True"
-                        SelectedItem="{Binding SelectedUser}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
-                    </ListBox>
-
-                    <StackPanel
-                        Grid.Row="3"
-                        Margin="0,12,0,0"
-                        Orientation="Horizontal">
-                        <ui:Button
-                            Margin="0,0,8,0"
-                            Appearance="Secondary"
-                            Command="{Binding RemoveSelectedUserCommand}"
-                            Content="Remove selected" />
-                        <ui:Button
-                            Appearance="Secondary"
-                            Command="{Binding ClearUsersCommand}"
-                            Content="Clear users" />
-                    </StackPanel>
-                </Grid>
-            </TabItem>
-
-            <TabItem Header="Songs">
-                <Grid Margin="0,12,0,0">
+            <ui:Card
+                Grid.Column="0"
+                Margin="0,0,12,0"
+                Padding="10"
+                VerticalAlignment="Stretch"
+                VerticalContentAlignment="Top">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-
-                    <Grid Grid.Row="0" Margin="0,0,0,8">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <ui:TextBox
-                            Margin="0,0,12,0"
-                            PlaceholderText="Filter songs…"
-                            Text="{Binding SongFilter, UpdateSourceTrigger=PropertyChanged}" />
-                        <TextBlock
-                            Grid.Column="1"
-                            VerticalAlignment="Center"
-                            Opacity="0.7"
-                            Text="{Binding SongStatusText}" />
-                    </Grid>
-
+                    <TextBlock
+                        Margin="2,0,0,10"
+                        FontSize="12"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="CATEGORIES" />
                     <ListBox
                         Grid.Row="1"
-                        VirtualizingPanel.IsVirtualizing="True"
-                        VirtualizingPanel.VirtualizationMode="Recycling"
-                        DisplayMemberPath="Display"
-                        ItemsSource="{Binding VisibleSongs}"
-                        ScrollViewer.CanContentScroll="True"
-                        SelectedItem="{Binding SelectedSong}">
-                        <ListBox.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <VirtualizingStackPanel />
-                            </ItemsPanelTemplate>
-                        </ListBox.ItemsPanel>
+                        Background="Transparent"
+                        BorderThickness="0"
+                        ItemContainerStyle="{StaticResource BlocklistCategoryItemStyle}"
+                        ItemsSource="{Binding Categories}"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        SelectedItem="{Binding SelectedCategoryItem, Mode=TwoWay}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border
+                                        Width="40"
+                                        Height="40"
+                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                        CornerRadius="8">
+                                        <ui:SymbolIcon
+                                            Width="20"
+                                            Height="20"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="{Binding Symbol}" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{Binding Title}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{Binding CountLabel}" />
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
                     </ListBox>
+                </Grid>
+            </ui:Card>
 
-                    <StackPanel
+            <ui:Card
+                Grid.Column="1"
+                Padding="14"
+                VerticalAlignment="Stretch"
+                VerticalContentAlignment="Top">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+
+                    <TextBlock
+                        Margin="0,0,0,12"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{Binding SelectedCategoryTitle}" />
+
+                    <!--  Artists  -->
+                    <Grid Grid.Row="1" Visibility="{Binding IsArtistsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,8" PreviewKeyDown="ArtistInput_OnPreviewKeyDown">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ui:TextBox
+                                Margin="0,0,12,0"
+                                PlaceholderText="Search Spotify artist…"
+                                Text="{Binding NewArtistName, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:Button
+                                Grid.Column="1"
+                                Appearance="Primary"
+                                Command="{Binding AddArtistCommand}"
+                                Content="Add" />
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ui:TextBox
+                                Margin="0,0,12,0"
+                                PlaceholderText="Filter artists…"
+                                Text="{Binding ArtistFilter, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Opacity="0.7"
+                                Text="{Binding ArtistStatusText}" />
+                        </Grid>
+
+                        <ListBox
+                            Grid.Row="2"
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding VisibleArtists}"
+                            ScrollViewer.CanContentScroll="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            SelectedItem="{Binding SelectedArtist}"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+
+                        <StackPanel
+                            Grid.Row="3"
+                            Margin="0,12,0,0"
+                            Orientation="Horizontal">
+                            <ui:Button
+                                Margin="0,0,8,0"
+                                Appearance="Secondary"
+                                Click="BtnImportArtists_OnClick"
+                                Content="Import" />
+                            <ui:Button
+                                Margin="0,0,8,0"
+                                Appearance="Secondary"
+                                Click="BtnRefreshArtistIds_OnClick"
+                                Content="Refresh IDs" />
+                            <ui:Button
+                                Margin="0,0,8,0"
+                                Appearance="Secondary"
+                                Command="{Binding RemoveSelectedArtistCommand}"
+                                Content="Remove selected" />
+                            <ui:Button
+                                Appearance="Secondary"
+                                Command="{Binding ClearArtistsCommand}"
+                                Content="Clear artists" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!--  Users  -->
+                    <Grid Grid.Row="1" Visibility="{Binding IsUsersSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ui:TextBox
+                                Margin="0,0,12,0"
+                                PlaceholderText="Add username"
+                                Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}" />
+                            <ui:Button
+                                Grid.Column="1"
+                                Appearance="Primary"
+                                Command="{Binding AddUserCommand}"
+                                Content="Add" />
+                        </Grid>
+
+                        <Grid Grid.Row="1" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ui:TextBox
+                                Margin="0,0,12,0"
+                                PlaceholderText="Filter users…"
+                                Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Opacity="0.7"
+                                Text="{Binding UserStatusText}" />
+                        </Grid>
+
+                        <ListBox
+                            Grid.Row="2"
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding VisibleUsers}"
+                            ScrollViewer.CanContentScroll="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            SelectedItem="{Binding SelectedUser}"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+
+                        <StackPanel
+                            Grid.Row="3"
+                            Margin="0,12,0,0"
+                            Orientation="Horizontal">
+                            <ui:Button
+                                Margin="0,0,8,0"
+                                Appearance="Secondary"
+                                Command="{Binding RemoveSelectedUserCommand}"
+                                Content="Remove selected" />
+                            <ui:Button
+                                Appearance="Secondary"
+                                Command="{Binding ClearUsersCommand}"
+                                Content="Clear users" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!--  Songs  -->
+                    <Grid Grid.Row="1" Visibility="{Binding IsSongsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <ui:TextBox
+                                Margin="0,0,12,0"
+                                PlaceholderText="Filter songs…"
+                                Text="{Binding SongFilter, UpdateSourceTrigger=PropertyChanged}" />
+                            <TextBlock
+                                Grid.Column="1"
+                                VerticalAlignment="Center"
+                                Opacity="0.7"
+                                Text="{Binding SongStatusText}" />
+                        </Grid>
+
+                        <ListBox
+                            Grid.Row="1"
+                            DisplayMemberPath="Display"
+                            ItemsSource="{Binding VisibleSongs}"
+                            ScrollViewer.CanContentScroll="True"
+                            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                            ScrollViewer.VerticalScrollBarVisibility="Auto"
+                            SelectedItem="{Binding SelectedSong}"
+                            VirtualizingPanel.IsVirtualizing="True"
+                            VirtualizingPanel.VirtualizationMode="Recycling">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel />
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                        </ListBox>
+
+                        <StackPanel
+                            Grid.Row="2"
+                            Margin="0,12,0,0"
+                            Orientation="Horizontal">
+                            <ui:Button
+                                Margin="0,0,8,0"
+                                Appearance="Secondary"
+                                Command="{Binding RemoveSelectedSongCommand}"
+                                Content="Remove selected" />
+                            <ui:Button
+                                Appearance="Secondary"
+                                Command="{Binding ClearSongsCommand}"
+                                Content="Clear songs" />
+                        </StackPanel>
+                    </Grid>
+                </Grid>
+            </ui:Card>
+        </Grid>
+
+        <!--  Spotify artist picker (multiple matches)  -->
+        <Border
+            Grid.RowSpan="2"
+            Panel.ZIndex="100"
+            Background="#AA000000"
+            Focusable="True"
+            KeyDown="ArtistPickerOverlay_OnKeyDown"
+            Visibility="{Binding IsArtistPickerOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border
+                MaxWidth="560"
+                MaxHeight="420"
+                Margin="24"
+                Padding="12"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource ApplicationBackgroundBrush}"
+                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,0,0,8"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{DynamicResource window_blocklist_select_artist}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Opacity="0.75"
+                        Text="{DynamicResource window_blocklist_multiple_artists_match}" />
+                    <DataGrid
+                        x:Name="ArtistPickerGrid"
                         Grid.Row="2"
-                        Margin="0,12,0,0"
+                        Margin="0,10,0,10"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding ArtistPickerItems}"
+                        MouseDoubleClick="ArtistPickerGrid_OnMouseDoubleClick"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectionChanged="ArtistPickerGrid_OnSelectionChanged"
+                        SelectionMode="Extended"
+                        SelectionUnit="FullRow">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="50"
+                                Binding="{Binding Num}"
+                                Header="{DynamicResource common_column_number}" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Artist}"
+                                Header="{DynamicResource common_artist}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel
+                        Grid.Row="3"
+                        HorizontalAlignment="Right"
                         Orientation="Horizontal">
                         <ui:Button
-                            Margin="0,0,8,0"
+                            MinWidth="100"
+                            Margin="0,0,10,0"
                             Appearance="Secondary"
-                            Command="{Binding RemoveSelectedSongCommand}"
-                            Content="Remove selected" />
+                            Command="{Binding CancelArtistPickCommand}"
+                            Content="{DynamicResource common_close}" />
                         <ui:Button
-                            Appearance="Secondary"
-                            Command="{Binding ClearSongsCommand}"
-                            Content="Clear songs" />
+                            MinWidth="140"
+                            Appearance="Primary"
+                            Command="{Binding ConfirmArtistPickCommand}"
+                            Content="{DynamicResource window_blocklist_block_selected}" />
                     </StackPanel>
                 </Grid>
-            </TabItem>
-        </TabControl>
+            </Border>
+        </Border>
     </Grid>
 </Page>

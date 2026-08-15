@@ -476,7 +476,7 @@
     <comment>Button content for "Create Reward"</comment>
   </data>
   <data name="window_createreward_title" xml:space="preserve">
-    <value>Title</value>
+    <value>Create Channel Reward</value>
     <comment>Label content for "Title"</comment>
   </data>
   <data name="window_createreward_prompt" xml:space="preserve">
