@@ -4,66 +4,85 @@ using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
 
-namespace Songify_Slim.Views
+namespace Songify_Slim.Views;
+
+/// <summary>
+/// Manual Twitch OAuth fallback: open login page, paste code, link account.
+/// </summary>
+public partial class WindowManualTwitchLogin
 {
-    /// <summary>
-    /// Interaction logic for Window_ManualTwitchLogin.xaml
-    /// </summary>
-    public partial class WindowManualTwitchLogin
+    private readonly Enums.TwitchAccount _accountType;
+    private bool _isBusy;
+
+    public WindowManualTwitchLogin(Enums.TwitchAccount accountType)
     {
-        private readonly Enums.TwitchAccount _accountType;
+        InitializeComponent();
+        ThemeHandler.ApplyTheme();
+        _accountType = accountType;
+        ApplyAccountTitle();
+    }
 
-        public WindowManualTwitchLogin(Enums.TwitchAccount accountType)
+    private void ApplyAccountTitle()
+    {
+        string key = _accountType switch
         {
-            InitializeComponent();
-            _accountType = accountType;
-            Title = accountType switch
+            Enums.TwitchAccount.Main => "window_manualtwitch_title_main",
+            Enums.TwitchAccount.Bot => "window_manualtwitch_title_bot",
+            _ => "window_manualtwitch_title"
+        };
+
+        string title = TryFindResource(key) as string
+                       ?? (_accountType == Enums.TwitchAccount.Bot
+                           ? "Twitch Account Linking: Bot Account"
+                           : "Twitch Account Linking: Main Account");
+
+        Title = title;
+        DlgTitleBar.Title = title;
+    }
+
+    private void BtnCancel_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+    }
+
+    private void Button_OpenTwitchLoginPage_Click(object sender, RoutedEventArgs e)
+    {
+        ShellHelper.OpenUrl("https://v2.songify.rocks/auth/alt2/");
+    }
+
+    private async void Button_LinkAccounts_Click(object sender, RoutedEventArgs e)
+    {
+        if (_isBusy || string.IsNullOrEmpty(TextBoxTwitchCode.Password))
+            return;
+
+        _isBusy = true;
+        IsEnabled = false;
+        try
+        {
+            switch (_accountType)
             {
-                Enums.TwitchAccount.Main => "Twitch Account Linking: MAIN ACCOUNT",
-                Enums.TwitchAccount.Bot => "Twitch Account Linking: BOT ACCOUNT",
-                _ => Title
-            };
+                case Enums.TwitchAccount.Main:
+                    Settings.TwitchAccessToken = TextBoxTwitchCode.Password;
+                    await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
+                    break;
+
+                case Enums.TwitchAccount.Bot:
+                    Settings.TwitchBotToken = TextBoxTwitchCode.Password;
+                    await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
+                    break;
+            }
+
+            await SettingsUi.RefreshAsync(resetTwitch: true);
         }
-
-        private void Button_OpenTwitchLoginPage_Click(object sender, RoutedEventArgs e)
+        catch (Exception exception)
         {
-            ShellHelper.OpenUrl("https://v2.songify.rocks/auth/alt2/");
+            Logger.LogExc(exception);
+            throw;
         }
-
-        private async void Button_LinkAccounts_Click(object sender, RoutedEventArgs e)
+        finally
         {
-            if (string.IsNullOrEmpty(TextBoxTwitchCode.Password))
-                return;
-            IsEnabled = false;
-            try
-            {
-                switch (_accountType)
-                {
-                    case Enums.TwitchAccount.Main:
-                        Settings.TwitchAccessToken = TextBoxTwitchCode.Password;
-                        await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
-                        break;
-
-                    case Enums.TwitchAccount.Bot:
-                        Settings.TwitchBotToken = TextBoxTwitchCode.Password;
-                        await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
-                        break;
-
-                    default:
-                        break;
-                }
-
-                await SettingsUi.RefreshAsync(resetTwitch: true);
-            }
-            catch (Exception exception)
-            {
-                Console.WriteLine(exception);
-                throw;
-            }
-            finally
-            {
-                Close();
-            }
+            _isBusy = false;
+            Close();
         }
     }
 }

@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Import artists"
+    Title="{DynamicResource window_artistimport_title}"
     Width="580"
     Height="600"
     MinWidth="480"
@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
 
         <ui:TitleBar
-            Title="Import artists"
+            Title="{DynamicResource window_artistimport_title}"
             ShowMaximize="False"
             ShowMinimize="False" />
 
@@ -37,7 +37,7 @@
                     Margin="0,0,0,16"
                     FontSize="13"
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="Load a CSV from a file or HTTPS URL, map Name/Id columns, then import into the artist block list."
+                    Text="{DynamicResource window_artistimport_hint}"
                     TextWrapping="Wrap" />
 
                 <ui:Card Margin="0,0,0,12" Padding="14">
@@ -47,7 +47,7 @@
                             FontSize="12"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="SOURCE" />
+                            Text="{DynamicResource window_artistimport_source}" />
 
                         <DockPanel Margin="0,0,0,10" LastChildFill="True">
                             <RadioButton
@@ -56,7 +56,7 @@
                                 Margin="0,0,10,0"
                                 VerticalAlignment="Center"
                                 Checked="ImportSource_Checked"
-                                Content="File"
+                                Content="{DynamicResource window_artistimport_file}"
                                 DockPanel.Dock="Left"
                                 GroupName="ImportSource"
                                 IsChecked="True" />
@@ -66,12 +66,12 @@
                                 Margin="8,0,0,0"
                                 Appearance="Secondary"
                                 Click="ImportBrowse_Click"
-                                Content="Browse…"
+                                Content="{DynamicResource common_browse}"
                                 DockPanel.Dock="Right" />
                             <ui:TextBox
                                 x:Name="TbImportFilePath"
-                                PlaceholderText="No file selected"
-                                IsReadOnly="True" />
+                                IsReadOnly="True"
+                                PlaceholderText="{DynamicResource window_artistimport_no_file}" />
                         </DockPanel>
 
                         <DockPanel Margin="0,0,0,12" LastChildFill="True">
@@ -81,7 +81,7 @@
                                 Margin="0,0,10,0"
                                 VerticalAlignment="Center"
                                 Checked="ImportSource_Checked"
-                                Content="URL"
+                                Content="{DynamicResource window_artistimport_url}"
                                 DockPanel.Dock="Left"
                                 GroupName="ImportSource" />
                             <ui:TextBox
@@ -95,7 +95,7 @@
                             HorizontalAlignment="Right"
                             Appearance="Primary"
                             Click="ImportLoad_Click"
-                            Content="Load CSV" />
+                            Content="{DynamicResource window_artistimport_load_csv}" />
                     </StackPanel>
                 </ui:Card>
 
@@ -111,7 +111,7 @@
                                 Margin="0,0,0,6"
                                 FontSize="12"
                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="Name column" />
+                                Text="{DynamicResource window_settings_name_column}" />
                             <ComboBox
                                 x:Name="CbxImportNameColumn"
                                 MinHeight="32"
@@ -124,7 +124,7 @@
                                 Margin="0,0,0,6"
                                 FontSize="12"
                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="Id column (optional)" />
+                                Text="{DynamicResource window_artistimport_id_column_optional}" />
                             <ComboBox
                                 x:Name="CbxImportIdColumn"
                                 MinHeight="32"
@@ -146,7 +146,7 @@
                             FontSize="12"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="PREVIEW" />
+                            Text="{DynamicResource window_artistimport_preview}" />
                         <ListBox
                             x:Name="LbImportPreview"
                             Grid.Row="1"
@@ -172,8 +172,8 @@
                                         <TextBlock
                                             Grid.Column="1"
                                             Margin="12,0,0,0"
-                                            FontSize="12"
                                             FontFamily="Consolas"
+                                            FontSize="12"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                             Text="{Binding Id}"
                                             TextTrimming="CharacterEllipsis" />
@@ -189,7 +189,7 @@
                     Margin="0,12,0,8"
                     FontSize="12"
                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                    Text="No CSV loaded."
+                    Text="{DynamicResource window_artistimport_no_csv}"
                     TextWrapping="Wrap" />
             </StackPanel>
         </ScrollViewer>
@@ -213,7 +213,7 @@
                     MinWidth="110"
                     Appearance="Primary"
                     Click="ImportConfirm_Click"
-                    Content="Import"
+                    Content="{DynamicResource window_cloudimport_import}"
                     IsDefault="True"
                     IsEnabled="False" />
             </StackPanel>

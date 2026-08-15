@@ -81,12 +81,45 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private Window_ResponseParams _wRp;
         private bool _showPassword;
         private bool _isSettingControls;
+        private int _externalUiMutationDepth;
         private bool _rewardsLoadStarted;
         private bool _rewardsLoading;
         private BitmapImage? _defaultSongifyProfileImage;
 
         /// <summary>True while binding controls or before the window is ready - skip save/side-effect handlers.</summary>
-        private bool IgnoreControlEvents => !IsLoaded || _isSettingControls;
+        private bool IgnoreControlEvents => !IsLoaded || _isSettingControls || _externalUiMutationDepth > 0;
+
+        /// <summary>Used by <see cref="SettingsUi"/> while theme/style changes may reset PasswordBoxes.</summary>
+        public void BeginExternalUiMutation() => _externalUiMutationDepth++;
+
+        public void EndExternalUiMutation(bool reloadSecrets)
+        {
+            if (_externalUiMutationDepth > 0)
+                _externalUiMutationDepth--;
+
+            if (reloadSecrets && _externalUiMutationDepth == 0 && IsLoaded)
+                ReloadSecretFieldsFromSettings();
+        }
+
+        private void ReloadSecretFieldsFromSettings()
+        {
+            _isSettingControls = true;
+            try
+            {
+                if (PasswordBox != null)
+                    PasswordBox.Password = Settings.SongifyApiKey ?? "";
+                if (TextBox != null)
+                    TextBox.Text = Settings.SongifyApiKey ?? "";
+                if (PasswordBox_YoutubeApiKey != null)
+                    PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey ?? "";
+                if (PasswordBox_WebServer != null)
+                    PasswordBox_WebServer.Password = Settings.WebServerPassword ?? "";
+            }
+            finally
+            {
+                _isSettingControls = false;
+            }
+        }
 
         private Dictionary<string, string> _supportedLanguages = new()
         {
@@ -1562,7 +1595,10 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             if (sender is not PasswordBox pb) return;
-            Settings.WebServerPassword = pb.Password;
+            string pwd = pb.Password ?? "";
+            if (string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(Settings.WebServerPassword))
+                return;
+            Settings.WebServerPassword = pwd;
         }
 
         private void BtnCreateNewReward_Click(object sender, RoutedEventArgs e)
@@ -2421,17 +2457,30 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             if (IgnoreControlEvents)
                 return;
-            Settings.SongifyApiKey = ((PasswordBox)sender).Password;
+            if (sender is not PasswordBox pb)
+                return;
+
+            string pwd = pb.Password ?? "";
+            if (string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(Settings.SongifyApiKey))
+                return;
+
+            Settings.SongifyApiKey = pwd;
         }
 
         private void PasswordBox_OnPasswordChanged(object sender, RoutedEventArgs e)
         {
             if (IgnoreControlEvents)
                 return;
-            if (TextBox.Text != PasswordBox.Password)
-                Settings.SongifyApiKey = PasswordBox.Password;
+
+            // Theme/style refresh can momentarily clear PasswordBox; never wipe a stored token that way.
+            string pwd = PasswordBox.Password ?? "";
+            if (string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(Settings.SongifyApiKey) && !_showPassword)
+                return;
+
+            if (TextBox.Text != pwd)
+                Settings.SongifyApiKey = pwd;
             if (!_showPassword)
-                TextBox.Text = PasswordBox.Password;
+                TextBox.Text = pwd;
         }
 
         private void ShowHideButton_OnClick(object sender, RoutedEventArgs e)
@@ -2660,6 +2709,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
                         case HttpStatusCode.NotAcceptable:
                             TblError.Text = "Cancelled by user.";
                             break;
+                        case HttpStatusCode.ServiceUnavailable:
+                            TblError.Text = "Error connecting to Songify service.";
+                            break;
                     }
                 }
             }
@@ -2747,7 +2799,10 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             if (IgnoreControlEvents)
                 return;
-            Settings.YoutubeApiKey = PasswordBox_YoutubeApiKey.Password;
+            string pwd = PasswordBox_YoutubeApiKey.Password ?? "";
+            if (string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(Settings.YoutubeApiKey))
+                return;
+            Settings.YoutubeApiKey = pwd;
         }
 
         private void BtnTestYoutubeApi_OnClick(object sender, RoutedEventArgs e)

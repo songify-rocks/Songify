@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Views.WPFUI;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -539,13 +540,21 @@ namespace Songify_Slim.Util.Configuration
                 // Deep clone entire Configuration object
                 Configuration clonedConfig = DeepCloneYaml(config);
 
+                // Guard: never mutate the live config if YAML clone somehow shared AppConfig.
+                if (ReferenceEquals(clonedConfig.AppConfig, config.AppConfig))
+                {
+                    Logger.Error(LogSource.Core,
+                        "Cloud save aborted: deep clone shared AppConfig with live settings.");
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.InternalServerError);
+                }
+
                 // Blocked artists may be unloaded from CurrentConfig — attach a fresh disk snapshot for cloud backup.
                 clonedConfig.BlockedSpotifyArtists = new BlockedSpotifyArtists
                 {
                     Artists = ArtistBlocklistStore.LoadCopy()
                 };
 
-                // Exclude tokens and sensitive data
+                // Exclude tokens and sensitive data (clone only — live Settings must stay intact)
                 clonedConfig.AppConfig.YoutubeApiKey = null;
                 clonedConfig.AppConfig.SongifyApiKey = null;
                 clonedConfig.AppConfig.AccessKey = null;
@@ -554,9 +563,6 @@ namespace Songify_Slim.Util.Configuration
                 // Strip sensitive information
                 clonedConfig.SpotifyCredentials = null;
                 clonedConfig.TwitchCredentials = null;
-
-                // Optional: sanitize other values
-                clonedConfig.AppConfig.SongifyApiKey = null;
 
                 // Serialize to YAML and then base64
                 ISerializer serializer = new SerializerBuilder()
@@ -629,6 +635,37 @@ namespace Songify_Slim.Util.Configuration
             return deserializer.Deserialize<T>(yaml);
         }
 
+        /// <summary>
+        /// Migrates legacy <see cref="AppConfig.ArtistBlacklist"/> into
+        /// <see cref="BlockedSpotifyArtists"/> for fair restore diffs (does not write disk).
+        /// </summary>
+        private static void NormalizeBlockedArtistsForCompare(Configuration config)
+        {
+            if (config == null)
+                return;
+
+            config.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
+            config.BlockedSpotifyArtists.Artists ??= [];
+
+            List<BlockedArtist> legacy = config.AppConfig?.ArtistBlacklist;
+            if (legacy is not { Count: > 0 })
+            {
+                if (config.AppConfig != null)
+                    config.AppConfig.ArtistBlacklist = [];
+                return;
+            }
+
+            HashSet<string> existingKeys = config.BlockedSpotifyArtists.Artists
+                .Select(x => x.Key)
+                .Where(k => !string.IsNullOrEmpty(k))
+                .ToHashSet();
+
+            config.BlockedSpotifyArtists.Artists.AddRange(
+                legacy.Where(x => !string.IsNullOrEmpty(x.Key) && existingKeys.Add(x.Key)));
+
+            config.AppConfig.ArtistBlacklist = [];
+        }
+
         public static async Task<Tuple<bool, HttpStatusCode>> CloudRestoreSettings(string apiToken, string userId)
         {
             try
@@ -680,15 +717,29 @@ namespace Songify_Slim.Util.Configuration
                     .Build();
 
                 Configuration restoredConfig = deserializer.Deserialize<Configuration>(yaml);
+
+                // Local blocked artists are usually unloaded from CurrentConfig (disk is source of truth).
+                // Build a comparison snapshot the same way cloud save attaches artists for upload.
+                Configuration localForCompare = DeepCloneYaml(Settings.CurrentConfig);
+                localForCompare.BlockedSpotifyArtists = new BlockedSpotifyArtists
+                {
+                    Artists = ArtistBlocklistStore.LoadCopy()
+                };
+                if (localForCompare.AppConfig != null)
+                    localForCompare.AppConfig.ArtistBlacklist = [];
+
+                // Older cloud saves may still keep artists on AppConfig — normalize before diffing.
+                NormalizeBlockedArtistsForCompare(restoredConfig);
+
                 Window sW = new();
                 foreach (Window win in Application.Current.Windows)
                 {
-                    if (win is Window_Settings)
+                    if (win is ShellWindow)
                         sW = win;
                 }
 
                 // Preview the import
-                Window_CloudImportPreview preview = new(Settings.CurrentConfig, restoredConfig)
+                Window_CloudImportPreview preview = new(localForCompare, restoredConfig)
                 {
                     Owner = sW,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -967,6 +1018,7 @@ namespace Songify_Slim.Util.Configuration
 
         /// <summary>Shared secret for optional WebSocket command authentication.</summary>
         public string WebServerPassword { get; set; } = "";
+
         public List<RefundCondition> RefundConditons { get; set; } = [];
         public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
         public List<int> ReadNotificationIds { get; set; } = [];
@@ -990,8 +1042,10 @@ namespace Songify_Slim.Util.Configuration
         public PlaylistSnapshot SpotifyPlaylistId { get; set; } = new();
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public string Theme { get; set; } = "Dark";
+
         /// <summary>WPF-UI window backdrop: None, Auto, Mica, Acrylic, Tabbed.</summary>
         public string WindowBackdrop { get; set; } = "Mica";
+
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;

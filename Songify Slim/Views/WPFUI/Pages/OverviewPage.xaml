@@ -63,14 +63,24 @@
                             x:Name="CoverPlaceholder"
                             Width="120"
                             Height="120"
+                            MinWidth="120"
+                            MinHeight="120"
+                            Padding="0"
                             Background="{DynamicResource ControlFillColorSecondaryBrush}"
                             Visibility="Visible">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="12"
-                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="{DynamicResource window_queue_no_art}" />
+                            <Grid
+                                Width="120"
+                                Height="120"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                    Text="{DynamicResource window_queue_no_art}"
+                                    TextAlignment="Center" />
+                            </Grid>
                         </ui:Card>
                     </Grid>
                     <StackPanel

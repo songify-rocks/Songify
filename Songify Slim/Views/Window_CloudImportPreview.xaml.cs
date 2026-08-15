@@ -1,131 +1,147 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
 
-namespace Songify_Slim.Views
+namespace Songify_Slim.Views;
+
+/// <summary>
+/// Preview of cloud settings differences before import.
+/// </summary>
+public partial class Window_CloudImportPreview
 {
-    /// <summary>
-    /// Interaction logic for Window_CloudImportPreview.xaml
-    /// </summary>
-    public partial class Window_CloudImportPreview
-    {
-        public bool IsConfirmed { get; private set; } = false;
-        public int DiffCount { get; private set; } = 0;
+    public bool IsConfirmed { get; private set; }
+    public int DiffCount { get; private set; }
 
-        public Window_CloudImportPreview(Configuration local, Configuration incoming)
+    public Window_CloudImportPreview(Configuration local, Configuration incoming)
+    {
+        InitializeComponent();
+        ThemeHandler.ApplyTheme();
+        PopulateDiff(local, incoming);
+    }
+
+    private static string Loc(string key, string fallback)
+        => Application.Current?.TryFindResource(key) as string ?? fallback;
+
+    private void PopulateDiff(Configuration local, Configuration incoming)
+    {
+        List<string> diffs = ConfigComparer.GetDifferences(local, incoming);
+        DiffCount = diffs.Count;
+
+        List<string> permissionWarnings = ConfigComparer.GetPermissionWideningWarnings(local, incoming);
+        if (permissionWarnings.Count > 0)
         {
-            InitializeComponent();
-            PopulateDiff(local, incoming);
+            PermissionWarningBanner.Visibility = Visibility.Visible;
+            string header = Loc(
+                "window_cloudimport_permission_body",
+                "This import widens who can use some Twitch commands or song requests:");
+            TbPermissionWarnings.Text = header + "\n• " + string.Join("\n• ", permissionWarnings);
+        }
+        else
+        {
+            PermissionWarningBanner.Visibility = Visibility.Collapsed;
+            TbPermissionWarnings.Text = "";
         }
 
-        private void PopulateDiff(Configuration local, Configuration incoming)
+        DiffTextBox.Document.Blocks.Clear();
+
+        if (diffs.Count == 0)
         {
-            List<string> diffs = ConfigComparer.GetDifferences(local, incoming);
-            DiffCount = diffs.Count;
+            DiffTextBox.Document.Blocks.Add(new Paragraph(new Run(
+                Loc("window_cloudimport_no_differences", "No differences detected."))));
+            BtnImport.IsEnabled = false;
+            return;
+        }
 
-            List<string> permissionWarnings = ConfigComparer.GetPermissionWideningWarnings(local, incoming);
-            if (permissionWarnings.Count > 0)
-            {
-                PermissionWarningBanner.Visibility = Visibility.Visible;
-                TbPermissionWarnings.Text =
-                    "This import widens who can use some Twitch commands or song requests:\n• " +
-                    string.Join("\n• ", permissionWarnings);
-            }
-            else
-            {
-                PermissionWarningBanner.Visibility = Visibility.Collapsed;
-                TbPermissionWarnings.Text = "";
-            }
+        bool dark = IsDarkTheme();
+        Color oldBg = dark ? Color.FromRgb(0x4A, 0x1C, 0x1C) : Color.FromRgb(0xFF, 0xEB, 0xEB);
+        Color oldFg = dark ? Color.FromRgb(0xFF, 0x8A, 0x80) : Color.FromRgb(0xB7, 0x1C, 0x1C);
+        Color newBg = dark ? Color.FromRgb(0x1B, 0x3A, 0x1B) : Color.FromRgb(0xE6, 0xFF, 0xE6);
+        Color newFg = dark ? Color.FromRgb(0xA5, 0xD6, 0xA7) : Color.FromRgb(0x1B, 0x5E, 0x20);
 
-            DiffTextBox.Document.Blocks.Clear();
-
-            if (diffs.Count == 0)
+        foreach (string diff in diffs)
+        {
+            Paragraph paragraph = new()
             {
-                DiffTextBox.Document.Blocks.Add(new Paragraph(new Run("No differences detected.")));
-                return;
-            }
+                Margin = new Thickness(0, 0, 0, 6)
+            };
 
-            foreach (string diff in diffs)
+            string[] parts = diff.Split([": "], 2, StringSplitOptions.None);
+            if (parts.Length == 2)
             {
-                Paragraph paragraph = new()
+                paragraph.Inlines.Add(new Run(parts[0] + ": ")
                 {
-                    Margin = new Thickness(0, 0, 0, 5)
-                };
+                    FontWeight = FontWeights.SemiBold
+                });
 
-                string[] parts = diff.Split([": "], 2, StringSplitOptions.None);
-                if (parts.Length == 2)
+                string[] valueParts = parts[1].Split([" → "], 2, StringSplitOptions.None);
+                if (valueParts.Length == 2)
                 {
-                    Run key = new(parts[0] + ": ")
-                    {
-                        FontWeight = FontWeights.Bold,
-                    };
-                    paragraph.Inlines.Add(key);
-
-                    string[] valueParts = parts[1].Split([" → "], 2, StringSplitOptions.None);
-                    if (valueParts.Length == 2)
-                    {
-                        // Helper: builds styled UI container
-                        InlineUIContainer CreateStyledBlock(string text, Color bg, Color fg)
-                        {
-                            Border border = new()
-                            {
-                                Background = new SolidColorBrush(bg),
-                                CornerRadius = new CornerRadius(4),
-                                Padding = new Thickness(4, 0, 4, 0),
-                                Margin = new Thickness(2, 0, 2, 0),
-                                Child = new TextBlock
-                                {
-                                    Text = text,
-                                    FontFamily = new FontFamily("Consolas"),
-                                    Foreground = new SolidColorBrush(fg),
-                                    VerticalAlignment = VerticalAlignment.Center
-                                }
-                            };
-                            return new InlineUIContainer(border)
-                            {
-                                BaselineAlignment = BaselineAlignment.Center
-                            };
-                        }
-
-                        paragraph.Inlines.Add(CreateStyledBlock(valueParts[0], Color.FromRgb(255, 235, 235), Colors.DarkRed));
-                        paragraph.Inlines.Add(new Run(" → "));
-                        paragraph.Inlines.Add(CreateStyledBlock(valueParts[1], Color.FromRgb(230, 255, 230), Colors.DarkGreen));
-                    }
-                    else
-                    {
-                        paragraph.Inlines.Add(new Run(parts[1]));
-                    }
+                    paragraph.Inlines.Add(CreateStyledBlock(valueParts[0], oldBg, oldFg));
+                    paragraph.Inlines.Add(new Run(" → "));
+                    paragraph.Inlines.Add(CreateStyledBlock(valueParts[1], newBg, newFg));
                 }
                 else
                 {
-                    paragraph.Inlines.Add(new Run(diff));
+                    paragraph.Inlines.Add(new Run(parts[1]));
                 }
-
-                DiffTextBox.Document.Blocks.Add(paragraph);
             }
-        }
+            else
+            {
+                paragraph.Inlines.Add(new Run(diff));
+            }
 
-        private void BtnCancel_Click(object sender, RoutedEventArgs e)
-        {
-            IsConfirmed = false;
-            this.Close();
+            DiffTextBox.Document.Blocks.Add(paragraph);
         }
+    }
 
-        private void BtnImport_Click(object sender, RoutedEventArgs e)
+    private static bool IsDarkTheme()
+    {
+        try
         {
-            IsConfirmed = true;
-            this.Close();
+            return Settings.Theme is "Dark" or "BaseDark";
         }
+        catch
+        {
+            return true;
+        }
+    }
+
+    private static InlineUIContainer CreateStyledBlock(string text, Color bg, Color fg)
+    {
+        Border border = new()
+        {
+            Background = new SolidColorBrush(bg),
+            CornerRadius = new CornerRadius(4),
+            Padding = new Thickness(6, 1, 6, 1),
+            Margin = new Thickness(2, 0, 2, 0),
+            Child = new TextBlock
+            {
+                Text = text,
+                FontFamily = new FontFamily("Consolas"),
+                Foreground = new SolidColorBrush(fg),
+                VerticalAlignment = VerticalAlignment.Center
+            }
+        };
+        return new InlineUIContainer(border)
+        {
+            BaselineAlignment = BaselineAlignment.Center
+        };
+    }
+
+    private void BtnCancel_Click(object sender, RoutedEventArgs e)
+    {
+        IsConfirmed = false;
+        Close();
+    }
+
+    private void BtnImport_Click(object sender, RoutedEventArgs e)
+    {
+        IsConfirmed = true;
+        Close();
     }
 }

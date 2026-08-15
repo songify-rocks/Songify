@@ -41,6 +41,22 @@ internal static class SettingsUi
         }
     }
 
+    /// <summary>
+    /// Suppress SettingsPanel control handlers (e.g. while theme restyles PasswordBoxes).
+    /// Must be paired with <see cref="EndExternalUiMutation"/>.
+    /// </summary>
+    public static void BeginExternalUiMutation()
+    {
+        foreach (SettingsPanel panel in GetLivePanels())
+            panel.BeginExternalUiMutation();
+    }
+
+    public static void EndExternalUiMutation()
+    {
+        foreach (SettingsPanel panel in GetLivePanels())
+            panel.EndExternalUiMutation(reloadSecrets: true);
+    }
+
     /// <param name="resetTwitch">Also re-run Twitch connection UI (manual login / OAuth).</param>
     /// <param name="loadRewards">Refresh channel rewards list only (skips full SetControls when true alone).</param>
     /// <param name="loadCommands">Refresh Twitch commands UI only.</param>

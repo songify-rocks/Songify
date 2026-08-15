@@ -8,7 +8,10 @@ namespace Songify_Slim.Util.General;
 
 internal static class ThemeHandler
 {
-    public static void ApplyTheme()
+    private static string _appliedTheme;
+    private static string _appliedBackdrop;
+
+    public static void ApplyTheme(bool force = false)
     {
         if (string.IsNullOrEmpty(Settings.Theme))
             Settings.Theme = "Dark";
@@ -19,8 +22,31 @@ internal static class ThemeHandler
         ApplicationTheme theme = dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
         WindowBackdropType backdrop = ParseBackdrop(Settings.WindowBackdrop);
 
-        ApplicationThemeManager.Apply(theme, backdrop, updateAccent: true);
-        ApplyBackdropToWindows(backdrop);
+        bool unchanged = !force
+                         && string.Equals(_appliedTheme, Settings.Theme, StringComparison.OrdinalIgnoreCase)
+                         && string.Equals(_appliedBackdrop, Settings.WindowBackdrop, StringComparison.OrdinalIgnoreCase);
+
+        if (unchanged)
+        {
+            // Still sync backdrop on any new FluentWindow that just opened.
+            ApplyBackdropToWindows(backdrop);
+            return;
+        }
+
+        // Theme/style refresh can reset PasswordBox values and fire PasswordChanged with "".
+        // Suspend settings secret fields so that cannot wipe SongifyApiKey / other secrets to disk.
+        SettingsUi.BeginExternalUiMutation();
+        try
+        {
+            ApplicationThemeManager.Apply(theme, backdrop, updateAccent: true);
+            ApplyBackdropToWindows(backdrop);
+            _appliedTheme = Settings.Theme;
+            _appliedBackdrop = Settings.WindowBackdrop;
+        }
+        finally
+        {
+            SettingsUi.EndExternalUiMutation();
+        }
     }
 
     public static WindowBackdropType ParseBackdrop(string value)

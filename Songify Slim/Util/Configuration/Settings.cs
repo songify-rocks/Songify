@@ -1461,9 +1461,12 @@ namespace Songify_Slim.Util.Configuration
         }
 
         public static async Task ImportCloudSave(Configuration config)
-        {    // Cache the existing decrypted token
+        {
+            // Secrets are never uploaded — keep the local copies before AppConfig is replaced.
             string existingApiKey = SongifyApiKey;
             string existingWebServerPassword = WebServerPassword;
+            string existingYoutubeApiKey = YoutubeApiKey;
+            string existingAccessKey = AccessKey;
 
             // Overwrite the config
             CurrentConfig.AppConfig = config.AppConfig;
@@ -1490,9 +1493,11 @@ namespace Songify_Slim.Util.Configuration
             // Persist artists + rebuild compact indexes, then drop full objects from RAM.
             ArtistBlocklistStore.ReplaceAndUnload(CurrentConfig.BlockedSpotifyArtists.Artists);
 
-            // Restore secrets that are never uploaded
+            // Restore secrets that are never uploaded (cloud payloads null these out on save).
             SongifyApiKey = existingApiKey;
             WebServerPassword = existingWebServerPassword;
+            YoutubeApiKey = existingYoutubeApiKey;
+            AccessKey = existingAccessKey;
 
             // Re-apply UI settings (shell SettingsPanel + any Window_Settings host)
             await Application.Current.Dispatcher.Invoke(async () =>

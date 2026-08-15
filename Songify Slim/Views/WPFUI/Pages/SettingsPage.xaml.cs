@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,6 +28,8 @@ public partial class SettingsPage : Page
         ]),
         new("Network", "window_settings_nav_network", SymbolRegular.Server24, null, ["WebServer"])
     ];
+
+    private static readonly IValueConverter UppercaseConverter = new ToUpperConverter();
 
     private bool _navBuilt;
 
@@ -101,7 +104,7 @@ public partial class SettingsPage : Page
             {
                 if (!byTag.TryGetValue(tag, out TabItem tab))
                     continue;
-                NavList.Items.Add(CreateNavItem(tab, tag));
+                NavList.Items.Add(CreateNavItem(tab));
                 placed.Add(tag);
             }
         }
@@ -109,14 +112,14 @@ public partial class SettingsPage : Page
         // Any unexpected tabs still show (sorted) under "Other"
         List<TabItem> leftovers = byTag
             .Where(kv => !placed.Contains(kv.Key))
-            .OrderBy(kv => HumanizeTag(kv.Key))
+            .OrderBy(kv => kv.Value.Header?.ToString() ?? kv.Key, StringComparer.CurrentCultureIgnoreCase)
             .Select(kv => kv.Value)
             .ToList();
         if (leftovers.Count > 0)
         {
             NavList.Items.Add(CreateGroupHeader("Other", "window_settings_nav_other", SymbolRegular.MoreHorizontal24, null));
             foreach (TabItem tab in leftovers)
-                NavList.Items.Add(CreateNavItem(tab, tab.Tag?.ToString() ?? "Tab"));
+                NavList.Items.Add(CreateNavItem(tab));
         }
 
         // Select first real nav item (skip group headers)
@@ -134,7 +137,6 @@ public partial class SettingsPage : Page
 
     private static ListBoxItem CreateGroupHeader(string sectionId, string headerResourceKey, SymbolRegular? fluent, string? brandKey)
     {
-        // Use DynamicResource so headers follow theme switches (light/dark) like normal nav items.
         FrameworkElement? icon = null;
         if (!string.IsNullOrEmpty(brandKey))
             icon = AppIcons.TryBrand(brandKey, 12);
@@ -150,15 +152,23 @@ public partial class SettingsPage : Page
             Margin = new Thickness(icon != null ? 8 : 8, 0, 0, 0)
         };
         label.SetResourceReference(TextBlock.ForegroundProperty, "TextFillColorSecondaryBrush");
-        // Bind via converter-less callback: uppercase at assign time from current culture; rebuild nav on language change via Settings refresh.
-        string title = Application.Current?.TryFindResource(headerResourceKey) as string ?? headerResourceKey;
-        label.Text = title.ToUpperInvariant();
+
+        // Proxy DynamicResource → uppercase binding so section titles follow language switches.
+        var resourceHost = new FrameworkElement { Visibility = Visibility.Collapsed, Width = 0, Height = 0 };
+        resourceHost.SetResourceReference(FrameworkElement.TagProperty, headerResourceKey);
+        label.SetBinding(TextBlock.TextProperty, new Binding(nameof(FrameworkElement.Tag))
+        {
+            Source = resourceHost,
+            Converter = UppercaseConverter
+        });
 
         var row = new StackPanel
         {
             Orientation = Orientation.Horizontal,
             VerticalAlignment = VerticalAlignment.Center
         };
+        // Keep host alive with the visual tree (resource lookup + DynamicResource updates).
+        row.Children.Add(resourceHost);
         if (icon != null)
             row.Children.Add(icon);
         row.Children.Add(label);
@@ -176,28 +186,24 @@ public partial class SettingsPage : Page
         };
     }
 
-    private static ListBoxItem CreateNavItem(TabItem tab, string tag) => new()
+    private static ListBoxItem CreateNavItem(TabItem tab)
     {
-        Content = HumanizeTag(tag),
-        Tag = tab
-    };
+        // Tab headers already use DynamicResource — bind so nav labels update with language.
+        var label = new TextBlock
+        {
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        label.SetBinding(TextBlock.TextProperty, new Binding(nameof(HeaderedContentControl.Header))
+        {
+            Source = tab
+        });
 
-    private static string HumanizeTag(string tag) => tag switch
-    {
-        "System" => "System",
-        "Output" => "Output",
-        "Twitch" => "Accounts",
-        "TwitchRewards" => "Rewards",
-        "TwitchPolls" => "Polls",
-        "TwitchSongRequest" => "Song request",
-        "TwitchCommands" => "Commands",
-        "TwitchResponses" => "Responses",
-        "Spotify" => "Spotify",
-        "Youtube" => "YouTube",
-        "WebServer" => "Web server",
-        "Config" => "Backup & advanced",
-        _ => tag
-    };
+        return new ListBoxItem
+        {
+            Content = label,
+            Tag = tab
+        };
+    }
 
     private void NavList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
@@ -223,4 +229,13 @@ public partial class SettingsPage : Page
 
     private void BtnResponseParams_OnClick(object sender, RoutedEventArgs e)
         => Panel.OpenResponseParams();
+
+    private sealed class ToUpperConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+            => value?.ToString()?.ToUpper(culture ?? CultureInfo.CurrentUICulture) ?? "";
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+            => throw new NotSupportedException();
+    }
 }

@@ -2147,4 +2147,64 @@ gwyden - Hertz - karimawii
     <value>Odpowiedź Volume Set</value>
     <comment>Context: Label for volume-set bot response field in command editor.</comment>
   </data>
+  <data name="window_manualtwitch_title_main" xml:space="preserve">
+    <value>Łączenie konta Twitch: Konto główne</value>
+    <comment>Context: Manual Twitch login window title for broadcaster/main account.</comment>
+  </data>
+  <data name="window_manualtwitch_title_bot" xml:space="preserve">
+    <value>Łączenie konta Twitch: Konto bota</value>
+    <comment>Context: Manual Twitch login window title for bot account.</comment>
+  </data>
+  <data name="window_cloudimport_permission_warning" xml:space="preserve">
+    <value>Ostrzeżenie o uprawnieniach</value>
+    <comment>Context: Banner title when cloud import widens Twitch command permissions.</comment>
+  </data>
+  <data name="window_cloudimport_permission_body" xml:space="preserve">
+    <value>Ten import rozszerza, kto może używać niektórych komend Twitch lub próśb o utwory:</value>
+    <comment>Context: Intro line before bullet list of widened permissions on cloud import.</comment>
+  </data>
+  <data name="window_cloudimport_no_differences" xml:space="preserve">
+    <value>Nie wykryto różnic.</value>
+    <comment>Context: Shown in cloud import preview when local and cloud configs match.</comment>
+  </data>
+  <data name="window_artistimport_title" xml:space="preserve">
+    <value>Importuj artystów</value>
+    <comment>Context: Title of artist CSV import dialog from blocklist.</comment>
+  </data>
+  <data name="window_artistimport_hint" xml:space="preserve">
+    <value>Wczytaj CSV z pliku lub URL HTTPS, zmapuj kolumny Nazwa/Id i zaimportuj do listy zablokowanych artystów.</value>
+    <comment>Context: Intro hint on artist CSV import dialog.</comment>
+  </data>
+  <data name="window_artistimport_source" xml:space="preserve">
+    <value>ŹRÓDŁO</value>
+    <comment>Context: Section header for CSV source on artist import dialog.</comment>
+  </data>
+  <data name="window_artistimport_file" xml:space="preserve">
+    <value>Plik</value>
+    <comment>Context: Radio option to import artists from a local CSV file.</comment>
+  </data>
+  <data name="window_artistimport_url" xml:space="preserve">
+    <value>URL</value>
+    <comment>Context: Radio option to import artists from a CSV URL.</comment>
+  </data>
+  <data name="window_artistimport_no_file" xml:space="preserve">
+    <value>Nie wybrano pliku</value>
+    <comment>Context: Placeholder when no CSV file is chosen for artist import.</comment>
+  </data>
+  <data name="window_artistimport_load_csv" xml:space="preserve">
+    <value>Wczytaj CSV</value>
+    <comment>Context: Button to load CSV for artist import preview.</comment>
+  </data>
+  <data name="window_artistimport_id_column_optional" xml:space="preserve">
+    <value>Kolumna id (opcjonalnie)</value>
+    <comment>Context: Optional Spotify id column mapping on artist import.</comment>
+  </data>
+  <data name="window_artistimport_preview" xml:space="preserve">
+    <value>PODGLĄD</value>
+    <comment>Context: Section header for artist import CSV preview list.</comment>
+  </data>
+  <data name="window_artistimport_no_csv" xml:space="preserve">
+    <value>Nie wczytano CSV.</value>
+    <comment>Context: Status when artist import has no CSV loaded yet.</comment>
+  </data>
 </root>
