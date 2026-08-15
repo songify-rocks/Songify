@@ -55,6 +55,15 @@ namespace Songify_Slim.Views.WPFUI.Controls
     // ReSharper disable once InconsistentNaming
     public partial class SettingsPanel
     {
+        private static string Loc(string key, string fallback)
+            => Application.Current?.TryFindResource(key) as string ?? fallback;
+
+        private static string LocFormat(string key, string fallback, params object[] args)
+        {
+            try { return string.Format(Loc(key, fallback), args); }
+            catch (FormatException) { return fallback; }
+        }
+
 
         private Task<AppDialogResult> ShowMsgAsync(
             string title,
@@ -601,7 +610,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 LblMainExpiry.Visibility = Visibility.Collapsed;
                 BtnTwitchLogout.Visibility = Visibility.Collapsed;
                 BtnTwitchRefreshMain.Visibility = Visibility.Collapsed;
-                LblTwitchName.Content = "Main Account:";
+                LblTwitchName.Content = Loc("window_settings_main_account", "Main Account:");
 
                 ImgTwitchProfile.ImageSource = GetDefaultSongifyProfileImage();
             }
@@ -629,7 +638,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 LblBotExpiry.Visibility = Visibility.Collapsed;
                 BtnTwitchBotLogout.Visibility = Visibility.Collapsed;
                 BtnTwitchRefreshBot.Visibility = Visibility.Collapsed;
-                LblTwitchBotName.Content = "Bot Account:";
+                LblTwitchBotName.Content = Loc("window_settings_bot_account", "Bot Account:");
 
                 ImgTwitchBotProfile.ImageSource = GetDefaultSongifyProfileImage();
             }
@@ -723,7 +732,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 return;
             }
 
-            lbl.Content = lbl.Tag.ToString() == "main" ? "Main Account:\n" : "Bot Account:\n";
+            lbl.Content = (lbl.Tag.ToString() == "main"
+                    ? Loc("window_settings_main_account", "Main Account:")
+                    : Loc("window_settings_bot_account", "Bot Account:")) + "\n";
 
             switch (account)
             {
@@ -749,11 +760,11 @@ namespace Songify_Slim.Views.WPFUI.Controls
             switch (account)
             {
                 case 0:
-                    LblMainExpiry.Content = $"Expires on {Settings.TwitchAccessTokenExpiryDate}";
+                    LblMainExpiry.Content = LocFormat("window_settings_expires_on", "Expires on {0}", Settings.TwitchAccessTokenExpiryDate);
                     break;
 
                 case 1:
-                    LblBotExpiry.Content = $"Expires on {Settings.BotAccessTokenExpiryDate}";
+                    LblBotExpiry.Content = LocFormat("window_settings_expires_on", "Expires on {0}", Settings.BotAccessTokenExpiryDate);
                     break;
             }
 
@@ -830,19 +841,19 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 RootFolder = Environment.SpecialFolder.Desktop,
                 Description = null
             };
-            fbd.Description = @"Select a folder to save the config file";
+            fbd.Description = Loc("window_settings_folder_save_config", "Select a folder to save the config file");
             fbd.ShowNewFolderButton = true;
             fbd.RootFolder = Environment.SpecialFolder.MyComputer;
             if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
             ConfigHandler.WriteAllConfig(Settings.Export(), fbd.SelectedPath);
-            await ShowMsgAsync("Success", "Config file saved successfully");
+            await ShowMsgAsync(Loc("common_success", "Success"), Loc("window_settings_config_saved", "Config file saved successfully"));
         }
 
         private async void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
         {
             // Open a dialog to select a folder to import the config files
             using FolderBrowserDialog fbd = new();
-            fbd.Description = @"Select the folder containing the config files";
+            fbd.Description = Loc("window_settings_folder_import_config", "Select the folder containing the config files");
             fbd.ShowNewFolderButton = false; // Optional, prevents creating new folders
             // set the apps directory as the default directory
             fbd.SelectedPath = AppPaths.GetAppDirectory();
@@ -868,8 +879,11 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)
         {
             AppDialogResult msgResult = await ShowMsgAsync("Warning",
-                "Are you sure you want to reset all settings?", AppDialogStyle.PrimaryAndSecondary,
-                new AppDialogSettings { PrimaryButtonText = "Yes", NegativeButtonText = "No" });
+                Loc("window_settings_reset_confirm", "Are you sure you want to reset all settings?"), AppDialogStyle.PrimaryAndSecondary,
+                new AppDialogSettings {
+                    PrimaryButtonText = Loc("dialog_yes", "Yes"),
+                    NegativeButtonText = Loc("dialog_no", "No")
+                });
             if (msgResult != AppDialogResult.Primary) return;
             File.Delete(AppPaths.GetAppDirectory() + "/config.xml");
             File.Delete(AppPaths.GetAppDirectory() + "/AppConfig.yaml");
@@ -934,7 +948,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
         {
             // Where the user wants the text file to be saved in
-            _fbd.Description = @"Path where the text file will be located.";
+            _fbd.Description = Loc("window_settings_folder_song_output", "Path where the text file will be located.");
             _fbd.SelectedPath = AppPaths.GetAppDirectory();
 
             if (_fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
@@ -1813,18 +1827,24 @@ namespace Songify_Slim.Views.WPFUI.Controls
             string last = Settings.ArtistBlocklistSyncLastUtc;
             if (string.IsNullOrWhiteSpace(last))
             {
-                TbArtistBlocklistSyncStatus.Text = "Last sync: never";
+                TbArtistBlocklistSyncStatus.Text =
+                    Application.Current.TryFindResource("window_settings_last_sync_never") as string
+                    ?? "Last sync: never";
                 return;
             }
+
+            string format =
+                Application.Current.TryFindResource("window_settings_last_sync") as string
+                ?? "Last sync: {0}";
 
             if (DateTime.TryParse(last, null, DateTimeStyles.RoundtripKind, out DateTime utc))
             {
                 DateTime local = utc.ToLocalTime();
-                TbArtistBlocklistSyncStatus.Text = $"Last sync: {local:g}";
+                TbArtistBlocklistSyncStatus.Text = string.Format(format, local.ToString("g"));
             }
             else
             {
-                TbArtistBlocklistSyncStatus.Text = $"Last sync: {last}";
+                TbArtistBlocklistSyncStatus.Text = string.Format(format, last);
             }
         }
 
@@ -1873,12 +1893,12 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
             try
             {
-                TbArtistBlocklistSyncStatus.Text = "Detecting columns…";
+                TbArtistBlocklistSyncStatus.Text = Loc("window_settings_detecting_columns", "Detecting columns…");
                 string csv = await ArtistCsvImport.DownloadCsvAsync(url);
                 if (!ArtistCsvImport.TryParse(csv, out List<string> headers, out _, out string error))
                 {
                     TbArtistBlocklistSyncStatus.Text = error;
-                    await ShowMsgAsync("Detect columns", error);
+                    await ShowMsgAsync(Loc("window_settings_detect_columns_title", "Detect columns"), error);
                     return;
                 }
 
@@ -1920,13 +1940,13 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (CbxArtistBlocklistSyncIdColumn.SelectedValue is string idHeader)
                     Settings.ArtistBlocklistSyncIdColumn = idHeader;
 
-                TbArtistBlocklistSyncStatus.Text = $"Detected {headers.Count} column(s). Mapping saved.";
+                TbArtistBlocklistSyncStatus.Text = LocFormat("window_settings_detected_columns", "Detected {0} column(s). Mapping saved.", headers.Count);
             }
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, LogSource.Core, "Failed to detect artist blocklist CSV columns", ex);
-                TbArtistBlocklistSyncStatus.Text = "Detect failed.";
-                await ShowMsgAsync("Detect columns", "Could not load the CSV. Check the URL and try again.");
+                TbArtistBlocklistSyncStatus.Text = Loc("window_settings_detect_failed", "Detect failed.");
+                await ShowMsgAsync(Loc("window_settings_detect_columns_title", "Detect columns"), Loc("window_settings_detect_csv_error", "Could not load the CSV. Check the URL and try again."));
             }
             finally
             {
@@ -1959,7 +1979,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (!result.Success)
                 {
                     TbArtistBlocklistSyncStatus.Text = result.Message;
-                    await ShowMsgAsync("Artist blocklist sync", result.Message);
+                    await ShowMsgAsync(Loc("window_settings_artist_sync_title", "Artist blocklist sync"), result.Message);
                     return;
                 }
 
@@ -1970,13 +1990,13 @@ namespace Songify_Slim.Views.WPFUI.Controls
                         blacklist.Dispatcher.Invoke(blacklist.RefreshArtistsFromExternal);
                 }
 
-                await ShowMsgAsync("Artist blocklist sync", result.Message);
+                await ShowMsgAsync(Loc("window_settings_artist_sync_title", "Artist blocklist sync"), result.Message);
                 UpdateArtistBlocklistSyncStatusLabel();
             }
             catch (Exception ex)
             {
                 Logger.Log(LogLevel.Error, LogSource.Core, "Manual artist blocklist sync failed", ex);
-                await ShowMsgAsync("Artist blocklist sync", "Sync failed. Check the logs for details.");
+                await ShowMsgAsync(Loc("window_settings_artist_sync_title", "Artist blocklist sync"), Loc("window_settings_artist_sync_failed", "Sync failed. Check the logs for details."));
             }
             finally
             {
@@ -2534,19 +2554,19 @@ namespace Songify_Slim.Views.WPFUI.Controls
             {
                 if (string.IsNullOrEmpty(Settings.SongifyApiKey))
                 {
-                    TblError.Text = "Please enter your Songify API key.";
+                    TblError.Text = Loc("window_settings_cloud_need_api_key", "Please enter your Songify API key.");
                     return;
                 }
 
                 if (Settings.TwitchUser == null)
                 {
-                    TblError.Text = "Please log in to your Twitch account.";
+                    TblError.Text = Loc("window_settings_cloud_need_twitch", "Please log in to your Twitch account.");
                     return;
                 }
 
                 if (string.IsNullOrEmpty(Settings.TwitchUser.Id))
                 {
-                    TblError.Text = "Please log in to your Twitch account.";
+                    TblError.Text = Loc("window_settings_cloud_need_twitch", "Please log in to your Twitch account.");
                     return;
                 }
 
@@ -2556,7 +2576,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (result.Item1)
                 {
                     TblError.Foreground = new SolidColorBrush(Colors.LawnGreen);
-                    TblError.Text = "Successfully saved settings in the cloud";
+                    TblError.Text = Loc("window_settings_cloud_saved", "Successfully saved settings in the cloud");
                 }
                 else
                 {
@@ -2565,15 +2585,15 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     switch (result.Item2)
                     {
                         case HttpStatusCode.Unauthorized:
-                            TblError.Text = "Unauthorized access. Please check your API token.";
+                            TblError.Text = Loc("window_settings_cloud_unauthorized", "Unauthorized access. Please check your API token.");
                             return;
 
                         case HttpStatusCode.Forbidden:
-                            TblError.Text = "Forbidden access. This feature is only available for Ko-Fi members.";
+                            TblError.Text = Loc("window_settings_cloud_forbidden", "Forbidden access. This feature is only available for Ko-Fi members.");
                             return;
 
                         case HttpStatusCode.InternalServerError:
-                            TblError.Text = "Internal server error. Please try again later.";
+                            TblError.Text = Loc("window_settings_cloud_server_error", "Internal server error. Please try again later.");
                             return;
                     }
                 }
@@ -2590,19 +2610,19 @@ namespace Songify_Slim.Views.WPFUI.Controls
             {
                 if (string.IsNullOrEmpty(Settings.SongifyApiKey))
                 {
-                    TblError.Text = "Please enter your Songify API key.";
+                    TblError.Text = Loc("window_settings_cloud_need_api_key", "Please enter your Songify API key.");
                     return;
                 }
 
                 if (Settings.TwitchUser == null)
                 {
-                    TblError.Text = "Please log in to your Twitch account.";
+                    TblError.Text = Loc("window_settings_cloud_need_twitch", "Please log in to your Twitch account.");
                     return;
                 }
 
                 if (string.IsNullOrEmpty(Settings.TwitchUser.Id))
                 {
-                    TblError.Text = "Please log in to your Twitch account.";
+                    TblError.Text = Loc("window_settings_cloud_need_twitch", "Please log in to your Twitch account.");
                     return;
                 }
 
@@ -2621,15 +2641,15 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     switch (result.Item2)
                     {
                         case HttpStatusCode.Unauthorized:
-                            TblError.Text = "Unauthorized access. Please check your API token.";
+                            TblError.Text = Loc("window_settings_cloud_unauthorized", "Unauthorized access. Please check your API token.");
                             return;
 
                         case HttpStatusCode.Forbidden:
-                            TblError.Text = "Forbidden access. This feature is only available for Ko-Fi members.";
+                            TblError.Text = Loc("window_settings_cloud_forbidden", "Forbidden access. This feature is only available for Ko-Fi members.");
                             return;
 
                         case HttpStatusCode.InternalServerError:
-                            TblError.Text = "Internal server error. Please try again later.";
+                            TblError.Text = Loc("window_settings_cloud_server_error", "Internal server error. Please try again later.");
                             return;
 
                         case HttpStatusCode.NotModified:

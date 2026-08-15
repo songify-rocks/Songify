@@ -192,11 +192,11 @@
                                     Text="{DynamicResource window_settings_tab_appearance}" />
                                 <Grid Margin="0,0,0,12">
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Theme" />
+                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_appearance_theme}" />
                                         <TextBlock
                                             FontSize="12"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="Light or dark application theme" />
+                                            Text="{DynamicResource window_settings_appearance_theme_hint}" />
                                     </StackPanel>
                                     <StackPanel
                                         HorizontalAlignment="Right"
@@ -207,7 +207,7 @@
                                             VerticalAlignment="Center"
                                             FontSize="12"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="Light" />
+                                            Text="{DynamicResource window_settings_appearance_theme_light}" />
                                         <ui:ToggleSwitch
                                             x:Name="ThemeToggleSwitch"
                                             Checked="ThemeToggleSwitchIsCheckedChanged"
@@ -218,16 +218,16 @@
                                             VerticalAlignment="Center"
                                             FontSize="12"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="Dark" />
+                                            Text="{DynamicResource window_settings_appearance_theme_dark}" />
                                     </StackPanel>
                                 </Grid>
                                 <Grid>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="Window backdrop" />
+                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_appearance_backdrop}" />
                                         <TextBlock
                                             FontSize="12"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="App backdrop effects." />
+                                            Text="{DynamicResource window_settings_appearance_backdrop_hint}" />
                                     </StackPanel>
                                     <ComboBox
                                         x:Name="CbxWindowBackdrop"
@@ -504,7 +504,7 @@
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="Options" />
+                                    Text="{DynamicResource window_settings_options}" />
                                 <ui:ToggleSwitch
                                     x:Name="ChbxCover"
                                     Margin="0,0,0,8"
@@ -582,12 +582,12 @@
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="Accounts" />
+                                    Text="{DynamicResource window_settings_tab_accounts}" />
                                 <TextBlock
                                     Margin="0,0,0,16"
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="Link your broadcaster account and an optional bot account for chat."
+                                    Text="{DynamicResource window_settings_accounts_hint}"
                                     TextWrapping="Wrap" />
 
                                 <Grid>
@@ -608,7 +608,7 @@
                                             FontSize="12"
                                             FontWeight="SemiBold"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="BROADCASTER" />
+                                            Text="{DynamicResource window_settings_broadcaster}" />
                                         <DockPanel x:Name="PnlTwich" Margin="0,0,0,12">
                                             <Border
                                                 Width="60"
@@ -737,7 +737,7 @@
                                             FontSize="12"
                                             FontWeight="SemiBold"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                            Text="BOT" />
+                                            Text="{DynamicResource window_settings_bot}" />
                                         <DockPanel x:Name="PnlTwichBot" Margin="0,0,0,12">
                                             <Border
                                                 Width="60"
@@ -874,7 +874,7 @@
                                     Margin="0,0,0,12"
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="Choose which linked account posts in chat."
+                                    Text="{DynamicResource window_settings_chat_account_hint}"
                                     TextWrapping="Wrap" />
                                 <ComboBox
                                     x:Name="CbAccountSelection"
@@ -897,7 +897,7 @@
                                     Margin="0,0,0,8"
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="Advanced: paste username, OAuth token, and channel manually."
+                                    Text="{DynamicResource window_settings_manual_oauth_hint}"
                                     TextWrapping="Wrap" />
                                 <StackPanel>
                                     <StackPanel.Style>
@@ -957,7 +957,7 @@
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="Connection &amp; chat" />
+                                    Text="{DynamicResource window_settings_connection_chat}" />
                                 <ui:ToggleSwitch
                                     x:Name="ChbxTwAutoconnect"
                                     Margin="0,0,0,8"
@@ -1196,7 +1196,7 @@
                                     Margin="0,0,0,12"
                                     FontSize="14"
                                     FontWeight="SemiBold"
-                                    Text="Poll content" />
+                                    Text="{DynamicResource window_settings_poll_content}" />
                                 <TextBlock
                                     Margin="0,0,0,4"
                                     FontSize="12"
@@ -1230,7 +1230,7 @@
                                     Margin="0,0,0,12"
                                     FontSize="14"
                                     FontWeight="SemiBold"
-                                    Text="Voting options" />
+                                    Text="{DynamicResource window_settings_voting_options}" />
                                 <Grid Margin="0,0,0,12">
                                     <TextBlock VerticalAlignment="Center" Text="{DynamicResource window_settings_allow_additional_votes}" />
                                     <ui:ToggleSwitch
@@ -1283,7 +1283,7 @@
                                     Margin="0,0,0,12"
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="When this answer wins the poll, Songify will skip the current song."
+                                    Text="{DynamicResource window_settings_poll_skip_on_win_hint}"
                                     TextWrapping="Wrap" />
                                 <StackPanel Orientation="Horizontal">
                                     <RadioButton
@@ -1363,7 +1363,7 @@
                                 FontSize="14"
                                 FontWeight="SemiBold"
                                 Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                Text="Who can request" />
+                                Text="{DynamicResource window_settings_who_can_request}" />
                             <ui:Card Margin="0,0,0,16" Padding="16">
                                 <StackPanel VerticalAlignment="Top" Orientation="Vertical">
                                     <DockPanel LastChildFill="True" Visibility="Collapsed">
@@ -1433,7 +1433,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUserLevelsCommandChecked"
-                                                        Content="Subscriber T2"
+                                                        Content="{DynamicResource window_settings_subscriber_t2}"
                                                         Tag="3"
                                                         Unchecked="CbxUserLevelsCommandUnchecked" />
                                                 </ComboBoxItem>
@@ -1443,7 +1443,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUserLevelsCommandChecked"
-                                                        Content="Subscriber T3"
+                                                        Content="{DynamicResource window_settings_subscriber_t3}"
                                                         Tag="4"
                                                         Unchecked="CbxUserLevelsCommandUnchecked" />
                                                 </ComboBoxItem>
@@ -1540,7 +1540,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUserLevelsRewardChecked"
-                                                        Content="Subscriber T2"
+                                                        Content="{DynamicResource window_settings_subscriber_t2}"
                                                         Tag="3"
                                                         Unchecked="CbxUserLevelsRewardUnchecked" />
                                                 </ComboBoxItem>
@@ -1550,7 +1550,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUserLevelsRewardChecked"
-                                                        Content="Subscriber T3"
+                                                        Content="{DynamicResource window_settings_subscriber_t3}"
                                                         Tag="4"
                                                         Unchecked="CbxUserLevelsRewardUnchecked" />
                                                 </ComboBoxItem>
@@ -1819,7 +1819,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUnlimitedCommandChecked"
-                                                        Content="Subscriber T2"
+                                                        Content="{DynamicResource window_settings_subscriber_t2}"
                                                         Tag="3"
                                                         Unchecked="CbxUnlimitedCommandUnchecked" />
                                                 </ComboBoxItem>
@@ -1829,7 +1829,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUnlimitedCommandChecked"
-                                                        Content="Subscriber T3"
+                                                        Content="{DynamicResource window_settings_subscriber_t3}"
                                                         Tag="4"
                                                         Unchecked="CbxUnlimitedCommandUnchecked" />
                                                 </ComboBoxItem>
@@ -1931,7 +1931,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUnlimitedRewardChecked"
-                                                        Content="Subscriber T2"
+                                                        Content="{DynamicResource window_settings_subscriber_t2}"
                                                         Tag="3"
                                                         Unchecked="CbxUnlimitedRewardUnchecked" />
                                                 </ComboBoxItem>
@@ -1941,7 +1941,7 @@
                                                         Width="180"
                                                         Margin="1,0,0,0"
                                                         Checked="CbxUnlimitedRewardChecked"
-                                                        Content="Subscriber T3"
+                                                        Content="{DynamicResource window_settings_subscriber_t3}"
                                                         Tag="4"
                                                         Unchecked="CbxUnlimitedRewardUnchecked" />
                                                 </ComboBoxItem>
@@ -2011,7 +2011,7 @@
                                     <DockPanel>
                                         <ui:ToggleSwitch
                                             x:Name="Tglsw_BitsForSr"
-                                            d:Content="Enable Song Requests for Bits"
+                                            d:Content="{x:Static local:Resources.window_settings_spotify_sr_enable_for_bits}"
                                             Checked="Tglsw_BitsForSr_OnToggled"
                                             Content="{DynamicResource window_settings_spotify_sr_enable_for_bits}"
                                             Unchecked="Tglsw_BitsForSr_OnToggled" />
@@ -2168,7 +2168,7 @@
                                         <TextBlock
                                             FontSize="14"
                                             FontWeight="SemiBold"
-                                            Text="Spotify account" />
+                                            Text="{DynamicResource window_settings_spotify_account}" />
                                         <Label
                                             x:Name="LblSpotifyAcc"
                                             Margin="0,2,0,0"
@@ -2278,7 +2278,7 @@
                                     FontWeight="SemiBold"
                                     Text="{DynamicResource window_settings_spotify_fetch_rate}" />
                                 <Grid Margin="0,0,0,12">
-                                    <TextBlock VerticalAlignment="Center" Text="Poll interval (seconds)" />
+                                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource window_settings_poll_interval_seconds}" />
                                     <ui:NumberBox
                                         x:Name="NudSpotifyFetchRate"
                                         Width="120"
@@ -2307,12 +2307,12 @@
                                     Margin="0,0,0,4"
                                     FontSize="14"
                                     FontWeight="SemiBold"
-                                    Text="Artist blocklist sync" />
+                                    Text="{DynamicResource window_settings_artist_blocklist_sync}" />
                                 <TextBlock
                                     Margin="0,0,0,12"
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="Hourly download an HTTPS CSV (e.g. raw GitHub) and add new artists to the Spotify artist blocklist. Set column mapping once after Detect."
+                                    Text="{DynamicResource window_settings_artist_blocklist_sync_hint}"
                                     TextWrapping="Wrap" />
                                 <DockPanel Margin="0,0,0,12" LastChildFill="True">
                                     <TextBlock
@@ -2320,7 +2320,7 @@
                                         Margin="0,0,8,0"
                                         VerticalAlignment="Center"
                                         DockPanel.Dock="Left"
-                                        Text="CSV URL" />
+                                        Text="{DynamicResource window_settings_csv_url}" />
                                     <TextBox
                                         x:Name="TbArtistBlocklistSyncUrl"
                                         VerticalAlignment="Center"
@@ -2335,7 +2335,7 @@
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0">
-                                        <TextBlock Margin="0,0,0,4" Text="Name column" />
+                                        <TextBlock Margin="0,0,0,4" Text="{DynamicResource window_settings_name_column}" />
                                         <ComboBox
                                             x:Name="CbxArtistBlocklistSyncNameColumn"
                                             DisplayMemberPath="Display"
@@ -2343,7 +2343,7 @@
                                             SelectionChanged="CbxArtistBlocklistSyncColumn_OnSelectionChanged" />
                                     </StackPanel>
                                     <StackPanel Grid.Column="2">
-                                        <TextBlock Margin="0,0,0,4" Text="Id column" />
+                                        <TextBlock Margin="0,0,0,4" Text="{DynamicResource window_settings_id_column}" />
                                         <ComboBox
                                             x:Name="CbxArtistBlocklistSyncIdColumn"
                                             DisplayMemberPath="Display"
@@ -2356,7 +2356,7 @@
                                         Margin="12,18,0,0"
                                         VerticalAlignment="Top"
                                         Click="BtnArtistBlocklistDetectColumns_Click"
-                                        Content="Detect" />
+                                        Content="{DynamicResource window_settings_detect}" />
                                 </Grid>
                                 <DockPanel LastChildFill="True">
                                     <StackPanel
@@ -2367,7 +2367,7 @@
                                             MinWidth="100"
                                             Margin="0,0,10,0"
                                             Click="BtnArtistBlocklistSyncNow_Click"
-                                            Content="Sync now" />
+                                            Content="{DynamicResource window_settings_sync_now}" />
                                         <ui:ToggleSwitch
                                             x:Name="TglArtistBlocklistSyncEnabled"
                                             VerticalAlignment="Center"
@@ -2375,12 +2375,12 @@
                                             Unchecked="TglArtistBlocklistSyncEnabled_OnToggled" />
                                     </StackPanel>
                                     <StackPanel VerticalAlignment="Center">
-                                        <TextBlock Text="Hourly auto-sync" TextWrapping="Wrap" />
+                                        <TextBlock Text="{DynamicResource window_settings_hourly_auto_sync}" TextWrapping="Wrap" />
                                         <TextBlock
                                             x:Name="TbArtistBlocklistSyncStatus"
                                             Margin="0,4,8,0"
                                             Opacity="0.75"
-                                            Text="Last sync: never"
+                                            Text="{DynamicResource window_settings_last_sync_never}"
                                             TextWrapping="Wrap" />
                                     </StackPanel>
                                 </DockPanel>
@@ -2403,7 +2403,7 @@
                                     Margin="0,0,0,12"
                                     FontSize="12"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="Required for YouTube song lookups. Keep your key private."
+                                    Text="{DynamicResource window_settings_youtube_api_key_hint}"
                                     TextWrapping="Wrap" />
                                 <PasswordBox
                                     x:Name="PasswordBox_YoutubeApiKey"
@@ -2432,7 +2432,7 @@
                             x:Name="TbWebServerAdminWarning"
                             Margin="0,0,0,12"
                             Foreground="{DynamicResource AccentTextFillColorPrimaryBrush}"
-                            Text="Songify is running as Administrator. The web server will also listen on your LAN IP so a second PC can connect. Only do this on a trusted network, and consider enabling Require WebSocket password below."
+                            Text="{DynamicResource window_settings_webserver_admin_lan_hint}"
                             TextWrapping="Wrap"
                             Visibility="Collapsed" />
 
@@ -2443,7 +2443,7 @@
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="Server" />
+                                    Text="{DynamicResource window_settings_server}" />
                                 <Grid Margin="0,0,0,12">
                                     <TextBlock VerticalAlignment="Center" Text="{DynamicResource window_settings_webserver_port}" />
                                     <ui:NumberBox
@@ -2476,7 +2476,7 @@
                                         d:Content="{x:Static local:Resources.window_settings_webserver_open_website}"
                                         Click="BtnWebserverOpenUrl_OnClick"
                                         Content="{DynamicResource window_settings_webserver_open_website}"
-                                        ToolTip="Track JSON: root URL — WebSocket tester: /ws-docs" />
+                                        ToolTip="{DynamicResource window_settings_webserver_urls_tooltip}" />
                                 </StackPanel>
                             </StackPanel>
                         </ui:Card>
@@ -2488,16 +2488,16 @@
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="Security" />
+                                    Text="{DynamicResource window_settings_security}" />
                                 <ui:ToggleSwitch
                                     x:Name="TglWebServerPassword"
                                     Margin="0,0,0,12"
                                     Checked="TglWebServerPassword_Toggled"
-                                    Content="Require WebSocket password"
-                                    ToolTip="When enabled, WebSocket control commands need the password (auth action, password field, or ?password= on the URL). Off by default. Does not affect reading /ws/data broadcasts."
+                                    Content="{DynamicResource window_settings_require_websocket_password}"
+                                    ToolTip="{DynamicResource window_settings_require_websocket_password_tooltip}"
                                     Unchecked="TglWebServerPassword_Toggled" />
                                 <Grid>
-                                    <TextBlock VerticalAlignment="Center" Text="WebSocket password" />
+                                    <TextBlock VerticalAlignment="Center" Text="{DynamicResource window_settings_websocket_password}" />
                                     <PasswordBox
                                         x:Name="PasswordBox_WebServer"
                                         Width="280"
@@ -2704,8 +2704,8 @@
                                     <TextBlock
                                         Margin="0,0,12,0"
                                         VerticalAlignment="Center"
-                                        Text="Keep last log files"
-                                        ToolTip="Number of daily log files to keep (normal and DEBUG separately). Older files are deleted. 0 = keep all." />
+                                        Text="{DynamicResource window_settings_keep_last_log_files}"
+                                        ToolTip="{DynamicResource window_settings_keep_last_log_files_tooltip}" />
                                     <ui:NumberBox
                                         x:Name="NudLogFileRetention"
                                         Width="70"

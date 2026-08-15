@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="User list"
+    Title="{DynamicResource window_userlist_title}"
     ScrollViewer.CanContentScroll="False"
     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
     ScrollViewer.VerticalScrollBarVisibility="Disabled">
@@ -25,7 +25,7 @@
                 HorizontalAlignment="Right"
                 Appearance="Secondary"
                 Click="BtnRefresh_OnClick"
-                Content="Refresh"
+                Content="{DynamicResource common_refresh}"
                 Icon="{ui:SymbolIcon ArrowSync24}" />
         </Grid>
 

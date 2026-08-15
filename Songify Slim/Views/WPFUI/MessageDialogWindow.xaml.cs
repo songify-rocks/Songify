@@ -25,7 +25,7 @@ public partial class MessageDialogWindow
         TxtMessage.Text = message ?? "";
 
         BtnPrimary.Content = string.IsNullOrWhiteSpace(settings.PrimaryButtonText)
-            ? "OK"
+            ? (TryFindResource("common_ok") as string ?? "OK")
             : settings.PrimaryButtonText;
 
         if (style == AppDialogStyle.Primary)
@@ -35,7 +35,7 @@ public partial class MessageDialogWindow
         else
         {
             BtnSecondary.Content = string.IsNullOrWhiteSpace(settings.SecondaryButtonText)
-                ? "Cancel"
+                ? (TryFindResource("common_cancel") as string ?? "Cancel")
                 : settings.SecondaryButtonText;
             BtnSecondary.Visibility = Visibility.Visible;
         }

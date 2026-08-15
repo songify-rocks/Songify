@@ -48,7 +48,16 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private bool _webServerRunning;
     private SpotifyIndicatorState _spotifyState = SpotifyIndicatorState.Disconnected;
     private Brush _pearBrush = Brushes.Gray;
-    private string _pearStatusText = "Inactive";
+    private string _pearStatusText = "";
+
+    private string Loc(string key, string fallback)
+        => TryFindResource(key) as string ?? fallback;
+
+    private string LocFormat(string key, string fallback, params object[] args)
+    {
+        try { return string.Format(Loc(key, fallback), args); }
+        catch (FormatException) { return fallback; }
+    }
 
     public Brush TwitchApiBrush => _twitchApiState == ConnectionIndicatorState.Connected ? Brushes.GreenYellow : Brushes.IndianRed;
     public Brush TwitchBotBrush => _twitchBotState == ConnectionIndicatorState.Connected ? Brushes.GreenYellow : Brushes.IndianRed;
@@ -212,12 +221,15 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             isSelected: Settings.Player == PlayerType.Pear,
             isConnecting: PearWebSocketClient.IsConnecting,
             isConnected: PearWebSocketClient.IsConnected,
-            showInactiveStatusWhenUnselected: false);
+            connectedStatusText: Loc("common_connected", "Connected"),
+            disconnectedStatusText: Loc("common_disconnected", "Disconnected"),
+            showInactiveStatusWhenUnselected: false,
+            inactiveStatusText: Loc("common_inactive", "Inactive"));
 
         _pearBrush = state.Foreground;
         _pearStatusText = Settings.Player == PlayerType.Pear
             ? state.StatusText
-            : "Inactive (not selected)";
+            : Loc("window_main_status_pear_inactive_unselected", "Inactive (not selected)");
         OnPropertyChanged(nameof(PearBrush));
         OnPropertyChanged(nameof(PearStatusText));
     }
@@ -364,7 +376,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 TbSpotifyPersistentIssueTitle.Text = "";
                 TbSpotifyPersistentIssueBody.Text = "";
                 TbSpotifyPersistentIssueEta.Text = "";
-                ExpSpotifyPersistentIssues.Header = "More…";
+                ExpSpotifyPersistentIssues.Header = Loc("menu_more", "More…");
                 ExpSpotifyPersistentIssues.IsExpanded = false;
                 PnlSpotifyPersistentIssues.Children.Clear();
             }
@@ -375,7 +387,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
         if (!refreshOnly)
         {
-            TbSpotifyPersistentIssueTitle.Text = issue.Title ?? "Spotify issue";
+            TbSpotifyPersistentIssueTitle.Text = issue.Title
+                ?? Loc("window_main_spotify_issue_fallback", "Spotify issue");
             TbSpotifyPersistentIssueBody.Text = issue.Body ?? "";
         }
 
@@ -389,28 +402,36 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             if (remaining > TimeSpan.Zero)
             {
                 string human = remaining.TotalHours >= 1
-                    ? $"{(int)Math.Ceiling(remaining.TotalHours)} hour(s)"
+                    ? LocFormat("common_duration_hours", "{0} hour(s)", (int)Math.Ceiling(remaining.TotalHours))
                     : remaining.TotalMinutes >= 1
-                        ? $"{(int)Math.Ceiling(remaining.TotalMinutes)} minute(s)"
-                        : $"{Math.Max(1, (int)Math.Ceiling(remaining.TotalSeconds))} second(s)";
+                        ? LocFormat("common_duration_minutes", "{0} minute(s)", (int)Math.Ceiling(remaining.TotalMinutes))
+                        : LocFormat("common_duration_seconds", "{0} second(s)", Math.Max(1, (int)Math.Ceiling(remaining.TotalSeconds)));
 
-                TbSpotifyPersistentIssueEta.Text = $"Estimated: works again in about {human} (around {localTime}).";
+                TbSpotifyPersistentIssueEta.Text = LocFormat(
+                    "window_main_spotify_issue_eta",
+                    "Estimated: works again in about {0} (around {1}).",
+                    human, localTime);
             }
             else
             {
-                TbSpotifyPersistentIssueEta.Text = $"Estimated cooldown ended (around {localTime}). If it still fails, it may take a bit longer.";
+                TbSpotifyPersistentIssueEta.Text = LocFormat(
+                    "window_main_spotify_issue_eta_ready",
+                    "Estimated cooldown ended (around {0}). If it still fails, it may take a bit longer.",
+                    localTime);
             }
         }
         else
         {
             string whenLocal = DateTime.SpecifyKind(issue.CreatedAtUtc, DateTimeKind.Utc).ToLocalTime().ToString("g");
-            TbSpotifyPersistentIssueEta.Text = $"Seen at {whenLocal}.";
+            TbSpotifyPersistentIssueEta.Text = LocFormat("window_main_spotify_issue_seen_at", "Seen at {0}.", whenLocal);
         }
 
         if (!refreshOnly)
         {
             int moreCount = Math.Max(0, list.Count - 1);
-            ExpSpotifyPersistentIssues.Header = moreCount > 0 ? $"More… ({moreCount})" : "More…";
+            ExpSpotifyPersistentIssues.Header = moreCount > 0
+                ? LocFormat("window_main_more_count", "More… ({0})", moreCount)
+                : Loc("menu_more", "More…");
             PnlSpotifyPersistentIssues.Children.Clear();
 
             foreach (SpotifyPersistentIssue it in list.Skip(1))
@@ -429,7 +450,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                     Background = Brushes.Transparent,
                     BorderBrush = null,
                     Foreground = secondary,
-                    ToolTip = "Dismiss",
+                    ToolTip = Loc("common_dismiss", "Dismiss"),
                     Tag = it.Id
                 };
                 dismiss.Click += BtnSpotifyPersistentIssueItemDismiss_Click;
@@ -437,7 +458,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 row.Children.Add(dismiss);
 
                 string whenLocal = DateTime.SpecifyKind(it.CreatedAtUtc, DateTimeKind.Utc).ToLocalTime().ToString("g");
-                string text = $"{it.Title ?? "Spotify issue"} — {whenLocal}";
+                string text = $"{it.Title ?? Loc("window_main_spotify_issue_fallback", "Spotify issue")} — {whenLocal}";
                 var tb = new TextBlock
                 {
                     Text = text,

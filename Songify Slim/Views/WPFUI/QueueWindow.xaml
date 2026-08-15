@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:util="clr-namespace:Songify_Slim.Util"
-    Title="{DynamicResource WinTitle_Queue}"
+    Title="{DynamicResource window_queue_title}"
     Width="640"
     Height="480"
     MinWidth="400"
@@ -54,7 +54,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             Foreground="White"
-                            Text="{DynamicResource WinQueue_NowPlaying}" />
+                            Text="{DynamicResource window_queue_now_playing}" />
                     </Border>
                     <Border
                         Margin="0,0,8,0"
@@ -64,7 +64,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             Foreground="White"
-                            Text="{DynamicResource WinQueue_SongRequest}" />
+                            Text="{DynamicResource window_queue_song_request}" />
                     </Border>
                     <Border
                         Padding="8,4"
@@ -73,7 +73,7 @@
                         <TextBlock
                             VerticalAlignment="Center"
                             Foreground="White"
-                            Text="{DynamicResource WinQueue_Skipping}" />
+                            Text="{DynamicResource window_queue_skipping}" />
                     </Border>
                 </StackPanel>
                 <StackPanel
@@ -90,7 +90,7 @@
                         Width="140"
                         Margin="4,0"
                         HorizontalAlignment="Right"
-                        Header="{DynamicResource s_Columns}">
+                        Header="{DynamicResource common_columns}">
                         <StackPanel>
                             <CheckBox
                                 x:Name="ChkQueueId"
@@ -135,7 +135,7 @@
                         Appearance="Secondary"
                         Command="{Binding FontSizeDownCommand}"
                         Content="A-"
-                        ToolTip="Decrease font size" />
+                        ToolTip="{DynamicResource window_queue_decrease_font}" />
                     <TextBlock
                         MinWidth="24"
                         Margin="4,0"
@@ -147,13 +147,13 @@
                         Appearance="Secondary"
                         Command="{Binding FontSizeUpCommand}"
                         Content="A+"
-                        ToolTip="Increase font size" />
+                        ToolTip="{DynamicResource window_queue_increase_font}" />
                 </StackPanel>
             </Grid>
         </Border>
 
         <TabControl Grid.Row="1" Margin="8">
-            <TabItem Header="Queue">
+            <TabItem Header="{DynamicResource window_queue_tab_queue}">
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -182,31 +182,31 @@
                                 x:Name="ColQueueId"
                                 Width="*"
                                 Binding="{Binding Queueid}"
-                                Header="Queue ID" />
+                                Header="{DynamicResource window_queue_queue_id}" />
                             <DataGridTextColumn
                                 x:Name="ColArtist"
                                 Width="*"
                                 Binding="{Binding Artist}"
-                                Header="{DynamicResource bw_cbArtist}" />
+                                Header="{DynamicResource common_artist}" />
                             <DataGridTextColumn
                                 x:Name="ColTitle"
                                 Width="*"
                                 Binding="{Binding Title}"
-                                Header="{DynamicResource crw_RewardTitle}" />
+                                Header="{DynamicResource common_title}" />
                             <DataGridTextColumn
                                 x:Name="ColLength"
                                 Width="*"
                                 Binding="{Binding Length}"
-                                Header="{DynamicResource s_Length}" />
+                                Header="{DynamicResource common_length}" />
                             <DataGridTextColumn
                                 x:Name="ColRequester"
                                 Width="*"
                                 Binding="{Binding Requester}"
-                                Header="{DynamicResource s_Requester}" />
+                                Header="{DynamicResource common_requester}" />
                             <DataGridTemplateColumn
                                 x:Name="ColActions"
                                 Width="*"
-                                Header="{DynamicResource WinQueue_Actions}">
+                                Header="{DynamicResource window_queue_actions}">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <StackPanel Orientation="Horizontal">
@@ -214,8 +214,8 @@
                                                 Appearance="Secondary"
                                                 Command="{Binding DataContext.SkipCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding}"
-                                                Content="Skip"
-                                                ToolTip="Skip song">
+                                                Content="{DynamicResource common_skip}"
+                                                ToolTip="{DynamicResource window_queue_skip_song}">
                                                 <ui:Button.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
                                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -236,7 +236,7 @@
                                                 Command="{Binding DataContext.AddToFavoritesCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                                 CommandParameter="{Binding}"
                                                 Content="♥"
-                                                ToolTip="Add to favorites">
+                                                ToolTip="{DynamicResource window_queue_add_to_favorite_playlist}">
                                                 <ui:Button.Style>
                                                     <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
                                                         <Setter Property="Visibility" Value="Collapsed" />
@@ -278,7 +278,7 @@
                         </DataGrid.RowStyle>
                         <DataGrid.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Click="ContextMenu_RemoveFromQueue_Click" Header="Remove from queue" />
+                                <MenuItem Click="ContextMenu_RemoveFromQueue_Click" Header="{DynamicResource window_queue_remove_from_queue}" />
                             </ContextMenu>
                         </DataGrid.ContextMenu>
                     </DataGrid>
@@ -297,7 +297,7 @@
                                 Appearance="Secondary"
                                 Command="{Binding BackCommand}"
                                 Content="⏮"
-                                ToolTip="Previous / Restart" />
+                                ToolTip="{DynamicResource window_queue_previous_restart}" />
                             <ui:Button
                                 Width="44"
                                 Height="44"
@@ -305,7 +305,7 @@
                                 Appearance="Primary"
                                 Command="{Binding PlayPauseCommand}"
                                 Content="▶"
-                                ToolTip="Play / Pause">
+                                ToolTip="{DynamicResource window_queue_play_pause}">
                                 <ui:Button.Style>
                                     <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
                                         <Setter Property="Content" Value="❚❚" />
@@ -322,7 +322,7 @@
                                 Appearance="Secondary"
                                 Command="{Binding NextCommand}"
                                 Content="⏭"
-                                ToolTip="Next" />
+                                ToolTip="{DynamicResource window_queue_next}" />
                         </StackPanel>
                     </Border>
                     <ui:Button
@@ -333,7 +333,7 @@
                         Appearance="Secondary"
                         Command="{Binding TogglePlayerControlsCommand}"
                         Content="▼"
-                        ToolTip="Show / Hide player controls">
+                        ToolTip="{DynamicResource window_queue_show_hide_spotify_controls}">
                         <ui:Button.Style>
                             <Style BasedOn="{StaticResource {x:Type ui:Button}}" TargetType="ui:Button">
                                 <Style.Triggers>
@@ -346,7 +346,7 @@
                     </ui:Button>
                 </Grid>
             </TabItem>
-            <TabItem Header="Request list">
+            <TabItem Header="{DynamicResource window_queue_tab_requestlist}">
                 <DataGrid
                     x:Name="ReqListDataGrid"
                     Margin="8"
@@ -363,24 +363,24 @@
                         <DataGridTextColumn
                             Width="*"
                             Binding="{Binding Trackid}"
-                            Header="Track ID" />
+                            Header="{DynamicResource window_queue_track_id}" />
                         <DataGridTextColumn
                             Width="*"
                             Binding="{Binding Artist}"
-                            Header="{DynamicResource bw_cbArtist}" />
+                            Header="{DynamicResource common_artist}" />
                         <DataGridTextColumn
                             Width="*"
                             Binding="{Binding Title}"
-                            Header="{DynamicResource crw_RewardTitle}" />
+                            Header="{DynamicResource common_title}" />
                         <DataGridTextColumn
                             Width="*"
                             Binding="{Binding Played}"
-                            Header="Played" />
+                            Header="{DynamicResource window_queue_played}" />
                         <DataGridTextColumn
                             Width="*"
                             Binding="{Binding Requester}"
-                            Header="{DynamicResource s_Requester}" />
-                        <DataGridTemplateColumn Width="Auto" Header="{DynamicResource WinQueue_Actions}">
+                            Header="{DynamicResource common_requester}" />
+                        <DataGridTemplateColumn Width="Auto" Header="{DynamicResource window_queue_actions}">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <ui:Button
@@ -388,7 +388,7 @@
                                         Command="{Binding DataContext.RemoveFromReqListCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
                                         CommandParameter="{Binding}"
                                         Content="✕"
-                                        ToolTip="Remove" />
+                                        ToolTip="{DynamicResource common_remove}" />
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>

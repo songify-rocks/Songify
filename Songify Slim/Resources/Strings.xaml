@@ -182,10 +182,4 @@ connection with this EULA agreement, shall be governed by and construed in
 accordance with the laws of de.
 
 Please send any questions about this EULA to info@songify.rocks.</system:String>
-    <system:String x:Key="Credits" xml:space="preserve">Lead Developer
-Jan aka Inzaniity
-
-Contributors
-gwyden - Hertz - karimawii
-</system:String>
 </ResourceDictionary>

@@ -78,7 +78,10 @@ public partial class WindowCreateCustomReward
                 || string.IsNullOrWhiteSpace(TbRewardPrompt.Text)
                 || NudRewardCost.Value == null)
             {
-                SetStatus("Name, prompt, and cost are required.", isError: true);
+                SetStatus(
+                    Application.Current.TryFindResource("window_createreward_fields_required") as string
+                    ?? "Name, prompt, and cost are required.",
+                    isError: true);
                 return;
             }
 
@@ -88,7 +91,10 @@ public partial class WindowCreateCustomReward
 
             if (response == null)
             {
-                SetStatus("Unable to create Reward.", isError: true);
+                SetStatus(
+                    Application.Current.TryFindResource("window_createreward_unable") as string
+                    ?? "Unable to create reward.",
+                    isError: true);
                 return;
             }
 

@@ -160,7 +160,8 @@ public partial class OverviewPage : Page
         }
         else
         {
-            TxtNowPlaying.Text = "Nothing playing";
+            TxtNowPlaying.Text = TryFindResource("window_overview_nothing_playing") as string
+                                 ?? "Nothing playing";
             TxtArtist.Text = "";
             if (ImgCover != null) ImgCover.Visibility = Visibility.Collapsed;
             if (CoverPlaceholder != null) CoverPlaceholder.Visibility = Visibility.Visible;

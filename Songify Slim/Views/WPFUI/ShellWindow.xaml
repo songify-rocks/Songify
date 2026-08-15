@@ -60,14 +60,14 @@
                         Margin="0,0,4,0"
                         Padding="12,6"
                         Appearance="Transparent"
-                        Content="Tools"
+                        Content="{DynamicResource menu_tools}"
                         FontSize="13">
                         <ui:DropDownButton.Flyout>
                             <ContextMenu>
-                                <MenuItem Click="MenuWidget_OnClick" Header="Widget" />
-                                <MenuItem Click="MenuWebServerUrl_OnClick" Header="Web server URL" />
-                                <MenuItem Click="MenuQueueBrowser_OnClick" Header="Queue (browser)" />
-                                <MenuItem Click="MenuHistoryBrowser_OnClick" Header="History (browser)" />
+                                <MenuItem Click="MenuWidget_OnClick" Header="{DynamicResource menu_file_widget}" />
+                                <MenuItem Click="MenuWebServerUrl_OnClick" Header="{DynamicResource menu_view_webserver_url}" />
+                                <MenuItem Click="MenuQueueBrowser_OnClick" Header="{DynamicResource menu_song_requests_queue_browser}" />
+                                <MenuItem Click="MenuHistoryBrowser_OnClick" Header="{DynamicResource menu_history_browser}" />
                             </ContextMenu>
                         </ui:DropDownButton.Flyout>
                     </ui:DropDownButton>
@@ -77,7 +77,7 @@
                         Margin="0,0,4,0"
                         Padding="12,6"
                         Appearance="Transparent"
-                        Content="Twitch"
+                        Content="{DynamicResource menu_twitch}"
                         FontSize="13">
                         <ui:DropDownButton.Flyout>
                             <ContextMenu>
@@ -98,14 +98,14 @@
                         MinWidth="72"
                         Padding="12,6"
                         Appearance="Transparent"
-                        Content="Help"
+                        Content="{DynamicResource menu_file_help}"
                         FontSize="13">
                         <ui:DropDownButton.Flyout>
                             <ContextMenu>
-                                <MenuItem Click="MenuPatchNotes_OnClick" Header="Patch notes" />
-                                <MenuItem Click="MenuFaq_OnClick" Header="FAQ" />
-                                <MenuItem Click="MenuGitHub_OnClick" Header="GitHub" />
-                                <MenuItem Click="MenuDiscord_OnClick" Header="Discord">
+                                <MenuItem Click="MenuPatchNotes_OnClick" Header="{DynamicResource menu_file_patchnotes}" />
+                                <MenuItem Click="MenuFaq_OnClick" Header="{DynamicResource menu_faq}" />
+                                <MenuItem Click="MenuGitHub_OnClick" Header="{DynamicResource menu_github}" />
+                                <MenuItem Click="MenuDiscord_OnClick" Header="{DynamicResource menu_discord}">
                                     <MenuItem.Icon>
                                         <Viewbox Width="14" Height="14">
                                             <Path
@@ -116,9 +116,9 @@
                                     </MenuItem.Icon>
                                 </MenuItem>
                                 <Separator />
-                                <MenuItem Click="MenuLogFolder_OnClick" Header="Log folder" />
-                                <MenuItem Click="MenuAppFolder_OnClick" Header="App folder" />
-                                <MenuItem Click="MenuCheckUpdates_OnClick" Header="Check for updates" />
+                                <MenuItem Click="MenuLogFolder_OnClick" Header="{DynamicResource menu_help_log_folder}" />
+                                <MenuItem Click="MenuAppFolder_OnClick" Header="{DynamicResource menu_help_app_folder}" />
+                                <MenuItem Click="MenuCheckUpdates_OnClick" Header="{DynamicResource menu_check_for_updates}" />
                             </ContextMenu>
                         </ui:DropDownButton.Flyout>
                     </ui:DropDownButton>
@@ -165,7 +165,7 @@
                         x:Name="ExpSpotifyPersistentIssues"
                         Margin="0,8,0,0"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Header="More…"
+                        Header="{DynamicResource menu_more}"
                         IsExpanded="False"
                         Visibility="Collapsed">
                         <ScrollViewer MaxHeight="140">
@@ -184,7 +184,7 @@
                     Click="BtnSpotifyPersistentIssueDismiss_Click"
                     Content="×"
                     FontSize="16"
-                    ToolTip="Dismiss" />
+                    ToolTip="{DynamicResource common_dismiss}" />
             </Grid>
         </Border>
 
@@ -211,7 +211,7 @@
             </ui:NavigationView.Resources>
             <ui:NavigationView.MenuItems>
                 <ui:NavigationViewItem
-                    Content="Home"
+                    Content="{DynamicResource nav_home}"
                     TargetPageTag="overview"
                     TargetPageType="{x:Type pages:OverviewPage}">
                     <ui:NavigationViewItem.Icon>
@@ -219,7 +219,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
-                    Content="Queue"
+                    Content="{DynamicResource menu_queue}"
                     TargetPageTag="queue"
                     TargetPageType="{x:Type pages:QueuePage}">
                     <ui:NavigationViewItem.Icon>
@@ -228,7 +228,7 @@
                 </ui:NavigationViewItem>
 
                 <ui:NavigationViewItem
-                    Content="Block list"
+                    Content="{DynamicResource window_blocklist_title}"
                     TargetPageTag="blacklist"
                     TargetPageType="{x:Type pages:BlacklistPage}">
                     <ui:NavigationViewItem.Icon>
@@ -236,7 +236,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
-                    Content="History"
+                    Content="{DynamicResource menu_history}"
                     TargetPageTag="history"
                     TargetPageType="{x:Type pages:HistoryPage}">
                     <ui:NavigationViewItem.Icon>
@@ -244,7 +244,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
-                    Content="User list"
+                    Content="{DynamicResource window_userlist_title}"
                     TargetPageTag="userlist"
                     TargetPageType="{x:Type pages:UserListPage}">
                     <ui:NavigationViewItem.Icon>
@@ -254,7 +254,7 @@
             </ui:NavigationView.MenuItems>
             <ui:NavigationView.FooterMenuItems>
                 <ui:NavigationViewItem
-                    Content="Settings"
+                    Content="{DynamicResource menu_file_settings}"
                     TargetPageTag="settings"
                     TargetPageType="{x:Type pages:SettingsPage}">
                     <ui:NavigationViewItem.Icon>
@@ -262,7 +262,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
-                    Content="Console"
+                    Content="{DynamicResource menu_view_console}"
                     TargetPageTag="console"
                     TargetPageType="{x:Type pages:ConsolePage}">
                     <ui:NavigationViewItem.Icon>
@@ -270,7 +270,7 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
-                    Content="About"
+                    Content="{DynamicResource menu_help_about}"
                     TargetPageTag="about"
                     TargetPageType="{x:Type pages:AboutPage}">
                     <ui:NavigationViewItem.Icon>
@@ -316,7 +316,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Twitch API" />
+                        Text="{DynamicResource window_main_status_twitch_api}" />
                     <Ellipse
                         Width="8"
                         Height="8"
@@ -327,7 +327,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Twitch Bot" />
+                        Text="{DynamicResource window_main_status_twitch_bot}" />
                     <Ellipse
                         Width="8"
                         Height="8"
@@ -338,7 +338,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Spotify" />
+                        Text="{DynamicResource window_main_status_spotify}" />
                     <Ellipse
                         Width="8"
                         Height="8"
@@ -350,7 +350,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="Pear"
+                        Text="{DynamicResource window_main_status_pear}"
                         ToolTip="{Binding PearStatusText}" />
                     <Ellipse
                         Width="8"
@@ -362,7 +362,7 @@
                         VerticalAlignment="Center"
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="WebServer" />
+                        Text="{DynamicResource window_main_status_webserver}" />
                 </StackPanel>
                 <ui:Button
                     x:Name="BtnSpotifyIdleBackoff"
@@ -375,7 +375,7 @@
                     Appearance="Transparent"
                     Click="BtnSpotifyIdleBackoff_Click"
                     Cursor="Hand"
-                    ToolTip="Spotify fetch slowed while idle to save API quota. Click to restore the normal rate from Settings."
+                    ToolTip="{DynamicResource window_settings_spotify_idle_backoff_tooltip}"
                     Visibility="Collapsed">
                     <StackPanel Orientation="Horizontal">
                         <ui:SymbolIcon
@@ -413,12 +413,12 @@
             TooltipText="Songify">
             <tray:NotifyIcon.Menu>
                 <ContextMenu>
-                    <MenuItem Header="Twitch">
-                        <MenuItem Click="TrayConnect_OnClick" Header="Connect" />
-                        <MenuItem Click="TrayDisconnect_OnClick" Header="Disconnect" />
+                    <MenuItem Header="{DynamicResource menu_twitch}">
+                        <MenuItem Click="TrayConnect_OnClick" Header="{DynamicResource menu_twitch_connect}" />
+                        <MenuItem Click="TrayDisconnect_OnClick" Header="{DynamicResource menu_disconnect}" />
                     </MenuItem>
-                    <MenuItem Click="TrayShow_OnClick" Header="Show" />
-                    <MenuItem Click="TrayExit_OnClick" Header="Exit" />
+                    <MenuItem Click="TrayShow_OnClick" Header="{DynamicResource common_show}" />
+                    <MenuItem Click="TrayExit_OnClick" Header="{DynamicResource menu_file_exit}" />
                 </ContextMenu>
             </tray:NotifyIcon.Menu>
         </tray:NotifyIcon>

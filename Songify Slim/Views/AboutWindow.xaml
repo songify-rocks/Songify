@@ -95,7 +95,7 @@
                 HorizontalAlignment="Left"
                 ScrollViewer.CanContentScroll="True"
                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                Text="{DynamicResource Credits}"
+                Text="{DynamicResource window_about_credits}"
                 TextAlignment="Center"
                 TextWrapping="Wrap" />
         </StackPanel>

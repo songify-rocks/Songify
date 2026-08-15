@@ -307,7 +307,7 @@
                     Grid.ColumnSpan="2"
                     Margin="0,6,0,0"
                     Visibility="Collapsed">
-                    <TextBlock Text="Volume Set response" />
+                    <TextBlock Text="{DynamicResource uc_command_volume_set_response}" />
                     <TextBox
                         x:Name="TbVolSetResponse"
                         Margin="0,6,0,0"

@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Overview"
+    Title="{DynamicResource nav_home}"
     mc:Ignorable="d">
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid
@@ -30,7 +30,7 @@
                     FontSize="28"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                    Text="Home" />
+                    Text="{DynamicResource nav_home}" />
                 <ComboBox
                     x:Name="CbxPlayer"
                     Grid.Column="1"
@@ -70,7 +70,7 @@
                                 VerticalAlignment="Center"
                                 FontSize="12"
                                 Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                Text="No track" />
+                                Text="{DynamicResource window_queue_no_art}" />
                         </ui:Card>
                     </Grid>
                     <StackPanel
@@ -82,7 +82,7 @@
                             FontSize="36"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                            Text="Nothing playing"
+                            Text="{DynamicResource window_overview_nothing_playing}"
                             TextWrapping="Wrap" />
                         <TextBlock
                             x:Name="TxtArtist"
@@ -140,7 +140,7 @@
                             FontSize="14"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="Up next" />
+                            Text="{DynamicResource window_overview_up_next}" />
                         <TextBlock
                             VerticalAlignment="Center"
                             Cursor="Hand"
@@ -148,7 +148,7 @@
                             FontSize="12"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                             MouseLeftButtonUp="UpNextCard_MouseLeftButtonUp"
-                            Text="Open queue" />
+                            Text="{DynamicResource window_overview_open_queue}" />
                     </DockPanel>
                     <ItemsControl x:Name="UpNextList">
                         <ItemsControl.ItemsPanel>
@@ -206,7 +206,7 @@
                         x:Name="TxtUpNextEmpty"
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                        Text="Nothing queued"
+                        Text="{DynamicResource window_overview_nothing_queued}"
                         Visibility="Collapsed" />
                 </StackPanel>
             </ui:Card>
@@ -219,7 +219,7 @@
                 VerticalAlignment="Center"
                 Appearance="Secondary"
                 Click="BtnSupport_Click"
-                Content="Support" />
+                Content="{DynamicResource menu_support}" />
 
             <!--  Kept for code-behind / localization hooks  -->
             <!--<ui:Button

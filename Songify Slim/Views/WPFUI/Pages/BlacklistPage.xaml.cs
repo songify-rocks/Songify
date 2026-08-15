@@ -19,6 +19,14 @@ public partial class BlacklistPage : Page
         IsVisibleChanged += BlacklistPage_OnIsVisibleChanged;
     }
 
+    private void CategoryTitle_Loaded(object sender, RoutedEventArgs e)
+    {
+        if (sender is not TextBlock title || title.DataContext is not BlocklistCategoryItem item)
+            return;
+        if (!string.IsNullOrWhiteSpace(item.TitleResourceKey))
+            title.SetResourceReference(TextBlock.TextProperty, item.TitleResourceKey);
+    }
+
     private async void BlacklistPage_OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
         if (DataContext is not BlocklistViewModel vm) return;
@@ -90,8 +98,10 @@ public partial class BlacklistPage : Page
 
         if (SpotifyApiHandler.Client == null)
         {
-            await AppDialog.ShowAsync("Notification",
-                "Spotify is not connected. Connect Spotify to refresh artist IDs.");
+            await AppDialog.ShowAsync(
+                TryFindResource("common_notification") as string ?? "Notification",
+                TryFindResource("window_blocklist_spotify_refresh_hint") as string
+                ?? "Spotify is not connected. Connect Spotify to refresh artist IDs.");
             return;
         }
 
@@ -103,15 +113,25 @@ public partial class BlacklistPage : Page
                 return matches?.FirstOrDefault();
             });
 
-            await AppDialog.ShowAsync("Refresh complete",
-                fixedCount == 0
-                    ? "No legacy artist entries needed resolving."
-                    : $"Resolved {fixedCount} artist ID(s) (first Spotify match).");
+            string body = fixedCount == 0
+                ? (TryFindResource("window_blocklist_refresh_none") as string
+                   ?? "No legacy artist entries needed resolving.")
+                : string.Format(
+                    TryFindResource("window_blocklist_refresh_resolved") as string
+                    ?? "Resolved {0} artist ID(s) (first Spotify match).",
+                    fixedCount);
+
+            await AppDialog.ShowAsync(
+                TryFindResource("window_blocklist_refresh_complete") as string ?? "Refresh complete",
+                body);
         }
         catch (Exception ex)
         {
             Logger.LogExc(ex);
-            await AppDialog.ShowAsync("Error", "Failed to refresh artist IDs. Check the logs for details.");
+            await AppDialog.ShowAsync(
+                TryFindResource("common_error") as string ?? "Error",
+                TryFindResource("window_blocklist_refresh_failed") as string
+                ?? "Failed to refresh artist IDs. Check the logs for details.");
         }
     }
 }

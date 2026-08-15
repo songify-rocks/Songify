@@ -34,7 +34,8 @@ public partial class QueuePage : Page
 
     private void QueuePage_Loaded(object sender, RoutedEventArgs e)
     {
-        BtnClearQueue.Content = "Clear Queue";
+        BtnClearQueue.Content = TryFindResource("menu_queue_clear") as string
+                                ?? Properties.Resources.menu_queue_clear;
         GlobalObjects.QueueUpdateQueueWindow();
         _viewModel.RefreshPlayPauseState(); // refresh so "now playing" row shows (queue + CurrentSong fallback)
         _playPauseTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };

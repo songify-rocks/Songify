@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:settings="clr-namespace:Songify_Slim.Views.WPFUI.Controls"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Settings"
+    Title="{DynamicResource menu_file_settings}"
     IsVisibleChanged="SettingsPage_OnIsVisibleChanged"
     Loaded="SettingsPage_OnLoaded"
     ScrollViewer.CanContentScroll="False"
@@ -73,7 +73,7 @@
                     Margin="0,2,0,0"
                     FontSize="13"
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="App, music, Twitch, and network preferences" />
+                    Text="{DynamicResource window_settings_page_subtitle}" />
             </StackPanel>
             <ui:Button
                 HorizontalAlignment="Right"

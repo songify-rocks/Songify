@@ -31,16 +31,17 @@
                 Grid.Row="0"
                 Grid.Column="1"
                 Orientation="Horizontal">
-                <TextBlock Text="Issued: " />
-                <TextBlock x:Name="TbDate" />
+                <TextBlock Text="{DynamicResource uc_psa_issued}" />
+                <TextBlock x:Name="TbDate" Margin="4,0,0,0" />
             </StackPanel>
             <StackPanel
                 Grid.Row="0"
                 Grid.Column="0"
                 Orientation="Horizontal">
-                <TextBlock Text="Severity: " />
+                <TextBlock Text="{DynamicResource uc_psa_severity}" />
                 <Border
                     x:Name="BorderSeverity"
+                    Margin="4,0,0,0"
                     Padding="6,0"
                     BorderThickness="1"
                     CornerRadius="3">
@@ -51,8 +52,8 @@
                 Grid.Row="0"
                 Grid.Column="2"
                 Orientation="Horizontal">
-                <TextBlock Text="Author: " />
-                <TextBlock x:Name="TbAuthor" />
+                <TextBlock Text="{DynamicResource uc_psa_author}" />
+                <TextBlock x:Name="TbAuthor" Margin="4,0,0,0" />
                 <Button
                     x:Name="btnRead"
                     Margin="6,0"

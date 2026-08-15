@@ -6,7 +6,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:util="clr-namespace:Songify_Slim.Util"
     xmlns:viewModels="clr-namespace:Songify_Slim.Views.WPFUI.ViewModels"
-    Title="Block list"
+    Title="{DynamicResource window_blocklist_title}"
     ScrollViewer.CanContentScroll="False"
     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
     ScrollViewer.PanningMode="None"
@@ -60,18 +60,18 @@
                     FontSize="28"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                    Text="Block list" />
+                    Text="{DynamicResource window_blocklist_title}" />
                 <TextBlock
                     Margin="0,2,0,0"
                     FontSize="13"
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="Blocked artists, users, and songs" />
+                    Text="{DynamicResource window_blocklist_subtitle}" />
             </StackPanel>
             <TextBlock
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
                 Opacity="0.7"
-                Text="Loading…"
+                Text="{DynamicResource common_loading}"
                 Visibility="{Binding IsLoading, Converter={StaticResource BooleanToVisibilityConverter}}" />
         </Grid>
 
@@ -102,7 +102,7 @@
                         FontSize="12"
                         FontWeight="SemiBold"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="CATEGORIES" />
+                        Text="{DynamicResource window_blocklist_categories}" />
                     <ListBox
                         Grid.Row="1"
                         Background="Transparent"
@@ -138,7 +138,7 @@
                                             FontSize="13"
                                             FontWeight="SemiBold"
                                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                            Text="{Binding Title}" />
+                                            Loaded="CategoryTitle_Loaded" />
                                         <TextBlock
                                             Margin="0,2,0,0"
                                             FontSize="11"
@@ -186,13 +186,13 @@
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
                                 Margin="0,0,12,0"
-                                PlaceholderText="Search Spotify artist…"
+                                PlaceholderText="{DynamicResource window_blocklist_search_artist_placeholder}"
                                 Text="{Binding NewArtistName, UpdateSourceTrigger=PropertyChanged}" />
                             <ui:Button
                                 Grid.Column="1"
                                 Appearance="Primary"
                                 Command="{Binding AddArtistCommand}"
-                                Content="Add" />
+                                Content="{DynamicResource common_add}" />
                         </Grid>
 
                         <Grid Grid.Row="1" Margin="0,0,0,8">
@@ -202,7 +202,7 @@
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
                                 Margin="0,0,12,0"
-                                PlaceholderText="Filter artists…"
+                                PlaceholderText="{DynamicResource window_blocklist_filter_artists}"
                                 Text="{Binding ArtistFilter, UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock
                                 Grid.Column="1"
@@ -236,21 +236,21 @@
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Click="BtnImportArtists_OnClick"
-                                Content="Import" />
+                                Content="{DynamicResource common_import}" />
                             <ui:Button
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Click="BtnRefreshArtistIds_OnClick"
-                                Content="Refresh IDs" />
+                                Content="{DynamicResource window_blocklist_refresh_ids}" />
                             <ui:Button
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Command="{Binding RemoveSelectedArtistCommand}"
-                                Content="Remove selected" />
+                                Content="{DynamicResource common_remove_selected}" />
                             <ui:Button
                                 Appearance="Secondary"
                                 Command="{Binding ClearArtistsCommand}"
-                                Content="Clear artists" />
+                                Content="{DynamicResource window_blocklist_clear_artists}" />
                         </StackPanel>
                     </Grid>
 
@@ -270,13 +270,13 @@
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
                                 Margin="0,0,12,0"
-                                PlaceholderText="Add username"
+                                PlaceholderText="{DynamicResource window_blocklist_add_username}"
                                 Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}" />
                             <ui:Button
                                 Grid.Column="1"
                                 Appearance="Primary"
                                 Command="{Binding AddUserCommand}"
-                                Content="Add" />
+                                Content="{DynamicResource common_add}" />
                         </Grid>
 
                         <Grid Grid.Row="1" Margin="0,0,0,8">
@@ -286,7 +286,7 @@
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
                                 Margin="0,0,12,0"
-                                PlaceholderText="Filter users…"
+                                PlaceholderText="{DynamicResource window_blocklist_filter_users}"
                                 Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock
                                 Grid.Column="1"
@@ -320,11 +320,11 @@
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Command="{Binding RemoveSelectedUserCommand}"
-                                Content="Remove selected" />
+                                Content="{DynamicResource common_remove_selected}" />
                             <ui:Button
                                 Appearance="Secondary"
                                 Command="{Binding ClearUsersCommand}"
-                                Content="Clear users" />
+                                Content="{DynamicResource window_blocklist_clear_users}" />
                         </StackPanel>
                     </Grid>
 
@@ -343,7 +343,7 @@
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
                                 Margin="0,0,12,0"
-                                PlaceholderText="Filter songs…"
+                                PlaceholderText="{DynamicResource window_blocklist_filter_songs}"
                                 Text="{Binding SongFilter, UpdateSourceTrigger=PropertyChanged}" />
                             <TextBlock
                                 Grid.Column="1"
@@ -377,11 +377,11 @@
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Command="{Binding RemoveSelectedSongCommand}"
-                                Content="Remove selected" />
+                                Content="{DynamicResource common_remove_selected}" />
                             <ui:Button
                                 Appearance="Secondary"
                                 Command="{Binding ClearSongsCommand}"
-                                Content="Clear songs" />
+                                Content="{DynamicResource window_blocklist_clear_songs}" />
                         </StackPanel>
                     </Grid>
                 </Grid>

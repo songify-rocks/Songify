@@ -50,13 +50,13 @@
                 Margin="0,0,8,0"
                 Appearance="Secondary"
                 Click="BtnSecondary_OnClick"
-                Content="Cancel" />
+                Content="{DynamicResource common_cancel}" />
             <ui:Button
                 x:Name="BtnPrimary"
                 MinWidth="88"
                 Appearance="Primary"
                 Click="BtnPrimary_OnClick"
-                Content="OK" />
+                Content="{DynamicResource common_ok}" />
         </StackPanel>
     </Grid>
 </ui:FluentWindow>

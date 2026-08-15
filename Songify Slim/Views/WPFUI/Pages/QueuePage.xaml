@@ -5,11 +5,13 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="Queue"
+    xmlns:util="clr-namespace:Songify_Slim.Util"
+    Title="{DynamicResource menu_queue}"
     ScrollViewer.CanContentScroll="False"
     mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>
+            <util:ResourceStringFormatConverter x:Key="ResourceStringFormatConverter" />
             <!--  No converters: visibility via DataTriggers, images via ViewModel/Model ImageSource  -->
             <!--  Badge colors (theme-friendly)  -->
             <SolidColorBrush x:Key="BadgeNowPlaying" Color="#4682B4" />
@@ -80,7 +82,7 @@
                                     VerticalAlignment="Center"
                                     FontSize="9"
                                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                    Text="No art" />
+                                    Text="{DynamicResource window_queue_no_art}" />
                             </Border>
                             <ui:Image
                                 CornerRadius="6"
@@ -113,7 +115,7 @@
                             FontSize="10"
                             FontWeight="SemiBold"
                             Foreground="White"
-                            Text="Now playing" />
+                            Text="{DynamicResource window_queue_now_playing}" />
                     </Border>
                 </StackPanel>
                 <!--  When nothing is playing  -->
@@ -121,7 +123,7 @@
                     VerticalAlignment="Center"
                     FontSize="13"
                     Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                    Text="Nothing playing">
+                    Text="{DynamicResource window_overview_nothing_playing}">
                     <TextBlock.Style>
                         <Style TargetType="TextBlock">
                             <Setter Property="Visibility" Value="Collapsed" />
@@ -168,7 +170,7 @@
                     <DataTemplate>
                         <ui:Card
                             Margin="0,0,0,12"
-                            Padding="16"
+                            Padding="18"
                             HorizontalAlignment="Stretch"
                             BorderThickness="1"
                             Style="{StaticResource QueueItemCardStyle}">
@@ -195,7 +197,7 @@
                                                 VerticalAlignment="Center"
                                                 FontSize="10"
                                                 Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                                                Text="No art" />
+                                                Text="{DynamicResource window_queue_no_art}" />
                                         </Border>
                                         <ui:Image
                                             CornerRadius="12"
@@ -207,7 +209,7 @@
                                 <!--  Title, Artist, Queue#, Length, Requester (fixed position after cover so text never shifts)  -->
                                 <StackPanel
                                     Grid.Column="1"
-                                    Margin="0,0,12,0"
+                                    Margin="0,0,0,0"
                                     VerticalAlignment="Center"
                                     Orientation="Vertical">
                                     <TextBlock
@@ -259,7 +261,7 @@
                                                 FontSize="11"
                                                 FontWeight="SemiBold"
                                                 Foreground="White"
-                                                Text="Now playing" />
+                                                Text="{DynamicResource window_queue_now_playing}" />
                                         </Border>
                                         <!--  Skipping pill (same size/style as requester)  -->
                                         <Border
@@ -287,7 +289,7 @@
                                                     FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="White"
-                                                    Text="Skipping" />
+                                                    Text="{DynamicResource window_queue_skipping}" />
                                             </StackPanel>
                                         </Border>
                                         <!--  Requester pill  -->
@@ -334,7 +336,7 @@
                                                     FontSize="11"
                                                     FontWeight="SemiBold"
                                                     Foreground="White"
-                                                    Text="{Binding Requester, StringFormat='Requested by {0}'}" />
+                                                    Text="{Binding Requester, Converter={StaticResource ResourceStringFormatConverter}, ConverterParameter=window_queue_requested_by}" />
                                             </StackPanel>
                                         </Border>
                                     </StackPanel>
@@ -342,14 +344,13 @@
                                 <!--  Actions (right)  -->
                                 <StackPanel
                                     Grid.Column="2"
-                                    Margin="0,0,6,0"
                                     VerticalAlignment="Center"
                                     Orientation="Horizontal">
                                     <ui:Button
                                         Appearance="Secondary"
                                         Command="{Binding DataContext.SkipCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                         CommandParameter="{Binding}"
-                                        Content="Skip" />
+                                        Content="{DynamicResource window_queue_skip_song}" />
                                     <ui:Button
                                         Margin="8,0,0,0"
                                         Appearance="Secondary"

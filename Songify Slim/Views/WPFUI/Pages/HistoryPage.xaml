@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:util="clr-namespace:Songify_Slim.Util"
-    Title="History"
+    Title="{DynamicResource window_history_title}"
     ScrollViewer.CanContentScroll="False"
     mc:Ignorable="d">
     <Page.Resources>
@@ -92,12 +92,12 @@
                     FontSize="28"
                     FontWeight="SemiBold"
                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                    Text="History" />
+                    Text="{DynamicResource window_history_title}" />
                 <TextBlock
                     Margin="0,2,0,0"
                     FontSize="13"
                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                    Text="Songs played across recent days" />
+                    Text="{DynamicResource window_history_subtitle}" />
             </StackPanel>
             <StackPanel
                 HorizontalAlignment="Right"
@@ -107,13 +107,13 @@
                     Margin="0,0,8,0"
                     Appearance="Secondary"
                     Command="{Binding CopyHistoryUrlCommand}"
-                    Content="Copy URL"
-                    ToolTip="Copy the public history URL" />
+                    Content="{DynamicResource window_history_copy_url}"
+                    ToolTip="{DynamicResource window_history_copy_url_tooltip}" />
                 <ui:Button
                     Appearance="Secondary"
                     Command="{Binding RefreshCommand}"
-                    Content="Refresh"
-                    ToolTip="Reload history file" />
+                    Content="{DynamicResource common_refresh}"
+                    ToolTip="{DynamicResource window_history_refresh_tooltip}" />
             </StackPanel>
         </Grid>
 
@@ -125,13 +125,13 @@
             <StackPanel Orientation="Horizontal">
                 <ui:ToggleSwitch
                     Margin="0,0,20,0"
-                    Content="Save locally"
+                    Content="{DynamicResource window_history_save_locally}"
                     IsChecked="{Binding SaveHistory, Mode=TwoWay}"
-                    ToolTip="Save history to disk" />
+                    ToolTip="{DynamicResource window_history_save_tooltip}" />
                 <ui:ToggleSwitch
-                    Content="Upload"
+                    Content="{DynamicResource common_upload}"
                     IsChecked="{Binding UploadHistory, Mode=TwoWay}"
-                    ToolTip="Upload history to Songify" />
+                    ToolTip="{DynamicResource window_history_upload_tooltip}" />
             </StackPanel>
         </ui:Card>
 
@@ -158,7 +158,7 @@
                         FontSize="12"
                         FontWeight="SemiBold"
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="DAYS" />
+                        Text="{DynamicResource window_history_days}" />
                     <ListBox
                         x:Name="LbxHistory"
                         Grid.Row="1"
@@ -170,7 +170,7 @@
                         SelectedItem="{Binding SelectedDate, Mode=TwoWay}">
                         <ListBox.ContextMenu>
                             <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                <MenuItem Command="{Binding DeleteDateCommand}" Header="Delete day" />
+                                <MenuItem Command="{Binding DeleteDateCommand}" Header="{DynamicResource window_history_delete_day}" />
                             </ContextMenu>
                         </ListBox.ContextMenu>
                         <ListBox.ItemTemplate>
@@ -223,7 +223,7 @@
                         Margin="4,12,4,0"
                         FontSize="12"
                         Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                        Text="No history yet"
+                        Text="{DynamicResource window_history_empty}"
                         TextWrapping="Wrap"
                         Visibility="{Binding HasDates, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Invert}" />
                 </Grid>
@@ -266,7 +266,7 @@
                         Visibility="{Binding HasSongs, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ListBox.ContextMenu>
                             <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                <MenuItem Command="{Binding DeleteSongCommand}" Header="Delete song" />
+                                <MenuItem Command="{Binding DeleteSongCommand}" Header="{DynamicResource window_history_delete_song}" />
                             </ContextMenu>
                         </ListBox.ContextMenu>
                         <ListBox.ItemTemplate>
@@ -307,7 +307,7 @@
                         VerticalAlignment="Center"
                         FontSize="13"
                         Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                        Text="No songs for this day"
+                        Text="{DynamicResource window_history_no_songs}"
                         Visibility="{Binding HasNoSongs, Converter={StaticResource BooleanToVisibilityConverter}}" />
                 </Grid>
             </ui:Card>

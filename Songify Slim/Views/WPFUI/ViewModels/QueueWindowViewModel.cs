@@ -227,7 +227,11 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
             Songify_Slim.Properties.Resources.common_warning,
             Songify_Slim.Properties.Resources.window_queue_clear_disclaimer,
             AppDialogStyle.PrimaryAndSecondary,
-            new AppDialogSettings { PrimaryButtonText = "Yes", SecondaryButtonText = "No" });
+            new AppDialogSettings
+            {
+                PrimaryButtonText = Songify_Slim.Properties.Resources.dialog_yes,
+                SecondaryButtonText = Songify_Slim.Properties.Resources.dialog_no
+            });
         if (result != AppDialogResult.Primary) return;
 
         GlobalObjects.ReqList.Clear();

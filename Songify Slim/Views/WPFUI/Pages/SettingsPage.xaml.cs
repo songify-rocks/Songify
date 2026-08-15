@@ -13,19 +13,19 @@ namespace Songify_Slim.Views.WPFUI.Pages;
 
 public partial class SettingsPage : Page
 {
-    private sealed record NavGroup(string Header, SymbolRegular? FluentSymbol, string? BrandGeometryKey, string[] Tags);
+    private sealed record NavGroup(string SectionId, string HeaderResourceKey, SymbolRegular? FluentSymbol, string? BrandGeometryKey, string[] Tags);
 
     /// <summary>Modern IA: General → Music → Twitch → Network.</summary>
     private static readonly NavGroup[] NavGroups =
     [
-        new("General", SymbolRegular.Settings24, null, ["System", "Output", "Config"]),
-        new("Music", SymbolRegular.MusicNote224, null, ["Spotify", "Youtube"]),
-        new("Twitch", null, AppIcons.Twitch,
+        new("General", "window_settings_nav_general", SymbolRegular.Settings24, null, ["System", "Output", "Config"]),
+        new("Music", "window_settings_nav_music", SymbolRegular.MusicNote224, null, ["Spotify", "Youtube"]),
+        new("Twitch", "menu_twitch", null, AppIcons.Twitch,
         [
             "Twitch", "TwitchSongRequest", "TwitchRewards", "TwitchPolls", "TwitchCommands",
             "TwitchResponses"
         ]),
-        new("Network", SymbolRegular.Server24, null, ["WebServer"])
+        new("Network", "window_settings_nav_network", SymbolRegular.Server24, null, ["WebServer"])
     ];
 
     private bool _navBuilt;
@@ -44,7 +44,7 @@ public partial class SettingsPage : Page
             return;
 
         NavGroup group = NavGroups.FirstOrDefault(g =>
-            string.Equals(g.Header, section, StringComparison.OrdinalIgnoreCase));
+            string.Equals(g.SectionId, section, StringComparison.OrdinalIgnoreCase));
         if (group == null)
             return;
 
@@ -54,7 +54,7 @@ public partial class SettingsPage : Page
             if (NavList.Items[i] is not ListBoxItem header)
                 continue;
             if (header.Tag is not string headerSection ||
-                !string.Equals(headerSection, group.Header, StringComparison.OrdinalIgnoreCase))
+                !string.Equals(headerSection, group.SectionId, StringComparison.OrdinalIgnoreCase))
                 continue;
 
             for (int j = i + 1; j < NavList.Items.Count; j++)
@@ -96,7 +96,7 @@ public partial class SettingsPage : Page
         HashSet<string> placed = [];
         foreach (NavGroup group in NavGroups)
         {
-            NavList.Items.Add(CreateGroupHeader(group.Header, group.FluentSymbol, group.BrandGeometryKey));
+            NavList.Items.Add(CreateGroupHeader(group.SectionId, group.HeaderResourceKey, group.FluentSymbol, group.BrandGeometryKey));
             foreach (string tag in group.Tags)
             {
                 if (!byTag.TryGetValue(tag, out TabItem tab))
@@ -114,7 +114,7 @@ public partial class SettingsPage : Page
             .ToList();
         if (leftovers.Count > 0)
         {
-            NavList.Items.Add(CreateGroupHeader("Other", SymbolRegular.MoreHorizontal24, null));
+            NavList.Items.Add(CreateGroupHeader("Other", "window_settings_nav_other", SymbolRegular.MoreHorizontal24, null));
             foreach (TabItem tab in leftovers)
                 NavList.Items.Add(CreateNavItem(tab, tab.Tag?.ToString() ?? "Tab"));
         }
@@ -132,7 +132,7 @@ public partial class SettingsPage : Page
         _navBuilt = true;
     }
 
-    private static ListBoxItem CreateGroupHeader(string title, SymbolRegular? fluent, string? brandKey)
+    private static ListBoxItem CreateGroupHeader(string sectionId, string headerResourceKey, SymbolRegular? fluent, string? brandKey)
     {
         // Use DynamicResource so headers follow theme switches (light/dark) like normal nav items.
         FrameworkElement? icon = null;
@@ -143,7 +143,6 @@ public partial class SettingsPage : Page
 
         var label = new TextBlock
         {
-            Text = title.ToUpperInvariant(),
             FontSize = 11,
             FontWeight = FontWeights.SemiBold,
             Opacity = 0.9,
@@ -151,6 +150,9 @@ public partial class SettingsPage : Page
             Margin = new Thickness(icon != null ? 8 : 8, 0, 0, 0)
         };
         label.SetResourceReference(TextBlock.ForegroundProperty, "TextFillColorSecondaryBrush");
+        // Bind via converter-less callback: uppercase at assign time from current culture; rebuild nav on language change via Settings refresh.
+        string title = Application.Current?.TryFindResource(headerResourceKey) as string ?? headerResourceKey;
+        label.Text = title.ToUpperInvariant();
 
         var row = new StackPanel
         {
@@ -164,7 +166,7 @@ public partial class SettingsPage : Page
         return new ListBoxItem
         {
             Content = row,
-            Tag = title, // section name for SelectSection lookups
+            Tag = sectionId, // section name for SelectSection lookups
             // Keep enabled so DynamicResource foreground isn't coerced to GrayText in light theme.
             IsHitTestVisible = false,
             Focusable = false,

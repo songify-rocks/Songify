@@ -4,7 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
-    Title="About"
+    Title="{DynamicResource menu_help_about}"
     Loaded="AboutPage_OnLoaded"
     ScrollViewer.CanContentScroll="False"
     ScrollViewer.VerticalScrollBarVisibility="Disabled">
@@ -159,12 +159,12 @@
                         Margin="0,0,8,0"
                         Appearance="Secondary"
                         Click="BtnWebsite_Click"
-                        Content="Website"
+                        Content="{DynamicResource common_website}"
                         Icon="{ui:SymbolIcon Globe24}" />
                     <ui:Button
                         Appearance="Secondary"
                         Click="BtnSupport_Click"
-                        Content="Support"
+                        Content="{DynamicResource menu_support}"
                         Icon="{ui:SymbolIcon Heart24,
                                              Filled=True}" />
                 </StackPanel>
@@ -282,7 +282,7 @@
                                     FontSize="13"
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                     LineHeight="20"
-                                    Text="{DynamicResource Credits}"
+                                    Text="{DynamicResource window_about_credits}"
                                     TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="0,20,0,0"

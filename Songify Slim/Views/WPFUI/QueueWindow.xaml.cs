@@ -26,8 +26,9 @@ public partial class QueueWindow
         // Localized strings from resources (no Loc in XAML = no designer errors)
         if (BtnClearQueue != null)
         {
-            BtnClearQueue.Content = "Clear Queue";
-            BtnClearQueue.ToolTip = "Clear Queue";
+            BtnClearQueue.Content = TryFindResource("menu_queue_clear") as string
+                                    ?? Properties.Resources.menu_queue_clear;
+            BtnClearQueue.ToolTip = BtnClearQueue.Content;
         }
         if (ChkQueueId != null) ChkQueueId.Content = Properties.Resources.window_queue_queue_id;
         if (ChkArtist != null) ChkArtist.Content = Properties.Resources.common_artist;

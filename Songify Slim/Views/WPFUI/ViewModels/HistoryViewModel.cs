@@ -67,7 +67,7 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
     public bool HasSongs => Songs.Count > 0;
     public bool HasNoSongs => SelectedDate != null && Songs.Count == 0;
     public string SelectedDateTitle => SelectedDate == null
-        ? "Select a day"
+        ? (Application.Current?.TryFindResource("window_history_select_day") as string ?? "Select a day")
         : $"{SelectedDate.Weekday}, {SelectedDate.Day} {SelectedDate.Month}";
 
     public HistoryDateItem SelectedDate
@@ -106,7 +106,9 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
             _saveHistory = value;
             Settings.SaveHistory = value;
             OnPropertyChanged();
-            StatusMessage = value ? "Saving history locally" : "Local history saving is off";
+            StatusMessage = value
+                ? (Application.Current?.TryFindResource("window_history_saving_on") as string ?? "Saving history locally")
+                : (Application.Current?.TryFindResource("window_history_saving_off") as string ?? "Local history saving is off");
         }
     }
 
@@ -119,7 +121,9 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
             _uploadHistory = value;
             Settings.UploadHistory = value;
             OnPropertyChanged();
-            StatusMessage = value ? "Uploading history" : "History upload is off";
+            StatusMessage = value
+                ? (Application.Current?.TryFindResource("window_history_upload_on") as string ?? "Uploading history")
+                : (Application.Current?.TryFindResource("window_history_upload_off") as string ?? "History upload is off");
         }
     }
 
@@ -292,7 +296,8 @@ public sealed class HistoryViewModel : INotifyPropertyChanged
         try
         {
             Clipboard.SetDataObject($"{GlobalObjects.BaseUrl}/history.php?id=" + Settings.Uuid);
-            StatusMessage = "History URL copied to clipboard";
+            StatusMessage = Application.Current?.TryFindResource("window_history_url_copied") as string
+                            ?? "History URL copied to clipboard";
         }
         catch (Exception ex)
         {

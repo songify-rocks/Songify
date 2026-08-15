@@ -31,7 +31,7 @@ public sealed class BlocklistCategoryItem : INotifyPropertyChanged
     private int _count;
 
     public BlocklistCategory Category { get; init; }
-    public string Title { get; init; }
+    public string TitleResourceKey { get; init; }
     public SymbolRegular Symbol { get; init; }
 
     public int Count
@@ -46,7 +46,17 @@ public sealed class BlocklistCategoryItem : INotifyPropertyChanged
         }
     }
 
-    public string CountLabel => _count == 1 ? "1 item" : $"{_count} items";
+    public string CountLabel
+    {
+        get
+        {
+            if (_count == 1)
+                return Application.Current?.TryFindResource("window_blocklist_item_singular") as string ?? "1 item";
+
+            string fmt = Application.Current?.TryFindResource("window_blocklist_item_plural") as string ?? "{0} items";
+            return string.Format(fmt, _count);
+        }
+    }
 
     public event PropertyChangedEventHandler PropertyChanged;
     private void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -131,7 +141,14 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     public BlocklistCategory SelectedCategory =>
         _selectedCategoryItem?.Category ?? BlocklistCategory.Artists;
 
-    public string SelectedCategoryTitle => _selectedCategoryItem?.Title ?? "Artists";
+    public string SelectedCategoryTitle
+    {
+        get
+        {
+            string key = _selectedCategoryItem?.TitleResourceKey ?? "window_blocklist_tab_artists";
+            return Application.Current?.TryFindResource(key) as string ?? key;
+        }
+    }
 
     public bool IsArtistsSelected => SelectedCategory == BlocklistCategory.Artists;
     public bool IsUsersSelected => SelectedCategory == BlocklistCategory.Users;
@@ -275,19 +292,19 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             new BlocklistCategoryItem
             {
                 Category = BlocklistCategory.Artists,
-                Title = "Artists",
+                TitleResourceKey = "window_blocklist_tab_artists",
                 Symbol = SymbolRegular.MusicNote224
             },
             new BlocklistCategoryItem
             {
                 Category = BlocklistCategory.Users,
-                Title = "Users",
+                TitleResourceKey = "window_blocklist_tab_users",
                 Symbol = SymbolRegular.Person24
             },
             new BlocklistCategoryItem
             {
                 Category = BlocklistCategory.Songs,
-                Title = "Songs",
+                TitleResourceKey = "window_blocklist_tab_songs",
                 Symbol = SymbolRegular.MusicNote124
             }
         ];
@@ -432,16 +449,26 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
         return fixedCount;
     }
 
+    private static string Loc(string key, string fallback)
+        => Application.Current?.TryFindResource(key) as string ?? fallback;
+
+    private static string LocFormat(string key, string fallback, params object[] args)
+    {
+        string fmt = Loc(key, fallback);
+        try { return string.Format(fmt, args); }
+        catch (FormatException) { return fallback; }
+    }
+
     private static string BuildStatus(int total, int visible, string filter)
     {
-        if (total == 0) return "0 total";
+        if (total == 0) return LocFormat("window_blocklist_total", "{0} total", 0);
         if (string.IsNullOrWhiteSpace(filter))
             return visible < total
-                ? $"Showing {visible} of {total} — type to filter"
-                : $"{total} total";
+                ? LocFormat("window_blocklist_filter_showing", "Showing {0} of {1} — type to filter", visible, total)
+                : LocFormat("window_blocklist_total", "{0} total", total);
         return visible < total && visible >= MaxVisible
-            ? $"Showing first {visible} matches of {total}"
-            : $"{visible} match(es) of {total}";
+            ? LocFormat("window_blocklist_filter_showing_capped", "Showing first {0} matches of {1}", visible, total)
+            : LocFormat("window_blocklist_filter_matches", "{0} match(es) of {1}", visible, total);
     }
 
     private void ScheduleRebuildVisible(Action rebuild)
@@ -539,8 +566,10 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
 
         if (SpotifyApiHandler.Client == null)
         {
-            await AppDialog.ShowAsync("Notification",
-                "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist.");
+            await AppDialog.ShowAsync(
+                Loc("common_notification", "Notification"),
+                Loc("window_blocklist_spotify_not_connected",
+                    "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist."));
             return;
         }
 
@@ -550,8 +579,10 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             List<FullArtist> searchItem = await SpotifyApiHandler.GetArtist(query);
             if (searchItem == null || searchItem.Count == 0)
             {
-                await AppDialog.ShowAsync("Artist not found",
-                    "Could not find an artist matching that name on Spotify.");
+                await AppDialog.ShowAsync(
+                    Loc("common_notification", "Notification"),
+                    Loc("window_blocklist_artist_not_found",
+                        "Could not find an artist matching that name on Spotify."));
                 return;
             }
 
@@ -581,7 +612,9 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
         catch (Exception ex)
         {
             Logger.LogExc(ex);
-            await AppDialog.ShowAsync("Error", "Failed to search Spotify for that artist.");
+            await AppDialog.ShowAsync(
+                Loc("common_error", "Error"),
+                Loc("window_blocklist_search_failed", "Failed to search Spotify for that artist."));
         }
         finally
         {
