@@ -37,9 +37,9 @@ namespace Songify_Slim.UserControls
         {
             InitializeComponent();
             Psa = psa;
-            TbAuthor.Text = Psa.Author;
-            TbDate.Text = Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm");
-            TbSeverity.Text = Psa.Severity;
+            TbAuthor.Text = Psa.Author ?? "";
+            TbDate.Text = Psa.CreatedAtDateTime?.ToString("dd.MM.yyyy HH:mm") ?? "";
+            TbSeverity.Text = Psa.Severity ?? "";
 
             string message = IoManager.InterpretEscapeCharacters(Psa.MessageText);
             SetTextWithHyperlinks(TbMessage, message);
@@ -47,19 +47,24 @@ namespace Songify_Slim.UserControls
             if (!byPassLimit)
                 DisplayMessageWithReadMore(message);
 
-            Brush severitybrush = Psa.Severity switch
+            Color severityColor = Psa.Severity switch
             {
-                "Low" => Brushes.ForestGreen,
-                "Medium" => Brushes.DarkOrange,
-                "High" => Brushes.IndianRed,
-                _ => Brushes.Gray
+                "Low" => Color.FromRgb(0x2E, 0x7D, 0x32),
+                "Medium" => Color.FromRgb(0xEF, 0x6C, 0x00),
+                "High" => Color.FromRgb(0xC6, 0x28, 0x28),
+                _ => Color.FromRgb(0x75, 0x75, 0x75)
             };
+            SolidColorBrush severityBrush = new(severityColor);
+            severityBrush.Freeze();
 
-            BorderSeverity.BorderBrush = severitybrush;
-            BorderSeverity.Background = severitybrush;
+            BorderSeverity.Background = severityBrush;
 
+            // Left accent for high-severity cards
             if (Psa.Severity == "High")
-                BorderMotd.BorderBrush = severitybrush;
+            {
+                BorderMotd.BorderBrush = severityBrush;
+                BorderMotd.BorderThickness = new Thickness(3, 1, 1, 1);
+            }
 
             ApplyReadState();
         }
@@ -180,8 +185,7 @@ namespace Songify_Slim.UserControls
             }
             else
             {
-                // If the message is 200 characters or less, display it all
-                TbMessage.Text = message;
+                SetTextWithHyperlinks(TbMessage, message);
             }
         }
 

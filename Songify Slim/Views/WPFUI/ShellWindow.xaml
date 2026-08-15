@@ -74,8 +74,8 @@
                         </ui:Button>
                         <Border
                             x:Name="PsaBadgePill"
-                            MinWidth="16"
                             Height="16"
+                            MinWidth="16"
                             Margin="0,-2,-2,0"
                             Padding="4,0"
                             HorizontalAlignment="Right"
@@ -139,7 +139,7 @@
                         Content="{DynamicResource menu_file_help}"
                         FontSize="13">
                         <ui:DropDownButton.Flyout>
-                            <ContextMenu>
+                            <ContextMenu x:Name="HelpContextMenu">
                                 <MenuItem Click="MenuPatchNotes_OnClick" Header="{DynamicResource menu_file_patchnotes}" />
                                 <MenuItem Click="MenuFaq_OnClick" Header="{DynamicResource menu_faq}" />
                                 <MenuItem Click="MenuGitHub_OnClick" Header="{DynamicResource menu_github}" />
@@ -323,43 +323,52 @@
             x:Name="FlyPsa"
             Grid.Row="1"
             Grid.RowSpan="2"
-            Width="360"
+            Width="380"
             HorizontalAlignment="Right"
-            Background="{DynamicResource ApplicationBackgroundBrush}"
+            Panel.ZIndex="100"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
             BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
             BorderThickness="1,0,0,0"
-            Panel.ZIndex="100"
             Visibility="Collapsed">
             <DockPanel>
-                <DockPanel
-                    Margin="12,10"
-                    DockPanel.Dock="Top"
-                    LastChildFill="True">
-                    <TextBlock
-                        VerticalAlignment="Center"
-                        FontSize="16"
-                        FontWeight="Bold"
-                        Text="{DynamicResource menu_notifications}" />
-                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
-                        <ui:Button
-                            x:Name="BtnPsaMarkAllRead"
-                            MinWidth="40"
-                            Height="28"
-                            Margin="8,0"
-                            Appearance="Transparent"
-                            Click="BtnPsaMarkAllRead_OnClick"
-                            Content="All"
-                            ToolTip="{DynamicResource common_mark_all_read}"
-                            Visibility="Collapsed" />
-                        <ui:Button
-                            Width="28"
-                            Height="28"
-                            Appearance="Transparent"
-                            Click="BtnPsaClose_OnClick"
-                            Content="✕" />
-                    </StackPanel>
-                </DockPanel>
-                <ScrollViewer Margin="8,0,8,8" VerticalScrollBarVisibility="Auto">
+                <Border
+                    Padding="14,12"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="0,0,0,1"
+                    DockPanel.Dock="Top">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <ui:Button
+                                x:Name="BtnPsaMarkAllRead"
+                                Height="28"
+                                MinWidth="40"
+                                Margin="0,0,4,0"
+                                Appearance="Transparent"
+                                Click="BtnPsaMarkAllRead_OnClick"
+                                Content="All"
+                                ToolTip="{DynamicResource common_mark_all_read}"
+                                Visibility="Collapsed" />
+                            <ui:Button
+                                Width="28"
+                                Height="28"
+                                Padding="0"
+                                Appearance="Transparent"
+                                Click="BtnPsaClose_OnClick"
+                                ToolTip="{DynamicResource common_close}">
+                                <ui:SymbolIcon Width="12" Height="12" Symbol="Dismiss24" />
+                            </ui:Button>
+                        </StackPanel>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Text="{DynamicResource menu_notifications}" />
+                    </DockPanel>
+                </Border>
+                <ScrollViewer
+                    Padding="12,10,12,12"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto">
                     <StackPanel x:Name="PnlPsas" />
                 </ScrollViewer>
             </DockPanel>

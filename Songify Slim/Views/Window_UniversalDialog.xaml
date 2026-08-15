@@ -1,18 +1,56 @@
-<Window
+<ui:FluentWindow
     x:Class="Songify_Slim.Views.WindowUniversalDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{DynamicResource window_universaldialog_title}"
-    Width="400"
-    Height="250"
-    MinWidth="555"
-    ResizeMode="NoResize"
+    Width="520"
+    Height="420"
+    MinWidth="420"
+    MinHeight="280"
+    ExtendsContentIntoTitleBar="True"
+    ResizeMode="CanResizeWithGrip"
+    ShowInTaskbar="False"
+    WindowBackdropType="Mica"
+    WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
-    <ContentControl
-        x:Name="ContentControl"
-        HorizontalAlignment="Stretch"
-        VerticalAlignment="Stretch" />
-</Window>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar
+            x:Name="DlgTitleBar"
+            Title="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+
+        <ScrollViewer
+            Grid.Row="1"
+            Padding="16,8,16,8"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <ContentControl
+                x:Name="ContentControl"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top" />
+        </ScrollViewer>
+
+        <Border
+            Grid.Row="2"
+            Padding="16,10,16,16"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <ui:Button
+                MinWidth="88"
+                HorizontalAlignment="Right"
+                Appearance="Primary"
+                Click="BtnClose_OnClick"
+                Content="{DynamicResource common_close}" />
+        </Border>
+    </Grid>
+</ui:FluentWindow>

@@ -71,7 +71,13 @@ internal static class PsaManager
         {
             List<Psa> fetched = await PsaService.GetPsaAsync().ConfigureAwait(true);
             lock (Sync)
+            {
+                List<Psa> debugKeep = _psas.Where(p => p.Id < 0).ToList();
                 _psas = fetched ?? [];
+                // Keep locally injected debug PSAs when the API has nothing to show.
+                if (_psas.Count == 0 && debugKeep.Count > 0)
+                    _psas = debugKeep;
+            }
 
             MaybeShowHighSeverityToast();
             RaiseListUpdated();
@@ -167,6 +173,81 @@ internal static class PsaManager
         else
             dispatcher.Invoke(Show);
     }
+
+#if DEBUG
+    /// <summary>
+    /// Injects sample PSAs (High/Medium/Low) for local UI testing. Debug builds only.
+    /// Resets read/toast state for negative debug ids so badge + toast fire again.
+    /// </summary>
+    public static void SimulateDebugNotifications()
+    {
+        long now = DateTimeOffset.Now.ToUnixTimeSeconds();
+        // Unique high-severity id each run so Windows toast is allowed again.
+        int highId = unchecked((int)(0xDEB00000 | (now & 0xFFFF)));
+
+        List<Psa> samples =
+        [
+            new Psa
+            {
+                Id = highId,
+                Author = "Debug",
+                Severity = "High",
+                MessageText =
+                    "DEBUG High: simulated outage notice. Visit https://songify.rocks for details.\n" +
+                    "This path never hits the MOTD API.",
+                CreatedAt = now,
+                IsActive = true
+            },
+            new Psa
+            {
+                Id = -1002,
+                Author = "Debug",
+                Severity = "Medium",
+                MessageText =
+                    "DEBUG Medium: a shorter heads-up that something maintenance-related is going on.",
+                CreatedAt = now - 3600,
+                IsActive = true
+            },
+            new Psa
+            {
+                Id = -1003,
+                Author = "Debug",
+                Severity = "Low",
+                MessageText =
+                    "DEBUG Low: long sample so you can test truncation and \"read more\". " +
+                    string.Concat(Enumerable.Repeat("Lorem ipsum dolor sit amet. ", 12)) +
+                    "Also a link: www.example.com",
+                CreatedAt = now - 7200,
+                IsActive = true
+            }
+        ];
+
+        List<int> readIds = Settings.ReadNotificationIds ?? [];
+        readIds.RemoveAll(id => id < 0 || id == highId);
+        Settings.ReadNotificationIds = readIds;
+        Settings.LastShownMotdId = 0;
+
+        lock (Sync)
+            _psas = samples;
+
+        MaybeShowHighSeverityToast();
+        RaiseListUpdated();
+        RaiseChanged();
+    }
+
+    public static void ClearDebugNotifications()
+    {
+        lock (Sync)
+            _psas = _psas.Where(p => p.Id >= 0).ToList();
+
+        List<int> readIds = Settings.ReadNotificationIds ?? [];
+        readIds.RemoveAll(id => id < 0);
+        Settings.ReadNotificationIds = readIds;
+
+        RaiseListUpdated();
+        RaiseChanged();
+    }
+#endif
 
     private static void MaybeShowHighSeverityToast()
     {

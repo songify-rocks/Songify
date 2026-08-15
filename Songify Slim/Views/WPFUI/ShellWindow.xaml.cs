@@ -5,9 +5,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using System.Windows.Threading;
 using Songify_Slim.Models.Responses;
 using Songify_Slim.Models.Spotify;
@@ -134,6 +134,10 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         RebuildPsaPanel();
         UpdatePsaBadge();
         UpdatePsaMarkAllReadVisibility();
+#if DEBUG
+        SetupDebugPsaMenu();
+#endif
+        ApplyOpaqueFlyPsaBackground();
 
         // Navigate to Overview once the window and NavigationView are fully loaded
         if (RootNavigationView != null)
@@ -724,6 +728,23 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     private async void BtnPsa_OnClick(object sender, RoutedEventArgs e)
     {
+#if DEBUG
+        // Title bar steals right-click for the system menu; Ctrl+Click simulates PSAs instead.
+        if (Keyboard.Modifiers.HasFlag(ModifierKeys.Control))
+        {
+            PsaManager.SimulateDebugNotifications();
+            FlyPsa.Visibility = Visibility.Visible;
+            ApplyOpaqueFlyPsaBackground();
+            return;
+        }
+#endif
+        // Closing must not refresh — a refresh replaces local/debug items with the API result.
+        if (FlyPsa.Visibility == Visibility.Visible)
+        {
+            FlyPsa.Visibility = Visibility.Collapsed;
+            return;
+        }
+
         try
         {
             await PsaManager.RefreshAsync();
@@ -733,12 +754,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             Logger.LogExc(ex);
         }
 
-        RebuildPsaPanel();
-        UpdatePsaBadge();
-        UpdatePsaMarkAllReadVisibility();
-        FlyPsa.Visibility = FlyPsa.Visibility == Visibility.Visible
-            ? Visibility.Collapsed
-            : Visibility.Visible;
+        FlyPsa.Visibility = Visibility.Visible;
+        ApplyOpaqueFlyPsaBackground();
     }
 
     private void BtnPsaClose_OnClick(object sender, RoutedEventArgs e)
@@ -746,10 +763,54 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         FlyPsa.Visibility = Visibility.Collapsed;
     }
 
+    /// <summary>
+    /// Mica / layer brushes are translucent; force a fully opaque panel fill from theme colors.
+    /// </summary>
+    private void ApplyOpaqueFlyPsaBackground()
+    {
+        if (FlyPsa == null)
+            return;
+
+        Color color = Color.FromRgb(0x20, 0x20, 0x20);
+        if (TryFindResource("ApplicationBackgroundBrush") is SolidColorBrush app)
+            color = Color.FromArgb(255, app.Color.R, app.Color.G, app.Color.B);
+        else if (TryFindResource("CardBackgroundFillColorDefaultBrush") is SolidColorBrush card)
+            color = Color.FromArgb(255, card.Color.R, card.Color.G, card.Color.B);
+
+        FlyPsa.Background = new SolidColorBrush(color);
+    }
+
     private void BtnPsaMarkAllRead_OnClick(object sender, RoutedEventArgs e)
     {
         PsaManager.MarkAllAsRead();
     }
+
+#if DEBUG
+    private void SetupDebugPsaMenu()
+    {
+        if (BtnPsa != null)
+            BtnPsa.ToolTip = "Notifications (Debug: Ctrl+Click to simulate PSAs)";
+
+        if (HelpContextMenu == null)
+            return;
+
+        HelpContextMenu.Items.Add(new Separator());
+
+        System.Windows.Controls.MenuItem debugRoot = new() { Header = "Debug" };
+        System.Windows.Controls.MenuItem simulate = new() { Header = "Simulate PSAs (High / Medium / Low)" };
+        simulate.Click += (_, _) =>
+        {
+            PsaManager.SimulateDebugNotifications();
+            FlyPsa.Visibility = Visibility.Visible;
+            ApplyOpaqueFlyPsaBackground();
+        };
+        System.Windows.Controls.MenuItem clear = new() { Header = "Clear simulated PSAs" };
+        clear.Click += (_, _) => PsaManager.ClearDebugNotifications();
+        debugRoot.Items.Add(simulate);
+        debugRoot.Items.Add(clear);
+        HelpContextMenu.Items.Add(debugRoot);
+    }
+#endif
 
     private void OnPsaChanged()
     {
@@ -775,20 +836,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             return;
 
         PnlPsas.Children.Clear();
-        IReadOnlyList<Psa> psas = PsaManager.Current;
-        for (int i = 0; i < psas.Count; i++)
-        {
-            PnlPsas.Children.Add(new PsaControl(psas[i]));
-            if (i < psas.Count - 1)
-            {
-                PnlPsas.Children.Add(new Rectangle
-                {
-                    Height = 1,
-                    Fill = (Brush)TryFindResource("ControlStrokeColorDefaultBrush") ?? Brushes.Gray,
-                    Margin = new Thickness(0, 6, 0, 6)
-                });
-            }
-        }
+        foreach (Psa psa in PsaManager.Current)
+            PnlPsas.Children.Add(new PsaControl(psa));
     }
 
     private void UpdatePsaBadge()

@@ -5,28 +5,15 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Songify_Slim</RootNamespace>
     <AssemblyName>Songify</AssemblyName>
-    <IsWebBootstrapper>false</IsWebBootstrapper>
-    <PublishUrl>publish\</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Disk</InstallFrom>
-    <UpdateEnabled>false</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.2.2.0</ApplicationVersion>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <PublishWizardCompleted>true</PublishWizardCompleted>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
     <!-- WinForms is still referenced (folder pickers). Trimming hard-fails (NETSDK1175). -->
     <PublishTrimmed>false</PublishTrimmed>
+    <!-- Disable leftover ClickOnce publish/manifest generation (no longer used). -->
+    <GenerateManifests>false</GenerateManifests>
+    <BootstrapperEnabled>false</BootstrapperEnabled>
   </PropertyGroup>
   <!-- PublishSingleFile already bundles deps; Costura would double-embed and confuse publish. -->
   <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
@@ -43,18 +30,6 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Songify_Slim.App</StartupObject>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>08F49EEC2473909310D319088A82521BEBC2769C</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>Songify Slim_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Debug'">
     <LangVersion>latest</LangVersion>
@@ -84,18 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="songify.ico" />
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.6.1">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4.6.1 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\icon.ico">
