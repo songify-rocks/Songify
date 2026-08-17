@@ -7,6 +7,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Songify_Slim.Models;
@@ -46,12 +47,18 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
     private RequestObject _selectedReqListItem;
     private RequestObject _currentQueueItem;
     private NowPlayingDisplay _nowPlayingDisplay;
+    private readonly CollectionViewSource _pendingQueueSource;
 
     public QueueWindowViewModel()
     {
         QueueTracks = GlobalObjects.QueueTracks;
         ReqList = GlobalObjects.ReqList;
-        QueueTracks.CollectionChanged += (s, e) => UpdateCurrentQueueItem();
+
+        _pendingQueueSource = new CollectionViewSource { Source = QueueTracks };
+        _pendingQueueSource.Filter += (_, e) =>
+            e.Accepted = e.Item is RequestObject req && req.Played != -1;
+
+        QueueTracks.CollectionChanged += (_, _) => UpdateCurrentQueueItem();
         UpdateCurrentQueueItem();
 
         ClearQueueCommand = new RelayCommand(async () => await ClearQueueAsync(), () => QueueTracks?.Count > 0);
@@ -71,6 +78,9 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
 
     public ObservableCollection<RequestObject> QueueTracks { get; }
     public ObservableCollection<RequestObject> ReqList { get; }
+
+    /// <summary>Queue items excluding the now-playing track (shown in the fixed header row).</summary>
+    public ICollectionView PendingQueueTracks => _pendingQueueSource.View;
 
     public RequestObject SelectedQueueItem
     {
@@ -348,6 +358,7 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
     {
         CurrentQueueItem = QueueTracks?.FirstOrDefault(x => x.Played == -1);
         UpdateNowPlayingDisplay();
+        PendingQueueTracks?.Refresh();
     }
 
     private void UpdateNowPlayingDisplay()
@@ -355,25 +366,33 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
         var fromQueue = CurrentQueueItem;
         if (fromQueue != null)
         {
+            string coverUrl = fromQueue.Albumcover;
+            if (string.IsNullOrWhiteSpace(coverUrl))
+            {
+                var current = GlobalObjects.CurrentSong;
+                if (current?.Albums is { Count: > 0 })
+                    coverUrl = current.Albums[0]?.Url;
+            }
+
             NowPlayingDisplay = new NowPlayingDisplay
             {
                 Title = fromQueue.Title ?? "",
                 Artist = fromQueue.Artist ?? "",
-                Albumcover = fromQueue.Albumcover,
-                AlbumcoverImageSource = UrlToImageSourceConverter.FromUrl(fromQueue.Albumcover)
+                Albumcover = coverUrl,
+                AlbumcoverImageSource = UrlToImageSourceConverter.FromUrl(coverUrl)
             };
             return;
         }
-        var current = GlobalObjects.CurrentSong;
-        if (current != null && (!string.IsNullOrWhiteSpace(current.Title) || !string.IsNullOrWhiteSpace(current.Artists)))
+        var song = GlobalObjects.CurrentSong;
+        if (song != null && (!string.IsNullOrWhiteSpace(song.Title) || !string.IsNullOrWhiteSpace(song.Artists)))
         {
             string coverUrl = null;
-            if (current.Albums != null && current.Albums.Count > 0 && current.Albums[0]?.Url != null)
-                coverUrl = current.Albums[0].Url;
+            if (song.Albums != null && song.Albums.Count > 0 && song.Albums[0]?.Url != null)
+                coverUrl = song.Albums[0].Url;
             NowPlayingDisplay = new NowPlayingDisplay
             {
-                Title = current.Title ?? "",
-                Artist = current.Artists ?? "",
+                Title = song.Title ?? "",
+                Artist = song.Artists ?? "",
                 Albumcover = coverUrl,
                 AlbumcoverImageSource = UrlToImageSourceConverter.FromUrl(coverUrl)
             };

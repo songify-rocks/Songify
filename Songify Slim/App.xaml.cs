@@ -45,7 +45,18 @@ namespace Songify_Slim
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Logger.Error(LogSource.Core, "Unhandled exception occurred", e.Exception);
+            try
+            {
+                Logger.Error(LogSource.Core, "Unhandled dispatcher exception occurred", e.Exception);
+            }
+            catch
+            {
+                // ignore logging failures during crash
+            }
+
+            // Prevent a second fatal path / nested crash while we show UI.
+            e.Handled = true;
+            ShowCrashPromptAndMaybeRestart(e.Exception);
         }
 
         private App()
@@ -409,70 +420,112 @@ namespace Songify_Slim
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            var ex = args.ExceptionObject as Exception;
+            Exception ex = args.ExceptionObject as Exception;
 
-            if (ex != null)
+            try
             {
-                // Single, structured fatal log entry
-                Logger.Fatal(
-                    LogSource.Core,
-                    $"Unhandled exception caught in MyHandler. IsTerminating={args.IsTerminating}.",
-                    ex
-                );
-
-                if (ex.InnerException != null)
+                if (ex != null)
                 {
-                    Logger.Error(
+                    Logger.Fatal(
                         LogSource.Core,
-                        "Unhandled exception has inner exception.",
-                        ex.InnerException
-                    );
+                        $"Unhandled exception caught in MyHandler. IsTerminating={args.IsTerminating}.",
+                        ex);
+
+                    if (ex.InnerException != null)
+                    {
+                        Logger.Error(
+                            LogSource.Core,
+                            "Unhandled exception has inner exception.",
+                            ex.InnerException);
+                    }
+                }
+                else
+                {
+                    Logger.Fatal(
+                        LogSource.Core,
+                        $"Unhandled non-Exception object in MyHandler: {args.ExceptionObject} (IsTerminating={args.IsTerminating}).");
                 }
             }
-            else
+            catch
             {
-                // In case someone throws a non-Exception object
-                Logger.Fatal(
-                    LogSource.Core,
-                    $"Unhandled non-Exception object in MyHandler: {args.ExceptionObject} (IsTerminating={args.IsTerminating})."
-                );
+                // ignore logging failures during crash
             }
 
-            // If the runtime is not actually terminating, just log and bail out.
-            if (!args.IsTerminating) return;
+            if (!args.IsTerminating)
+                return;
 
-            // From here on it?s user interaction / restart logic
-            if (MessageBox.Show(
-                    "Would you like to open the log file directory?\n\n" +
+            ShowCrashPromptAndMaybeRestart(ex);
+        }
+
+        /// <summary>
+        /// Crash UI must not use WPF MessageBox — with WPF-UI theme dictionaries loaded it can throw
+        /// while the app is already failing. WinForms MessageBox is native and more reliable here.
+        /// </summary>
+        private static void ShowCrashPromptAndMaybeRestart(Exception ex)
+        {
+            try
+            {
+                string detail = ex?.GetType().Name ?? "Unknown error";
+                if (!string.IsNullOrWhiteSpace(ex?.Message))
+                    detail += ": " + ex.Message;
+
+                System.Windows.Forms.DialogResult openLogs = System.Windows.Forms.MessageBox.Show(
+                    "Songify ran into a problem and needs to close.\n\n" +
+                    detail + "\n\n" +
+                    "Would you like to open the log file directory?\n" +
                     "Feel free to submit the log file in our Discord.",
                     "Songify just crashed :(",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Error) == MessageBoxResult.Yes)
-            {
-                ShellHelper.OpenPath(Logger.LogDirectoryPath);
-            }
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
+                    System.Windows.Forms.MessageBoxIcon.Error);
 
-            if (MessageBox.Show(
+                if (openLogs == System.Windows.Forms.DialogResult.Yes)
+                {
+                    try
+                    {
+                        ShellHelper.OpenPath(Logger.LogDirectoryPath);
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                }
+
+                System.Windows.Forms.DialogResult restart = System.Windows.Forms.MessageBox.Show(
                     "Restart Songify?",
                     "Songify",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question) != MessageBoxResult.Yes)
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
+                    System.Windows.Forms.MessageBoxIcon.Question);
+
+                if (restart == System.Windows.Forms.DialogResult.Yes)
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = AppPaths.GetExecutablePath(),
+                            Arguments = "--restart",
+                            UseShellExecute = true
+                        });
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                }
+            }
+            catch
             {
-                return;
+                // Last resort: never let the crash handler itself take down the process messily.
             }
 
-            // Pass an argument to indicate this is a restart
-            var startInfo = new ProcessStartInfo
+            try
             {
-                FileName = AppPaths.GetExecutablePath(),
-                Arguments = "--restart",
-                UseShellExecute = true
-            };
-
-            Process.Start(startInfo);
-
-            // Shutdown the current instance
-            Current.Shutdown();
+                Current?.Shutdown();
+            }
+            catch
+            {
+                try { Environment.Exit(1); } catch { /* ignore */ }
+            }
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)

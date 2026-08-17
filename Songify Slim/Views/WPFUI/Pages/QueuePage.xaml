@@ -12,7 +12,8 @@
     <Page.Resources>
         <ResourceDictionary>
             <util:ResourceStringFormatConverter x:Key="ResourceStringFormatConverter" />
-            <!--  No converters: visibility via DataTriggers, images via ViewModel/Model ImageSource  -->
+            <util:UrlToImageSourceConverter x:Key="UrlToImageSourceConverter" />
+            <!--  Visibility via DataTriggers; album URLs go through UrlToImageSourceConverter (null-safe)  -->
             <!--  Badge colors (theme-friendly)  -->
             <SolidColorBrush x:Key="BadgeNowPlaying" Color="#4682B4" />
             <SolidColorBrush x:Key="BadgeSongRequest" Color="#2E8B57" />
@@ -37,16 +38,22 @@
             <RowDefinition Height="Auto" MinHeight="52" />
             <RowDefinition Height="*" MinHeight="80" />
         </Grid.RowDefinitions>
-        <StackPanel
-            Grid.Row="0"
-            Margin="0,0,0,16"
-            Orientation="Horizontal">
+        <!--  Header  -->
+        <Grid Grid.Row="0" Margin="0,0,0,16">
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="28"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="{DynamicResource menu_queue}" />
             <ui:Button
                 x:Name="BtnClearQueue"
-                Margin="0,0,12,0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
                 Appearance="Secondary"
-                Command="{Binding ClearQueueCommand}" />
-        </StackPanel>
+                Command="{Binding ClearQueueCommand}"
+                Content="{DynamicResource menu_queue_clear}" />
+        </Grid>
         <!--  Fixed row: currently playing (compact; Border avoids Card Content-set-twice designer issue)  -->
         <Border
             Grid.Row="1"
@@ -87,7 +94,7 @@
                             <ui:Image
                                 CornerRadius="6"
                                 RenderOptions.BitmapScalingMode="HighQuality"
-                                Source="{Binding NowPlayingDisplay.Albumcover}"
+                                Source="{Binding NowPlayingDisplay.AlbumcoverImageSource}"
                                 Stretch="UniformToFill" />
                         </Grid>
                     </Border>
@@ -150,7 +157,7 @@
                 Padding="0"
                 Background="Transparent"
                 BorderThickness="0"
-                ItemsSource="{Binding QueueTracks}"
+                ItemsSource="{Binding PendingQueueTracks}"
                 SelectedItem="{Binding SelectedQueueItem, Mode=TwoWay}"
                 VirtualizingPanel.IsVirtualizing="False">
                 <ListBox.ItemContainerStyle>
@@ -202,7 +209,7 @@
                                         <ui:Image
                                             CornerRadius="12"
                                             RenderOptions.BitmapScalingMode="HighQuality"
-                                            Source="{Binding Albumcover}"
+                                            Source="{Binding Albumcover, Converter={StaticResource UrlToImageSourceConverter}}"
                                             Stretch="UniformToFill" />
                                     </Grid>
                                 </Border>
@@ -210,9 +217,11 @@
                                 <StackPanel
                                     Grid.Column="1"
                                     Margin="0,0,0,0"
+                                    HorizontalAlignment="Left"
                                     VerticalAlignment="Center"
                                     Orientation="Vertical">
                                     <TextBlock
+                                        MaxWidth="400"
                                         FontSize="16"
                                         FontWeight="SemiBold"
                                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -241,28 +250,6 @@
                                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                             Text="{Binding Length}"
                                             Visibility="Collapsed" />
-                                        <!--  Now playing pill (same size/style as requester)  -->
-                                        <Border
-                                            Padding="8,3"
-                                            VerticalAlignment="Center"
-                                            Background="{StaticResource BadgeNowPlaying}"
-                                            CornerRadius="10">
-                                            <Border.Style>
-                                                <Style TargetType="Border">
-                                                    <Setter Property="Visibility" Value="Collapsed" />
-                                                    <Style.Triggers>
-                                                        <DataTrigger Binding="{Binding Played}" Value="-1">
-                                                            <Setter Property="Visibility" Value="Visible" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Border.Style>
-                                            <TextBlock
-                                                FontSize="11"
-                                                FontWeight="SemiBold"
-                                                Foreground="White"
-                                                Text="{DynamicResource window_queue_now_playing}" />
-                                        </Border>
                                         <!--  Skipping pill (same size/style as requester)  -->
                                         <Border
                                             Padding="8,3"

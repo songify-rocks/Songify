@@ -38,6 +38,8 @@ public partial class OverviewPage : Page
         public string Position { get; init; }
         public string Title { get; init; }
         public string Subtitle { get; init; }
+
+        public string Requester { get; init; }
         public string CoverUrl { get; init; }
     }
 
@@ -211,15 +213,14 @@ public partial class OverviewPage : Page
                                  && !string.Equals(requester, "Skipping...", StringComparison.OrdinalIgnoreCase);
 
             string subtitle = t.Artist ?? "";
-            if (showRequester)
-                subtitle = string.IsNullOrEmpty(subtitle) ? requester : $"{subtitle} · {requester}";
 
             items.Add(new UpNextItem
             {
                 Position = $"{i + 1}",
                 Title = string.IsNullOrWhiteSpace(t.Title) ? "—" : t.Title,
                 Subtitle = subtitle,
-                CoverUrl = t.Albumcover
+                CoverUrl = t.Albumcover,
+                Requester = showRequester ? requester : ""
             });
         }
 

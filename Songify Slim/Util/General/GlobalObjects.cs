@@ -396,7 +396,7 @@ namespace Songify_Slim.Util.General
                                     Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
                                     Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
                                     Played = -1,
-                                    Albumcover = null,
+                                    Albumcover = CurrentSong.Albums?.FirstOrDefault()?.Url,
                                     IsLiked = isInLikedPlaylist
                                 });
                             }

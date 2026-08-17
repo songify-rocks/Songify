@@ -2247,6 +2247,7 @@
                                     <ComboBox
                                         x:Name="CbSpotifyPlaylist"
                                         Margin="0,0,40,0"
+                                        HorizontalContentAlignment="Stretch"
                                         MaxDropDownHeight="300"
                                         SelectionChanged="Cb_SpotifyPlaylist_SelectionChanged" />
                                     <Button
@@ -2352,9 +2353,10 @@
                                     </StackPanel>
                                     <Button
                                         Grid.Column="3"
+                                        Height="36"
                                         MinWidth="110"
-                                        Margin="12,18,0,0"
-                                        VerticalAlignment="Top"
+                                        Margin="12,21,0,0"
+                                        VerticalAlignment="Center"
                                         Click="BtnArtistBlocklistDetectColumns_Click"
                                         Content="{DynamicResource window_settings_detect}" />
                                 </Grid>

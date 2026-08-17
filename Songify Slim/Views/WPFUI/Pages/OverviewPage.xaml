@@ -5,8 +5,32 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:util="clr-namespace:Songify_Slim.Util"
     Title="{DynamicResource nav_home}"
     mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <util:ResourceStringFormatConverter x:Key="ResourceStringFormatConverter" />
+            <util:UrlToImageSourceConverter x:Key="UrlToImageSourceConverter" />
+            <!--  Visibility via DataTriggers; album URLs go through UrlToImageSourceConverter (null-safe)  -->
+            <!--  Badge colors (theme-friendly)  -->
+            <SolidColorBrush x:Key="BadgeNowPlaying" Color="#4682B4" />
+            <SolidColorBrush x:Key="BadgeSongRequest" Color="#2E8B57" />
+            <SolidColorBrush x:Key="BadgeSkipping" Color="#CD5C5C" />
+            <!--  Queue item card style (in resources so Card has single content child)  -->
+            <Style x:Key="QueueItemCardStyle" TargetType="ui:Card">
+                <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                        <Setter Property="BorderThickness" Value="2" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
     <ScrollViewer VerticalScrollBarVisibility="Auto">
         <Grid
             MaxWidth="800"
@@ -207,6 +231,39 @@
                                             Text="{Binding Subtitle}"
                                             TextTrimming="CharacterEllipsis"
                                             TextWrapping="NoWrap" />
+                                        <Border
+                                            Margin="0,6,0,0"
+                                            Padding="8,3"
+                                            VerticalAlignment="Center"
+                                            Background="{StaticResource BadgeSongRequest}"
+                                            CornerRadius="10">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Requester}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Requester}" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <StackPanel Orientation="Horizontal">
+                                                <ui:SymbolIcon
+                                                    Margin="0,0,6,0"
+                                                    Filled="True"
+                                                    Foreground="White"
+                                                    Symbol="Person28" />
+                                                <TextBlock
+                                                    FontSize="11"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="White"
+                                                    Text="{Binding Requester}"
+                                                    TextWrapping="NoWrap" />
+                                            </StackPanel>
+                                        </Border>
                                     </StackPanel>
                                 </StackPanel>
                             </DataTemplate>
