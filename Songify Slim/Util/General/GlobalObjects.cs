@@ -25,11 +25,9 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Models.WebSocket;
 using Songify_Slim.Util.Configuration;
-using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Songify.Twitch;
 using SpotifyAPI.Web;
-using Swan.Formatters;
 using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 
 namespace Songify_Slim.Util.General
@@ -235,53 +233,15 @@ namespace Songify_Slim.Util.General
                             return;
                         }
 
-                        // Remove all songs from the web queue that are not in the current playback queue
-                        if (ReqList?.Count > 0)
+                        // ReqList is Songify-owned (played / !remove / skiplist). The Spotify snapshot is
+                        // display-only (max 20 + filler). Snapshot on the dispatcher before enumerating.
+                        List<RequestObject> reqSnapshot = [];
+                        List<RequestObject> skipSnapshot = [];
+                        await Application.Current.Dispatcher.InvokeAsync(() =>
                         {
-                            List<RequestObject> itemsToRemove = [];
-
-                            foreach (RequestObject requestObject in ReqList)
-                            {
-                                if (queue.Queue.Any(o => ((FullTrack)o).Id == requestObject.Trackid)) continue;
-
-                                dynamic payload = new
-                                {
-                                    uuid = Settings.Uuid,
-                                    key = Settings.AccessKey,
-                                    queueid = requestObject.Queueid,
-                                };
-
-                                try
-                                {
-                                    await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
-                                    itemsToRemove.Add(requestObject);
-                                }
-                                catch (Exception ex)
-                                {
-                                    Logger.Error(LogSource.Api, "Error updating value in web queue", ex);
-                                }
-                            }
-
-                            foreach (RequestObject item in itemsToRemove)
-                            {
-                                await Application.Current.Dispatcher.InvokeAsync(() =>
-                                {
-                                    try
-                                    {
-                                        if (CurrentSong != null && item.Trackid == CurrentSong.SongId)
-                                        {
-                                            return;
-                                        }
-
-                                        ReqList.Remove(item);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Logger.Error(LogSource.Core, "Error removing item from ReqList", ex);
-                                    }
-                                });
-                            }
-                        }
+                            reqSnapshot = ReqList.ToList();
+                            skipSnapshot = SkipList.ToList();
+                        });
 
                         bool isLikedSongsPlaylist = false;
                         Dictionary<string, bool> isInLikedSongs = [];
@@ -327,10 +287,10 @@ namespace Songify_Slim.Util.General
                                 bool isCurrentSong = CurrentSong != null && fullTrack.Id == CurrentSong.SongId;
                                 RequestObject reqObj = isCurrentSong
                                     ? null
-                                    : ReqList.FirstOrDefault(o =>
+                                    : reqSnapshot.FirstOrDefault(o =>
                                         o.Trackid == fullTrack.Id && !replacementTracker.ContainsKey(o.Trackid));
 
-                                RequestObject skipObj = SkipList.FirstOrDefault(o => o.Trackid == fullTrack.Id);
+                                RequestObject skipObj = skipSnapshot.FirstOrDefault(o => o.Trackid == fullTrack.Id);
 
                                 if (reqObj != null)
                                 {
@@ -386,18 +346,23 @@ namespace Songify_Slim.Util.General
                                     ? isInLikedSongs.TryGetValue(CurrentSong.SongId, out bool liked) && liked
                                     : LikedPlaylistTracks.Any(o => ((FullTrack)o.Track).Id == CurrentSong.SongId);
 
+                                RequestObject currentRequest = reqSnapshot.FirstOrDefault(o =>
+                                    o.Trackid == CurrentSong.SongId);
+
                                 QueueTracks.Insert(0, new RequestObject
                                 {
-                                    Queueid = 0,
+                                    Queueid = currentRequest?.Queueid ?? 0,
                                     Uuid = Settings.Uuid,
                                     Trackid = CurrentSong.SongId,
                                     Artist = CurrentSong.Artists,
                                     Title = CurrentSong.Title,
                                     Length = MsToMmSsConverter((int)CurrentSong.DurationMs),
-                                    Requester = string.IsNullOrEmpty(Requester) ? "Spotify" : Requester,
+                                    Requester = currentRequest?.Requester ?? "Spotify",
+                                    FullRequester = currentRequest?.FullRequester,
                                     Played = -1,
                                     Albumcover = CurrentSong.Albums?.FirstOrDefault()?.Url,
-                                    IsLiked = isInLikedPlaylist
+                                    IsLiked = isInLikedPlaylist,
+                                    PlayerType = currentRequest?.PlayerType ?? "Spotify"
                                 });
                             }
                             catch (Exception ex)

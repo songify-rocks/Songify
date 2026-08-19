@@ -58,7 +58,7 @@
         <Border
             Grid.Row="1"
             Margin="0,0,0,12"
-            Padding="10"
+            Padding="0,0,0,10"
             BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
             BorderThickness="0,0,0,6"
             CornerRadius="6">
@@ -76,8 +76,8 @@
                         </Style>
                     </StackPanel.Style>
                     <Border
-                        Width="40"
-                        Height="40"
+                        Width="60"
+                        Height="60"
                         Margin="0,0,12,0"
                         Background="{DynamicResource ControlFillColorDefaultBrush}"
                         ClipToBounds="True"
@@ -111,19 +111,21 @@
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                             Text="{Binding NowPlayingDisplay.Artist}"
                             TextTrimming="CharacterEllipsis" />
+                        <Border
+                            Margin="0,6,0,0"
+                            Padding="6,2"
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            Background="{StaticResource BadgeNowPlaying}"
+                            CornerRadius="8">
+                            <TextBlock
+                                FontSize="10"
+                                FontWeight="SemiBold"
+                                Foreground="White"
+                                Text="{DynamicResource window_queue_now_playing}" />
+                        </Border>
                     </StackPanel>
-                    <Border
-                        Margin="12,0,0,0"
-                        Padding="6,2"
-                        VerticalAlignment="Center"
-                        Background="{StaticResource BadgeNowPlaying}"
-                        CornerRadius="8">
-                        <TextBlock
-                            FontSize="10"
-                            FontWeight="SemiBold"
-                            Foreground="White"
-                            Text="{DynamicResource window_queue_now_playing}" />
-                    </Border>
+
                 </StackPanel>
                 <!--  When nothing is playing  -->
                 <TextBlock

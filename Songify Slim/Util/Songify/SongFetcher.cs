@@ -694,16 +694,13 @@ namespace Songify_Slim.Util.Songify
                 {
                     _trackChanged = false;
                     GlobalObjects.ForceUpdate = false;
-                    if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
+                    if (songInfo.SongId != null)
                     {
-                        //GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await QueueService.CleanupServerQueueAsync();
                     }
 
-                    await GlobalObjects.QueueUpdateQueueWindow();
-
-                    // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
                     await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify);
+                    await GlobalObjects.QueueUpdateQueueWindow();
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
                 }
 
