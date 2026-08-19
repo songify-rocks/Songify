@@ -327,6 +327,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Settings.TwitchPollSettings ??= new TwitchPollSettings();
             Settings.UserLevelsCommand ??= [];
             Settings.UserLevelsReward ??= [];
+            Settings.UserLevelsExplicitSongs ??= [];
             Settings.UnlimitedSrUserlevelsCommand ??= [];
             Settings.UnlimitedSrUserlevelsReward ??= [];
         }
@@ -428,6 +429,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             TglInformChat.IsChecked = Settings.ChatLiveStatus;
             TglAddToPlaylist.IsChecked = Settings.AddSrToPlaylist;
             Tglsw_BlockAllExplicitSongs.IsChecked = Settings.BlockAllExplicitSongs;
+            CbxAllowedUserLevelsExplicit.IsEnabled = Settings.BlockAllExplicitSongs;
             NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
             TglBypassSpotifyFetchGate.IsChecked = Settings.BypassSpotifyFetchGate;
             TglShowSpotifyToasts.IsChecked = Settings.ShowSpotifyToasts;
@@ -485,6 +487,14 @@ namespace Songify_Slim.Views.WPFUI.Controls
             ChckUlRewardVip.IsChecked = Settings.UserLevelsReward.Contains(5);
             ChckUlRewardMod.IsChecked = Settings.UserLevelsReward.Contains(6);
 
+            ChckUlExplicitViewer.IsChecked = Settings.UserLevelsExplicitSongs.Contains(0);
+            ChckUlExplicitFollower.IsChecked = Settings.UserLevelsExplicitSongs.Contains(1);
+            ChckUlExplicitSub.IsChecked = Settings.UserLevelsExplicitSongs.Contains(2);
+            ChckUlExplicitSubT2.IsChecked = Settings.UserLevelsExplicitSongs.Contains(3);
+            ChckUlExplicitSubT3.IsChecked = Settings.UserLevelsExplicitSongs.Contains(4);
+            ChckUlExplicitVip.IsChecked = Settings.UserLevelsExplicitSongs.Contains(5);
+            ChckUlExplicitMod.IsChecked = Settings.UserLevelsExplicitSongs.Contains(6);
+
             ChckUnlimitedCommandViewer.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(0);
             ChckUnlimitedCommandFollower.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(1);
             ChckUnlimitedCommandSub.IsChecked = Settings.UnlimitedSrUserlevelsCommand.Contains(2);
@@ -537,6 +547,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (CbiAllowedUserLevelsCommandSummary != null)
                     CbiAllowedUserLevelsCommandSummary.Content =
                         FormatUserLevelsSummary(Settings.UserLevelsCommand, none);
+                if (CbiAllowedUserLevelsExplicitSummary != null)
+                    CbiAllowedUserLevelsExplicitSummary.Content =
+                        FormatUserLevelsSummary(Settings.UserLevelsExplicitSongs, none);
                 if (CbiUnlimitedCommandSummary != null)
                     CbiUnlimitedCommandSummary.Content =
                         FormatUserLevelsSummary(Settings.UnlimitedSrUserlevelsCommand, none);
@@ -1786,6 +1799,27 @@ namespace Songify_Slim.Views.WPFUI.Controls
             RefreshUserLevelComboSummaries();
         }
 
+        private void CbxUserLevelsExplicitChecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (Settings.UserLevelsExplicitSongs.Contains(value)) return;
+            List<int> list = [.. Settings.UserLevelsExplicitSongs, value];
+            Settings.UserLevelsExplicitSongs = list;
+            RefreshUserLevelComboSummaries();
+        }
+
+        private void CbxUserLevelsExplicitUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (!Settings.UserLevelsExplicitSongs.Contains(value)) return;
+            List<int> list = [.. Settings.UserLevelsExplicitSongs];
+            list.Remove(value);
+            Settings.UserLevelsExplicitSongs = list;
+            RefreshUserLevelComboSummaries();
+        }
+
         private void TglAddToPlaylist_Toggled(object sender, RoutedEventArgs e)
         {
             if (IgnoreControlEvents)
@@ -2170,7 +2204,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             if (IgnoreControlEvents)
                 return;
-            Settings.BlockAllExplicitSongs = ((ToggleSwitch)sender).IsChecked == true;
+            bool enabled = ((ToggleSwitch)sender).IsChecked == true;
+            Settings.BlockAllExplicitSongs = enabled;
+            CbxAllowedUserLevelsExplicit.IsEnabled = enabled;
         }
 
         private void TbRequesterPrefix_TextChanged(object sender, TextChangedEventArgs e)

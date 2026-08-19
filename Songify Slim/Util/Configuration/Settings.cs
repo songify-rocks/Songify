@@ -969,6 +969,12 @@ namespace Songify_Slim.Util.Configuration
             set => SetUserLevelsReward(value);
         }
 
+        public static List<int> UserLevelsExplicitSongs
+        {
+            get => GetUserLevelsExplicitSongs();
+            set => SetUserLevelsExplicitSongs(value);
+        }
+
         public static string Uuid
         {
             get => GetUuid();
@@ -1407,6 +1413,7 @@ namespace Songify_Slim.Util.Configuration
                 UserBlacklist = GetUserBlacklist(),
                 UserLevelsCommand = GetUserLevelsCommand(),
                 UserLevelsReward = GetUserLevelsReward(),
+                UserLevelsExplicitSongs = GetUserLevelsExplicitSongs(),
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebServerPasswordEnabled = GetWebServerPasswordEnabled(),
@@ -2229,6 +2236,11 @@ namespace Songify_Slim.Util.Configuration
         private static List<int> GetUserLevelsReward()
         {
             return CurrentConfig.AppConfig.UserLevelsReward;
+        }
+
+        private static List<int> GetUserLevelsExplicitSongs()
+        {
+            return CurrentConfig.AppConfig.UserLevelsExplicitSongs ??= [];
         }
 
         private static string GetUuid()
@@ -3094,6 +3106,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetUserLevelsReward(List<int> value)
         {
             CurrentConfig.AppConfig.UserLevelsReward = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetUserLevelsExplicitSongs(List<int> value)
+        {
+            CurrentConfig.AppConfig.UserLevelsExplicitSongs = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

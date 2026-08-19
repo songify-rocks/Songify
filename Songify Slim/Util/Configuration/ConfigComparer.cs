@@ -104,6 +104,12 @@ namespace Songify_Slim.Util.Configuration
                 local.AppConfig?.UserLevelsReward,
                 incoming.AppConfig?.UserLevelsReward);
 
+            CompareUserLevelList(
+                warnings,
+                "Explicit song request user levels",
+                local.AppConfig?.UserLevelsExplicitSongs,
+                incoming.AppConfig?.UserLevelsExplicitSongs);
+
             List<TwitchCommand> localCmds = local.TwitchCommands?.Commands ?? [];
             List<TwitchCommand> incomingCmds = incoming.TwitchCommands?.Commands ?? [];
 

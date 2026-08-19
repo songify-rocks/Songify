@@ -3679,6 +3679,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Levels (Explicit).
+        /// </summary>
+        public static string window_settings_spotify_sr_user_levels_explicit {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_user_levels_explicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Levels (Reward).
         /// </summary>
         public static string window_settings_spotify_sr_user_levels_reward {
@@ -3693,6 +3702,15 @@ namespace Songify_Slim.Properties {
         public static string window_settings_spotify_sr_userlevel_command {
             get {
                 return ResourceManager.GetString("window_settings_spotify_sr_userlevel_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed user levels to request explicit songs.
+        /// </summary>
+        public static string window_settings_spotify_sr_userlevel_explicit {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_userlevel_explicit", resourceCulture);
             }
         }
         

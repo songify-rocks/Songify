@@ -1602,14 +1602,13 @@
                                         LastChildFill="False"
                                         Visibility="Visible">
                                         <TextBlock
-                                            MaxWidth="250"
                                             Margin="0,0,0,0"
                                             Padding="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
                                             d:Text="{x:Static local:Resources.window_settings_integration_max_sr_user}"
                                             Text="{DynamicResource window_settings_integration_max_sr_user}"
-                                            TextWrapping="WrapWithOverflow" />
+                                            TextWrapping="Wrap" />
                                         <StackPanel
                                             HorizontalAlignment="Center"
                                             DockPanel.Dock="Right"
@@ -1981,6 +1980,114 @@
                                         Checked="Chbx_BlockAllExplicit_Checked"
                                         Content="{DynamicResource window_settings_spotify_sr_block_explicit}"
                                         Unchecked="Chbx_BlockAllExplicit_Checked" />
+                                    <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                                        <Label
+                                            Padding="0,5,5,5"
+                                            VerticalAlignment="Center"
+                                            d:Content="{x:Static local:Resources.window_settings_spotify_sr_userlevel_explicit}"
+                                            Content="{DynamicResource window_settings_spotify_sr_userlevel_explicit}" />
+                                        <ComboBox
+                                            x:Name="CbxAllowedUserLevelsExplicit"
+                                            Width="220"
+                                            HorizontalAlignment="Right"
+                                            IsEnabled="False"
+                                            IsReadOnly="True"
+                                            SelectedIndex="0"
+                                            SelectionChanged="Selector_OnSelectionChanged"
+                                            ToolTip="{Binding Content, ElementName=CbiAllowedUserLevelsExplicitSummary}">
+                                            <ComboBox.Items>
+                                                <ComboBoxItem
+                                                    x:Name="CbiAllowedUserLevelsExplicitSummary"
+                                                    d:Content="{x:Static local:Resources.window_settings_spotify_sr_user_levels_explicit}"
+                                                    Content="{DynamicResource window_settings_spotify_sr_user_levels_explicit}">
+                                                    <ComboBoxItem.Style>
+                                                        <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                                                            <Style.Triggers>
+                                                                <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxAllowedUserLevelsExplicit}" Value="True">
+                                                                    <Setter Property="Visibility" Value="Collapsed" />
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </ComboBoxItem.Style>
+                                                </ComboBoxItem>
+                                                <ComboBoxItem Margin="0" Padding="0">
+                                                    <CheckBox
+                                                        x:Name="ChckUlExplicitViewer"
+                                                        Width="180"
+                                                        Margin="1,0,0,0"
+                                                        d:Content="{x:Static local:Resources.common_viewer}"
+                                                        Checked="CbxUserLevelsExplicitChecked"
+                                                        Content="{DynamicResource common_viewer}"
+                                                        Tag="0"
+                                                        Unchecked="CbxUserLevelsExplicitUnchecked" />
+                                                </ComboBoxItem>
+                                                <ComboBoxItem Margin="0" Padding="0">
+                                                    <CheckBox
+                                                        x:Name="ChckUlExplicitFollower"
+                                                        Width="180"
+                                                        Margin="1,0,0,0"
+                                                        d:Content="{x:Static local:Resources.common_follower}"
+                                                        Checked="CbxUserLevelsExplicitChecked"
+                                                        Content="{DynamicResource common_follower}"
+                                                        Tag="1"
+                                                        Unchecked="CbxUserLevelsExplicitUnchecked" />
+                                                </ComboBoxItem>
+                                                <ComboBoxItem Margin="0" Padding="0">
+                                                    <CheckBox
+                                                        x:Name="ChckUlExplicitSub"
+                                                        Width="180"
+                                                        Margin="1,0,0,0"
+                                                        d:Content="{x:Static local:Resources.common_subscriber}"
+                                                        Checked="CbxUserLevelsExplicitChecked"
+                                                        Content="{DynamicResource common_subscriber}"
+                                                        Tag="2"
+                                                        Unchecked="CbxUserLevelsExplicitUnchecked" />
+                                                </ComboBoxItem>
+                                                <ComboBoxItem Margin="0" Padding="0">
+                                                    <CheckBox
+                                                        x:Name="ChckUlExplicitSubT2"
+                                                        Width="180"
+                                                        Margin="1,0,0,0"
+                                                        Checked="CbxUserLevelsExplicitChecked"
+                                                        Content="{DynamicResource window_settings_subscriber_t2}"
+                                                        Tag="3"
+                                                        Unchecked="CbxUserLevelsExplicitUnchecked" />
+                                                </ComboBoxItem>
+                                                <ComboBoxItem Margin="0" Padding="0">
+                                                    <CheckBox
+                                                        x:Name="ChckUlExplicitSubT3"
+                                                        Width="180"
+                                                        Margin="1,0,0,0"
+                                                        Checked="CbxUserLevelsExplicitChecked"
+                                                        Content="{DynamicResource window_settings_subscriber_t3}"
+                                                        Tag="4"
+                                                        Unchecked="CbxUserLevelsExplicitUnchecked" />
+                                                </ComboBoxItem>
+                                                <ComboBoxItem Margin="0" Padding="0">
+                                                    <CheckBox
+                                                        x:Name="ChckUlExplicitVip"
+                                                        Width="180"
+                                                        Margin="1,0,0,0"
+                                                        d:Content="{x:Static local:Resources.common_vip}"
+                                                        Checked="CbxUserLevelsExplicitChecked"
+                                                        Content="{DynamicResource common_vip}"
+                                                        Tag="5"
+                                                        Unchecked="CbxUserLevelsExplicitUnchecked" />
+                                                </ComboBoxItem>
+                                                <ComboBoxItem Margin="0" Padding="0">
+                                                    <CheckBox
+                                                        x:Name="ChckUlExplicitMod"
+                                                        Width="180"
+                                                        Margin="1,0,0,0"
+                                                        d:Content="{x:Static local:Resources.common_moderator}"
+                                                        Checked="CbxUserLevelsExplicitChecked"
+                                                        Content="{DynamicResource common_moderator}"
+                                                        Tag="6"
+                                                        Unchecked="CbxUserLevelsExplicitUnchecked" />
+                                                </ComboBoxItem>
+                                            </ComboBox.Items>
+                                        </ComboBox>
+                                    </DockPanel>
                                     <ui:ToggleSwitch
                                         x:Name="Tglsw_OnlyAddToPlaylist"
                                         d:Content="{x:Static local:Resources.window_settings_only_add_to_playlist}"

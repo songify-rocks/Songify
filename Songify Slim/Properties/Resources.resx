@@ -812,6 +812,9 @@
   <data name="window_settings_spotify_sr_userlevel_reward" xml:space="preserve">
     <value>Allowed user levels for SR reward</value>
   </data>
+  <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
+    <value>Allowed user levels to request explicit songs</value>
+  </data>
   <data name="window_settings_spotify_songlike_label" xml:space="preserve">
     <value>Liked Songs Playlist</value>
   </data>
@@ -988,6 +991,9 @@
   </data>
   <data name="window_settings_spotify_sr_user_levels_reward" xml:space="preserve">
     <value>User Levels (Reward)</value>
+  </data>
+  <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
+    <value>User Levels (Explicit)</value>
   </data>
   <data name="window_botresponses_command_responses" xml:space="preserve">
     <value>Command Responses</value>

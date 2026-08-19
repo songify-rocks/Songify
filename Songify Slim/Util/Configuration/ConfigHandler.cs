@@ -1024,6 +1024,7 @@ namespace Songify_Slim.Util.Configuration
         public List<int> ReadNotificationIds { get; set; } = [];
         public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];
         public List<int> UserLevelsReward { get; set; } = [0, 1, 2, 3];
+        public List<int> UserLevelsExplicitSongs { get; set; } = [];
         public List<BlockedArtist> ArtistBlacklist { get; set; } = [];
         public List<string> TwRewardId { get; set; } = [];
         public List<string> TwRewardSkipId { get; set; } = [];

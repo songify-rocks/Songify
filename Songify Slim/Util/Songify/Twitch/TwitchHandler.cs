@@ -208,7 +208,7 @@ public static class TwitchHandler
                 return;
             }
 
-            if (IsTrackExplicit(track, e, out response))
+            if (IsTrackExplicit(track, e, user?.UserLevels, out response))
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.TrackIsExplicit, e);
@@ -4289,7 +4289,7 @@ public static class TwitchHandler
         return false;
     }
 
-    private static bool IsTrackExplicit(FullTrack track, TwitchRequestUser e, out string response)
+    private static bool IsTrackExplicit(FullTrack track, TwitchRequestUser e, IReadOnlyCollection<int> userLevels, out string response)
     {
         response = string.Empty;
         if (!Settings.BlockAllExplicitSongs)
@@ -4301,8 +4301,16 @@ public static class TwitchHandler
                 return false;
             }
 
+            // Broadcaster can always request explicit songs, matching other SR allowlists.
+            if (userLevels != null && userLevels.Contains((int)Enums.TwitchUserLevels.Broadcaster))
+                return false;
+
+            List<int> allowed = Settings.UserLevelsExplicitSongs;
+            if (allowed is { Count: > 0 } && userLevels is { Count: > 0 } && allowed.Intersect(userLevels).Any())
+                return false;
+
             response = Settings.BotRespTrackExplicit;
-            response = response.Replace("{user}", e.DisplayName);
+            response = response.Replace("{user}", e?.DisplayName ?? "");
             response = response.Replace("{artist}", "");
             response = response.Replace("{title}", "");
             response = response.Replace("{maxreq}", "");
@@ -4687,7 +4695,7 @@ public static class TwitchHandler
         if (track == null)
             return (false, null, "No song found.");
 
-        if (IsTrackExplicit(track, null, out string msg)) return (false, null, msg);
+        if (IsTrackExplicit(track, null, null, out string msg)) return (false, null, msg);
         //if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
         if (IsArtistBlacklisted(track, null, out msg)) return (false, null, msg);
         if (IsTrackTooLong(track, null, out msg)) return (false, null, msg);

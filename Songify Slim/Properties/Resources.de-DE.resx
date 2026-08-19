@@ -609,6 +609,9 @@
   <data name="window_settings_spotify_sr_userlevel_reward" xml:space="preserve">
     <value>Userlevel für SR-Kanalbelohnung</value>
   </data>
+  <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
+    <value>Erlaubte Userlevel für explizite Songs</value>
+  </data>
   <data name="window_settings_spotify_songlike_label" xml:space="preserve">
     <value>Liked-Songs Playlist</value>
   </data>
@@ -779,6 +782,9 @@
   </data>
   <data name="window_settings_spotify_sr_user_levels_reward" xml:space="preserve">
     <value>Benutzerlevel (Belohnung)</value>
+  </data>
+  <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
+    <value>Benutzerlevel (Explizit)</value>
   </data>
   <data name="window_botresponses_command_responses" xml:space="preserve">
     <value>Befehlsantworten</value>
