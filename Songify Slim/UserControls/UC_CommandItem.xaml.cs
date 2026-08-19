@@ -106,6 +106,10 @@ namespace Songify_Slim.UserControls
                 {
                     Enums.CommandType.ToggleSr,
                     Application.Current.TryFindResource("window_botresponses_cmd_togglesr") as string ?? "Fallback BanSong"
+                },
+                {
+                    Enums.CommandType.SkipPoll,
+                    Application.Current.TryFindResource("window_botresponses_cmd_skippoll") as string ?? "Starts a skip poll"
                 }
             };
 
@@ -149,6 +153,7 @@ namespace Songify_Slim.UserControls
                 case Enums.CommandType.Commands:
                 case Enums.CommandType.BanSong:
                 case Enums.CommandType.ToggleSr:
+                case Enums.CommandType.SkipPoll:
                     break;
 
                 case Enums.CommandType.Voteskip:

@@ -96,7 +96,10 @@ public static class Enums
         BanSong,
 
         [Description("Toggle Songrequest")]
-        ToggleSr
+        ToggleSr,
+
+        [Description("Skip Poll")]
+        SkipPoll
     }
 
     public enum ConfigTypes

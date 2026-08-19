@@ -1774,6 +1774,7 @@ public static class TwitchHandler
                 Enums.CommandType.Commands => HandleCommandsCommand,
                 Enums.CommandType.BanSong => HandleBanSongCommand,
                 Enums.CommandType.ToggleSr => HandleToggleSrCommand,
+                Enums.CommandType.SkipPoll => HandleSkipPollCommand,
                 _ => null
             };
 
@@ -1796,6 +1797,7 @@ public static class TwitchHandler
                 case Enums.CommandType.Commands:
                 case Enums.CommandType.BanSong:
                 case Enums.CommandType.ToggleSr:
+                case Enums.CommandType.SkipPoll:
                     break;
 
                 case Enums.CommandType.Voteskip:
@@ -2240,6 +2242,35 @@ public static class TwitchHandler
         SendOrAnnounceMessage(response, cmd);
 
         StartSkipCooldown();
+    }
+
+    private static async Task HandleSkipPollCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+    {
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
+
+        try
+        {
+            if (GlobalObjects.CurrentSkipPoll is { IsActive: true })
+            {
+                await SendChatMessage($"@{message.ChatterUserName} a skip poll is already running.");
+                return;
+            }
+
+            bool started = await StartSkipPoll();
+            if (!started)
+            {
+                await SendChatMessage($"@{message.ChatterUserName} could not start a skip poll.");
+                return;
+            }
+
+            string response = cmd.Response.Replace("{user}", message.ChatterUserName);
+            SendOrAnnounceMessage(response, cmd);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Twitch, "Error while starting skip poll from command", ex);
+        }
     }
 
     private static async Task HandleSongCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -4792,9 +4823,13 @@ public static class TwitchHandler
             Logger.Info(LogSource.Twitch, $"Terminated poll with ID: {poll.Id}");
         }
 
-        GlobalObjects.CurrentSkipPoll.IsActive = false;
+        if (GlobalObjects.CurrentSkipPoll != null)
+            GlobalObjects.CurrentSkipPoll.IsActive = false;
 
-        // Refund the user who did the Chnnaleoint Redemption
+        if (string.IsNullOrWhiteSpace(poll.RewardId) || string.IsNullOrWhiteSpace(poll.RedemptionId))
+            return;
+
+        // Refund the user who did the Channel Point redemption (reward-started polls only).
         UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
             Settings.TwitchUser.Id, poll.RewardId,
             [poll.RedemptionId],
@@ -4810,38 +4845,56 @@ public static class TwitchHandler
         }
     }
 
-    public static async Task StartSkipPoll(string redemptionId, string rewardId)
+    public static async Task<bool> StartSkipPoll(string redemptionId = null, string rewardId = null)
     {
-        CreatePollResponse response = await TwitchApi.Helix.Polls.CreatePollAsync(new CreatePollRequest
+        try
         {
-            BroadcasterId = Settings.TwitchUser.Id,
-            Title = Settings.TwitchPollSettings.Title,
-            Choices =
-            [
-                new Choice()
-                {
-                    Title = Settings.TwitchPollSettings.Choices.First()
-                },
-                new Choice()
-                {
-                    Title = Settings.TwitchPollSettings.Choices.Last()
-                }
-            ],
-            ChannelPointsVotingEnabled = Settings.TwitchPollSettings.AdditionalVotesEnabled,
-            ChannelPointsPerVote = Settings.TwitchPollSettings.ChannelPointsPerVote,
-            DurationSeconds = Settings.TwitchPollSettings.Duration
-        });
-
-        if (response.Data != null && response.Data.Any())
-        {
-            GlobalObjects.CurrentSkipPoll = new PollItem()
+            if (GlobalObjects.CurrentSkipPoll is { IsActive: true })
             {
-                Id = response.Data[0].Id,
-                IsActive = true,
-                RedemptionId = redemptionId,
-                RewardId = rewardId
-            };
-            Logger.Info(LogSource.Twitch, $"Started skip poll with ID: {GlobalObjects.CurrentSkipPoll.Id}");
+                Logger.Info(LogSource.Twitch, "Skip poll not started: a skip poll is already active.");
+                return false;
+            }
+
+            CreatePollResponse response = await TwitchApi.Helix.Polls.CreatePollAsync(new CreatePollRequest
+            {
+                BroadcasterId = Settings.TwitchUser.Id,
+                Title = Settings.TwitchPollSettings.Title,
+                Choices =
+                [
+                    new Choice()
+                    {
+                        Title = Settings.TwitchPollSettings.Choices.First()
+                    },
+                    new Choice()
+                    {
+                        Title = Settings.TwitchPollSettings.Choices.Last()
+                    }
+                ],
+                ChannelPointsVotingEnabled = Settings.TwitchPollSettings.AdditionalVotesEnabled,
+                ChannelPointsPerVote = Settings.TwitchPollSettings.ChannelPointsPerVote,
+                DurationSeconds = Settings.TwitchPollSettings.Duration
+            });
+
+            if (response.Data != null && response.Data.Any())
+            {
+                GlobalObjects.CurrentSkipPoll = new PollItem()
+                {
+                    Id = response.Data[0].Id,
+                    IsActive = true,
+                    RedemptionId = redemptionId,
+                    RewardId = rewardId
+                };
+                Logger.Info(LogSource.Twitch, $"Started skip poll with ID: {GlobalObjects.CurrentSkipPoll.Id}");
+                return true;
+            }
+
+            Logger.Warning(LogSource.Twitch, "Skip poll not started: empty API response.");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Twitch, "Failed to start skip poll", ex);
+            return false;
         }
     }
 

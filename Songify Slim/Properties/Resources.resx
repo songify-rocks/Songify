@@ -515,6 +515,10 @@
     <value>Skips the current song</value>
     <comment>Label content for "Skips the current song (Broadcaster / Mod / Requester)"</comment>
   </data>
+  <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
+    <value>Starts a Twitch skip poll for the current song</value>
+    <comment>Label content for the skip poll command</comment>
+  </data>
   <data name="window_botresponses_cmd_skipvote" xml:space="preserve">
     <value>Starts a vote to skip the current song</value>
     <comment>Label content for "Starts a vote to skip the current song"</comment>

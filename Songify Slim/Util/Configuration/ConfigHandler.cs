@@ -220,6 +220,18 @@ namespace Songify_Slim.Util.Configuration
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
                 CustomProperties = new Dictionary<string, object>()
+            },
+
+            new()
+            {
+                CommandType = CommandType.SkipPoll,
+                Trigger = "skippoll",
+                Response = "@{user} started a skip poll.",
+                IsEnabled = false,
+                AllowedUserLevels = [6],
+                IsAnnouncement = false,
+                AnnouncementColor = AnnouncementColor.Blue,
+                CustomProperties = new Dictionary<string, object>()
             }
         ];
 

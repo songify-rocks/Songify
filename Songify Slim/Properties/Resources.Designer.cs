@@ -1663,6 +1663,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Starts a Twitch skip poll for the current song.
+        /// </summary>
+        public static string window_botresponses_cmd_skippoll {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_skippoll", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Starts a vote to skip the current song.
         /// </summary>
         public static string window_botresponses_cmd_skipvote {
