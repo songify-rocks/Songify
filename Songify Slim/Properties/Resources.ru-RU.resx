@@ -2208,7 +2208,150 @@ gwyden - Hertz - karimawii
     <value>CSV не загружен.</value>
     <comment>Context: Status when artist import has no CSV loaded yet.</comment>
   </data>
-
-  <data name="window_history_migrate_title" xml:space="preserve"><value>Updating history</value><comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment></data>
-  <data name="window_history_migrate_body" xml:space="preserve"><value>Converting your song history to the new format...</value><comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment></data>
+  <data name="window_history_migrate_title" xml:space="preserve">
+    <value>Updating history</value>
+    <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
+  </data>
+  <data name="window_history_migrate_body" xml:space="preserve">
+    <value>Converting your song history to the new format...</value>
+    <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
+  </data>
+  <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
+    <value>Разрешены уровни доступа пользователей для запроса песен с нецензурным содержанием.</value>
+  </data>
+  <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
+    <value>Уровни пользователей (явно указанные)</value>
+  </data>
+  <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
+    <value>Запускает опрос на Twitch о пропуске текущей песни.</value>
+  </data>
+  <data name="setup_wizard_title" xml:space="preserve">
+    <value>Настройте Songify</value>
+  </data>
+  <data name="setup_welcome_title" xml:space="preserve">
+    <value>Добро пожаловать в Songify!</value>
+  </data>
+  <data name="setup_welcome_body" xml:space="preserve">
+    <value>Songify отображает текущую песню на трансляции и может принимать запросы на песни от Twitch. Эта короткая настройка подготавливает Spotify, Twitch и текстовый файл OBS. Вы можете пропустить некоторые шаги и изменить их позже в настройках.</value>
+  </data>
+  <data name="setup_player_title" xml:space="preserve">
+    <value>Какого игрока вы используете?</value>
+  </data>
+  <data name="setup_player_body" xml:space="preserve">
+    <value>Большинство людей пользуются Spotify. Вы можете изменить это позже на главном экране.</value>
+  </data>
+  <data name="setup_spotify_title" xml:space="preserve">
+    <value>Подключить Spotify</value>
+  </data>
+  <data name="setup_spotify_body" xml:space="preserve">
+    <value>Создайте приложение Spotify для разработчиков, вставьте сюда идентификатор клиента, а затем свяжите свою учетную запись. Кнопка «Справка» откроет руководство по настройке.</value>
+  </data>
+  <data name="setup_spotify_help_tooltip" xml:space="preserve">
+    <value>Откройте руководство по настройке Spotify.</value>
+  </data>
+  <data name="setup_spotify_open_guide" xml:space="preserve">
+    <value>Как получить идентификатор клиента</value>
+  </data>
+  <data name="setup_spotify_linked" xml:space="preserve">
+    <value>Связано как {0}</value>
+  </data>
+  <data name="setup_spotify_linked_unknown" xml:space="preserve">
+    <value>Связанный</value>
+  </data>
+  <data name="setup_spotify_not_linked" xml:space="preserve">
+    <value>Пока не подключено. Вы сможете сделать это позже в настройках.</value>
+  </data>
+  <data name="setup_twitch_title" xml:space="preserve">
+    <value>Подключиться к Twitch</value>
+  </data>
+  <data name="setup_twitch_body" xml:space="preserve">
+    <value>Привяжите свой аккаунт стримера, если хотите получать запросы на песни в чате. Пропустите этот шаг, если вам нужно только отображение текущей воспроизводимой песни. Аккаунт бота можно добавить позже в настройках.</value>
+  </data>
+  <data name="setup_twitch_linked" xml:space="preserve">
+    <value>Связано как {0}</value>
+  </data>
+  <data name="setup_twitch_linked_unknown" xml:space="preserve">
+    <value>Аккаунт Twitch привязан.</value>
+  </data>
+  <data name="setup_twitch_not_linked" xml:space="preserve">
+    <value>Дополнительно, если вам нужно только отображение текущего воспроизводимого контента.</value>
+  </data>
+  <data name="setup_output_title" xml:space="preserve">
+    <value>выходной файл песни</value>
+  </data>
+  <data name="setup_output_body" xml:space="preserve">
+    <value>Songify записывает текущую песню в этот текстовый файл. В OBS добавьте источник текста и укажите в качестве пути файл Songify.txt.</value>
+  </data>
+  <data name="setup_done_title" xml:space="preserve">
+    <value>Вы готовы</value>
+  </data>
+  <data name="setup_done_body" xml:space="preserve">
+    <value>Все незавершенные задачи можно завершить с главного экрана или из настроек. Краткий обзор покажет вам, где что находится.</value>
+  </data>
+  <data name="setup_skip" xml:space="preserve">
+    <value>Пропустить</value>
+  </data>
+  <data name="setup_back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="setup_next" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="setup_finish" xml:space="preserve">
+    <value>Заканчивать</value>
+  </data>
+  <data name="setup_show_me_around" xml:space="preserve">
+    <value>Покажите мне окрестности</value>
+  </data>
+  <data name="setup_step_label" xml:space="preserve">
+    <value>Шаг {0} из {1}</value>
+  </data>
+  <data name="setup_checklist_title" xml:space="preserve">
+    <value>Начиная</value>
+  </data>
+  <data name="setup_checklist_body" xml:space="preserve">
+    <value>Завершите эти действия, чтобы Songify мог отображать текущую песню и принимать запросы.</value>
+  </data>
+  <data name="setup_checklist_dismiss" xml:space="preserve">
+    <value>Скрыть</value>
+  </data>
+  <data name="setup_checklist_go" xml:space="preserve">
+    <value>Идти</value>
+  </data>
+  <data name="setup_checklist_spotify" xml:space="preserve">
+    <value>Ссылка на Spotify</value>
+  </data>
+  <data name="setup_checklist_twitch" xml:space="preserve">
+    <value>Ссылка на Twitch (для запросов на песни)</value>
+  </data>
+  <data name="setup_checklist_output" xml:space="preserve">
+    <value>Выходной файл песни (OBS)</value>
+  </data>
+  <data name="menu_setup_wizard" xml:space="preserve">
+    <value>Мастер настройки</value>
+  </data>
+  <data name="setup_tour_home_title" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="setup_tour_home_body" xml:space="preserve">
+    <value>Это общий обзор. Используйте выпадающее меню проигрывателя, чтобы выбрать Spotify или другой источник. Здесь отображаются песни, которые воспроизводятся сейчас, и следующие запрошенные композиции.</value>
+  </data>
+  <data name="setup_tour_spotify_title" xml:space="preserve">
+    <value>Настройки Spotify</value>
+  </data>
+  <data name="setup_tour_spotify_body" xml:space="preserve">
+    <value>В разделе «Настройки» → «Музыка» → «Spotify» вы вводите свой идентификатор клиента и привязываете свою учетную запись. Вы можете изменить его в любое время.</value>
+  </data>
+  <data name="setup_tour_twitch_title" xml:space="preserve">
+    <value>Аккаунты Twitch</value>
+  </data>
+  <data name="setup_tour_twitch_body" xml:space="preserve">
+    <value>Привяжите здесь свой аккаунт стримера для запросов песен, получения наград и команд в чате. Аккаунт бота необязателен.</value>
+  </data>
+  <data name="setup_tour_output_title" xml:space="preserve">
+    <value>Вывод и виджет</value>
+  </data>
+  <data name="setup_tour_output_body" xml:space="preserve">
+    <value>В настройках вывода укажите OBS на файл Songify.txt. Инструменты → Виджеты откроют всплывающее окно в браузере. Вот и весь тур — готово.</value>
+  </data>
 </root>

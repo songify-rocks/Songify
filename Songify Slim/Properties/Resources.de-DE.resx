@@ -2220,7 +2220,141 @@ gwyden - Hertz - karimawii
     <value>Keine CSV geladen.</value>
     <comment>Context: Status when artist import has no CSV loaded yet.</comment>
   </data>
-
-  <data name="window_history_migrate_title" xml:space="preserve"><value>Updating history</value><comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment></data>
-  <data name="window_history_migrate_body" xml:space="preserve"><value>Converting your song history to the new format...</value><comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment></data>
+  <data name="window_history_migrate_title" xml:space="preserve">
+    <value>Updating history</value>
+    <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
+  </data>
+  <data name="window_history_migrate_body" xml:space="preserve">
+    <value>Converting your song history to the new format...</value>
+    <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
+  </data>
+  <data name="setup_checklist_go" xml:space="preserve">
+    <value>Los</value>
+  </data>
+  <data name="setup_checklist_spotify" xml:space="preserve">
+    <value>Spotify-Link</value>
+  </data>
+  <data name="setup_wizard_title" xml:space="preserve">
+    <value>Songify einrichten</value>
+  </data>
+  <data name="setup_welcome_title" xml:space="preserve">
+    <value>Willkommen bei Songify</value>
+  </data>
+  <data name="setup_welcome_body" xml:space="preserve">
+    <value>Songify zeigt den aktuell im Stream gespielten Song an und nimmt Songwünsche für Twitch entgegen. Diese kurze Einrichtung verbindet Spotify, Twitch und die OBS-Textdatei. Sie können einzelne Schritte überspringen und später in den Einstellungen ändern.</value>
+  </data>
+  <data name="setup_player_title" xml:space="preserve">
+    <value>Welchen Player benutzt du?</value>
+  </data>
+  <data name="setup_player_body" xml:space="preserve">
+    <value>Die meisten Leute nutzen Spotify. Du kannst das später vom Startbildschirm aus ändern.</value>
+  </data>
+  <data name="setup_spotify_title" xml:space="preserve">
+    <value>Verbinde dich mit Spotify</value>
+  </data>
+  <data name="setup_spotify_body" xml:space="preserve">
+    <value>Erstelle eine Spotify-Entwickler-App, füge hier die Client-ID ein und verknüpfe anschließend dein Konto. Über die Hilfeschaltfläche öffnest du die Einrichtungsanleitung.</value>
+  </data>
+  <data name="setup_spotify_help_tooltip" xml:space="preserve">
+    <value>Öffnen Sie die Spotify-Einrichtungsanleitung</value>
+  </data>
+  <data name="setup_spotify_open_guide" xml:space="preserve">
+    <value>Wie man eine Client-ID erhält</value>
+  </data>
+  <data name="setup_spotify_linked" xml:space="preserve">
+    <value>Verknüpft als {0}</value>
+  </data>
+  <data name="setup_spotify_linked_unknown" xml:space="preserve">
+    <value>Verlinkt</value>
+  </data>
+  <data name="setup_spotify_not_linked" xml:space="preserve">
+    <value>Noch nicht verknüpft. Das können Sie später in den Einstellungen tun.</value>
+  </data>
+  <data name="setup_twitch_title" xml:space="preserve">
+    <value>Verbinde dich mit Twitch</value>
+  </data>
+  <data name="setup_twitch_body" xml:space="preserve">
+    <value>Verknüpfe dein Broadcaster-Konto, wenn du Songwünsche im Chat erhalten möchtest. Überspringe diesen Schritt, wenn du nur die aktuelle Wiedergabe anzeigen lassen willst. Ein Bot-Konto kann später in den Einstellungen hinzugefügt werden.</value>
+  </data>
+  <data name="setup_twitch_linked" xml:space="preserve">
+    <value>Verknüpft als {0}</value>
+  </data>
+  <data name="setup_twitch_linked_unknown" xml:space="preserve">
+    <value>Twitch-Konto verknüpft.</value>
+  </data>
+  <data name="setup_twitch_not_linked" xml:space="preserve">
+    <value>Optional, falls Sie nur eine „Aktuelle Wiedergabe“-Einblendung benötigen.</value>
+  </data>
+  <data name="setup_output_title" xml:space="preserve">
+    <value>Song-Ausgabedatei</value>
+  </data>
+  <data name="setup_output_body" xml:space="preserve">
+    <value>Songify speichert den aktuellen Song in dieser Textdatei. Füge in OBS eine Textquelle hinzu und wähle die Datei „Songify.txt“ aus.</value>
+  </data>
+  <data name="setup_done_title" xml:space="preserve">
+    <value>Du bist bereit</value>
+  </data>
+  <data name="setup_done_body" xml:space="preserve">
+    <value>Alle noch offenen Aufgaben können über die Startseite oder die Einstellungen abgeschlossen werden. Eine kurze Tour zeigt Ihnen, wo sich die einzelnen Elemente befinden.</value>
+  </data>
+  <data name="setup_skip" xml:space="preserve">
+    <value>Überspringen</value>
+  </data>
+  <data name="setup_back" xml:space="preserve">
+    <value>Zurück</value>
+  </data>
+  <data name="setup_next" xml:space="preserve">
+    <value>Weiter</value>
+  </data>
+  <data name="setup_finish" xml:space="preserve">
+    <value>Beenden</value>
+  </data>
+  <data name="setup_show_me_around" xml:space="preserve">
+    <value>Zeig mir alles</value>
+  </data>
+  <data name="setup_step_label" xml:space="preserve">
+    <value>Schritt {0} von {1}</value>
+  </data>
+  <data name="setup_checklist_title" xml:space="preserve">
+    <value>Erste Schritte</value>
+  </data>
+  <data name="setup_checklist_body" xml:space="preserve">
+    <value>Schließen Sie diese Schritte ab, damit Songify den aktuellen Song anzeigen und Anfragen entgegennehmen kann.</value>
+  </data>
+  <data name="setup_checklist_dismiss" xml:space="preserve">
+    <value>Schließen</value>
+  </data>
+  <data name="setup_checklist_twitch" xml:space="preserve">
+    <value>Twitch-Link (für Musikwünsche)</value>
+  </data>
+  <data name="setup_checklist_output" xml:space="preserve">
+    <value>Song-Ausgabedatei (OBS)</value>
+  </data>
+  <data name="menu_setup_wizard" xml:space="preserve">
+    <value>Einrichtungsassistent</value>
+  </data>
+  <data name="setup_tour_home_title" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="setup_tour_home_body" xml:space="preserve">
+    <value>Dies ist die Übersicht. Über das Dropdown-Menü des Players können Sie Spotify oder eine andere Quelle auswählen. Die aktuell abgespielten und die als Nächstes angeforderten Titel werden hier angezeigt.</value>
+  </data>
+  <data name="setup_tour_spotify_title" xml:space="preserve">
+    <value>Spotify-Einstellungen</value>
+  </data>
+  <data name="setup_tour_spotify_body" xml:space="preserve">
+    <value>Unter Einstellungen → Musik → Spotify geben Sie Ihre Client-ID ein und verknüpfen Ihr Konto. Diese Einstellungen können Sie jederzeit ändern.</value>
+  </data>
+  <data name="setup_tour_twitch_title" xml:space="preserve">
+    <value>Twitch-Konten</value>
+  </data>
+  <data name="setup_tour_twitch_body" xml:space="preserve">
+    <value>Verknüpfe hier dein Broadcaster-Konto für Songwünsche, Belohnungen und Chatbefehle. Ein Bot-Konto ist optional.</value>
+  </data>
+  <data name="setup_tour_output_title" xml:space="preserve">
+    <value>Ausgabe und Widget</value>
+  </data>
+  <data name="setup_tour_output_body" xml:space="preserve">
+    <value>Wählen Sie in den Ausgabeeinstellungen von OBS die Datei „Songify.txt“ aus. Unter „Tools → Widget“ wird das Browser-Overlay geöffnet. Das war’s – fertig!</value>
+  </data>
 </root>

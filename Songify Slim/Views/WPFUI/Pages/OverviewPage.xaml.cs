@@ -17,7 +17,7 @@ using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Views.WPFUI.Pages;
 
-public partial class OverviewPage : Page
+public partial class OverviewPage
 {
     internal ComboBox PlayerCombo => CbxPlayer;
 
@@ -543,7 +543,7 @@ public partial class OverviewPage : Page
         foreach (SetupChecklistItem item in GuidedSetup.GetChecklistItems())
         {
             var row = new DockPanel { Margin = new Thickness(0, 0, 0, 8), LastChildFill = true };
-            var go = new System.Windows.Controls.Button
+            var go = new Button
             {
                 Content = goLabel,
                 MinWidth = 64,

@@ -2392,7 +2392,150 @@ gwyden - Hertz - karimawii
     <value>CSV не загружаны.</value>
     <comment>Context: Status when artist import has no CSV loaded yet.</comment>
   </data>
-
-  <data name="window_history_migrate_title" xml:space="preserve"><value>Updating history</value><comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment></data>
-  <data name="window_history_migrate_body" xml:space="preserve"><value>Converting your song history to the new format...</value><comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment></data>
+  <data name="window_history_migrate_title" xml:space="preserve">
+    <value>Updating history</value>
+    <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
+  </data>
+  <data name="window_history_migrate_body" xml:space="preserve">
+    <value>Converting your song history to the new format...</value>
+    <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
+  </data>
+  <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
+    <value>Узроўні карыстальнікаў, якім дазволена запытваць песні нецэнзурнага характару</value>
+  </data>
+  <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
+    <value>Узроўні карыстальнікаў (адкрытае змесціва)</value>
+  </data>
+  <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
+    <value>Пачынае апытанне Twitch з прапускам бягучай песні</value>
+  </data>
+  <data name="setup_wizard_title" xml:space="preserve">
+    <value>Наладзьце Songify</value>
+  </data>
+  <data name="setup_welcome_title" xml:space="preserve">
+    <value>Сардэчна запрашаем у Songify</value>
+  </data>
+  <data name="setup_welcome_body" xml:space="preserve">
+    <value>Songify паказвае бягучую песню ў стрыме і можа прымаць запыты на песні з Twitch. Гэта кароткая налада падрыхтуе Spotify, Twitch і тэкставы файл OBS. Вы можаце прапусціць любыя змены і змяніць іх пазней у наладах.</value>
+  </data>
+  <data name="setup_player_title" xml:space="preserve">
+    <value>Якім плэерам вы карыстаецеся?</value>
+  </data>
+  <data name="setup_player_body" xml:space="preserve">
+    <value>Большасць людзей карыстаюцца Spotify. Вы можаце пераключыцца на яго пазней на галоўным экране.</value>
+  </data>
+  <data name="setup_spotify_title" xml:space="preserve">
+    <value>Падключыце Spotify</value>
+  </data>
+  <data name="setup_spotify_body" xml:space="preserve">
+    <value>Стварыце праграму Spotify Developer, устаўце сюды ідэнтыфікатар кліента, а затым прывяжыце свой уліковы запіс. Кнопка даведкі адкрывае кіраўніцтва па наладзе.</value>
+  </data>
+  <data name="setup_spotify_help_tooltip" xml:space="preserve">
+    <value>Адкрыйце кіраўніцтва па наладзе Spotify</value>
+  </data>
+  <data name="setup_spotify_open_guide" xml:space="preserve">
+    <value>Як атрымаць ідэнтыфікатар кліента</value>
+  </data>
+  <data name="setup_spotify_linked" xml:space="preserve">
+    <value>Звязана як {0}</value>
+  </data>
+  <data name="setup_spotify_linked_unknown" xml:space="preserve">
+    <value>Звязана</value>
+  </data>
+  <data name="setup_spotify_not_linked" xml:space="preserve">
+    <value>Пакуль не падключана. Вы можаце зрабіць гэта пазней у наладах.</value>
+  </data>
+  <data name="setup_twitch_title" xml:space="preserve">
+    <value>Падключыцца да Twitch</value>
+  </data>
+  <data name="setup_twitch_body" xml:space="preserve">
+    <value>Прывяжыце свой уліковы запіс вяшчальніка, калі хочаце атрымліваць запыты на песні ў чаце. Прапусціце гэта, калі вам патрэбна толькі накладка "Цяпер прайграваецца". Уліковы запіс бота можна дадаць пазней у наладах.</value>
+  </data>
+  <data name="setup_twitch_linked" xml:space="preserve">
+    <value>Звязана як {0}</value>
+  </data>
+  <data name="setup_twitch_linked_unknown" xml:space="preserve">
+    <value>Уліковы запіс Twitch звязаны.</value>
+  </data>
+  <data name="setup_twitch_not_linked" xml:space="preserve">
+    <value>Неабавязкова, калі вам патрэбна толькі накладка, якая зараз прайграваецца.</value>
+  </data>
+  <data name="setup_output_title" xml:space="preserve">
+    <value>Вывадны файл песні</value>
+  </data>
+  <data name="setup_output_body" xml:space="preserve">
+    <value>Songify запісвае бягучую песню ў гэты тэкставы файл. У OBS дадайце крыніцу тэксту і накіруйце яе на Songify.txt.</value>
+  </data>
+  <data name="setup_done_title" xml:space="preserve">
+    <value>Ты гатовы</value>
+  </data>
+  <data name="setup_done_body" xml:space="preserve">
+    <value>Усё, што яшчэ адкрыта, можна завяршыць на галоўнай старонцы або ў наладах. Кароткі агляд дапаможа вам убачыць, дзе што знаходзіцца.</value>
+  </data>
+  <data name="setup_skip" xml:space="preserve">
+    <value>Прапусціць</value>
+  </data>
+  <data name="setup_back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="setup_next" xml:space="preserve">
+    <value>Наступны</value>
+  </data>
+  <data name="setup_finish" xml:space="preserve">
+    <value>Фініш</value>
+  </data>
+  <data name="setup_show_me_around" xml:space="preserve">
+    <value>Пакажы мне вакол</value>
+  </data>
+  <data name="setup_step_label" xml:space="preserve">
+    <value>Крок {0} з {1}</value>
+  </data>
+  <data name="setup_checklist_title" xml:space="preserve">
+    <value>Пачатак працы</value>
+  </data>
+  <data name="setup_checklist_body" xml:space="preserve">
+    <value>Завершыце іх, каб Songify мог паказваць бягучую песню і прымаць запыты.</value>
+  </data>
+  <data name="setup_checklist_dismiss" xml:space="preserve">
+    <value>Закрыць</value>
+  </data>
+  <data name="setup_checklist_go" xml:space="preserve">
+    <value>Ісці</value>
+  </data>
+  <data name="setup_checklist_spotify" xml:space="preserve">
+    <value>Спасылка на Spotify</value>
+  </data>
+  <data name="setup_checklist_twitch" xml:space="preserve">
+    <value>Спасылка на Twitch (для запытаў песень)</value>
+  </data>
+  <data name="setup_checklist_output" xml:space="preserve">
+    <value>Вывадны файл песні (OBS)</value>
+  </data>
+  <data name="menu_setup_wizard" xml:space="preserve">
+    <value>Майстар налады</value>
+  </data>
+  <data name="setup_tour_home_title" xml:space="preserve">
+    <value>Галоўная</value>
+  </data>
+  <data name="setup_tour_home_body" xml:space="preserve">
+    <value>Гэта агляд. Выкарыстоўвайце выпадальны спіс прайгравальніка, каб выбраць Spotify або іншую крыніцу. Тут адлюстроўваюцца песні, якія вы хочаце прайграць, і наступныя запытаныя песні.</value>
+  </data>
+  <data name="setup_tour_spotify_title" xml:space="preserve">
+    <value>Налады Spotify</value>
+  </data>
+  <data name="setup_tour_spotify_body" xml:space="preserve">
+    <value>У Налады → Музыка → Spotify вы ўводзіце свой ідэнтыфікатар кліента і прывязваеце свой уліковы запіс. Вы можаце змяніць гэта ў любы час.</value>
+  </data>
+  <data name="setup_tour_twitch_title" xml:space="preserve">
+    <value>Акаўнты Twitch</value>
+  </data>
+  <data name="setup_tour_twitch_body" xml:space="preserve">
+    <value>Прывяжыце свой уліковы запіс вяшчальніка сюды, каб запытваць песні, атрымліваць узнагароды і каманды чата. Уліковы запіс бота неабавязковы.</value>
+  </data>
+  <data name="setup_tour_output_title" xml:space="preserve">
+    <value>Вывад і віджэт</value>
+  </data>
+  <data name="setup_tour_output_body" xml:space="preserve">
+    <value>Навядзіце курсор OBS на файл Songify.txt у наладах вываду. Інструменты → Віджэт адкрывае акно браўзера. Вось і агляд — усё гатова.</value>
+  </data>
 </root>

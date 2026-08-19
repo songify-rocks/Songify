@@ -2261,7 +2261,150 @@ gwyden - Hertz - karimawii
     <value>Geen CSV geladen.</value>
     <comment>Context: Status when artist import has no CSV loaded yet.</comment>
   </data>
-
-  <data name="window_history_migrate_title" xml:space="preserve"><value>Updating history</value><comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment></data>
-  <data name="window_history_migrate_body" xml:space="preserve"><value>Converting your song history to the new format...</value><comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment></data>
+  <data name="window_history_migrate_title" xml:space="preserve">
+    <value>Updating history</value>
+    <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
+  </data>
+  <data name="window_history_migrate_body" xml:space="preserve">
+    <value>Converting your song history to the new format...</value>
+    <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
+  </data>
+  <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
+    <value>Gebruikersniveaus konden expliciete nummers aanvragen.</value>
+  </data>
+  <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
+    <value>Gebruikersniveaus (expliciet)</value>
+  </data>
+  <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
+    <value>Start een Twitch-enquête om het huidige nummer over te slaan.</value>
+  </data>
+  <data name="setup_wizard_title" xml:space="preserve">
+    <value>Stel Songify in.</value>
+  </data>
+  <data name="setup_welcome_title" xml:space="preserve">
+    <value>Welkom bij Songify</value>
+  </data>
+  <data name="setup_welcome_body" xml:space="preserve">
+    <value>Songify toont het huidige nummer dat wordt afgespeeld tijdens de stream en kan muziekverzoeken van Twitch verwerken. Met deze korte installatie zijn Spotify, Twitch en het OBS-tekstbestand klaar voor gebruik. Je kunt stappen overslaan en later in de instellingen wijzigen.</value>
+  </data>
+  <data name="setup_player_title" xml:space="preserve">
+    <value>Welke speler gebruik je?</value>
+  </data>
+  <data name="setup_player_body" xml:space="preserve">
+    <value>De meeste mensen gebruiken Spotify. Je kunt dit later wijzigen via het startscherm.</value>
+  </data>
+  <data name="setup_spotify_title" xml:space="preserve">
+    <value>Verbinden met Spotify</value>
+  </data>
+  <data name="setup_spotify_body" xml:space="preserve">
+    <value>Maak een Spotify Developer-app aan, plak hier de Client ID en koppel vervolgens je account. De helpknop opent de installatiehandleiding.</value>
+  </data>
+  <data name="setup_spotify_help_tooltip" xml:space="preserve">
+    <value>Open de installatiehandleiding van Spotify</value>
+  </data>
+  <data name="setup_spotify_open_guide" xml:space="preserve">
+    <value>Hoe krijg ik een klant-ID?</value>
+  </data>
+  <data name="setup_spotify_linked" xml:space="preserve">
+    <value>Gekoppeld als {0}</value>
+  </data>
+  <data name="setup_spotify_linked_unknown" xml:space="preserve">
+    <value>Gekoppeld</value>
+  </data>
+  <data name="setup_spotify_not_linked" xml:space="preserve">
+    <value>Nog niet gekoppeld. Je kunt dit later in de instellingen doen.</value>
+  </data>
+  <data name="setup_twitch_title" xml:space="preserve">
+    <value>Verbinden met Twitch</value>
+  </data>
+  <data name="setup_twitch_body" xml:space="preserve">
+    <value>Koppel je broadcaster-account als je songaanvragen in de chat wilt ontvangen. Sla deze stap over als je alleen een 'nu afspelend'-overlay nodig hebt. Je kunt later een bot-account toevoegen in de instellingen.</value>
+  </data>
+  <data name="setup_twitch_linked" xml:space="preserve">
+    <value>Gekoppeld als {0}</value>
+  </data>
+  <data name="setup_twitch_linked_unknown" xml:space="preserve">
+    <value>Gekoppeld Twitch-account.</value>
+  </data>
+  <data name="setup_twitch_not_linked" xml:space="preserve">
+    <value>Optioneel als je alleen een overlay nodig hebt die het huidige spel weergeeft.</value>
+  </data>
+  <data name="setup_output_title" xml:space="preserve">
+    <value>Uitvoerbestand van het nummer</value>
+  </data>
+  <data name="setup_output_body" xml:space="preserve">
+    <value>Songify schrijft het huidige nummer naar dit tekstbestand. Voeg in OBS een tekstbron toe en verwijs deze naar Songify.txt.</value>
+  </data>
+  <data name="setup_done_title" xml:space="preserve">
+    <value>Je bent er klaar voor.</value>
+  </data>
+  <data name="setup_done_body" xml:space="preserve">
+    <value>Alles wat nog openstaat, kun je afronden via Home of Instellingen. Een korte rondleiding laat je zien waar alles zich bevindt.</value>
+  </data>
+  <data name="setup_skip" xml:space="preserve">
+    <value>Overslaan</value>
+  </data>
+  <data name="setup_back" xml:space="preserve">
+    <value>Rug</value>
+  </data>
+  <data name="setup_next" xml:space="preserve">
+    <value>Volgende</value>
+  </data>
+  <data name="setup_finish" xml:space="preserve">
+    <value>Finish</value>
+  </data>
+  <data name="setup_show_me_around" xml:space="preserve">
+    <value>Laat me alles zien</value>
+  </data>
+  <data name="setup_step_label" xml:space="preserve">
+    <value>Stap {0} van {1}</value>
+  </data>
+  <data name="setup_checklist_title" xml:space="preserve">
+    <value>Aan de slag</value>
+  </data>
+  <data name="setup_checklist_body" xml:space="preserve">
+    <value>Voltooi deze stappen zodat Songify het huidige nummer kan weergeven en verzoeknummers kan aannemen.</value>
+  </data>
+  <data name="setup_checklist_dismiss" xml:space="preserve">
+    <value>Sluiten</value>
+  </data>
+  <data name="setup_checklist_go" xml:space="preserve">
+    <value>Gaan</value>
+  </data>
+  <data name="setup_checklist_spotify" xml:space="preserve">
+    <value>Spotify-link</value>
+  </data>
+  <data name="setup_checklist_twitch" xml:space="preserve">
+    <value>Link naar Twitch (voor songaanvragen)</value>
+  </data>
+  <data name="setup_checklist_output" xml:space="preserve">
+    <value>Uitvoerbestand voor het nummer (OBS)</value>
+  </data>
+  <data name="menu_setup_wizard" xml:space="preserve">
+    <value>Installatiewizard</value>
+  </data>
+  <data name="setup_tour_home_title" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="setup_tour_home_body" xml:space="preserve">
+    <value>Dit is het overzicht. Gebruik het keuzemenu om Spotify of een andere bron te selecteren. Het nummer dat nu wordt afgespeeld en de volgende aangevraagde nummers worden hier weergegeven.</value>
+  </data>
+  <data name="setup_tour_spotify_title" xml:space="preserve">
+    <value>Spotify-instellingen</value>
+  </data>
+  <data name="setup_tour_spotify_body" xml:space="preserve">
+    <value>Ga naar Instellingen → Muziek → Spotify. Hier voer je je Client ID in en koppel je je account. Je kunt dit op elk moment wijzigen.</value>
+  </data>
+  <data name="setup_tour_twitch_title" xml:space="preserve">
+    <value>Twitch-accounts</value>
+  </data>
+  <data name="setup_tour_twitch_body" xml:space="preserve">
+    <value>Koppel hier je broadcaster-account voor songaanvragen, beloningen en chatopdrachten. Een bot-account is optioneel.</value>
+  </data>
+  <data name="setup_tour_output_title" xml:space="preserve">
+    <value>Uitvoer en widget</value>
+  </data>
+  <data name="setup_tour_output_body" xml:space="preserve">
+    <value>Wijs in de uitvoerinstellingen van OBS naar het bestand Songify.txt. Ga naar Extra → Widget om de browseroverlay te openen. Dat is de rondleiding – je bent klaar.</value>
+  </data>
 </root>
