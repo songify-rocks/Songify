@@ -32,13 +32,18 @@ public static class AppStartup
         if (!await CheckAndNotifyConfigurationIssuesAsync())
             return;
 
-        await RunUseOwnAppDialogAsync();
         bool internetAvailable = await WaitForInternetConnectionAsync();
         if (!internetAvailable)
         {
             await RunInternetCheckDialogAsync(owner);
             return;
         }
+
+        bool startTour = false;
+        if (GuidedSetup.ShouldShowWizard())
+            startTour = await GuidedSetup.ShowWizardAsync(owner);
+        else
+            await RunUseOwnAppDialogAsync();
 
         Logger.Info(LogSource.Spotify, "Starting Spotify init");
         await RunSpotifyInitAsync();
@@ -54,6 +59,13 @@ public static class AppStartup
         Logger.Info(LogSource.Core, "Final Setup done");
 
         ArtistBlocklistSyncService.Start();
+
+        if (owner is Views.WPFUI.ShellWindow shell)
+        {
+            Views.WPFUI.Pages.OverviewPage.RefreshChecklist();
+            if (startTour)
+                await shell.StartSetupTourAsync();
+        }
     }
 
     /// <returns><c>false</c> if startup should abort (app shutting down).</returns>

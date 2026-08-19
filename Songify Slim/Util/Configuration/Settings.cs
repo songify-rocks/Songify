@@ -951,6 +951,24 @@ namespace Songify_Slim.Util.Configuration
             set => SetUseOwnApp(value);
         }
 
+        public static bool SetupCompleted
+        {
+            get => GetSetupCompleted();
+            set => SetSetupCompleted(value);
+        }
+
+        public static bool SetupChecklistDismissed
+        {
+            get => GetSetupChecklistDismissed();
+            set => SetSetupChecklistDismissed(value);
+        }
+
+        public static int SetupWizardVersion
+        {
+            get => GetSetupWizardVersion();
+            set => SetSetupWizardVersion(value);
+        }
+
         public static List<BlockedUser> UserBlacklist
         {
             get => GetUserBlacklist();
@@ -1410,6 +1428,9 @@ namespace Songify_Slim.Util.Configuration
                 Upload = GetUpload(),
                 UseDefaultBrowser = GetUseDefaultBrowser(),
                 UseOwnApp = GetUseOwnApp(),
+                SetupCompleted = GetSetupCompleted(),
+                SetupChecklistDismissed = GetSetupChecklistDismissed(),
+                SetupWizardVersion = GetSetupWizardVersion(),
                 UserBlacklist = GetUserBlacklist(),
                 UserLevelsCommand = GetUserLevelsCommand(),
                 UserLevelsReward = GetUserLevelsReward(),
@@ -2221,6 +2242,21 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetUseOwnApp()
         {
             return CurrentConfig.AppConfig.UseOwnApp;
+        }
+
+        private static bool GetSetupCompleted()
+        {
+            return CurrentConfig.AppConfig.SetupCompleted;
+        }
+
+        private static bool GetSetupChecklistDismissed()
+        {
+            return CurrentConfig.AppConfig.SetupChecklistDismissed;
+        }
+
+        private static int GetSetupWizardVersion()
+        {
+            return CurrentConfig.AppConfig.SetupWizardVersion;
         }
 
         private static List<BlockedUser> GetUserBlacklist()
@@ -3088,6 +3124,24 @@ namespace Songify_Slim.Util.Configuration
         private static void SetUseOwnApp(bool value)
         {
             CurrentConfig.AppConfig.UseOwnApp = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetSetupCompleted(bool value)
+        {
+            CurrentConfig.AppConfig.SetupCompleted = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetSetupChecklistDismissed(bool value)
+        {
+            CurrentConfig.AppConfig.SetupChecklistDismissed = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetSetupWizardVersion(int value)
+        {
+            CurrentConfig.AppConfig.SetupWizardVersion = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

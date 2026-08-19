@@ -56,7 +56,6 @@
             <ui:TitleBar.TrailingContent>
                 <StackPanel Margin="0,0,4,0" Orientation="Horizontal">
 
-
                     <ui:DropDownButton
                         MinWidth="72"
                         Margin="0,0,4,0"
@@ -104,6 +103,7 @@
                         <ui:DropDownButton.Flyout>
                             <ContextMenu x:Name="HelpContextMenu">
                                 <MenuItem Click="MenuPatchNotes_OnClick" Header="{DynamicResource menu_file_patchnotes}" />
+                                <MenuItem Click="MenuSetupWizard_OnClick" Header="{DynamicResource menu_setup_wizard}" />
                                 <MenuItem Click="MenuFaq_OnClick" Header="{DynamicResource menu_faq}" />
                                 <MenuItem Click="MenuGitHub_OnClick" Header="{DynamicResource menu_github}" />
                                 <MenuItem Click="MenuDiscord_OnClick" Header="{DynamicResource menu_discord}">
@@ -503,6 +503,70 @@
                     Text="{Binding StatusBarVersion}" />
             </Grid>
         </Border>
+
+        <!--  First-launch orientation overlay  -->
+        <Grid
+            x:Name="TourOverlay"
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Panel.ZIndex="250"
+            Visibility="Collapsed">
+            <Border Background="#99000000" />
+            <Border
+                x:Name="TourHighlight"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                BorderBrush="{DynamicResource AccentFillColorDefaultBrush}"
+                BorderThickness="2"
+                CornerRadius="8"
+                IsHitTestVisible="False"
+                Visibility="Collapsed" />
+            <ui:Card
+                MaxWidth="380"
+                Margin="24"
+                Padding="18"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="{DynamicResource ControlSolidFillColorDefaultBrush}">
+                <StackPanel>
+                    <TextBlock
+                        x:Name="TxtTourTitle"
+                        Margin="0,0,0,6"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TxtTourBody"
+                        Margin="0,0,0,14"
+                        FontSize="13"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap" />
+                    <DockPanel LastChildFill="False">
+                        <ui:Button
+                            Appearance="Transparent"
+                            Click="TourOverlay_OnSkip"
+                            Content="{DynamicResource setup_skip}"
+                            DockPanel.Dock="Left" />
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <ui:Button
+                                x:Name="BtnTourBack"
+                                MinWidth="80"
+                                Margin="0,0,8,0"
+                                Appearance="Secondary"
+                                Click="BtnTourBack_OnClick"
+                                Content="{DynamicResource setup_back}" />
+                            <ui:Button
+                                x:Name="BtnTourNext"
+                                MinWidth="80"
+                                Appearance="Primary"
+                                Click="BtnTourNext_OnClick"
+                                Content="{DynamicResource setup_next}" />
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </ui:Card>
+        </Grid>
 
         <tray:NotifyIcon
             x:Name="TrayIcon"

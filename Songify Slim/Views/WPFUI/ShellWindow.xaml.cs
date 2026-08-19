@@ -52,6 +52,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private SpotifyIndicatorState _spotifyState = SpotifyIndicatorState.Disconnected;
     private Brush _pearBrush = Brushes.Gray;
     private string _pearStatusText = "";
+    private int _tourStep;
 
     private string Loc(string key, string fallback)
         => TryFindResource(key) as string ?? fallback;
@@ -564,6 +565,14 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     private void MenuPatchNotes_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenPatchNotes();
 
+    private async void MenuSetupWizard_OnClick(object sender, RoutedEventArgs e)
+    {
+        bool startTour = await GuidedSetup.ShowWizardAsync(this);
+        Pages.OverviewPage.RefreshChecklist();
+        if (startTour)
+            await StartSetupTourAsync();
+    }
+
     private void MenuFaq_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenFaq();
 
     private void MenuGitHub_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenGitHubIssues();
@@ -714,6 +723,29 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     public void OpenSettings()
     {
         RootNavigationView.Navigate(typeof(Pages.SettingsPage));
+    }
+
+    public async Task OpenSettingsTabAsync(string tabTag)
+    {
+        RootNavigationView.Navigate(typeof(Pages.SettingsPage));
+        await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+        await Task.Delay(80);
+        Pages.SettingsPage page = Pages.SettingsPage.Instance;
+        if (page == null)
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            page = Pages.SettingsPage.Instance;
+        }
+
+        page?.SelectTab(tabTag);
+    }
+
+    public async Task StartSetupTourAsync()
+    {
+        _tourStep = 0;
+        if (TourOverlay != null)
+            TourOverlay.Visibility = Visibility.Visible;
+        await ShowTourStepAsync();
     }
 
     public async void ConnectTwitch()
@@ -886,6 +918,118 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         BtnPsaMarkAllRead.Visibility = PsaManager.HasUnread()
             ? Visibility.Visible
             : Visibility.Collapsed;
+    }
+
+    #endregion
+
+    #region Setup tour
+
+    private async void BtnTourBack_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_tourStep <= 0)
+            return;
+        _tourStep--;
+        await ShowTourStepAsync();
+    }
+
+    private async void BtnTourNext_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (_tourStep >= 3)
+        {
+            EndSetupTour();
+            return;
+        }
+
+        _tourStep++;
+        await ShowTourStepAsync();
+    }
+
+    private void TourOverlay_OnSkip(object sender, RoutedEventArgs e) => EndSetupTour();
+
+    private void EndSetupTour()
+    {
+        if (TourOverlay != null)
+            TourOverlay.Visibility = Visibility.Collapsed;
+        if (TourHighlight != null)
+            TourHighlight.Visibility = Visibility.Collapsed;
+        RootNavigationView?.Navigate(typeof(Pages.OverviewPage));
+        Pages.OverviewPage.RefreshChecklist();
+    }
+
+    private async Task ShowTourStepAsync()
+    {
+        if (BtnTourBack != null)
+            BtnTourBack.Visibility = _tourStep > 0 ? Visibility.Visible : Visibility.Collapsed;
+        if (BtnTourNext != null)
+            BtnTourNext.Content = _tourStep >= 3
+                ? Loc("setup_finish", "Finish")
+                : Loc("setup_next", "Next");
+
+        FrameworkElement highlight = null;
+        switch (_tourStep)
+        {
+            case 0:
+                RootNavigationView.Navigate(typeof(Pages.OverviewPage));
+                TxtTourTitle.Text = Loc("setup_tour_home_title", "Home");
+                TxtTourBody.Text = Loc("setup_tour_home_body",
+                    "This is the overview. Use the player dropdown to choose Spotify or another source. Now playing and the next requested songs show up here.");
+                await WaitForLayoutAsync();
+                highlight = Pages.OverviewPage.Instance?.PlayerCombo;
+                break;
+            case 1:
+                await OpenSettingsTabAsync("Spotify");
+                TxtTourTitle.Text = Loc("setup_tour_spotify_title", "Spotify settings");
+                TxtTourBody.Text = Loc("setup_tour_spotify_body",
+                    "Settings → Music → Spotify is where you enter your Client ID and link your account. You can change this any time.");
+                break;
+            case 2:
+                await OpenSettingsTabAsync("Twitch");
+                TxtTourTitle.Text = Loc("setup_tour_twitch_title", "Twitch accounts");
+                TxtTourBody.Text = Loc("setup_tour_twitch_body",
+                    "Link your broadcaster account here for song requests, rewards, and chat commands. A bot account is optional.");
+                break;
+            default:
+                await OpenSettingsTabAsync("Output");
+                TxtTourTitle.Text = Loc("setup_tour_output_title", "Output and widget");
+                TxtTourBody.Text = Loc("setup_tour_output_body",
+                    "Point OBS at the Songify.txt file in Output settings. Tools → Widget opens the browser overlay. That's the tour — you're set.");
+                break;
+        }
+
+        PlaceTourHighlight(highlight);
+    }
+
+    private async Task WaitForLayoutAsync()
+    {
+        await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+        await Task.Delay(80);
+    }
+
+    private void PlaceTourHighlight(FrameworkElement target)
+    {
+        if (TourHighlight == null)
+            return;
+
+        if (target == null || !target.IsVisible || target.ActualWidth < 1)
+        {
+            TourHighlight.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        try
+        {
+            Point topLeft = target.TransformToVisual(TourOverlay).Transform(new Point(0, 0));
+            TourHighlight.Width = target.ActualWidth + 8;
+            TourHighlight.Height = target.ActualHeight + 8;
+            TourHighlight.Margin = new Thickness(topLeft.X - 4, topLeft.Y - 4, 0, 0);
+            TourHighlight.HorizontalAlignment = HorizontalAlignment.Left;
+            TourHighlight.VerticalAlignment = VerticalAlignment.Top;
+            TourHighlight.Visibility = Visibility.Visible;
+        }
+        catch
+        {
+            TourHighlight.Visibility = Visibility.Collapsed;
+        }
     }
 
     #endregion

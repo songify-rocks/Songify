@@ -19,6 +19,8 @@ namespace Songify_Slim.Views.WPFUI.Pages;
 
 public partial class OverviewPage : Page
 {
+    internal ComboBox PlayerCombo => CbxPlayer;
+
     internal static OverviewPage Instance { get; private set; }
 
     private static string _pendingCanvasPath;
@@ -61,11 +63,14 @@ public partial class OverviewPage : Page
     {
         Instance = this;
         EnsurePlayerDropdown();
+        SettingsUi.Refreshed += OnSettingsRefreshed;
+        IsVisibleChanged += OverviewPage_IsVisibleChanged;
 
         if (BtnSupport != null)
             BtnSupport.Content = Properties.Resources.cta_support;
         UpdateNowPlaying();
         ApplyPendingCanvas();
+        UpdateChecklist();
         _updateTimer = new DispatcherTimer
         {
             // Smooth progress between Spotify/player fetch polls
@@ -77,11 +82,34 @@ public partial class OverviewPage : Page
 
     private void OverviewPage_Unloaded(object sender, RoutedEventArgs e)
     {
+        SettingsUi.Refreshed -= OnSettingsRefreshed;
+        IsVisibleChanged -= OverviewPage_IsVisibleChanged;
         _updateTimer?.Stop();
         _canvasPlaying = false;
         StopCanvasPlayback();
         if (Instance == this)
             Instance = null;
+    }
+
+    public static void RefreshChecklist()
+    {
+        if (Instance == null)
+            return;
+        if (!Instance.Dispatcher.CheckAccess())
+        {
+            Instance.Dispatcher.Invoke(Instance.UpdateChecklist);
+            return;
+        }
+
+        Instance.UpdateChecklist();
+    }
+
+    private void OnSettingsRefreshed() => RefreshChecklist();
+
+    private void OverviewPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (IsVisible)
+            UpdateChecklist();
     }
 
     public static void NotifyCanvas(string path)
@@ -249,6 +277,7 @@ public partial class OverviewPage : Page
         _lastUpNextFingerprint = null;
         ResetProgressAnchor();
         UpdateNowPlaying();
+        UpdateChecklist();
     }
 
     private void UpdateNowPlaying()
@@ -488,5 +517,59 @@ public partial class OverviewPage : Page
     private void BtnSupport_Click(object sender, RoutedEventArgs e)
     {
         Process.Start(new ProcessStartInfo("https://ko-fi.com/overcodetv") { UseShellExecute = true });
+    }
+
+    private void BtnDismissChecklist_Click(object sender, RoutedEventArgs e)
+    {
+        Settings.SetupChecklistDismissed = true;
+        UpdateChecklist();
+    }
+
+    private void UpdateChecklist()
+    {
+        if (CardGettingStarted == null || PnlChecklistItems == null)
+            return;
+
+        if (!GuidedSetup.ShouldShowChecklist())
+        {
+            CardGettingStarted.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        CardGettingStarted.Visibility = Visibility.Visible;
+        PnlChecklistItems.Children.Clear();
+
+        string goLabel = TryFindResource("setup_checklist_go") as string ?? "Go";
+        foreach (SetupChecklistItem item in GuidedSetup.GetChecklistItems())
+        {
+            var row = new DockPanel { Margin = new Thickness(0, 0, 0, 8), LastChildFill = true };
+            var go = new System.Windows.Controls.Button
+            {
+                Content = goLabel,
+                MinWidth = 64,
+                Padding = new Thickness(10, 2, 10, 2),
+                Tag = item.SettingsTab,
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            go.Click += ChecklistGo_Click;
+            DockPanel.SetDock(go, Dock.Right);
+            row.Children.Add(go);
+            row.Children.Add(new TextBlock
+            {
+                Text = (item.IsDone ? "✓  " : "○  ") + item.Title,
+                VerticalAlignment = VerticalAlignment.Center,
+                FontSize = 13,
+                Opacity = item.IsDone ? 0.7 : 1
+            });
+            PnlChecklistItems.Children.Add(row);
+        }
+    }
+
+    private async void ChecklistGo_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not System.Windows.Controls.Button { Tag: string tab } ||
+            Application.Current.MainWindow is not ShellWindow shell)
+            return;
+        await shell.OpenSettingsTabAsync(tab);
     }
 }

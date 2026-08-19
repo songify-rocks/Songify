@@ -182,4 +182,47 @@ connection with this EULA agreement, shall be governed by and construed in
 accordance with the laws of de.
 
 Please send any questions about this EULA to info@songify.rocks.</system:String>
+    <system:String x:Key="setup_wizard_title">Set up Songify</system:String>
+    <system:String x:Key="setup_welcome_title">Welcome to Songify</system:String>
+    <system:String x:Key="setup_welcome_body">Songify shows the current song on stream and can take Twitch song requests. This short setup gets Spotify, Twitch, and the OBS text file ready. You can skip anything and change it later in Settings.</system:String>
+    <system:String x:Key="setup_player_title">Which player do you use?</system:String>
+    <system:String x:Key="setup_player_body">Most people use Spotify. You can switch this later from the Home screen.</system:String>
+    <system:String x:Key="setup_spotify_title">Connect Spotify</system:String>
+    <system:String x:Key="setup_spotify_body">Create a Spotify Developer app, paste the Client ID here, then link your account. The help button opens the setup guide.</system:String>
+    <system:String x:Key="setup_spotify_help_tooltip">Open the Spotify setup guide</system:String>
+    <system:String x:Key="setup_spotify_open_guide">How to get a Client ID</system:String>
+    <system:String x:Key="setup_spotify_linked">Linked as {0}</system:String>
+    <system:String x:Key="setup_spotify_linked_unknown">Linked</system:String>
+    <system:String x:Key="setup_spotify_not_linked">Not linked yet. You can do this later in Settings.</system:String>
+    <system:String x:Key="setup_twitch_title">Connect Twitch</system:String>
+    <system:String x:Key="setup_twitch_body">Link your broadcaster account if you want song requests in chat. Skip this if you only need a now-playing overlay. A bot account can be added later in Settings.</system:String>
+    <system:String x:Key="setup_twitch_linked">Linked as {0}</system:String>
+    <system:String x:Key="setup_twitch_linked_unknown">Twitch account linked.</system:String>
+    <system:String x:Key="setup_twitch_not_linked">Optional if you only need a now-playing overlay.</system:String>
+    <system:String x:Key="setup_output_title">Song output file</system:String>
+    <system:String x:Key="setup_output_body">Songify writes the current song to this text file. In OBS, add a Text source and point it at Songify.txt.</system:String>
+    <system:String x:Key="setup_done_title">You're ready</system:String>
+    <system:String x:Key="setup_done_body">Anything still open can be finished from Home or Settings. A short tour can show you where things live.</system:String>
+    <system:String x:Key="setup_skip">Skip</system:String>
+    <system:String x:Key="setup_back">Back</system:String>
+    <system:String x:Key="setup_next">Next</system:String>
+    <system:String x:Key="setup_finish">Finish</system:String>
+    <system:String x:Key="setup_show_me_around">Show me around</system:String>
+    <system:String x:Key="setup_step_label">Step {0} of {1}</system:String>
+    <system:String x:Key="setup_checklist_title">Getting started</system:String>
+    <system:String x:Key="setup_checklist_body">Finish these so Songify can show the current song and take requests.</system:String>
+    <system:String x:Key="setup_checklist_dismiss">Dismiss</system:String>
+    <system:String x:Key="setup_checklist_go">Go</system:String>
+    <system:String x:Key="setup_checklist_spotify">Link Spotify</system:String>
+    <system:String x:Key="setup_checklist_twitch">Link Twitch (for song requests)</system:String>
+    <system:String x:Key="setup_checklist_output">Song output file (OBS)</system:String>
+    <system:String x:Key="menu_setup_wizard">Setup wizard</system:String>
+    <system:String x:Key="setup_tour_home_title">Home</system:String>
+    <system:String x:Key="setup_tour_home_body">This is the overview. Use the player dropdown to choose Spotify or another source. Now playing and the next requested songs show up here.</system:String>
+    <system:String x:Key="setup_tour_spotify_title">Spotify settings</system:String>
+    <system:String x:Key="setup_tour_spotify_body">Settings → Music → Spotify is where you enter your Client ID and link your account. You can change this any time.</system:String>
+    <system:String x:Key="setup_tour_twitch_title">Twitch accounts</system:String>
+    <system:String x:Key="setup_tour_twitch_body">Link your broadcaster account here for song requests, rewards, and chat commands. A bot account is optional.</system:String>
+    <system:String x:Key="setup_tour_output_title">Output and widget</system:String>
+    <system:String x:Key="setup_tour_output_body">Point OBS at the Songify.txt file in Output settings. Tools → Widget opens the browser overlay. That's the tour — you're set.</system:String>
 </ResourceDictionary>

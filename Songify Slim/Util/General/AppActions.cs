@@ -77,8 +77,7 @@ internal static class AppActions
     public static void OpenQueueInBrowser() =>
         ShellHelper.OpenUrl($"{GlobalObjects.BaseUrl}/queue.php?id=" + Settings.Uuid);
 
-    public static void TwitchLoginMain() =>
-        TwitchHandler.ApiConnect(TwitchAccount.Main);
+    public static void TwitchLoginMain() => AccountLinking.LoginTwitchMain();
 
     /// <summary>Same as main-window Twitch → Connect: start/restart EventSub host.</summary>
     public static async Task TwitchConnectAsync()

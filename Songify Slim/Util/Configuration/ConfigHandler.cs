@@ -1126,6 +1126,15 @@ namespace Songify_Slim.Util.Configuration
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
         public int MinimumBitsForSR = 1;
+
+        /// <summary>True after the first-launch setup wizard was finished or skipped.</summary>
+        public bool SetupCompleted { get; set; }
+
+        /// <summary>True when the Overview "Getting started" card was dismissed.</summary>
+        public bool SetupChecklistDismissed { get; set; }
+
+        /// <summary>Last completed guided-setup flow version. 0 = never shown.</summary>
+        public int SetupWizardVersion { get; set; }
     }
 
     public class BlockedSpotifyArtists

@@ -120,20 +120,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             }
         }
 
-        private Dictionary<string, string> _supportedLanguages = new()
-        {
-            { "en", "English" },
-            { "de-DE", "German" },
-            { "nl", "Dutch" },
-            { "ru-RU", "Russian" },
-            { "es", "Spanish" },
-            { "fr", "French" },
-            { "pl-PL", "Polish" },
-            { "pt-PT", "Portuguese" },
-            { "it-IT", "Italian" },
-            { "pt-BR", "Brazilian Portuguese" },
-            { "be-BY", "Belarusian" }
-        };
+        private Dictionary<string, string> _supportedLanguages = LocalizationHelper.GetLanguages();
 
         private static Dictionary<Enums.RefundCondition, string> RefundConditionLabels => new()
         {
@@ -751,7 +738,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private void ApplyLanguageSettings()
         {
             CbxLanguage.SelectionChanged -= ComboBox_SelectionChanged;
-            CbxLanguage.ItemsSource = _supportedLanguages;
+            CbxLanguage.ItemsSource = LocalizationHelper.GetLanguages();
             CbxLanguage.SelectedValue = Settings.Language;
             CbxLanguage.SelectionChanged += ComboBox_SelectionChanged;
         }
@@ -917,7 +904,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private void Btn_OwnAppHelp_Click(object sender, RoutedEventArgs e)
         {
-            ShellHelper.OpenUrl("https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
+            AccountLinking.OpenSpotifySetupGuide();
         }
 
         private async void Btn_ResetConfig_Click(object sender, RoutedEventArgs e)
@@ -943,7 +930,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             if (string.IsNullOrEmpty(Settings.ClientId))
             {
-                // Shows a message box if the client id or secret is missing
                 AppDialogResult result = await ShowMsgAsync(
                     "Error",
                     Properties.Resources.common_fill_client_id_secret,
@@ -953,25 +939,14 @@ namespace Songify_Slim.Views.WPFUI.Controls
                         NegativeButtonText = "How to get Client ID and Secret"
                     });
                 if (result == AppDialogResult.Secondary)
-                    ShellHelper.OpenUrl(
-                        "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup");
+                    AccountLinking.OpenSpotifySetupGuide();
 
                 return;
             }
 
-            // Shows a message box if the client id or secret is missing
-            Settings.SpotifyRedirectUri = "127.0.0.1";
-
-            SpotifyApiHandler.ResetSpotifyAuthState();
-            try
-            {
-                await SpotifyApiHandler.Auth();
+            SpotifyLinkResult linkResult = await AccountLinking.LinkSpotifyAsync();
+            if (linkResult == SpotifyLinkResult.Started)
                 await SetControls();
-            }
-            catch (Exception ex)
-            {
-                Logger.Error(LogSource.Spotify, "Error linking Spotify.", ex);
-            }
         }
 
         private void BtnCopyToClipClick(object sender, RoutedEventArgs e)
@@ -1121,48 +1096,10 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (CbxLanguage.SelectedValue is not string selectedLanguageCode)
                 return;
 
-            CultureInfo newCulture = new(selectedLanguageCode);
-            Thread.CurrentThread.CurrentUICulture = newCulture;
-
-            // Create a new ResourceDictionary from the RESX for the selected culture.
-            ResourceDictionary newLocalizationDict = ResxToDictionaryHelper.CreateResourceDictionary(newCulture);
-
-            // Find the existing localization dictionary by checking for a known key.
-            Collection<ResourceDictionary> dictionaries = Application.Current.Resources.MergedDictionaries;
-            ResourceDictionary localizationDict =
-                dictionaries.FirstOrDefault(dict => dict.Contains("window_settings_system_language"));
-
-            if (localizationDict != null)
-            {
-                int index = dictionaries.IndexOf(localizationDict);
-                dictionaries.Remove(localizationDict);
-                dictionaries.Insert(index, newLocalizationDict);
-            }
-            else
-            {
-                // If no localization dictionary was found, simply add the new one.
-                dictionaries.Add(newLocalizationDict);
-            }
-
-            _supportedLanguages = new Dictionary<string, string>
-            {
-                { "en", Application.Current.TryFindResource("language_en") as string ?? "English" },
-                { "nl", Application.Current.TryFindResource("language_nl") as string ?? "Dutch" },
-                { "de-DE", Application.Current.TryFindResource("language_de") as string ?? "German" },
-                { "ru-RU", Application.Current.TryFindResource("language_ru") as string ?? "Russian" },
-                { "es", Application.Current.TryFindResource("language_es") as string ?? "Spanish" },
-                { "fr", Application.Current.TryFindResource("language_fr") as string ?? "French" },
-                { "pl-PL", Application.Current.TryFindResource("language_pl") as string ?? "Polish" },
-                { "pt-PT", Application.Current.TryFindResource("language_pt") as string ?? "Portuguese" },
-                { "it-IT", Application.Current.TryFindResource("language_it") as string ?? "Italian" },
-                { "pt-BR", Application.Current.TryFindResource("language_pt_br") as string ?? "Brazilian Portuguese" },
-                { "be-BY", Application.Current.TryFindResource("language_be") as string ?? "Belarusian" }
-            };
+            LocalizationHelper.Apply(selectedLanguageCode);
+            _supportedLanguages = LocalizationHelper.GetLanguages();
             CbxLanguage.ItemsSource = _supportedLanguages;
             CbxLanguage.SelectedValue = selectedLanguageCode;
-
-            // Optionally update your settings.
-            Settings.Language = selectedLanguageCode;
 
             _wRp?.LoadItems();
 
@@ -1544,7 +1481,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
         {
-            TwitchHandler.ApiConnect(Enums.TwitchAccount.Main);
+            AccountLinking.LoginTwitchMain();
         }
 
         private void ToggleSwitchPrivacy_Toggled(object sender, RoutedEventArgs e)
@@ -2949,32 +2886,15 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             foreach (TabItem tab in TabCtrl.Items)
             {
-                if (!tab.Tag.ToString().Equals(tabName, StringComparison.CurrentCultureIgnoreCase)) continue;
+                if (tab.Tag?.ToString().Equals(tabName, StringComparison.CurrentCultureIgnoreCase) != true)
+                    continue;
                 TabCtrl.SelectedItem = tab;
-                if (!string.IsNullOrEmpty(elementName))
-                {
-                    tab.ApplyTemplate(); // ensure content is loaded
+                if (string.IsNullOrEmpty(elementName))
+                    break;
 
-                    FrameworkElement element = tab.FindName(elementName) as FrameworkElement;
-
-                    element?.BringIntoView();
-
-                    if (element is StackPanel ctrl)
-                    {
-                        Task.Delay(500);
-                        Brush original = ctrl.Background;
-                        ctrl.Background = new SolidColorBrush(Color.FromArgb(50, 255, 0, 0));
-
-                        DispatcherTimer timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(5) };
-                        timer.Tick += (_, __) =>
-                        {
-                            ctrl.Background = original;
-                            timer.Stop();
-                        };
-                        timer.Start();
-                    }
-                }
-
+                tab.ApplyTemplate();
+                if (tab.FindName(elementName) is FrameworkElement element)
+                    element.BringIntoView();
                 break;
             }
         }

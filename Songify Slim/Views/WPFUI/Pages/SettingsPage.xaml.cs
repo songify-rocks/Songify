@@ -33,9 +33,15 @@ public partial class SettingsPage : Page
 
     private bool _navBuilt;
 
+    internal static SettingsPage Instance { get; private set; }
+
     public SettingsPage() => InitializeComponent();
 
-    private void SettingsPage_OnLoaded(object sender, RoutedEventArgs e) => EnsureNavBuilt();
+    private void SettingsPage_OnLoaded(object sender, RoutedEventArgs e)
+    {
+        Instance = this;
+        EnsureNavBuilt();
+    }
 
     /// <summary>
     /// Selects the first tab in the named top-level section (General / Music / Twitch / Network).
@@ -75,6 +81,27 @@ public partial class SettingsPage : Page
 
             return;
         }
+    }
+
+    /// <summary>Selects a settings tab by Tag (Spotify, Twitch, Output, …) and keeps the left nav in sync.</summary>
+    public void SelectTab(string tabTag)
+    {
+        EnsureNavBuilt();
+        if (string.IsNullOrWhiteSpace(tabTag) || NavList == null)
+            return;
+
+        foreach (object item in NavList.Items)
+        {
+            if (item is not ListBoxItem { Tag: TabItem tab } listItem)
+                continue;
+            if (!string.Equals(tab.Tag?.ToString(), tabTag, StringComparison.OrdinalIgnoreCase))
+                continue;
+            NavList.SelectedItem = listItem;
+            Panel?.SelectTab(tabTag);
+            return;
+        }
+
+        Panel?.SelectTab(tabTag);
     }
 
     private void EnsureNavBuilt()

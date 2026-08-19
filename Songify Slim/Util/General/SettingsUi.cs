@@ -14,6 +14,9 @@ internal static class SettingsUi
     private static readonly object Gate = new();
     private static readonly List<WeakReference<SettingsPanel>> Panels = [];
 
+    /// <summary>Raised after settings panels refresh (Spotify/Twitch login, imports, etc.).</summary>
+    public static event Action Refreshed;
+
     public static void Register(SettingsPanel panel)
     {
         if (panel == null) return;
@@ -105,6 +108,8 @@ internal static class SettingsUi
                 Logger.LogExc(ex);
             }
         }
+
+        Refreshed?.Invoke();
     }
 
     /// <summary>

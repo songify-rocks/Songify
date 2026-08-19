@@ -40,6 +40,7 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
             <Grid Margin="0,0,0,12">
@@ -64,9 +65,43 @@
                     SelectionChanged="CbxPlayer_SelectionChanged" />
             </Grid>
 
+            <!--  Getting started  -->
+            <ui:Card
+                x:Name="CardGettingStarted"
+                Grid.Row="1"
+                Margin="0,0,0,16"
+                Padding="16"
+                Visibility="Collapsed">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                        <ui:Button
+                            x:Name="BtnDismissChecklist"
+                            Padding="8,2"
+                            HorizontalAlignment="Right"
+                            Appearance="Transparent"
+                            Click="BtnDismissChecklist_Click"
+                            Content="{DynamicResource setup_checklist_dismiss}"
+                            DockPanel.Dock="Right"
+                            FontSize="12" />
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                            Text="{DynamicResource setup_checklist_title}" />
+                    </DockPanel>
+                    <TextBlock
+                        Margin="0,0,0,12"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{DynamicResource setup_checklist_body}"
+                        TextWrapping="Wrap" />
+                    <StackPanel x:Name="PnlChecklistItems" />
+                </StackPanel>
+            </ui:Card>
+
             <!--  Now playing: compact card, no stretched empty space  -->
             <ui:Card
-                Grid.Row="1"
+                Grid.Row="2"
                 Margin="0,0,0,16"
                 Padding="16"
                 HorizontalAlignment="Stretch">
@@ -192,7 +227,7 @@
 
             <!--  Up next (next 3 from playback queue)  -->
             <ui:Card
-                Grid.Row="2"
+                Grid.Row="3"
                 Margin="0,0,0,16"
                 Padding="14"
                 HorizontalAlignment="Stretch"
@@ -310,7 +345,7 @@
 
             <ui:Button
                 x:Name="BtnSupport"
-                Grid.Row="3"
+                Grid.Row="4"
                 Padding="10,4"
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
