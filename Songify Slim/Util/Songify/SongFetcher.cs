@@ -363,8 +363,7 @@ namespace Songify_Slim.Util.Songify
                     // read the text file
                     if (!File.Exists(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"))) File.Create(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Close();
                     IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.CustomPauseText);
-                    if (Settings.DownloadCover &&
-                        (Settings.PauseOption == Enums.PauseOptions.PauseText))
+                    if (Settings.PauseOption == Enums.PauseOptions.PauseText)
                         await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     if (Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.CustomPauseText, "", "");
                     await SongifyService.UploadSong(BuildSongUploadPayload(
@@ -387,7 +386,7 @@ namespace Songify_Slim.Util.Songify
                     break;
 
                 case Enums.PauseOptions.ClearAll:
-                    if (Settings.DownloadCover && (Settings.PauseOption == Enums.PauseOptions.ClearAll)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                    await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), "");
                     if (Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
                     await SongifyService.UploadSong(BuildSongUploadPayload(
@@ -1109,7 +1108,7 @@ namespace Songify_Slim.Util.Songify
                         IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.CustomPauseText);
                         if (!Settings.KeepAlbumCover)
                         {
-                            if (Settings.DownloadCover && (Settings.PauseOption == Enums.PauseOptions.PauseText)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                            await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                             if (Settings.DownloadCanvas && Settings.PauseOption == Enums.PauseOptions.PauseText)
                             {
                                 IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
@@ -1140,7 +1139,7 @@ namespace Songify_Slim.Util.Songify
                     case Enums.PauseOptions.ClearAll:
                         if (!Settings.KeepAlbumCover)
                         {
-                            if (Settings.DownloadCover && Settings.PauseOption == Enums.PauseOptions.ClearAll) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                            await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                             if (Settings.DownloadCanvas && Settings.PauseOption == Enums.PauseOptions.ClearAll)
                             {
                                 IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
@@ -1337,19 +1336,15 @@ namespace Songify_Slim.Util.Songify
                 TwitchHandler.SendCurrSong();
             }
 
-            //Save Album Cover
-            // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
+            // Always save the album cover. Optionally download canvas when enabled and available.
             if (Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
                 Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover (canvas mode): {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
                 IoManager.DownloadCanvas(_canvasResponse.Item2, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
-                await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
-            else if (Settings.DownloadCover)
-            {
-                Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover: {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
-                await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
-            }
+
+            Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover: {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
+            await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
 
             Application.Current.Dispatcher.Invoke(() =>
             {

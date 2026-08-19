@@ -75,14 +75,10 @@
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Grid Margin="0,0,12,0">
-                        <ui:Image
-                            x:Name="ImgCover"
-                            MaxWidth="120"
-                            MaxHeight="120"
-                            CornerRadius="12"
-                            RenderOptions.BitmapScalingMode="HighQuality"
-                            Stretch="UniformToFill" />
+                    <Grid
+                        Width="120"
+                        Height="120"
+                        Margin="0,0,12,0">
                         <ui:Card
                             x:Name="CoverPlaceholder"
                             Width="120"
@@ -106,6 +102,40 @@
                                     TextAlignment="Center" />
                             </Grid>
                         </ui:Card>
+                        <ui:Image
+                            x:Name="ImgCover"
+                            Width="120"
+                            Height="120"
+                            MaxWidth="120"
+                            MaxHeight="120"
+                            CornerRadius="12"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Stretch="UniformToFill"
+                            Visibility="Collapsed" />
+                        <Border
+                            x:Name="CanvasHost"
+                            Width="120"
+                            Height="120"
+                            ClipToBounds="True"
+                            CornerRadius="12"
+                            Visibility="Collapsed">
+                            <Border.Clip>
+                                <RectangleGeometry
+                                    RadiusX="12"
+                                    RadiusY="12"
+                                    Rect="0,0,120,120" />
+                            </Border.Clip>
+                            <MediaElement
+                                x:Name="CanvasPlayer"
+                                VerticalAlignment="Center"
+                                IsMuted="True"
+                                LoadedBehavior="Manual"
+                                MediaEnded="CanvasPlayer_MediaEnded"
+                                MediaFailed="CanvasPlayer_MediaFailed"
+                                Stretch="UniformToFill"
+                                UnloadedBehavior="Manual"
+                                Volume="0" />
+                        </Border>
                     </Grid>
                     <StackPanel
                         Grid.Column="1"

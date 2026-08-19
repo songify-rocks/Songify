@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -18,10 +19,16 @@ namespace Songify_Slim.Views.WPFUI.Pages;
 
 public partial class OverviewPage : Page
 {
+    internal static OverviewPage Instance { get; private set; }
+
+    private static string _pendingCanvasPath;
+
     private DispatcherTimer _updateTimer;
     private string _lastCoverUrl;
     private bool _playerDropdownInitialized;
     private string _lastUpNextFingerprint;
+    private bool _canvasPlaying;
+    private bool _stoppingCanvas;
 
     // Progress interpolation between fetch polls
     private string _progressSongId;
@@ -52,11 +59,13 @@ public partial class OverviewPage : Page
 
     private void OverviewPage_Loaded(object sender, RoutedEventArgs e)
     {
+        Instance = this;
         EnsurePlayerDropdown();
 
         if (BtnSupport != null)
             BtnSupport.Content = Properties.Resources.cta_support;
         UpdateNowPlaying();
+        ApplyPendingCanvas();
         _updateTimer = new DispatcherTimer
         {
             // Smooth progress between Spotify/player fetch polls
@@ -69,6 +78,132 @@ public partial class OverviewPage : Page
     private void OverviewPage_Unloaded(object sender, RoutedEventArgs e)
     {
         _updateTimer?.Stop();
+        _canvasPlaying = false;
+        StopCanvasPlayback();
+        if (Instance == this)
+            Instance = null;
+    }
+
+    public static void NotifyCanvas(string path)
+    {
+        bool available = !string.IsNullOrWhiteSpace(path) && File.Exists(path) && Settings.DownloadCanvas;
+        _pendingCanvasPath = available ? path : null;
+        Instance?.ApplyPendingCanvas();
+    }
+
+    public static void NotifyCanvasStopped()
+    {
+        _pendingCanvasPath = null;
+        Instance?.StopCanvasVisual();
+    }
+
+    private void ApplyPendingCanvas()
+    {
+        if (!Settings.DownloadCanvas)
+        {
+            StopCanvasVisual();
+            return;
+        }
+
+        string path = _pendingCanvasPath;
+        if (string.IsNullOrEmpty(path) && GlobalObjects.Canvas is { Item1: true })
+            path = Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4");
+
+        if (string.IsNullOrEmpty(path) || !File.Exists(path))
+        {
+            StopCanvasVisual();
+            return;
+        }
+
+        _pendingCanvasPath = path;
+        PlayCanvas(path);
+    }
+
+    private void PlayCanvas(string path)
+    {
+        if (CanvasPlayer == null || CanvasHost == null)
+            return;
+
+        try
+        {
+            CanvasPlayer.Stop();
+            CanvasPlayer.Source = null;
+            CanvasPlayer.Volume = 0;
+            CanvasPlayer.IsMuted = true;
+            CanvasPlayer.Source = new Uri(path, UriKind.Absolute);
+            CanvasPlayer.Position = TimeSpan.Zero;
+            CanvasPlayer.Play();
+            _canvasPlaying = true;
+            ShowCanvasOverlay();
+        }
+        catch
+        {
+            StopCanvasVisual();
+        }
+    }
+
+    private void StopCanvasVisual()
+    {
+        if (_stoppingCanvas)
+            return;
+
+        _stoppingCanvas = true;
+        try
+        {
+            _canvasPlaying = false;
+            StopCanvasPlayback();
+            if (CanvasHost != null)
+                CanvasHost.Visibility = Visibility.Collapsed;
+            _lastCoverUrl = null;
+            UpdateNowPlaying();
+        }
+        finally
+        {
+            _stoppingCanvas = false;
+        }
+    }
+
+    private void StopCanvasPlayback()
+    {
+        if (CanvasPlayer == null)
+            return;
+
+        try
+        {
+            CanvasPlayer.Stop();
+            CanvasPlayer.Source = null;
+        }
+        catch
+        {
+            // Ignore media shutdown errors (file already gone / not opened).
+        }
+    }
+
+    private void ShowCanvasOverlay()
+    {
+        if (CanvasHost != null)
+            CanvasHost.Visibility = Visibility.Visible;
+        if (ImgCover != null)
+            ImgCover.Visibility = Visibility.Collapsed;
+        if (CoverPlaceholder != null)
+            CoverPlaceholder.Visibility = Visibility.Collapsed;
+    }
+
+    private void CanvasPlayer_MediaEnded(object sender, RoutedEventArgs e)
+    {
+        if (!_canvasPlaying || CanvasPlayer == null)
+            return;
+
+        CanvasPlayer.Position = TimeSpan.Zero;
+        CanvasPlayer.Play();
+    }
+
+    private void CanvasPlayer_MediaFailed(object sender, ExceptionRoutedEventArgs e)
+    {
+        if (!_canvasPlaying)
+            return;
+
+        StopCanvasVisual();
     }
 
     private void EnsurePlayerDropdown()
@@ -134,8 +269,14 @@ public partial class OverviewPage : Page
                 if (img != null && !string.IsNullOrEmpty(img.Url))
                     coverUrl = img.Url;
             }
-            if (ImgCover != null)
+            if (_canvasPlaying)
             {
+                ShowCanvasOverlay();
+            }
+            else if (ImgCover != null)
+            {
+                if (CanvasHost != null)
+                    CanvasHost.Visibility = Visibility.Collapsed;
                 if (!string.IsNullOrEmpty(coverUrl) && coverUrl != _lastCoverUrl)
                 {
                     try
@@ -165,8 +306,17 @@ public partial class OverviewPage : Page
             TxtNowPlaying.Text = TryFindResource("window_overview_nothing_playing") as string
                                  ?? "Nothing playing";
             TxtArtist.Text = "";
-            if (ImgCover != null) ImgCover.Visibility = Visibility.Collapsed;
-            if (CoverPlaceholder != null) CoverPlaceholder.Visibility = Visibility.Visible;
+            if (_canvasPlaying)
+            {
+                ShowCanvasOverlay();
+            }
+            else
+            {
+                if (CanvasHost != null)
+                    CanvasHost.Visibility = Visibility.Collapsed;
+                if (ImgCover != null) ImgCover.Visibility = Visibility.Collapsed;
+                if (CoverPlaceholder != null) CoverPlaceholder.Visibility = Visibility.Visible;
+            }
             ClearProgressUi();
             _lastCoverUrl = null;
         }

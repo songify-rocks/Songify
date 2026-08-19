@@ -677,10 +677,26 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     }
 
     public void SetCanvas(string path)
-    { }
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(() => SetCanvas(path));
+            return;
+        }
+
+        Pages.OverviewPage.NotifyCanvas(path);
+    }
 
     public void StopCanvas()
-    { }
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(StopCanvas);
+            return;
+        }
+
+        Pages.OverviewPage.NotifyCanvasStopped();
+    }
 
     public string GetCurrentSongDisplayString()
     {

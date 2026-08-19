@@ -614,10 +614,11 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool DownloadCanvas { get => GetDownloadCanvas(); set => SetDownloadCanvas(value); }
 
+        /// <summary>Album covers are always downloaded. The setting is kept for config compatibility.</summary>
         public static bool DownloadCover
         {
-            get => GetDownloadCover();
-            set => SetDownloadCover(value);
+            get => true;
+            set => SetDownloadCover(true);
         }
 
         public static int Fontsize { get => GetFontSize(); set => SetFontSize(value); }
@@ -1850,7 +1851,7 @@ namespace Songify_Slim.Util.Configuration
 
         private static bool GetDownloadCover()
         {
-            return CurrentConfig.AppConfig.DownloadCover;
+            return true;
         }
 
         private static int GetFontSize()
@@ -2658,7 +2659,7 @@ namespace Songify_Slim.Util.Configuration
 
         private static void SetDownloadCover(bool value)
         {
-            CurrentConfig.AppConfig.DownloadCover = value;
+            CurrentConfig.AppConfig.DownloadCover = true;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

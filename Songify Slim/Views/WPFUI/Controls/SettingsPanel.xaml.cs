@@ -381,7 +381,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
             ChbxTwAutoconnect.IsChecked = Settings.TwAutoConnect;
             ChbxTwReward.IsChecked = Settings.TwSrReward;
             ChbxAutostart.IsChecked = Settings.Autostart;
-            ChbxCover.IsChecked = Settings.DownloadCover;
             TglCanvas.IsChecked = Settings.DownloadCanvas;
             CbPauseOptions.SelectedIndex = (int)Settings.PauseOption;
             ChbxMinimizeSystray.IsChecked = Settings.Systray;
@@ -1027,12 +1026,29 @@ namespace Songify_Slim.Views.WPFUI.Controls
             AutostartHelper.RegisterInStartup((bool)chbxAutostartIsChecked);
         }
 
-        private void ChbxCover_Checked(object sender, RoutedEventArgs e)
+        private void TglCanvas_OnToggled(object sender, RoutedEventArgs e)
         {
             if (IgnoreControlEvents)
                 return;
-            // enables / disables telemetry
-            Settings.DownloadCover = ChbxCover.IsChecked == true;
+
+            bool enabled = ((ToggleSwitch)sender).IsChecked == true;
+            Settings.DownloadCanvas = enabled;
+
+            if (!enabled)
+            {
+                AppShellBridge.Current?.StopCanvas();
+                return;
+            }
+
+            if (GlobalObjects.Canvas is { Item1: true } && !string.IsNullOrEmpty(GlobalObjects.Canvas.Item2))
+            {
+                IoManager.DownloadCanvas(GlobalObjects.Canvas.Item2, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
+                return;
+            }
+
+            string existing = Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4");
+            if (File.Exists(existing))
+                AppShellBridge.Current?.SetCanvas(existing);
         }
 
         //private void ChbxCustompauseChecked(object sender, RoutedEventArgs e)
@@ -2252,13 +2268,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             Settings.KeepAlbumCover = ((ToggleSwitch)sender).IsChecked == true;
-        }
-
-        private void TglCanvas_OnToggled(object sender, RoutedEventArgs e)
-        {
-            if (IgnoreControlEvents)
-                return;
-            Settings.DownloadCanvas = ((ToggleSwitch)sender).IsChecked == true;
         }
 
         private void BtnResponseParams_OnClick(object sender, RoutedEventArgs e)

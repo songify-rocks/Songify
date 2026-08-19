@@ -403,6 +403,7 @@ namespace Songify_Slim.Util.Configuration
 
                     case ConfigTypes.AppConfig:
                         config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
+                        config.AppConfig.DownloadCover = true;
                         WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
@@ -962,7 +963,7 @@ namespace Songify_Slim.Util.Configuration
         public bool CustomPauseTextEnabled { get; set; }
         public bool DonationReminder { get; set; }
         public bool DownloadCanvas { get; set; }
-        public bool DownloadCover { get; set; }
+        public bool DownloadCover { get; set; } = true;
         public bool KeepAlbumCover { get; set; } = false;
         public bool LimitSrToPlaylist { get; set; }
         public bool MsgLoggingEnabled { get; set; }

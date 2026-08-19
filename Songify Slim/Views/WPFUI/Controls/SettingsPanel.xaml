@@ -506,14 +506,6 @@
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                     Text="{DynamicResource window_settings_options}" />
                                 <ui:ToggleSwitch
-                                    x:Name="ChbxCover"
-                                    Margin="0,0,0,8"
-                                    d:Content="{x:Static local:Resources.window_settings_output_download_album}"
-                                    Checked="ChbxCover_Checked"
-                                    Content="{DynamicResource window_settings_output_download_album}"
-                                    Focusable="False"
-                                    Unchecked="ChbxCover_Checked" />
-                                <ui:ToggleSwitch
                                     x:Name="TglCanvas"
                                     Margin="0,0,0,12"
                                     d:Content="{x:Static local:Resources.window_settings_output_download_canvas}"
