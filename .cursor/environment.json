@@ -1,0 +1,4 @@
+{
+  "name": "Songify",
+  "install": "bash .cursor/install.sh"
+}
