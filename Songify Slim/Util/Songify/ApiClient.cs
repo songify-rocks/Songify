@@ -1,25 +1,24 @@
 ﻿using Newtonsoft.Json;
-using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
-using SpotifyAPI.Web;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using static System.Net.WebRequestMethods;
 
 namespace Songify_Slim.Util.Songify
 {
     public class ApiClient(string baseUrl)
     {
-        private readonly HttpClient _httpClient = new();
+        private readonly HttpClient _httpClient = SongifyAuthService.HttpClient;
 
         public async Task<string> GetCanvas(string songId)
         {
             try
             {
-                HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/canvas/{songId}");
+                using HttpResponseMessage response = await SendAsync(
+                    HttpMethod.Get, $"canvas/{songId}", requireAuth: false).ConfigureAwait(false);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:
@@ -29,7 +28,7 @@ namespace Songify_Slim.Util.Songify
                         return null;
 
                     case HttpStatusCode.OK:
-                        return await response.Content.ReadAsStringAsync();
+                        return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -44,7 +43,9 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                HttpResponseMessage response = await _httpClient.GetAsync($"{baseUrl}/{endpoint}?uuid={uuid}");
+                string query = string.IsNullOrEmpty(uuid) ? null : $"uuid={Uri.EscapeDataString(uuid)}";
+                using HttpResponseMessage response = await SendAsync(
+                    HttpMethod.Get, endpoint, requireAuth: false, query: query).ConfigureAwait(false);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:
@@ -54,7 +55,7 @@ namespace Songify_Slim.Util.Songify
                         return null;
 
                     case HttpStatusCode.OK:
-                        return await response.Content.ReadAsStringAsync();
+                        return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -69,12 +70,8 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                UriBuilder builder = new($"{baseUrl}/{endpoint}")
-                {
-                    Query = $"api_key={Settings.AccessKey}"
-                };
-                StringContent content = new(payload, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
+                using HttpResponseMessage response = await SendAsync(
+                    HttpMethod.Post, endpoint, payload, requireAuth: true).ConfigureAwait(false);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:
@@ -92,7 +89,7 @@ namespace Songify_Slim.Util.Songify
                                 Logger.Info(LogSource.Api, "Telemetry: success");
                                 break;
                         }
-                        return await response.Content.ReadAsStringAsync();
+                        return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
                 return null;
             }
@@ -107,14 +104,8 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                UriBuilder builder = new($"{baseUrl}/{endpoint}")
-                {
-                    Query = $"api_key={Settings.AccessKey}"
-                };
-                StringContent content = new(payload, Encoding.UTF8, "application/json");
-                HttpMethod method = new("PATCH");
-                HttpRequestMessage request = new(method, builder.ToString()) { Content = content };
-                HttpResponseMessage response = await _httpClient.SendAsync(request);
+                using HttpResponseMessage response = await SendAsync(
+                    new HttpMethod("PATCH"), endpoint, payload, requireAuth: true).ConfigureAwait(false);
 
                 switch (response.StatusCode)
                 {
@@ -125,7 +116,7 @@ namespace Songify_Slim.Util.Songify
                         return null;
 
                     case HttpStatusCode.OK:
-                        return await response.Content.ReadAsStringAsync();
+                        return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -139,12 +130,8 @@ namespace Songify_Slim.Util.Songify
         {
             try
             {
-                UriBuilder builder = new($"{baseUrl}/{endpoint}")
-                {
-                    Query = $"api_key={Settings.AccessKey}"
-                };
-                StringContent content = new(payload, Encoding.UTF8, "application/json");
-                HttpResponseMessage response = await _httpClient.PostAsync(builder.ToString(), content);
+                using HttpResponseMessage response = await SendAsync(
+                    HttpMethod.Post, endpoint, payload, requireAuth: true).ConfigureAwait(false);
 
                 switch (response.StatusCode)
                 {
@@ -155,7 +142,7 @@ namespace Songify_Slim.Util.Songify
                         return null;
 
                     case HttpStatusCode.OK:
-                        return await response.Content.ReadAsStringAsync();
+                        return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception e)
@@ -173,9 +160,8 @@ namespace Songify_Slim.Util.Songify
             };
 
             string json = JsonConvert.SerializeObject(payload);
-            StringContent content = new(json, Encoding.UTF8, "application/json");
-
-            using HttpResponseMessage resp = await _httpClient.PostAsync($"{baseUrl}/youtube/meta", content).ConfigureAwait(false);
+            using HttpResponseMessage resp = await SendAsync(
+                HttpMethod.Post, "youtube/meta", json, requireAuth: true).ConfigureAwait(false);
             string respJson = await resp.Content.ReadAsStringAsync().ConfigureAwait(false);
 
             if (!resp.IsSuccessStatusCode)
@@ -185,6 +171,53 @@ namespace Songify_Slim.Util.Songify
             }
 
             return respJson;
+        }
+
+        internal Task<HttpResponseMessage> GetAuthenticated(string endpoint, string query)
+        {
+            return SendAsync(HttpMethod.Get, endpoint, requireAuth: true, query: query);
+        }
+
+        internal Task<HttpResponseMessage> PostAuthenticated(string endpoint, string payload)
+        {
+            return SendAsync(HttpMethod.Post, endpoint, payload, requireAuth: true);
+        }
+
+        private async Task<HttpResponseMessage> SendAsync(
+            HttpMethod method,
+            string endpoint,
+            string payload = null,
+            bool requireAuth = false,
+            string query = null,
+            bool isRetry = false)
+        {
+            string url = string.IsNullOrEmpty(query)
+                ? $"{baseUrl}/{endpoint}"
+                : $"{baseUrl}/{endpoint}?{query}";
+
+            using HttpRequestMessage request = new(method, url);
+            if (payload != null)
+                request.Content = new StringContent(payload, Encoding.UTF8, "application/json");
+
+            if (requireAuth)
+            {
+                string token = await SongifyAuthService.GetAccessTokenAsync().ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(token))
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            }
+
+            HttpResponseMessage response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+
+            if (requireAuth && response.StatusCode == HttpStatusCode.Unauthorized && !isRetry)
+            {
+                response.Dispose();
+                SongifyAuthService.Invalidate();
+                await SongifyAuthService.EnsureAuthenticatedAsync().ConfigureAwait(false);
+                return await SendAsync(method, endpoint, payload, requireAuth, query, isRetry: true)
+                    .ConfigureAwait(false);
+            }
+
+            return response;
         }
     }
 }

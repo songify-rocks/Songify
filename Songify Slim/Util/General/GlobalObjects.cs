@@ -34,7 +34,8 @@ namespace Songify_Slim.Util.General
 {
     public static class GlobalObjects
     {
-        public const string ApiUrl = "https://api.songify.rocks/v2";
+        // Local v3 API for testing. Production must still end in /v3.
+        public const string ApiUrl = "http://127.0.0.1:8081/v3";
         public static string BaseUrl = "https://songify.rocks";
         public static string AuthUrl = "https://songify.rocks";
         public const string AltAuthUrl = "https://songify.bloemacher.com";

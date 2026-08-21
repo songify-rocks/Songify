@@ -2588,7 +2588,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     return;
                 }
 
-                Tuple<bool, HttpStatusCode> result = await ConfigHandler.CloudSaveSettings(Settings.SongifyApiKey,
+                Tuple<bool, HttpStatusCode> result = await ConfigHandler.CloudSaveSettings(
                     Settings.TwitchUser.Id, Settings.CurrentConfig);
 
                 if (result.Item1)
@@ -2645,7 +2645,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 }
 
                 Tuple<bool, HttpStatusCode> result =
-                    await ConfigHandler.CloudRestoreSettings(Settings.SongifyApiKey, Settings.TwitchUser.Id);
+                    await ConfigHandler.CloudRestoreSettings(Settings.TwitchUser.Id);
 
                 if (result.Item1)
                 {

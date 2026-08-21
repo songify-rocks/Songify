@@ -39,6 +39,8 @@ public static class AppStartup
             return;
         }
 
+        _ = AuthenticateSongifyApiAsync();
+
         bool startTour = false;
         if (GuidedSetup.ShouldShowWizard())
             startTour = await GuidedSetup.ShowWizardAsync(owner);
@@ -109,6 +111,18 @@ public static class AppStartup
     {
         if (!string.IsNullOrEmpty(GlobalObjects.AppVersion)) return;
         GlobalObjects.AppVersion = AppPaths.GetFileVersionThreePart() ?? "?";
+    }
+
+    private static async Task AuthenticateSongifyApiAsync()
+    {
+        try
+        {
+            await SongifyAuthService.EnsureAuthenticatedAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Api, "Songify API authentication failed.", ex);
+        }
     }
 
     private static async Task RunUseOwnAppDialogAsync()

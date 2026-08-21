@@ -3,6 +3,7 @@ using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using System;
@@ -545,7 +546,7 @@ namespace Songify_Slim.Util.Configuration
             return key;
         }
 
-        public static async Task<Tuple<bool, HttpStatusCode>> CloudSaveSettings(string apiToken, string userId,
+        public static async Task<Tuple<bool, HttpStatusCode>> CloudSaveSettings(string userId,
             Configuration config)
         {
             try
@@ -592,14 +593,8 @@ namespace Songify_Slim.Util.Configuration
                     settings = base64
                 };
 
-                StringContent content = new(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
-
-                string url = $"{GlobalObjects.ApiUrl}/user_settings";
-
-                using HttpClient http = new();
-                http.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
-                HttpResponseMessage response = await http.PostAsync(url, content);
+                using HttpResponseMessage response = await SongifyApi.PostUserSettingsAsync(
+                    JsonConvert.SerializeObject(body));
                 switch (response.StatusCode)
                 {
                     // Handle response codes 200 OK: User has premium access and operation succeeded
@@ -679,44 +674,45 @@ namespace Songify_Slim.Util.Configuration
             config.AppConfig.ArtistBlacklist = [];
         }
 
-        public static async Task<Tuple<bool, HttpStatusCode>> CloudRestoreSettings(string apiToken, string userId)
+        public static async Task<Tuple<bool, HttpStatusCode>> CloudRestoreSettings(string userId)
         {
             try
             {
-                string url = $"{GlobalObjects.ApiUrl}/user_settings?user_id={userId}";
-
-                using HttpClient http = new();
-                http.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
-
-                HttpResponseMessage response = await http.GetAsync(url);
-
-                switch (response.StatusCode)
+                string base64;
+                HttpStatusCode statusCode;
+                bool success;
+                using (HttpResponseMessage response = await SongifyApi.GetUserSettingsAsync(userId))
                 {
-                    // Handle response codes 200 OK: User has premium access and operation succeeded
-                    // 401 Unauthorized: Invalid token
-                    // 403 Forbidden: User not found, no email, or no premium status
-                    // 500 Internal Server Error: Database error
-                    case HttpStatusCode.Unauthorized:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.Unauthorized);
+                    switch (response.StatusCode)
+                    {
+                        // Handle response codes 200 OK: User has premium access and operation succeeded
+                        // 401 Unauthorized: Invalid token
+                        // 403 Forbidden: User not found, no email, or no premium status
+                        // 500 Internal Server Error: Database error
+                        case HttpStatusCode.Unauthorized:
+                            Logger.Warning(LogSource.Api,
+                                "Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
+                            return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
+                                HttpStatusCode.Unauthorized);
 
-                    case HttpStatusCode.Forbidden:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud restore failed: Forbidden access. User not found or no premium status.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
+                        case HttpStatusCode.Forbidden:
+                            Logger.Warning(LogSource.Api,
+                                "Cloud restore failed: Forbidden access. User not found or no premium status.");
+                            return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
 
-                    case HttpStatusCode.InternalServerError:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud restore failed: Internal server error. Please try again later.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.InternalServerError);
+                        case HttpStatusCode.InternalServerError:
+                            Logger.Warning(LogSource.Api,
+                                "Cloud restore failed: Internal server error. Please try again later.");
+                            return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
+                                HttpStatusCode.InternalServerError);
+                    }
+
+                    // If the API returns the raw base64 blob directly:
+                    base64 = await response.Content.ReadAsStringAsync();
+                    statusCode = response.StatusCode;
+                    success = response.IsSuccessStatusCode;
                 }
 
-                // If the API returns the raw base64 blob directly:
-                string base64 = await response.Content.ReadAsStringAsync();
                 base64 = JsonConvert.DeserializeObject<string>(base64);
                 if (string.IsNullOrWhiteSpace(base64))
                     return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NoContent);
@@ -771,7 +767,7 @@ namespace Songify_Slim.Util.Configuration
                 }
 
                 await Settings.ImportCloudSave(restoredConfig);
-                return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, response.StatusCode);
+                return new Tuple<bool, HttpStatusCode>(success, statusCode);
             }
             catch (Exception ex)
             {
