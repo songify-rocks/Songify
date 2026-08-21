@@ -978,7 +978,7 @@
                                     <TextBlock
                                         Margin="0,0,8,0"
                                         VerticalAlignment="Center"
-                                        Text="Minimum messages between song announcements" />
+                                        Text="{DynamicResource window_settings_integration_min_msg_for_announce}" />
                                     <ui:NumberBox
                                         x:Name="Nb_MinimumMessagesBetweenAnnounces"
                                         MinWidth="130"

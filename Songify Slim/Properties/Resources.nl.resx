@@ -2407,4 +2407,49 @@ gwyden - Hertz - karimawii
   <data name="setup_tour_output_body" xml:space="preserve">
     <value>Wijs in de uitvoerinstellingen van OBS naar het bestand Songify.txt. Ga naar Extra → Widget om de browseroverlay te openen. Dat is de rondleiding – je bent klaar.</value>
   </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Loskoppelen</value>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Consolevenster</value>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>De console bevindt zich in een ander venster.</value>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>Het logboek wordt in een apart venster weergegeven, zodat u het kunt bekijken terwijl u de rest van Songify gebruikt. Sluit dat venster om de console hier terug te brengen.</value>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Venster weergeven</value>
+  </data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Voeg een Songify API-token toe.</value>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>Songify API-token</value>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Webdiensten zoals het uploaden van het huidige nummer en de wachtrij voor verzoeken vereisen een Songify API-token. Log in op songify.rocks met je Twitch-account, genereer een token op je accountpagina en plak deze hier. Als de website de optie 'Importeren naar Songify' aanbiedt, wordt het token automatisch naar deze app verzonden.</value>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Token verkrijgen</value>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>Nog geen token. Het uploaden van songgegevens en de wachtrij werkt pas nadat je er een hebt toegevoegd.</value>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Token opgeslagen. Genereer een nieuwe op je accountpagina als je deze wilt vervangen.</value>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Vereist voor websonggegevens en de aanvraagwachtrij. Log in op songify.rocks met Twitch, genereer een token op je accountpagina en plak deze hier of gebruik 'Importeren naar Songify' op de website.</value>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Een Songify API-token is vereist.</value>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Songgegevens en de aanvraagwachtrij worden pas op de website bijgewerkt nadat je een Songify API-token hebt toegevoegd. Log in op songify.rocks met Twitch, genereer een token op je accountpagina en importeer deze vervolgens in Instellingen → Configuratie.</value>
+  </data>
+  <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
+    <value>Minimale berichten tussen aankondigingen van nummers</value>
+  </data>
 </root>

@@ -2354,4 +2354,49 @@ gwyden - Hertz - karimawii
   <data name="setup_tour_output_body" xml:space="preserve">
     <value>Dans les paramètres de sortie, indiquez à OBS l'emplacement du fichier Songify.txt. Cliquez sur Outils → Widget pour ouvrir la fenêtre qui s'affiche dans votre navigateur. Voilà, c'est tout !</value>
   </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Détacher</value>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Fenêtre de console</value>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>La console se trouve dans une autre fenêtre.</value>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>Le journal s'ouvre dans une fenêtre séparée pour que vous puissiez le consulter tout en utilisant le reste de Songify. Fermez cette fenêtre pour faire revenir la console ici.</value>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Afficher la fenêtre</value>
+  </data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Ajouter un jeton d'API Songify</value>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>jeton API Songify</value>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Les services web, comme le chargement du morceau en cours et la gestion de la file d'attente, nécessitent un jeton d'API Songify. Connectez-vous à songify.rocks avec votre compte Twitch, générez un jeton sur votre page de compte, puis collez-le ici. Si le site propose l'option « Importer vers Songify », le jeton sera automatiquement envoyé à cette application.</value>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Obtenir un jeton</value>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>Aucun jeton n'a encore été ajouté. Le chargement des données musicales et de la file d'attente ne fonctionnera pas tant que vous n'en aurez pas ajouté un.</value>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Jeton enregistré. Générez-en un nouveau sur votre page de compte si vous devez le remplacer.</value>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Nécessaire pour les données des chansons en ligne et la file d'attente des requêtes. Connectez-vous à songify.rocks avec Twitch, générez un jeton sur votre page de compte, puis collez-le ici ou utilisez l'option « Importer dans Songify » sur le site web.</value>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Jeton d'API Songify requis</value>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Les données des morceaux et la file d'attente des requêtes ne seront pas mises à jour sur le web tant que vous n'aurez pas ajouté un jeton d'API Songify. Connectez-vous à songify.rocks avec Twitch, générez un jeton sur votre page de compte, puis importez-le dans Paramètres → Configuration.</value>
+  </data>
+  <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
+    <value>Messages minimums entre les annonces de chansons</value>
+  </data>
 </root>

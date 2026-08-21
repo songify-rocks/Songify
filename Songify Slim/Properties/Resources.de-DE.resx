@@ -2357,4 +2357,49 @@ gwyden - Hertz - karimawii
   <data name="setup_tour_output_body" xml:space="preserve">
     <value>Wählen Sie in den Ausgabeeinstellungen von OBS die Datei „Songify.txt“ aus. Unter „Tools → Widget“ wird das Browser-Overlay geöffnet. Das war’s – fertig!</value>
   </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Abtrennen</value>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Konsolenfenster</value>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>Die Konsole befindet sich in einem anderen Fenster.</value>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>Das Protokoll ist in einem separaten Fenster geöffnet, sodass Sie es im Blick behalten können, während Sie Songify weiterhin nutzen. Schließen Sie dieses Fenster, um die Konsole wieder hierher zu bringen.</value>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Fenster anzeigen</value>
+  </data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Songify-API-Token hinzufügen</value>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>Songify API-Token</value>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Webdienste wie das Hochladen des aktuellen Songs und die Anfragewarteschlange benötigen ein Songify-API-Token. Melde dich mit deinem Twitch-Konto auf songify.rocks an, generiere ein Token auf deiner Kontoseite und füge es hier ein. Falls die Website die Funktion „In Songify importieren“ anbietet, wird das Token automatisch an diese App gesendet.</value>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Token anfordern</value>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>Noch kein Token vorhanden. Songdaten und das Hochladen in die Warteschlange funktionieren erst, nachdem Sie einen Token hinzugefügt haben.</value>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Token gespeichert. Generieren Sie einen neuen auf Ihrer Kontoseite, falls Sie ihn ersetzen müssen.</value>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Erforderlich für Web-Songdaten und die Anfragewarteschlange. Melden Sie sich mit Ihrem Twitch-Konto bei songify.rocks an, generieren Sie ein Token auf Ihrer Kontoseite und fügen Sie es hier ein oder nutzen Sie die Funktion „In Songify importieren“ auf der Website.</value>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Songify API-Token erforderlich</value>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Die Songdaten und die Anfragewarteschlange werden erst aktualisiert, nachdem Sie ein Songify-API-Token hinzugefügt haben. Melden Sie sich mit Ihrem Twitch-Konto bei songify.rocks an, generieren Sie ein Token auf Ihrer Kontoseite und importieren Sie es anschließend unter Einstellungen → Konfiguration.</value>
+  </data>
+  <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
+    <value>Mindestanzahl an Nachrichten zwischen den Songankündigungen</value>
+  </data>
 </root>

@@ -2354,4 +2354,49 @@ gwyden - Hertz - karimawii
   <data name="setup_tour_output_body" xml:space="preserve">
     <value>В настройках вывода укажите OBS на файл Songify.txt. Инструменты → Виджеты откроют всплывающее окно в браузере. Вот и весь тур — готово.</value>
   </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Отсоединить</value>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Окно консоли</value>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>Консоль находится в другом окне.</value>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>Журнал событий открыт в отдельном окне, так что вы можете просматривать его, пока используете остальные приложения Songify. Закройте это окно, чтобы вернуться в консоль.</value>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Витрина магазина</value>
+  </data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Добавить токен API Songify</value>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>API-токен Songify</value>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Для работы веб-сервисов, таких как загрузка текущей песни и добавление в очередь запросов, необходим токен API Songify. Войдите в songify.rocks, используя свою учетную запись Twitch, сгенерируйте токен на странице своей учетной записи, а затем вставьте его сюда. Если на сайте есть функция «Импорт в Songify», токен будет автоматически отправлен в это приложение.</value>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Получить токен</value>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>Токен пока отсутствует. Загрузка данных о песнях и в очередь воспроизведения не будет работать, пока вы его не добавите.</value>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Токен сохранен. При необходимости сгенерируйте новый токен на странице своего аккаунта.</value>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Необходим для веб-данных о песнях и очереди запросов. Войдите в songify.rocks через Twitch, сгенерируйте токен на странице своей учетной записи, а затем вставьте его сюда или используйте функцию «Импорт в Songify» на веб-сайте.</value>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Требуется токен API Songify.</value>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Данные о песнях и очередь запросов не будут обновляться на веб-сайте, пока вы не добавите токен API Songify. Войдите в songify.rocks через Twitch, сгенерируйте токен на странице своей учетной записи, а затем импортируйте его в Настройки → Конфигурация.</value>
+  </data>
+  <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
+    <value>Минимальное количество сообщений между объявлениями песен</value>
+  </data>
 </root>

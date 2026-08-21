@@ -2538,4 +2538,49 @@ gwyden - Hertz - karimawii
   <data name="setup_tour_output_body" xml:space="preserve">
     <value>Навядзіце курсор OBS на файл Songify.txt у наладах вываду. Інструменты → Віджэт адкрывае акно браўзера. Вось і агляд — усё гатова.</value>
   </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Адлучыць</value>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Акно кансолі</value>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>Кансоль знаходзіцца ў іншым акне</value>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>Журнал адкрыты ў асобным акне, таму вы можаце праглядаць яго, пакуль карыстаецеся астатнімі праграмамі Songify. Закрыйце гэта акно, каб вярнуць кансоль сюды.</value>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Паказаць акно</value>
+  </data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Дадаць токен API Songify</value>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>Токен API Songify</value>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Для такіх вэб-сэрвісаў, як загрузка бягучай песні і чарга запытаў, патрабуецца токен API Songify. Увайдзіце ў songify.rocks з дапамогай свайго ўліковага запісу Twitch, стварыце токен на старонцы ўліковага запісу, а затым устаўце яго сюды. Калі вэб-сайт прапануе опцыю «Імпартаваць у Songify», токен будзе адпраўлены ў гэту праграму аўтаматычна.</value>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Атрымаць токен</value>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>Пакуль няма токена. Даныя песень і загрузка чаргі не будуць працаваць, пакуль вы яго не дадасце.</value>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Токен захаваны. Калі вам трэба яго замяніць, стварыце новы на старонцы вашага ўліковага запісу.</value>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Патрабуецца для дадзеных вэб-песень і чаргі запытаў. Увайдзіце ў songify.rocks з дапамогай Twitch, стварыце токен на старонцы вашага ўліковага запісу, а затым устаўце яго сюды або скарыстайцеся функцыяй «Імпартаваць у Songify» на вэб-сайце.</value>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Патрабуецца токен API Songify</value>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Дадзеныя песні і чарга запытаў не будуць абнаўляцца ў інтэрнэце, пакуль вы не дадасце токен API Songify. Увайдзіце ў songify.rocks праз Twitch, стварыце токен на старонцы вашага ўліковага запісу, а затым імпартуйце яго ў Налады → Канфігурацыя.</value>
+  </data>
+  <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
+    <value>Мінімальная колькасць паведамленняў паміж анонсамі песень</value>
+  </data>
 </root>
