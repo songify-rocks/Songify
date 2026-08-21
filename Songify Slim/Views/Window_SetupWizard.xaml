@@ -182,6 +182,48 @@
                     TextWrapping="Wrap" />
             </StackPanel>
 
+            <!--  Songify API token  -->
+            <StackPanel
+                x:Name="StepToken"
+                Grid.Row="1"
+                Visibility="Collapsed">
+                <TextBlock
+                    Margin="0,0,0,8"
+                    FontSize="22"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource setup_token_title}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    Margin="0,0,0,16"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{DynamicResource setup_token_body}"
+                    TextWrapping="Wrap" />
+                <ui:Button
+                    x:Name="BtnGetToken"
+                    MinWidth="140"
+                    HorizontalAlignment="Left"
+                    Appearance="Primary"
+                    Click="BtnGetToken_OnClick"
+                    Content="{DynamicResource setup_token_get}" />
+                <TextBlock
+                    Margin="0,16,0,8"
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource window_settings_songify_api_token}" />
+                <PasswordBox
+                    x:Name="PwbToken"
+                    Margin="0,0,0,8"
+                    PasswordChanged="PwbToken_OnPasswordChanged" />
+                <TextBlock
+                    x:Name="TxtTokenStatus"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+
             <!--  Output  -->
             <StackPanel
                 x:Name="StepOutput"

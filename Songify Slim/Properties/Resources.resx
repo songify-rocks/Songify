@@ -2544,6 +2544,42 @@ gwyden - Hertz - karimawii
   <data name="setup_checklist_spotify" xml:space="preserve"><value>Link Spotify</value></data>
   <data name="setup_checklist_twitch" xml:space="preserve"><value>Link Twitch (for song requests)</value></data>
   <data name="setup_checklist_output" xml:space="preserve"><value>Song output file (OBS)</value></data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Add Songify API token</value>
+    <comment>Context: Home checklist item for the Songify website API token required by song/queue uploads.</comment>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>Songify API token</value>
+    <comment>Context: Setup wizard step title for Songify API token.</comment>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Web services such as uploading the current song and the request queue need a Songify API token. Log in on songify.rocks with your Twitch account, generate a token on your account page, then paste it here. If the website offers Import to Songify, that sends the token to this app automatically.</value>
+    <comment>Context: Setup wizard explanation of how to get and import a Songify API token.</comment>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Get token</value>
+    <comment>Context: Button that opens songify.rocks account page to generate a token.</comment>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>No token yet. Song data and queue uploads will not work until you add one.</value>
+    <comment>Context: Status when Songify API token is missing.</comment>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Token saved. Generate a new one on your account page if you need to replace it.</value>
+    <comment>Context: Status when a Songify API token is already stored.</comment>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Required for web song data and the request queue. Log in on songify.rocks with Twitch, generate a token on your account page, then paste it here or use Import to Songify on the website.</value>
+    <comment>Context: Help text under Settings → Config → Songify API token.</comment>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Songify API token required</value>
+    <comment>Context: Home warning card title when the Songify API token is missing.</comment>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Song data and the request queue will not update on the web until you add a Songify API token. Log in on songify.rocks with Twitch, generate a token on your account page, then import it in Settings → Config.</value>
+    <comment>Context: Home warning card body when the Songify API token is missing.</comment>
+  </data>
   <data name="menu_setup_wizard" xml:space="preserve"><value>Setup wizard</value></data>
   <data name="setup_tour_home_title" xml:space="preserve"><value>Home</value></data>
   <data name="setup_tour_home_body" xml:space="preserve"><value>This is the overview. Use the player dropdown to choose Spotify or another source. Now playing and the next requested songs show up here.</value></data>

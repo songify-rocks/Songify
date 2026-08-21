@@ -13,6 +13,7 @@ using Songify_Slim.Views.WPFUI.Pages;
 using static Songify_Slim.Util.General.Enums;
 using Clipboard = System.Windows.Clipboard;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
+using PasswordBox = System.Windows.Controls.PasswordBox;
 using TextBox = System.Windows.Controls.TextBox;
 
 namespace Songify_Slim.Views;
@@ -25,6 +26,7 @@ public partial class WindowSetupWizard
         Player,
         Spotify,
         Twitch,
+        Token,
         Output,
         Done
     }
@@ -58,6 +60,8 @@ public partial class WindowSetupWizard
         BindLanguageCombo();
         BindPlayerCombo();
         TbClientId.Text = Settings.ClientId ?? "";
+        if (!string.IsNullOrEmpty(Settings.SongifyApiKey))
+            PwbToken.Password = Settings.SongifyApiKey;
         RefreshOutputPath();
         RebuildSteps(keepCurrent: false);
         ShowCurrentStep();
@@ -118,6 +122,7 @@ public partial class WindowSetupWizard
         if (Settings.Player == PlayerType.Spotify)
             _steps.Add(WizardStep.Spotify);
         _steps.Add(WizardStep.Twitch);
+        _steps.Add(WizardStep.Token);
         _steps.Add(WizardStep.Output);
         _steps.Add(WizardStep.Done);
 
@@ -141,6 +146,7 @@ public partial class WindowSetupWizard
         StepPlayer.Visibility = step == WizardStep.Player ? Visibility.Visible : Visibility.Collapsed;
         StepSpotify.Visibility = step == WizardStep.Spotify ? Visibility.Visible : Visibility.Collapsed;
         StepTwitch.Visibility = step == WizardStep.Twitch ? Visibility.Visible : Visibility.Collapsed;
+        StepToken.Visibility = step == WizardStep.Token ? Visibility.Visible : Visibility.Collapsed;
         StepOutput.Visibility = step == WizardStep.Output ? Visibility.Visible : Visibility.Collapsed;
         StepDone.Visibility = step == WizardStep.Done ? Visibility.Visible : Visibility.Collapsed;
 
@@ -156,7 +162,7 @@ public partial class WindowSetupWizard
             ? Loc("setup_finish", "Finish")
             : Loc("setup_next", "Next");
 
-        if (step is WizardStep.Spotify or WizardStep.Twitch or WizardStep.Done)
+        if (step is WizardStep.Spotify or WizardStep.Twitch or WizardStep.Token or WizardStep.Done)
             RefreshLinkStatus();
         if (step == WizardStep.Done)
             RebuildStatusChips();
@@ -198,6 +204,13 @@ public partial class WindowSetupWizard
             }
         }
 
+        if (TxtTokenStatus != null)
+        {
+            TxtTokenStatus.Text = AccountLinking.HasSongifyApiToken()
+                ? Loc("setup_token_present", "Token saved. Generate a new one on your account page if you need to replace it.")
+                : Loc("setup_token_missing", "No token yet. Song data and queue uploads will not work until you add one.");
+        }
+
         if (StepDone.Visibility == Visibility.Visible)
             RebuildStatusChips();
     }
@@ -211,6 +224,9 @@ public partial class WindowSetupWizard
         AddStatusRow(
             Loc("setup_checklist_twitch", "Link Twitch (for song requests)"),
             AccountLinking.IsTwitchMainLinked());
+        AddStatusRow(
+            Loc("setup_checklist_token", "Add Songify API token"),
+            AccountLinking.HasSongifyApiToken());
         AddStatusRow(
             Loc("setup_checklist_output", "Song output file (OBS)"),
             GuidedSetup.IsOutputReady());
@@ -306,6 +322,21 @@ public partial class WindowSetupWizard
 
     private void BtnTwitchLogin_OnClick(object sender, RoutedEventArgs e)
         => AccountLinking.LoginTwitchMain();
+
+    private void BtnGetToken_OnClick(object sender, RoutedEventArgs e)
+        => AccountLinking.OpenSongifyTokenPage();
+
+    private void PwbToken_OnPasswordChanged(object sender, RoutedEventArgs e)
+    {
+        if (sender is not PasswordBox box)
+            return;
+        string pwd = box.Password ?? "";
+        if (string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(Settings.SongifyApiKey))
+            return;
+        Settings.SongifyApiKey = pwd;
+        RefreshLinkStatus();
+        OverviewPage.RefreshChecklist();
+    }
 
     private void BtnBrowseOutput_OnClick(object sender, RoutedEventArgs e)
     {

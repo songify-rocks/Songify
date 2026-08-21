@@ -725,7 +725,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         RootNavigationView.Navigate(typeof(Pages.SettingsPage));
     }
 
-    public async Task OpenSettingsTabAsync(string tabTag)
+    public async Task OpenSettingsTabAsync(string tabTag, string elementName = null)
     {
         RootNavigationView.Navigate(typeof(Pages.SettingsPage));
         await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
@@ -737,7 +737,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             page = Pages.SettingsPage.Instance;
         }
 
-        page?.SelectTab(tabTag);
+        page?.SelectTab(tabTag, elementName);
     }
 
     public async Task StartSetupTourAsync()

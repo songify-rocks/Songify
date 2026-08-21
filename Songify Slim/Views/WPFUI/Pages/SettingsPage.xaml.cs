@@ -84,7 +84,7 @@ public partial class SettingsPage : Page
     }
 
     /// <summary>Selects a settings tab by Tag (Spotify, Twitch, Output, …) and keeps the left nav in sync.</summary>
-    public void SelectTab(string tabTag)
+    public void SelectTab(string tabTag, string elementName = null)
     {
         EnsureNavBuilt();
         if (string.IsNullOrWhiteSpace(tabTag) || NavList == null)
@@ -97,11 +97,11 @@ public partial class SettingsPage : Page
             if (!string.Equals(tab.Tag?.ToString(), tabTag, StringComparison.OrdinalIgnoreCase))
                 continue;
             NavList.SelectedItem = listItem;
-            Panel?.SelectTab(tabTag);
+            Panel?.SelectTab(tabTag, elementName);
             return;
         }
 
-        Panel?.SelectTab(tabTag);
+        Panel?.SelectTab(tabTag, elementName);
     }
 
     private void EnsureNavBuilt()

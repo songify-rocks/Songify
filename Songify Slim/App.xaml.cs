@@ -5,6 +5,7 @@ using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Microsoft.Win32;
 using Songify_Slim.Models;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
 using System;
@@ -296,6 +297,8 @@ namespace Songify_Slim
                 }
 
                 Settings.SongifyApiKey = token;
+                SongifyAuthService.Invalidate();
+                _ = SongifyAuthService.EnsureAuthenticatedAsync();
 
                 await AppShellBridge.Current.ShowMessageAsync(
                     "Notification",

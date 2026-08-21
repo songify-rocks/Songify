@@ -2731,27 +2731,35 @@
                             </StackPanel>
                         </ui:Card>
 
-                        <ui:Card Padding="16">
+                        <ui:Card
+                            x:Name="CardSongifyApiToken"
+                            Margin="0,0,0,12"
+                            Padding="16">
                             <StackPanel>
                                 <TextBlock
-                                    Margin="0,0,0,12"
-                                    d:Text="{x:Static local:Resources.window_settings_section_advanced}"
+                                    Margin="0,0,0,8"
+                                    d:Text="{x:Static local:Resources.window_settings_songify_api_token}"
                                     FontSize="14"
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="{DynamicResource window_settings_section_advanced}" />
+                                    Text="{DynamicResource window_settings_songify_api_token}" />
+                                <TextBlock
+                                    x:Name="TblSongifyTokenHelp"
+                                    Margin="0,0,0,12"
+                                    Opacity="0.85"
+                                    Text="{DynamicResource window_settings_songify_api_token_help}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    x:Name="TblSongifyTokenStatus"
+                                    Margin="0,0,0,12"
+                                    TextWrapping="Wrap" />
                                 <Grid Margin="0,0,0,12">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock
-                                        Grid.Column="0"
-                                        Margin="0,0,12,0"
-                                        VerticalAlignment="Center"
-                                        Text="{DynamicResource window_settings_songify_api_token}" />
-                                    <Grid Grid.Column="1" Margin="0,0,8,0">
+                                    <Grid Grid.Column="0" Margin="0,0,8,0">
                                         <PasswordBox
                                             x:Name="PasswordBox"
                                             Padding="0,0,30,0"
@@ -2785,6 +2793,12 @@
                                         </Button>
                                     </Grid>
                                     <Button
+                                        x:Name="BtnGetSongifyToken"
+                                        Grid.Column="1"
+                                        Margin="0,0,8,0"
+                                        Click="BtnGetSongifyToken_OnClick"
+                                        Content="{DynamicResource setup_token_get}" />
+                                    <Button
                                         x:Name="btnApiToken"
                                         Grid.Column="2"
                                         Width="32"
@@ -2792,6 +2806,18 @@
                                         Click="BtnApiToken_OnClick"
                                         Content="{DynamicResource common_help}" />
                                 </Grid>
+                            </StackPanel>
+                        </ui:Card>
+
+                        <ui:Card Padding="16">
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,0,0,12"
+                                    d:Text="{x:Static local:Resources.window_settings_section_advanced}"
+                                    FontSize="14"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{DynamicResource window_settings_section_advanced}" />
                                 <ui:ToggleSwitch
                                     x:Name="TglDebugLogging"
                                     Margin="0,0,0,12"

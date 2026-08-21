@@ -109,6 +109,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     PasswordBox.Password = Settings.SongifyApiKey ?? "";
                 if (TextBox != null)
                     TextBox.Text = Settings.SongifyApiKey ?? "";
+                UpdateSongifyTokenStatus();
                 if (PasswordBox_YoutubeApiKey != null)
                     PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey ?? "";
                 if (PasswordBox_WebServer != null)
@@ -390,6 +391,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             TglSharedChat.IsChecked = Settings.SharedChatEnabled;
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
+            UpdateSongifyTokenStatus();
             PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey;
             NudBits.Value = Settings.MinimumBitsForSr;
             TbBitsKeyword.Text = Settings.SrForBitsKeyWord;
@@ -2450,6 +2452,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 Settings.SongifyApiKey = pwd;
             if (!_showPassword)
                 TextBox.Text = pwd;
+            NotifySongifyTokenChanged();
         }
 
         private void ShowHideButton_OnClick(object sender, RoutedEventArgs e)
@@ -2485,6 +2488,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
             if (_showPassword)
                 PasswordBox.Password = TextBox.Text;
+            NotifySongifyTokenChanged();
         }
 
         private void GenerateRefundConditionToggles()
@@ -2747,7 +2751,37 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private void BtnApiToken_OnClick(object sender, RoutedEventArgs e)
         {
-            ShellHelper.OpenUrl("https://v2.songify.rocks/faq/what-is-the-songify-api-token");
+            AccountLinking.OpenSongifyTokenFaq();
+        }
+
+        private void BtnGetSongifyToken_OnClick(object sender, RoutedEventArgs e)
+        {
+            AccountLinking.OpenSongifyTokenPage();
+        }
+
+        private void NotifySongifyTokenChanged()
+        {
+            UpdateSongifyTokenStatus();
+            Songify_Slim.Views.WPFUI.Pages.OverviewPage.RefreshChecklist();
+        }
+
+        private void UpdateSongifyTokenStatus()
+        {
+            if (TblSongifyTokenStatus == null)
+                return;
+
+            if (AccountLinking.HasSongifyApiToken())
+            {
+                TblSongifyTokenStatus.Text = Loc("setup_token_present",
+                    "Token saved. Generate a new one on your account page if you need to replace it.");
+                TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.LawnGreen);
+            }
+            else
+            {
+                TblSongifyTokenStatus.Text = Loc("setup_token_missing",
+                    "No token yet. Song data and queue uploads will not work until you add one.");
+                TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.Orange);
+            }
         }
 
         private void TglDebugLogging_OnToggled(object sender, RoutedEventArgs e)
@@ -2889,14 +2923,66 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (tab.Tag?.ToString().Equals(tabName, StringComparison.CurrentCultureIgnoreCase) != true)
                     continue;
                 TabCtrl.SelectedItem = tab;
-                if (string.IsNullOrEmpty(elementName))
-                    break;
-
-                tab.ApplyTemplate();
-                if (tab.FindName(elementName) is FrameworkElement element)
-                    element.BringIntoView();
+                if (!string.IsNullOrWhiteSpace(elementName))
+                    _ = FocusNamedElementAsync(elementName);
                 break;
             }
+        }
+
+        private async Task FocusNamedElementAsync(string elementName)
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+            await Task.Delay(50);
+
+            FrameworkElement element = FindName(elementName) as FrameworkElement;
+            if (element == null)
+                return;
+
+            element.UpdateLayout();
+            element.BringIntoView();
+            HighlightElement(element);
+
+            if (ReferenceEquals(element, CardSongifyApiToken) && PasswordBox != null)
+                PasswordBox.Focus();
+        }
+
+        private DispatcherTimer _focusHighlightTimer;
+        private FrameworkElement _focusHighlightTarget;
+        private Brush _focusHighlightOriginalBrush;
+        private Thickness _focusHighlightOriginalThickness;
+
+        private void HighlightElement(FrameworkElement element)
+        {
+            ClearFocusHighlight();
+
+            Brush accent = TryFindResource("AccentFillColorDefaultBrush") as Brush
+                           ?? new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4));
+
+            _focusHighlightTarget = element;
+            _focusHighlightOriginalBrush = element.GetValue(System.Windows.Controls.Control.BorderBrushProperty) as Brush;
+            _focusHighlightOriginalThickness = element is System.Windows.Controls.Control control
+                ? control.BorderThickness
+                : new Thickness(1);
+
+            element.SetValue(System.Windows.Controls.Control.BorderBrushProperty, accent);
+            element.SetValue(System.Windows.Controls.Control.BorderThicknessProperty, new Thickness(2));
+
+            _focusHighlightTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2.5) };
+            _focusHighlightTimer.Tick += (_, _) => ClearFocusHighlight();
+            _focusHighlightTimer.Start();
+        }
+
+        private void ClearFocusHighlight()
+        {
+            _focusHighlightTimer?.Stop();
+            _focusHighlightTimer = null;
+            if (_focusHighlightTarget == null)
+                return;
+
+            _focusHighlightTarget.SetValue(System.Windows.Controls.Control.BorderBrushProperty, _focusHighlightOriginalBrush);
+            _focusHighlightTarget.SetValue(System.Windows.Controls.Control.BorderThicknessProperty, _focusHighlightOriginalThickness);
+            _focusHighlightTarget = null;
+            _focusHighlightOriginalBrush = null;
         }
     }
 }

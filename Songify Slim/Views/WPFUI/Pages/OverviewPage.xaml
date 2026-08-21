@@ -66,12 +66,12 @@
             </Grid>
 
             <!--  Getting started  -->
-            <ui:Card
-                x:Name="CardGettingStarted"
-                Grid.Row="1"
-                Margin="0,0,0,16"
-                Padding="16"
-                Visibility="Collapsed">
+            <StackPanel Grid.Row="1">
+                <ui:Card
+                    x:Name="CardGettingStarted"
+                    Margin="0,0,0,16"
+                    Padding="16"
+                    Visibility="Collapsed">
                 <StackPanel>
                     <DockPanel Margin="0,0,0,8" LastChildFill="True">
                         <ui:Button
@@ -98,6 +98,42 @@
                     <StackPanel x:Name="PnlChecklistItems" />
                 </StackPanel>
             </ui:Card>
+
+            <ui:Card
+                x:Name="CardApiToken"
+                Margin="0,0,0,16"
+                Padding="16"
+                Visibility="Collapsed">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="14"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{DynamicResource window_overview_api_token_title}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Margin="0,0,0,12"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{DynamicResource window_overview_api_token_body}"
+                        TextWrapping="Wrap" />
+                    <StackPanel Orientation="Horizontal">
+                        <ui:Button
+                            MinWidth="110"
+                            Margin="0,0,8,0"
+                            Appearance="Primary"
+                            Click="BtnGetApiToken_Click"
+                            Content="{DynamicResource setup_token_get}" />
+                        <ui:Button
+                            MinWidth="110"
+                            Appearance="Secondary"
+                            Click="BtnApiTokenSettings_Click"
+                            Content="{DynamicResource menu_file_settings}" />
+                    </StackPanel>
+                </StackPanel>
+            </ui:Card>
+            </StackPanel>
 
             <!--  Now playing: compact card, no stretched empty space  -->
             <ui:Card

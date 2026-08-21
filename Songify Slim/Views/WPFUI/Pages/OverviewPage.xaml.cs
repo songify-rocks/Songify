@@ -502,6 +502,17 @@ public partial class OverviewPage
             shell.OpenSettings();
     }
 
+    private async void BtnApiTokenSettings_Click(object sender, RoutedEventArgs e)
+    {
+        if (Application.Current.MainWindow is ShellWindow shell)
+            await shell.OpenSettingsTabAsync("Config", "CardSongifyApiToken");
+    }
+
+    private void BtnGetApiToken_Click(object sender, RoutedEventArgs e)
+    {
+        AccountLinking.OpenSongifyTokenPage();
+    }
+
     private void BtnQueue_Click(object sender, RoutedEventArgs e)
     {
         if (Application.Current.MainWindow is ShellWindow shell)
@@ -530,13 +541,16 @@ public partial class OverviewPage
         if (CardGettingStarted == null || PnlChecklistItems == null)
             return;
 
-        if (!GuidedSetup.ShouldShowChecklist())
-        {
-            CardGettingStarted.Visibility = Visibility.Collapsed;
-            return;
-        }
+        bool showChecklist = GuidedSetup.ShouldShowChecklist();
+        bool missingToken = !AccountLinking.HasSongifyApiToken();
 
-        CardGettingStarted.Visibility = Visibility.Visible;
+        CardGettingStarted.Visibility = showChecklist ? Visibility.Visible : Visibility.Collapsed;
+        if (CardApiToken != null)
+            CardApiToken.Visibility = missingToken && !showChecklist ? Visibility.Visible : Visibility.Collapsed;
+
+        if (!showChecklist)
+            return;
+
         PnlChecklistItems.Children.Clear();
 
         string goLabel = TryFindResource("setup_checklist_go") as string ?? "Go";
@@ -548,7 +562,7 @@ public partial class OverviewPage
                 Content = goLabel,
                 MinWidth = 64,
                 Padding = new Thickness(10, 2, 10, 2),
-                Tag = item.SettingsTab,
+                Tag = item,
                 VerticalAlignment = VerticalAlignment.Center
             };
             go.Click += ChecklistGo_Click;
@@ -567,9 +581,9 @@ public partial class OverviewPage
 
     private async void ChecklistGo_Click(object sender, RoutedEventArgs e)
     {
-        if (sender is not System.Windows.Controls.Button { Tag: string tab } ||
+        if (sender is not System.Windows.Controls.Button { Tag: SetupChecklistItem item } ||
             Application.Current.MainWindow is not ShellWindow shell)
             return;
-        await shell.OpenSettingsTabAsync(tab);
+        await shell.OpenSettingsTabAsync(item.SettingsTab, item.FocusElement);
     }
 }

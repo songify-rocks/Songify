@@ -8,7 +8,8 @@ using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.General;
 
-internal sealed record SetupChecklistItem(string Id, string Title, bool IsDone, bool IsRequired, string SettingsTab);
+internal sealed record SetupChecklistItem(
+    string Id, string Title, bool IsDone, bool IsRequired, string SettingsTab, string FocusElement = "");
 
 /// <summary>First-launch wizard + Overview checklist state.</summary>
 internal static class GuidedSetup
@@ -81,6 +82,14 @@ internal static class GuidedSetup
             "Twitch"));
 
         items.Add(new SetupChecklistItem(
+            "token",
+            Loc("setup_checklist_token", "Add Songify API token"),
+            AccountLinking.HasSongifyApiToken(),
+            IsRequired: true,
+            "Config",
+            "CardSongifyApiToken"));
+
+        items.Add(new SetupChecklistItem(
             "output",
             Loc("setup_checklist_output", "Song output file (OBS)"),
             IsOutputReady(),
@@ -97,7 +106,7 @@ internal static class GuidedSetup
 
         foreach (SetupChecklistItem item in GetChecklistItems())
         {
-            if (!item.IsDone && (item.IsRequired || item.Id == "twitch"))
+            if (!item.IsDone && (item.IsRequired || item.Id is "twitch" or "token"))
                 return true;
         }
 

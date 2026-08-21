@@ -216,6 +216,15 @@ Please send any questions about this EULA to info@songify.rocks.</system:String>
     <system:String x:Key="setup_checklist_spotify">Link Spotify</system:String>
     <system:String x:Key="setup_checklist_twitch">Link Twitch (for song requests)</system:String>
     <system:String x:Key="setup_checklist_output">Song output file (OBS)</system:String>
+    <system:String x:Key="setup_checklist_token">Add Songify API token</system:String>
+    <system:String x:Key="setup_token_title">Songify API token</system:String>
+    <system:String x:Key="setup_token_body">Web services such as uploading the current song and the request queue need a Songify API token. Log in on songify.rocks with your Twitch account, generate a token on your account page, then paste it here. If the website offers Import to Songify, that sends the token to this app automatically.</system:String>
+    <system:String x:Key="setup_token_get">Get token</system:String>
+    <system:String x:Key="setup_token_missing">No token yet. Song data and queue uploads will not work until you add one.</system:String>
+    <system:String x:Key="setup_token_present">Token saved. Generate a new one on your account page if you need to replace it.</system:String>
+    <system:String x:Key="window_settings_songify_api_token_help">Required for web song data and the request queue. Log in on songify.rocks with Twitch, generate a token on your account page, then paste it here or use Import to Songify on the website.</system:String>
+    <system:String x:Key="window_overview_api_token_title">Songify API token required</system:String>
+    <system:String x:Key="window_overview_api_token_body">Song data and the request queue will not update on the web until you add a Songify API token. Log in on songify.rocks with Twitch, generate a token on your account page, then import it in Settings → Config.</system:String>
     <system:String x:Key="menu_setup_wizard">Setup wizard</system:String>
     <system:String x:Key="setup_tour_home_title">Home</system:String>
     <system:String x:Key="setup_tour_home_body">This is the overview. Use the player dropdown to choose Spotify or another source. Now playing and the next requested songs show up here.</system:String>
