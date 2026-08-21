@@ -816,39 +816,40 @@ namespace Songify_Slim.Util.Songify
         private static GlobalSystemMediaTransportControlsSession PickWindowsMediaSession(
                     GlobalSystemMediaTransportControlsSessionManager mgr,
                     string targetAumid)
-                {
-                    if (string.IsNullOrWhiteSpace(targetAumid))
-                        return mgr.GetCurrentSession();
+        {
+            if (string.IsNullOrWhiteSpace(targetAumid))
+                return mgr.GetCurrentSession();
 
-                    foreach (GlobalSystemMediaTransportControlsSession s in mgr.GetSessions())
-                    {
-                        if (string.Equals(s.SourceAppUserModelId, targetAumid, StringComparison.Ordinal))
-                            return s;
-                    }
+            foreach (GlobalSystemMediaTransportControlsSession s in mgr.GetSessions())
+            {
+                if (string.Equals(s.SourceAppUserModelId, targetAumid, StringComparison.Ordinal))
+                    return s;
+            }
 
-                    return mgr.GetCurrentSession();
-                }
+            return mgr.GetCurrentSession();
+        }
 
-                public async Task<string> ThumbnailToDataUrlAsync(IRandomAccessStreamReference thumbRef)
-                {
-                    if (thumbRef == null) return null;
+        public async Task<string> ThumbnailToDataUrlAsync(IRandomAccessStreamReference thumbRef)
+        {
+            if (thumbRef == null) return null;
 
-                    using IRandomAccessStreamWithContentType stream = await thumbRef.OpenReadAsync();
-                    int streamSize = checked((int)stream.Size);
-                    uint streamSizeUInt32 = checked((uint)streamSize);
-                    byte[] bytes = new byte[streamSize];
-                    _windowsPlaybackThumbnailBytesTotal += streamSize;
-                    using (DataReader reader = new(stream))
-                    {
-                        await reader.LoadAsync(streamSizeUInt32);
-                        reader.ReadBytes(bytes);
-                    }
+            using IRandomAccessStreamWithContentType stream = await thumbRef.OpenReadAsync();
+            int streamSize = checked((int)stream.Size);
+            uint streamSizeUInt32 = checked((uint)streamSize);
+            byte[] bytes = new byte[streamSize];
+            _windowsPlaybackThumbnailBytesTotal += streamSize;
+            using (DataReader reader = new(stream))
+            {
+                await reader.LoadAsync(streamSizeUInt32);
+                reader.ReadBytes(bytes);
+            }
 
-                    // assume png/jpg bytes as provided by the session; png is common
-                    string base64 = Convert.ToBase64String(bytes);
-                    // If you want to be fancy, sniff first few bytes to choose image/png vs image/jpeg.
-                    return $"data:image/png;base64,{base64}";
-                }
+            // assume png/jpg bytes as provided by the session; png is common
+            string base64 = Convert.ToBase64String(bytes);
+            // If you want to be fancy, sniff first few bytes to choose image/png vs image/jpeg.
+            return $"data:image/png;base64,{base64}";
+        }
+
         /// <summary>
         /// Quick signature for a thumbnail data URL used to detect when WinRT has updated
         /// the thumbnail to match a new track. Uses first 128 chars of base64 data + total length.
@@ -991,6 +992,7 @@ namespace Songify_Slim.Util.Songify
                 Logger.LogExc(ex);
             }
         }
+
         public static string GenerateId(string artist, string title)
         {
             if (string.IsNullOrWhiteSpace(artist) && string.IsNullOrWhiteSpace(title))
@@ -1333,7 +1335,11 @@ namespace Songify_Slim.Util.Songify
             // Send Message to Twitch if checked
             if (Settings.AnnounceInChat)
             {
-                TwitchHandler.SendCurrSong();
+                if (GlobalObjects.messagesSinceLastAnnounce >= Settings.MinimumMessagesBetweenAnnounces)
+                {
+                    GlobalObjects.messagesSinceLastAnnounce = 0;
+                    TwitchHandler.SendCurrSong();
+                }
             }
 
             // Always save the album cover. Optionally download canvas when enabled and available.
@@ -1804,7 +1810,7 @@ namespace Songify_Slim.Util.Songify
 
             Application.Current?.Dispatcher.Invoke(() =>
             {
-                    AppShellBridge.Current?.SetTextPreview(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                AppShellBridge.Current?.SetTextPreview(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
             });
         }
 

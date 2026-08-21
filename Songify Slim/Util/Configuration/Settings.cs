@@ -30,6 +30,18 @@ namespace Songify_Slim.Util.Configuration
         public static bool SharedChatEnabled { get => GetSharedChatEnabled(); set => SetSharedChatEnabled(value); }
         public static long SpotifyTokenExpiresAt { get => GetSpotifyTokenExpiresAt(); set => SetSpotifyTokenExpiresAt(value); }
         public static string SrForBitsKeyWord { get => GetSrForBitsKeyWord(); set => SetSrForBitsKeyWord(value); }
+        public static int MinimumMessagesBetweenAnnounces { get => GetMinimumMessagesBetweenAnnounces(); set => SetMinimumMessagesBetweenAnnounces(value); }
+
+        private static void SetMinimumMessagesBetweenAnnounces(int value)
+        {
+            CurrentConfig.AppConfig.MinimumMessagesBetweenAnnounces = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static int GetMinimumMessagesBetweenAnnounces()
+        {
+            return CurrentConfig.AppConfig.MinimumMessagesBetweenAnnounces;
+        }
 
         private static void SetSrForBitsKeyWord(string value)
         {
@@ -1338,6 +1350,7 @@ namespace Songify_Slim.Util.Configuration
                 ArtistBlacklist = [],
                 AutoClearQueue = GetAutoClearQueue(),
                 Autostart = GetAutostart(),
+                MinimumMessagesBetweenAnnounces = GetMinimumMessagesBetweenAnnounces(),
                 AutoStartWebServer = GetAutoStartWebServer(),
                 BaseUrl = GetBaseUrl(),
                 BetaUpdates = GetBetaUpdates(),

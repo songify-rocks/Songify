@@ -1131,6 +1131,8 @@ namespace Songify_Slim.Util.Configuration
 
         /// <summary>Last completed guided-setup flow version. 0 = never shown.</summary>
         public int SetupWizardVersion { get; set; }
+
+        public int MinimumMessagesBetweenAnnounces { get; set; } = 0;
     }
 
     public class BlockedSpotifyArtists

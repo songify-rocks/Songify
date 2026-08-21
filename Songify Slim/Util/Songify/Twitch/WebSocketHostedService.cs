@@ -367,7 +367,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-
         private async Task EnsureSubscription(
             List<EventSubSubscription> existing,
             string type,
@@ -565,8 +564,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             return string.Equals(GetTransportMethod(sub), "websocket", StringComparison.OrdinalIgnoreCase);
         }
 
-
-
         #region Events
 
         private async Task EventSubWebsocketClientOnChannelCheer(object sender, ChannelCheerArgs args)
@@ -666,6 +663,8 @@ namespace Songify_Slim.Util.Songify.Twitch
         private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs e)
         {
             ChannelChatMessage chatMsg = e.Payload.Event;
+
+            GlobalObjects.messagesSinceLastAnnounce++;
 
             if (!chatMsg.Message.Text.StartsWith("!"))
                 return Task.CompletedTask;

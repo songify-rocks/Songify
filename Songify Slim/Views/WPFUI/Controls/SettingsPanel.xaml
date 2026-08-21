@@ -964,6 +964,29 @@
                                     Checked="Tgl_AnnounceInChat_Toggled"
                                     Content="{DynamicResource window_settings_integration_auto_announce}"
                                     Unchecked="Tgl_AnnounceInChat_Toggled" />
+                                <StackPanel HorizontalAlignment="Stretch" Orientation="Horizontal">
+                                    <StackPanel.Style>
+                                        <Style TargetType="StackPanel">
+                                            <Setter Property="Visibility" Value="Collapsed" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsChecked, ElementName=TglAnnounceInChat}" Value="True">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </StackPanel.Style>
+                                    <TextBlock
+                                        Margin="0,0,8,0"
+                                        VerticalAlignment="Center"
+                                        Text="Minimum messages between song announcements" />
+                                    <ui:NumberBox
+                                        x:Name="Nb_MinimumMessagesBetweenAnnounces"
+                                        MinWidth="130"
+                                        HorizontalAlignment="Right"
+                                        ClearButtonEnabled="False"
+                                        Minimum="0"
+                                        ValueChanged="MinimumMessagesBetweenAnnounces_ValueChanged" />
+                                </StackPanel>
                                 <ui:ToggleSwitch
                                     x:Name="TglOnlyWorkWhenLive"
                                     Margin="0,0,0,8"

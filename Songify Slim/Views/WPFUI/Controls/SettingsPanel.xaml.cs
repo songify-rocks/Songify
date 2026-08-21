@@ -64,7 +64,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
             catch (FormatException) { return fallback; }
         }
 
-
         private Task<AppDialogResult> ShowMsgAsync(
             string title,
             string message,
@@ -366,6 +365,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (!string.IsNullOrEmpty(Settings.Directory))
                 TxtbxOutputdirectory.Text = Settings.Directory;
 
+            Nb_MinimumMessagesBetweenAnnounces.Value = Settings.MinimumMessagesBetweenAnnounces;
             ChbxAutoClear.IsChecked = Settings.AutoClearQueue;
             ChbxTwAutoconnect.IsChecked = Settings.TwAutoConnect;
             ChbxTwReward.IsChecked = Settings.TwSrReward;
@@ -913,7 +913,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             AppDialogResult msgResult = await ShowMsgAsync("Warning",
                 Loc("window_settings_reset_confirm", "Are you sure you want to reset all settings?"), AppDialogStyle.PrimaryAndSecondary,
-                new AppDialogSettings {
+                new AppDialogSettings
+                {
                     PrimaryButtonText = Loc("dialog_yes", "Yes"),
                     NegativeButtonText = Loc("dialog_no", "No")
                 });
@@ -2682,6 +2683,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                         case HttpStatusCode.NotAcceptable:
                             TblError.Text = "Cancelled by user.";
                             break;
+
                         case HttpStatusCode.ServiceUnavailable:
                             TblError.Text = "Error connecting to Songify service.";
                             break;
@@ -2983,6 +2985,11 @@ namespace Songify_Slim.Views.WPFUI.Controls
             _focusHighlightTarget.SetValue(System.Windows.Controls.Control.BorderThicknessProperty, _focusHighlightOriginalThickness);
             _focusHighlightTarget = null;
             _focusHighlightOriginalBrush = null;
+        }
+
+        private void MinimumMessagesBetweenAnnounces_ValueChanged(object sender, NumberBoxValueChangedEventArgs args)
+        {
+            Settings.MinimumMessagesBetweenAnnounces = (int)(args.NewValue ?? 0);
         }
     }
 }
