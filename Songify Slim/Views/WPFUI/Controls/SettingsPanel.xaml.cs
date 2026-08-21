@@ -877,7 +877,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             fbd.Description = Loc("window_settings_folder_save_config", "Select a folder to save the config file");
             fbd.ShowNewFolderButton = true;
             fbd.RootFolder = Environment.SpecialFolder.MyComputer;
-            if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            if (fbd.ShowDialog() != DialogResult.OK) return;
             ConfigHandler.WriteAllConfig(Settings.Export(), fbd.SelectedPath);
             await ShowMsgAsync(Loc("common_success", "Success"), Loc("window_settings_config_saved", "Config file saved successfully"));
         }
@@ -890,7 +890,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             fbd.ShowNewFolderButton = false; // Optional, prevents creating new folders
             // set the apps directory as the default directory
             fbd.SelectedPath = AppPaths.GetAppDirectory();
-            if (fbd.ShowDialog() != System.Windows.Forms.DialogResult.OK) return;
+            if (fbd.ShowDialog() != DialogResult.OK) return;
             // Get the selected folder path and call the config handler
             string selectedFolder = fbd.SelectedPath;
             ConfigHandler.ReadConfig(selectedFolder);
@@ -973,7 +973,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             _fbd.Description = Loc("window_settings_folder_song_output", "Path where the text file will be located.");
             _fbd.SelectedPath = AppPaths.GetAppDirectory();
 
-            if (_fbd.ShowDialog() == System.Windows.Forms.DialogResult.Cancel)
+            if (_fbd.ShowDialog() == DialogResult.Cancel)
                 return;
             TxtbxOutputdirectory.Text = _fbd.SelectedPath;
             Settings.Directory = _fbd.SelectedPath;
@@ -1419,10 +1419,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private void BtnFocusRewards_Click(object sender, RoutedEventArgs e)
         {
-            TabItemTwitch.Focus();
-            TabItemTwitch.IsSelected = true;
-            TabItemTwitchReward.Focus();
-            TabItemTwitchReward.IsSelected = true;
+            Pages.SettingsPage.Instance?.SelectTab("TwitchRewards");
         }
 
         private async void BtnUpdateRewards_Click(object sender, RoutedEventArgs e)
@@ -1802,7 +1799,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             UpdateArtistBlocklistSyncStatusLabel();
         }
 
-        private static void SeedArtistBlocklistColumnCombo(System.Windows.Controls.ComboBox combo, string selectedHeader, bool includeNone)
+        private static void SeedArtistBlocklistColumnCombo(ComboBox combo, string selectedHeader, bool includeNone)
         {
             if (combo == null)
                 return;
@@ -1865,7 +1862,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             }
         }
 
-        private void TbArtistBlocklistSyncUrl_OnTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void TbArtistBlocklistSyncUrl_OnTextChanged(object sender, TextChangedEventArgs e)
         {
             // Persist on LostFocus to avoid writing config on every keystroke.
         }
@@ -1877,7 +1874,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Settings.ArtistBlocklistSyncUrl = TbArtistBlocklistSyncUrl.Text?.Trim() ?? "";
         }
 
-        private void CbxArtistBlocklistSyncColumn_OnSelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        private void CbxArtistBlocklistSyncColumn_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (IgnoreControlEvents)
                 return;
@@ -2764,7 +2761,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private void NotifySongifyTokenChanged()
         {
             UpdateSongifyTokenStatus();
-            Songify_Slim.Views.WPFUI.Pages.OverviewPage.RefreshChecklist();
+            Pages.OverviewPage.RefreshChecklist();
         }
 
         private void UpdateSongifyTokenStatus()
@@ -2961,13 +2958,13 @@ namespace Songify_Slim.Views.WPFUI.Controls
                            ?? new SolidColorBrush(Color.FromRgb(0x00, 0x78, 0xD4));
 
             _focusHighlightTarget = element;
-            _focusHighlightOriginalBrush = element.GetValue(System.Windows.Controls.Control.BorderBrushProperty) as Brush;
+            _focusHighlightOriginalBrush = element.GetValue(BorderBrushProperty) as Brush;
             _focusHighlightOriginalThickness = element is System.Windows.Controls.Control control
                 ? control.BorderThickness
                 : new Thickness(1);
 
-            element.SetValue(System.Windows.Controls.Control.BorderBrushProperty, accent);
-            element.SetValue(System.Windows.Controls.Control.BorderThicknessProperty, new Thickness(2));
+            element.SetValue(BorderBrushProperty, accent);
+            element.SetValue(BorderThicknessProperty, new Thickness(2));
 
             _focusHighlightTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(2.5) };
             _focusHighlightTimer.Tick += (_, _) => ClearFocusHighlight();
@@ -2981,8 +2978,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (_focusHighlightTarget == null)
                 return;
 
-            _focusHighlightTarget.SetValue(System.Windows.Controls.Control.BorderBrushProperty, _focusHighlightOriginalBrush);
-            _focusHighlightTarget.SetValue(System.Windows.Controls.Control.BorderThicknessProperty, _focusHighlightOriginalThickness);
+            _focusHighlightTarget.SetValue(BorderBrushProperty, _focusHighlightOriginalBrush);
+            _focusHighlightTarget.SetValue(BorderThicknessProperty, _focusHighlightOriginalThickness);
             _focusHighlightTarget = null;
             _focusHighlightOriginalBrush = null;
         }
