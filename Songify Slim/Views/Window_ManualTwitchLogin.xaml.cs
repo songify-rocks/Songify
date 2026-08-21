@@ -47,7 +47,7 @@ public partial class WindowManualTwitchLogin
 
     private void Button_OpenTwitchLoginPage_Click(object sender, RoutedEventArgs e)
     {
-        ShellHelper.OpenUrl("https://v2.songify.rocks/auth/alt2/");
+        ShellHelper.OpenUrl("https://songify.rocks/auth/alt2/");
     }
 
     private async void Button_LinkAccounts_Click(object sender, RoutedEventArgs e)

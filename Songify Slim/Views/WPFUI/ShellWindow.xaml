@@ -66,6 +66,7 @@
                         <ui:DropDownButton.Flyout>
                             <ContextMenu>
                                 <MenuItem Click="MenuWidget_OnClick" Header="{DynamicResource menu_file_widget}" />
+                                <MenuItem Click="MenuConsoleWindow_OnClick" Header="{DynamicResource window_console_open_window}" />
                                 <MenuItem Click="MenuWebServerUrl_OnClick" Header="{DynamicResource menu_view_webserver_url}" />
                                 <MenuItem Click="MenuQueueBrowser_OnClick" Header="{DynamicResource menu_song_requests_queue_browser}" />
                             </ContextMenu>

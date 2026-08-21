@@ -1,0 +1,34 @@
+<ui:FluentWindow
+    x:Class="Songify_Slim.Views.WPFUI.ConsoleWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Songify_Slim.Views.WPFUI.Controls"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{DynamicResource menu_view_console}"
+    Width="860"
+    Height="520"
+    MinWidth="560"
+    MinHeight="320"
+    ExtendsContentIntoTitleBar="True"
+    Icon="pack://application:,,,/Resources/songify.ico"
+    ResizeMode="CanResizeWithGrip"
+    ShowInTaskbar="True"
+    WindowBackdropType="Mica"
+    WindowStartupLocation="CenterScreen">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar
+            Title="{DynamicResource menu_view_console}"
+            ShowMaximize="True"
+            ShowMinimize="True" />
+
+        <controls:ConsoleView
+            Grid.Row="1"
+            Margin="16,8,16,16"
+            IsFloatingHost="True" />
+    </Grid>
+</ui:FluentWindow>

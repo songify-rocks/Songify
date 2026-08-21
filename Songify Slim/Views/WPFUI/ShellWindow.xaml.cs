@@ -546,6 +546,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     private void MenuWidget_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWidget();
 
+    private void MenuConsoleWindow_OnClick(object sender, RoutedEventArgs e) => ConsoleWindow.ShowOrActivate();
+
     private void MenuWebServerUrl_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWebServerUrl();
 
     private void MenuQueueBrowser_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenQueueInBrowser();
@@ -762,6 +764,12 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     public void OpenConsole()
     {
+        if (ConsoleWindow.IsOpen)
+        {
+            ConsoleWindow.ShowOrActivate();
+            return;
+        }
+
         RootNavigationView.Navigate(typeof(Pages.ConsolePage));
     }
 

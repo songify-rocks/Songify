@@ -225,6 +225,11 @@ Please send any questions about this EULA to info@songify.rocks.</system:String>
     <system:String x:Key="window_settings_songify_api_token_help">Required for web song data and the request queue. Log in on songify.rocks with Twitch, generate a token on your account page, then paste it here or use Import to Songify on the website.</system:String>
     <system:String x:Key="window_overview_api_token_title">Songify API token required</system:String>
     <system:String x:Key="window_overview_api_token_body">Song data and the request queue will not update on the web until you add a Songify API token. Log in on songify.rocks with Twitch, generate a token on your account page, then import it in Settings → Config.</system:String>
+    <system:String x:Key="window_console_detach">Detach</system:String>
+    <system:String x:Key="window_console_open_window">Console window</system:String>
+    <system:String x:Key="window_console_detached_title">Console is in another window</system:String>
+    <system:String x:Key="window_console_detached_body">The log is open in a separate window so you can watch it while you use the rest of Songify. Close that window to bring the console back here.</system:String>
+    <system:String x:Key="window_console_show_window">Show window</system:String>
     <system:String x:Key="menu_setup_wizard">Setup wizard</system:String>
     <system:String x:Key="setup_tour_home_title">Home</system:String>
     <system:String x:Key="setup_tour_home_body">This is the overview. Use the player dropdown to choose Spotify or another source. Now playing and the next requested songs show up here.</system:String>

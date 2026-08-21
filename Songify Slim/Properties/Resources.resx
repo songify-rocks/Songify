@@ -1240,6 +1240,26 @@
     <value>Detach / Attach Console</value>
     <comment>Context: Tooltip on button to detach or re-attach the console window.</comment>
   </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Detach</value>
+    <comment>Context: Button on Console page to open the log in a separate window.</comment>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Console window</value>
+    <comment>Context: Tools menu item that opens the detached console window.</comment>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>Console is in another window</value>
+    <comment>Context: Title on Console page while the log is detached.</comment>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>The log is open in a separate window so you can watch it while you use the rest of Songify. Close that window to bring the console back here.</value>
+    <comment>Context: Body on Console page while the log is detached.</comment>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Show window</value>
+    <comment>Context: Button to focus the detached console window.</comment>
+  </data>
   <data name="window_console_clear" xml:space="preserve">
     <value>Clear Console</value>
     <comment>Context: Tooltip on button to clear the console log.</comment>

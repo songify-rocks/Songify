@@ -22,16 +22,16 @@ internal static class AccountLinking
         "https://github.com/songify-rocks/Songify/wiki/Setting-up-song-requests#spotify-setup";
 
     public const string SongifyTokenFaqUrl =
-        "https://v2.songify.rocks/faq/what-is-the-songify-api-token";
+        "https://songify.rocks/faq/what-is-the-songify-api-token";
 
-    public const string SongifyAccountUrl = "https://v2.songify.rocks/account";
+    public const string SongifyAccountUrl = "https://songify.rocks/token-import";
 
     /// <summary>
     /// Website route that should log in with Twitch, mint a token, and redirect to
     /// <c>songify://import-token?token=...</c>. Point <see cref="OpenSongifyTokenPage"/> at this
     /// when that page exists.
     /// </summary>
-    public const string SongifyDesktopImportTokenUrl = "https://v2.songify.rocks/desktop/import-token";
+    public const string SongifyDesktopImportTokenUrl = "https://songify.rocks/desktop/import-token";
 
     public static void OpenSpotifySetupGuide() => ShellHelper.OpenUrl(SpotifySetupWiki);
 
@@ -39,7 +39,7 @@ internal static class AccountLinking
         !string.IsNullOrWhiteSpace(Settings.SongifyApiKey);
 
     /// <summary>Opens the account page to generate a token. Switch to <see cref="SongifyDesktopImportTokenUrl"/> for one-click import.</summary>
-    public static void OpenSongifyTokenPage() => ShellHelper.OpenUrl(SongifyAccountUrl);
+    public static void OpenSongifyTokenPage() => ShellHelper.OpenUrl(SongifyDesktopImportTokenUrl);
 
     public static void OpenSongifyTokenFaq() => ShellHelper.OpenUrl(SongifyTokenFaqUrl);
 
