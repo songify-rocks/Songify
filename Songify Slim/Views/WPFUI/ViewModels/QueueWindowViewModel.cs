@@ -245,7 +245,7 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
         if (result != AppDialogResult.Primary) return;
 
         GlobalObjects.ReqList.Clear();
-        var payload = new { uuid = Settings.Uuid, key = Settings.AccessKey };
+        var payload = new { uuid = Settings.Uuid };
         await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
         await GlobalObjects.QueueUpdateQueueWindow();
     }
@@ -258,7 +258,7 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
             await SpotifyApiHandler.SkipSong();
             return;
         }
-        var payload = new { uuid = Settings.Uuid, key = Settings.AccessKey, queueid = req.Queueid };
+        var payload = new { uuid = Settings.Uuid, queueid = req.Queueid };
         await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {

@@ -31,7 +31,6 @@ namespace Songify_Slim.Util.Songify.APIs
             var payload = new
             {
                 uuid = Settings.Uuid,
-                key = Settings.AccessKey,
                 queueid = queueId
             };
 

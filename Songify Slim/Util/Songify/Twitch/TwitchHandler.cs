@@ -756,7 +756,6 @@ public static class TwitchHandler
                     dynamic telemetryPayload = new
                     {
                         uuid = Settings.Uuid,
-                        key = Settings.AccessKey,
                         tst = DateTime.UtcNow.ToUnixEpochDate(),
                         twitch_id = Settings.TwitchUser?.Id ?? "",
                         twitch_name = Settings.TwitchUser?.DisplayName ?? "",
@@ -2107,7 +2106,7 @@ public static class TwitchHandler
 
         string tmp = $"{reqObj.Artist} - {reqObj.Title}";
 
-        dynamic payload = new { uuid = Settings.Uuid, key = Settings.AccessKey, queueid = reqObj.Queueid, };
+        dynamic payload = new { uuid = Settings.Uuid, queueid = reqObj.Queueid, };
 
         await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
 
@@ -4030,7 +4029,7 @@ public static class TwitchHandler
         {
             if (req.Queueid > 0)
             {
-                dynamic payload = new { uuid = Settings.Uuid, key = Settings.AccessKey, queueid = req.Queueid };
+                dynamic payload = new { uuid = Settings.Uuid, queueid = req.Queueid };
                 await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
             }
 
@@ -4771,7 +4770,6 @@ public static class TwitchHandler
             dynamic payload = new
             {
                 uuid = Settings.Uuid,
-                key = Settings.AccessKey,
                 queueItem = track
             };
 

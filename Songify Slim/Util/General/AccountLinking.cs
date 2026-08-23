@@ -24,14 +24,14 @@ internal static class AccountLinking
     public const string SongifyTokenFaqUrl =
         "https://songify.rocks/faq/what-is-the-songify-api-token";
 
-    public const string SongifyAccountUrl = "https://songify.rocks/token-import";
+    public const string SongifyAccountUrl = "https://songify.rocks/account";
 
     /// <summary>
     /// Website route that should log in with Twitch, mint a token, and redirect to
     /// <c>songify://import-token?token=...</c>. Point <see cref="OpenSongifyTokenPage"/> at this
     /// when that page exists.
     /// </summary>
-    public const string SongifyDesktopImportTokenUrl = "https://songify.rocks/desktop/import-token";
+    public const string SongifyDesktopImportTokenUrl = "https://songify.rocks/token-import";
 
     public static void OpenSpotifySetupGuide() => ShellHelper.OpenUrl(SpotifySetupWiki);
 

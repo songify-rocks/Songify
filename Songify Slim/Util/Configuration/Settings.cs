@@ -355,12 +355,6 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteAllConfig(CurrentConfig);
         }
 
-        public static string AccessKey
-        {
-            get => GetAccessKey();
-            set => SetAccessKey(value);
-        }
-
         public static bool AddSrToPlaylist { get => GetAddSrToPlaylist(); set => SetAddSrToPlaylist(value); }
 
         public static bool AnnounceInChat
@@ -1340,7 +1334,6 @@ namespace Songify_Slim.Util.Configuration
 
             AppConfig appConfig = new()
             {
-                AccessKey = GetAccessKey(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
                 AnnounceInChat = GetAnnounceInChat(),
@@ -1500,7 +1493,6 @@ namespace Songify_Slim.Util.Configuration
             string existingApiKey = SongifyApiKey;
             string existingWebServerPassword = WebServerPassword;
             string existingYoutubeApiKey = YoutubeApiKey;
-            string existingAccessKey = AccessKey;
 
             // Overwrite the config
             CurrentConfig.AppConfig = config.AppConfig;
@@ -1531,7 +1523,6 @@ namespace Songify_Slim.Util.Configuration
             SongifyApiKey = existingApiKey;
             WebServerPassword = existingWebServerPassword;
             YoutubeApiKey = existingYoutubeApiKey;
-            AccessKey = existingAccessKey;
 
             // Re-apply UI settings and refresh blocklist pages
             await Application.Current.Dispatcher.Invoke(async () =>
@@ -1545,11 +1536,6 @@ namespace Songify_Slim.Util.Configuration
         {
             CurrentConfig = new Configuration();
             ArtistBlocklistStore.InitializeFromConfigAndUnload();
-        }
-
-        private static string GetAccessKey()
-        {
-            return CurrentConfig.AppConfig.AccessKey;
         }
 
         private static bool GetAddSrToPlaylist()
@@ -2320,12 +2306,6 @@ namespace Songify_Slim.Util.Configuration
         private static string GetYtmdToken()
         {
             return CurrentConfig.AppConfig.YtmdToken;
-        }
-
-        private static void SetAccessKey(string value)
-        {
-            CurrentConfig.AppConfig.AccessKey = value;
-            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
         private static void SetAddSrToPlaylist(bool value)

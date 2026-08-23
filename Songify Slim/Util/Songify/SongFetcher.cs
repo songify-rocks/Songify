@@ -653,7 +653,6 @@ namespace Songify_Slim.Util.Songify
                         dynamic payload = new
                         {
                             uuid = Settings.Uuid,
-                            key = Settings.AccessKey,
                             queueid = current.Queueid,
                         };
                         await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
@@ -1063,7 +1062,6 @@ namespace Songify_Slim.Util.Songify
             return new SongUploadPayload
             {
                 uuid = Settings.Uuid,
-                key = Settings.AccessKey,
                 song = song,
                 cover = cover,
                 song_id = songId,

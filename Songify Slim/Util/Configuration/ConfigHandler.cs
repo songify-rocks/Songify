@@ -533,19 +533,6 @@ namespace Songify_Slim.Util.Configuration
             }
         }
 
-        public static string GenerateAccessKey()
-        {
-            const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
-            string key = new([
-                .. Enumerable.Repeat(allowedChars, 1)
-                    .SelectMany(s => s)
-                    .Take(128)
-                    .OrderBy(_ => Guid.NewGuid())
-            ]);
-
-            return key;
-        }
-
         public static async Task<Tuple<bool, HttpStatusCode>> CloudSaveSettings(string userId,
             Configuration config)
         {
@@ -571,7 +558,6 @@ namespace Songify_Slim.Util.Configuration
                 // Exclude tokens and sensitive data (clone only — live Settings must stay intact)
                 clonedConfig.AppConfig.YoutubeApiKey = null;
                 clonedConfig.AppConfig.SongifyApiKey = null;
-                clonedConfig.AppConfig.AccessKey = null;
                 clonedConfig.AppConfig.WebServerPassword = null;
 
                 // Strip sensitive information
@@ -1038,7 +1024,6 @@ namespace Songify_Slim.Util.Configuration
         public List<string> TwRewardSkipId { get; set; } = [];
         public List<BlockedUser> UserBlacklist { get; set; } = [];
         public List<BlockedSong> SongBlacklist { get; set; } = [];
-        public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
         public string BaseUrl { get; set; } = "https://songify.rocks";
         public string Color { get; set; } = "Blue";
         public string CustomPauseText { get; set; } = "";

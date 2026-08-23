@@ -217,7 +217,7 @@ public static class AppStartup
         if (Settings.AutoClearQueue)
         {
             GlobalObjects.ReqList.Clear();
-            var payload = new { uuid = Settings.Uuid, key = Settings.AccessKey };
+            var payload = new { uuid = Settings.Uuid };
             await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
         }
 
@@ -273,7 +273,6 @@ public static class AppStartup
             dynamic telemetryPayload = new
             {
                 uuid = Settings.Uuid,
-                key = Settings.AccessKey,
                 tst = DateTime.Now.ToUnixEpochDate(),
                 twitch_id = Settings.TwitchUser == null ? "" : Settings.TwitchUser.Id,
                 twitch_name = Settings.TwitchUser == null ? "" : Settings.TwitchUser.DisplayName,
