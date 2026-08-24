@@ -9,6 +9,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Loaded="SettingsPanel_Loaded"
+    Unloaded="SettingsPanel_Unloaded"
     mc:Ignorable="d">
     <UserControl.Resources>
         <general:LastItemVisibilityConverter x:Key="LastItemVisibilityConverter" />
@@ -152,7 +153,7 @@
                                     x:Name="TglDonationReminder"
                                     Margin="0,0,0,8"
                                     Checked="TglDonationReminder_OnToggled"
-                                    Content="{DynamicResource window_settings_system_disable_donation_reminder}"
+                                    Content="{DynamicResource window_settings_system_hide_premium_reminder}"
                                     Focusable="False"
                                     TabIndex="6"
                                     Unchecked="TglDonationReminder_OnToggled" />
@@ -2684,6 +2685,11 @@
                                     FontWeight="SemiBold"
                                     Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                                     Text="{DynamicResource window_settings_section_cloud}" />
+                                <TextBlock
+                                    Margin="0,0,0,8"
+                                    Opacity="0.85"
+                                    Text="{DynamicResource window_settings_cloud_premium_hint}"
+                                    TextWrapping="Wrap" />
                                 <StackPanel Margin="0,0,0,8" Orientation="Horizontal">
                                     <Button
                                         x:Name="BtnSaveCloudSettings"
@@ -2781,6 +2787,7 @@
                                         <ColumnDefinition Width="*" />
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
                                     <Grid Grid.Column="0" Margin="0,0,8,0">
                                         <PasswordBox
@@ -2822,8 +2829,23 @@
                                         Click="BtnGetSongifyToken_OnClick"
                                         Content="{DynamicResource setup_token_get}" />
                                     <Button
-                                        x:Name="btnApiToken"
+                                        x:Name="BtnRefreshPremium"
                                         Grid.Column="2"
+                                        Width="32"
+                                        Height="32"
+                                        MinWidth="32"
+                                        Margin="0,0,8,0"
+                                        Padding="0"
+                                        Click="BtnRefreshPremium_OnClick"
+                                        ToolTip="{DynamicResource setup_token_refresh_premium}">
+                                        <ui:SymbolIcon
+                                            Width="16"
+                                            Height="16"
+                                            Symbol="ArrowSync24" />
+                                    </Button>
+                                    <Button
+                                        x:Name="btnApiToken"
+                                        Grid.Column="3"
                                         Width="32"
                                         d:Content="{x:Static local:Resources.common_help}"
                                         Click="BtnApiToken_OnClick"

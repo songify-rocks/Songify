@@ -72,67 +72,67 @@
                     Margin="0,0,0,16"
                     Padding="16"
                     Visibility="Collapsed">
-                <StackPanel>
-                    <DockPanel Margin="0,0,0,8" LastChildFill="True">
-                        <ui:Button
-                            x:Name="BtnDismissChecklist"
-                            Padding="8,2"
-                            HorizontalAlignment="Right"
-                            Appearance="Transparent"
-                            Click="BtnDismissChecklist_Click"
-                            Content="{DynamicResource setup_checklist_dismiss}"
-                            DockPanel.Dock="Right"
-                            FontSize="12" />
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                            <ui:Button
+                                x:Name="BtnDismissChecklist"
+                                Padding="8,2"
+                                HorizontalAlignment="Right"
+                                Appearance="Transparent"
+                                Click="BtnDismissChecklist_Click"
+                                Content="{DynamicResource setup_checklist_dismiss}"
+                                DockPanel.Dock="Right"
+                                FontSize="12" />
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource setup_checklist_title}" />
+                        </DockPanel>
                         <TextBlock
+                            Margin="0,0,0,12"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{DynamicResource setup_checklist_body}"
+                            TextWrapping="Wrap" />
+                        <StackPanel x:Name="PnlChecklistItems" />
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card
+                    x:Name="CardApiToken"
+                    Margin="0,0,0,16"
+                    Padding="16"
+                    Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,8"
                             FontSize="14"
                             FontWeight="SemiBold"
                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                            Text="{DynamicResource setup_checklist_title}" />
-                    </DockPanel>
-                    <TextBlock
-                        Margin="0,0,0,12"
-                        FontSize="12"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{DynamicResource setup_checklist_body}"
-                        TextWrapping="Wrap" />
-                    <StackPanel x:Name="PnlChecklistItems" />
-                </StackPanel>
-            </ui:Card>
-
-            <ui:Card
-                x:Name="CardApiToken"
-                Margin="0,0,0,16"
-                Padding="16"
-                Visibility="Collapsed">
-                <StackPanel>
-                    <TextBlock
-                        Margin="0,0,0,8"
-                        FontSize="14"
-                        FontWeight="SemiBold"
-                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                        Text="{DynamicResource window_overview_api_token_title}"
-                        TextWrapping="Wrap" />
-                    <TextBlock
-                        Margin="0,0,0,12"
-                        FontSize="12"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{DynamicResource window_overview_api_token_body}"
-                        TextWrapping="Wrap" />
-                    <StackPanel Orientation="Horizontal">
-                        <ui:Button
-                            MinWidth="110"
-                            Margin="0,0,8,0"
-                            Appearance="Primary"
-                            Click="BtnGetApiToken_Click"
-                            Content="{DynamicResource setup_token_get}" />
-                        <ui:Button
-                            MinWidth="110"
-                            Appearance="Secondary"
-                            Click="BtnApiTokenSettings_Click"
-                            Content="{DynamicResource menu_file_settings}" />
+                            Text="{DynamicResource window_overview_api_token_title}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{DynamicResource window_overview_api_token_body}"
+                            TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,8,0"
+                                Appearance="Primary"
+                                Click="BtnGetApiToken_Click"
+                                Content="{DynamicResource setup_token_get}" />
+                            <ui:Button
+                                MinWidth="110"
+                                Appearance="Secondary"
+                                Click="BtnApiTokenSettings_Click"
+                                Content="{DynamicResource menu_file_settings}" />
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </ui:Card>
+                </ui:Card>
             </StackPanel>
 
             <!--  Now playing: compact card, no stretched empty space  -->
@@ -188,7 +188,7 @@
                             Width="120"
                             Height="120"
                             ClipToBounds="True"
-                            CornerRadius="12"
+                            CornerRadius="12,0,0,0"
                             Visibility="Collapsed">
                             <Border.Clip>
                                 <RectangleGeometry
@@ -387,7 +387,7 @@
                 VerticalAlignment="Center"
                 Appearance="Secondary"
                 Click="BtnSupport_Click"
-                Content="{DynamicResource menu_support}" />
+                Content="{DynamicResource cta_premium}" />
 
             <!--  Kept for code-behind / localization hooks  -->
             <!--<ui:Button

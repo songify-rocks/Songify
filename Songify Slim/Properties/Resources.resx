@@ -2647,7 +2647,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Setup wizard step title for Songify API token.</comment>
   </data>
   <data name="setup_token_body" xml:space="preserve">
-    <value>Web services such as uploading the current song and the request queue need a Songify API token. Log in on songify.rocks with your Twitch account, generate a token on your account page, then paste it here. If the website offers Import to Songify, that sends the token to this app automatically.</value>
+    <value>Web services such as uploading the current song and the request queue need a Songify API token. Log in on songify.rocks with your Twitch account, generate a token, then paste it here. The same token unlocks Premium features such as recap, stats, and cloud sync after you link Ko-fi.</value>
     <comment>Context: Setup wizard explanation of how to get and import a Songify API token.</comment>
   </data>
   <data name="setup_token_get" xml:space="preserve">
@@ -2663,7 +2663,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Status when a Songify API token is already stored.</comment>
   </data>
   <data name="window_settings_songify_api_token_help" xml:space="preserve">
-    <value>Required for web song data and the request queue. Log in on songify.rocks with Twitch, generate a token on your account page, then paste it here or use Import to Songify on the website.</value>
+    <value>Required for web song data and the request queue. The same token unlocks Premium (recap, stats, cloud sync) after you link Ko-fi on your account page.</value>
     <comment>Context: Help text under Settings → Config → Songify API token.</comment>
   </data>
   <data name="window_overview_api_token_title" xml:space="preserve">
@@ -2703,5 +2703,95 @@ gwyden - Hertz - karimawii
   </data>
   <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
     <value>Minimum messages between song announcements</value>
+  </data>
+  <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+    <comment>Quiet home/about CTA that opens the account or recap page.</comment>
+  </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Premium</value>
+    <comment>Status bar label for Songify Premium.</comment>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Songify Premium is active. Click to open stream recap.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Songify Premium is inactive. Click to unlock recap, stats, and cloud sync.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Add a Songify token, then unlock Premium on your account page.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>This Songify token is invalid. Generate a new one on songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Checking Songify Premium status…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Songify Premium is active</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>Premium is inactive — unlock recap, stats, and cloud sync</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Songify token is invalid</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Add a Songify token to enable Premium</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Stream recap</value>
+    <comment>History page button that opens the hosted recap on songify.rocks.</comment>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Open the day-by-day request recap on songify.rocks. The full song list is included with Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>Cloud sync is included with Songify Premium.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>Cloud sync is included with Songify Premium.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Token saved. Songify Premium is active.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Token saved. Link Ko-fi on your account page to unlock recap, stats, and cloud sync.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>This token is invalid. Generate a new one on your account page.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Hide Premium reminders</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Premium reminders off</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify stays free. Premium adds stream recap, top songs and requesters, cloud sync, and extra widgets.
+
+You can still open Songify Premium any time from Home or About.</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Refresh Premium status</value>
+    <comment>Tooltip for the token-card button that re-checks Songify Premium.</comment>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Checking Songify Premium status…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify stays free</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>Premium adds stream recap, top songs and requesters, cloud sync, and extra widgets. Unlock it anytime from Home or About.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>This message will disappear in {0} seconds</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>This message will disappear in {0} second</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>This message will disappear now :)</value>
   </data>
 </root>

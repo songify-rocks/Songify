@@ -12,6 +12,7 @@ using Songify_Slim.Models;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Views.WPFUI;
 using static Songify_Slim.Util.General.Enums;
 
@@ -65,9 +66,9 @@ public partial class OverviewPage
         EnsurePlayerDropdown();
         SettingsUi.Refreshed += OnSettingsRefreshed;
         IsVisibleChanged += OverviewPage_IsVisibleChanged;
+        SongifyPremiumService.StatusChanged += OnPremiumStatusChanged;
 
-        if (BtnSupport != null)
-            BtnSupport.Content = Properties.Resources.cta_support;
+        UpdatePremiumButton();
         UpdateNowPlaying();
         ApplyPendingCanvas();
         UpdateChecklist();
@@ -84,6 +85,7 @@ public partial class OverviewPage
     {
         SettingsUi.Refreshed -= OnSettingsRefreshed;
         IsVisibleChanged -= OverviewPage_IsVisibleChanged;
+        SongifyPremiumService.StatusChanged -= OnPremiumStatusChanged;
         _updateTimer?.Stop();
         _canvasPlaying = false;
         StopCanvasPlayback();
@@ -527,7 +529,33 @@ public partial class OverviewPage
 
     private void BtnSupport_Click(object sender, RoutedEventArgs e)
     {
-        Process.Start(new ProcessStartInfo("https://ko-fi.com/overcodetv") { UseShellExecute = true });
+        AccountLinking.OpenPremium();
+    }
+
+    private void OnPremiumStatusChanged()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(UpdatePremiumButton);
+            return;
+        }
+
+        UpdatePremiumButton();
+    }
+
+    private void UpdatePremiumButton()
+    {
+        if (BtnSupport == null)
+            return;
+
+        if (SongifyPremiumService.IsActive)
+        {
+            BtnSupport.Visibility = Visibility.Collapsed;
+            return;
+        }
+
+        BtnSupport.Visibility = Visibility.Visible;
+        BtnSupport.Content = TryFindResource("cta_premium") as string ?? "Songify Premium";
     }
 
     private void BtnDismissChecklist_Click(object sender, RoutedEventArgs e)

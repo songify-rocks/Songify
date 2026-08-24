@@ -4,6 +4,7 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.APIs;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using System;
@@ -581,6 +582,7 @@ namespace Songify_Slim.Util.Configuration
 
                 using HttpResponseMessage response = await SongifyApi.PostUserSettingsAsync(
                     JsonConvert.SerializeObject(body));
+                SongifyPremiumService.ApplyFromCloudStatus(response.StatusCode);
                 switch (response.StatusCode)
                 {
                     // Handle response codes 200 OK: User has premium access and operation succeeded
@@ -669,6 +671,7 @@ namespace Songify_Slim.Util.Configuration
                 bool success;
                 using (HttpResponseMessage response = await SongifyApi.GetUserSettingsAsync(userId))
                 {
+                    SongifyPremiumService.ApplyFromCloudStatus(response.StatusCode);
                     switch (response.StatusCode)
                     {
                         // Handle response codes 200 OK: User has premium access and operation succeeded

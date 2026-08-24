@@ -39,7 +39,7 @@ public static class AppStartup
             return;
         }
 
-        _ = AuthenticateSongifyApiAsync();
+        Task authTask = AuthenticateSongifyApiAsync();
 
         bool startTour = false;
         if (GuidedSetup.ShouldShowWizard())
@@ -62,11 +62,21 @@ public static class AppStartup
 
         ArtistBlocklistSyncService.Start();
 
+        try
+        {
+            await authTask;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Api, "Songify API authentication did not finish before the Premium reminder.", ex);
+        }
+
         if (owner is Views.WPFUI.ShellWindow shell)
         {
             Views.WPFUI.Pages.OverviewPage.RefreshChecklist();
             if (startTour)
                 await shell.StartSetupTourAsync();
+            await shell.TryShowPremiumReminderAsync();
         }
     }
 
@@ -122,6 +132,19 @@ public static class AppStartup
         catch (Exception ex)
         {
             Logger.Error(LogSource.Api, "Songify API authentication failed.", ex);
+        }
+
+        try
+        {
+            await SongifyPremiumService.RefreshAsync().ConfigureAwait(false);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Api, "Songify Premium status refresh failed.", ex);
+        }
+        finally
+        {
+            SongifyPremiumService.Start();
         }
     }
 

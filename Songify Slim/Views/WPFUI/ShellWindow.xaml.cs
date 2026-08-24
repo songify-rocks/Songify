@@ -50,9 +50,12 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private ConnectionIndicatorState _twitchBotState = ConnectionIndicatorState.Unknown;
     private bool _webServerRunning;
     private SpotifyIndicatorState _spotifyState = SpotifyIndicatorState.Disconnected;
+    private SongifyPremiumState _premiumState = SongifyPremiumState.Unknown;
     private Brush _pearBrush = Brushes.Gray;
     private string _pearStatusText = "";
     private int _tourStep;
+    private DispatcherTimer _premiumReminderTimer;
+    private int _premiumReminderSecondsLeft;
 
     private string Loc(string key, string fallback)
         => TryFindResource(key) as string ?? fallback;
@@ -83,6 +86,27 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     public Brush PearBrush => _pearBrush;
     public string PearStatusText => _pearStatusText;
+
+    public Brush PremiumBrush => _premiumState switch
+    {
+        SongifyPremiumState.Active => Brushes.GreenYellow,
+        SongifyPremiumState.Inactive => Brushes.DarkOrange,
+        SongifyPremiumState.InvalidToken => Brushes.IndianRed,
+        _ => Brushes.DarkGray
+    };
+
+    public string PremiumStatusText => _premiumState switch
+    {
+        SongifyPremiumState.Active => Loc("window_main_status_premium_active",
+            "Songify Premium is active. Click to open stream recap."),
+        SongifyPremiumState.Inactive => Loc("window_main_status_premium_inactive",
+            "Songify Premium is inactive. Click to unlock recap, stats, and cloud sync."),
+        SongifyPremiumState.NoToken => Loc("window_main_status_premium_no_token",
+            "Add a Songify token, then unlock Premium on your account page."),
+        SongifyPremiumState.InvalidToken => Loc("window_main_status_premium_invalid",
+            "This Songify token is invalid. Generate a new one on songify.rocks."),
+        _ => Loc("window_main_status_premium_unknown", "Checking Songify Premium status…")
+    };
 
     /// <summary>Allow Exit / AppActions to bypass minimize-to-tray.</summary>
     public void RequestForceClose() => _forceClose = true;
@@ -123,6 +147,9 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         AppFetchService.PlayerSourceChanged += OnPlayerSourceChanged;
         PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
         PearWebSocketClient.ConnectionStateChanged += OnPearConnectionStateChanged;
+        SongifyPremiumService.StatusChanged -= OnSongifyPremiumStatusChanged;
+        SongifyPremiumService.StatusChanged += OnSongifyPremiumStatusChanged;
+        ApplySongifyPremiumStatus();
         UpdateSpotifyIdleBackoffIndicator();
         UpdatePearStatusIndicator();
         OnPropertyChanged(nameof(SpotifyBrush));
@@ -180,13 +207,16 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             return;
         }
 
+        HidePremiumReminder();
         TeardownSpotifyPersistentIssueBanner();
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
         PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
+        SongifyPremiumService.StatusChanged -= OnSongifyPremiumStatusChanged;
         PsaManager.Changed -= OnPsaChanged;
         PsaManager.ListUpdated -= OnPsaListUpdated;
         PsaManager.Stop();
+        SongifyPremiumService.Stop();
         AppShellBridge.Unregister(this);
         Settings.PosX = Left;
         Settings.PosY = Top;
@@ -677,6 +707,35 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         OnPropertyChanged(nameof(SpotifyBrush));
     }
 
+    private void OnSongifyPremiumStatusChanged()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(ApplySongifyPremiumStatus);
+            return;
+        }
+
+        ApplySongifyPremiumStatus();
+    }
+
+    private void ApplySongifyPremiumStatus()
+    {
+        if (_premiumState != SongifyPremiumService.Current)
+        {
+            _premiumState = SongifyPremiumService.Current;
+            OnPropertyChanged(nameof(PremiumBrush));
+            OnPropertyChanged(nameof(PremiumStatusText));
+        }
+
+        if (SongifyPremiumService.IsActive)
+            HidePremiumReminder();
+    }
+
+    private void BtnPremiumStatus_Click(object sender, RoutedEventArgs e)
+    {
+        AccountLinking.OpenPremium();
+    }
+
     public void SetCoverImage(string coverPath)
     {
         // OverviewPage reads from GlobalObjects.CurrentSong
@@ -740,6 +799,97 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         }
 
         page?.SelectTab(tabTag, elementName);
+    }
+
+    /// <summary>
+    /// Shows the startup Premium reminder unless the user hid it or Premium is already active.
+    /// </summary>
+    public Task TryShowPremiumReminderAsync()
+    {
+        if (!Dispatcher.CheckAccess())
+            return Dispatcher.InvokeAsync(TryShowPremiumReminderCore).Task;
+
+        TryShowPremiumReminderCore();
+        return Task.CompletedTask;
+    }
+
+    private void TryShowPremiumReminderCore()
+    {
+        if (!IsLoaded || Settings.DonationReminder || SongifyPremiumService.IsActive)
+            return;
+
+        if (TourOverlay is { Visibility: Visibility.Visible })
+            return;
+
+        ShowPremiumReminder();
+    }
+
+    private void ShowPremiumReminder()
+    {
+        if (GrdPremiumReminder == null || SongifyPremiumService.IsActive)
+            return;
+
+        _premiumReminderSecondsLeft = 5;
+        UpdatePremiumReminderCountdown();
+        GrdPremiumReminder.Visibility = Visibility.Visible;
+        BtnPremiumReminderClose.Visibility = Visibility.Visible;
+
+        _premiumReminderTimer ??= new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
+        _premiumReminderTimer.Tick -= PremiumReminderTimerOnTick;
+        _premiumReminderTimer.Tick += PremiumReminderTimerOnTick;
+        _premiumReminderTimer.Start();
+    }
+
+    private void PremiumReminderTimerOnTick(object sender, EventArgs e)
+    {
+        _premiumReminderSecondsLeft--;
+        UpdatePremiumReminderCountdown();
+        if (_premiumReminderSecondsLeft > 0)
+            return;
+
+        HidePremiumReminder();
+    }
+
+    private void UpdatePremiumReminderCountdown()
+    {
+        if (TbPremiumReminderDismiss == null)
+            return;
+
+        if (_premiumReminderSecondsLeft <= 0)
+        {
+            TbPremiumReminderDismiss.Text = Loc("window_main_premium_reminder_dismiss_now",
+                "This message will disappear now :)");
+            return;
+        }
+
+        TbPremiumReminderDismiss.Text = _premiumReminderSecondsLeft == 1
+            ? LocFormat("window_main_premium_reminder_dismiss_one",
+                "This message will disappear in {0} second", _premiumReminderSecondsLeft)
+            : LocFormat("window_main_premium_reminder_dismiss",
+                "This message will disappear in {0} seconds", _premiumReminderSecondsLeft);
+    }
+
+    private void HidePremiumReminder()
+    {
+        if (_premiumReminderTimer != null)
+        {
+            _premiumReminderTimer.Stop();
+            _premiumReminderTimer.Tick -= PremiumReminderTimerOnTick;
+        }
+
+        if (TbPremiumReminderDismiss != null)
+            TbPremiumReminderDismiss.Text = "";
+
+        if (GrdPremiumReminder != null)
+            GrdPremiumReminder.Visibility = Visibility.Collapsed;
+    }
+
+    private void BtnPremiumReminderClose_OnClick(object sender, RoutedEventArgs e) => HidePremiumReminder();
+
+    private void BtnPremiumReminderCta_OnClick(object sender, RoutedEventArgs e)
+    {
+        HidePremiumReminder();
+        AccountLinking.OpenPremium();
     }
 
     public async Task StartSetupTourAsync()

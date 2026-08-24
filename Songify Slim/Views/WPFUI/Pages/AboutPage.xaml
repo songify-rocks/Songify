@@ -6,6 +6,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{DynamicResource menu_help_about}"
     Loaded="AboutPage_OnLoaded"
+    Unloaded="AboutPage_OnUnloaded"
     ScrollViewer.CanContentScroll="False"
     ScrollViewer.VerticalScrollBarVisibility="Disabled">
     <Page.Resources>
@@ -123,6 +124,12 @@
                             FontSize="13"
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                             Text="v—" />
+                        <TextBlock
+                            x:Name="TxtPremiumStatus"
+                            Margin="0,4,0,0"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            Text="" />
                     </StackPanel>
                 </StackPanel>
 
@@ -164,7 +171,7 @@
                     <ui:Button
                         Appearance="Secondary"
                         Click="BtnSupport_Click"
-                        Content="{DynamicResource menu_support}"
+                        Content="{DynamicResource cta_premium}"
                         Icon="{ui:SymbolIcon Heart24,
                                              Filled=True}" />
                 </StackPanel>

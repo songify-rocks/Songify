@@ -453,6 +453,29 @@
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         Text="{DynamicResource window_main_status_pear}"
                         ToolTip="{Binding PearStatusText}" />
+                    <ui:Button
+                        MinHeight="22"
+                        Margin="0,0,8,0"
+                        Padding="0"
+                        VerticalAlignment="Center"
+                        Appearance="Transparent"
+                        Click="BtnPremiumStatus_Click"
+                        Cursor="Hand"
+                        ToolTip="{Binding PremiumStatusText}">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding PremiumBrush}" />
+                            <TextBlock
+                                Margin="6,0,4,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_premium}" />
+                        </StackPanel>
+                    </ui:Button>
                     <Ellipse
                         Width="8"
                         Height="8"
@@ -504,6 +527,70 @@
                     Text="{Binding StatusBarVersion}" />
             </Grid>
         </Border>
+
+        <!--  Premium reminder (shown when reminders are on and Premium is not active)  -->
+        <Grid
+            x:Name="GrdPremiumReminder"
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Panel.ZIndex="240"
+            Visibility="Collapsed">
+            <Border Background="#99000000" />
+            <ui:Button
+                x:Name="BtnPremiumReminderClose"
+                Width="36"
+                Height="36"
+                Margin="8"
+                Padding="0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Appearance="Transparent"
+                Click="BtnPremiumReminderClose_OnClick"
+                ToolTip="{DynamicResource common_close}">
+                <ui:SymbolIcon
+                    Width="14"
+                    Height="14"
+                    Symbol="Dismiss24" />
+            </ui:Button>
+            <ui:Card
+                MaxWidth="460"
+                Padding="28,24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource ControlSolidFillColorDefaultBrush}">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{DynamicResource window_main_premium_reminder_title}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Margin="0,0,0,18"
+                        FontSize="13"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{DynamicResource window_main_premium_reminder_body}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        MinWidth="220"
+                        HorizontalAlignment="Center"
+                        Appearance="Primary"
+                        Click="BtnPremiumReminderCta_OnClick"
+                        Content="{DynamicResource cta_premium}"
+                        Icon="{ui:SymbolIcon Heart24, Filled=True}" />
+                    <TextBlock
+                        x:Name="TbPremiumReminderDismiss"
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        TextAlignment="Center" />
+                </StackPanel>
+            </ui:Card>
+        </Grid>
 
         <!--  First-launch orientation overlay  -->
         <Grid

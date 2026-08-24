@@ -132,6 +132,13 @@
                     IsChecked="{Binding SaveHistory, Mode=TwoWay}"
                     ToolTip="{DynamicResource window_history_save_tooltip}" />
                 <ui:Button
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    Appearance="Secondary"
+                    Click="BtnRecap_Click"
+                    Content="{DynamicResource window_history_open_recap}"
+                    ToolTip="{DynamicResource window_history_open_recap_tooltip}" />
+                <ui:Button
                     VerticalAlignment="Center"
                     Appearance="Secondary"
                     Command="{Binding RefreshCommand}"

@@ -69,6 +69,11 @@ public partial class HistoryPage : Page
         _watcher = null;
     }
 
+    private void BtnRecap_Click(object sender, RoutedEventArgs e)
+    {
+        AccountLinking.OpenRecap();
+    }
+
     private void OnDatesLoaded()
     {
         RefreshBlackoutDates(_viewModel.DisplayDate);

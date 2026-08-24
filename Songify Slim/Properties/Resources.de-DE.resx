@@ -2402,4 +2402,90 @@ gwyden - Hertz - karimawii
   <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
     <value>Mindestanzahl an Nachrichten zwischen den Songankündigungen</value>
   </data>
+  <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Premium</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Songify Premium ist aktiv. Klicken, um das Stream-Recap zu öffnen.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Songify Premium ist inaktiv. Klicken, um Recap, Stats und Cloud-Sync freizuschalten.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Songify-Token hinzufügen, dann Premium auf der Kontoseite freischalten.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Dieses Songify-Token ist ungültig. Bitte auf songify.rocks ein neues erzeugen.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Songify-Premium-Status wird geprüft…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Songify Premium ist aktiv</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>Premium ist inaktiv — Recap, Stats und Cloud-Sync freischalten</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Songify-Token ist ungültig</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Songify-Token hinzufügen, um Premium zu nutzen</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Stream-Recap</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Öffnet das Recap Tag für Tag auf songify.rocks. Die volle Songliste gehört zu Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>Cloud-Sync gehört zu Songify Premium.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>Cloud-Sync gehört zu Songify Premium.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Token gespeichert. Songify Premium ist aktiv.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Token gespeichert. Verknüpfe Ko-fi auf der Kontoseite, um Recap, Stats und Cloud-Sync freizuschalten.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Dieses Token ist ungültig. Bitte auf der Kontoseite ein neues erzeugen.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Premium-Hinweise ausblenden</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Premium-Hinweise aus</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify bleibt kostenlos. Premium ergänzt Stream-Recap, Top-Songs und Top-Requester, Cloud-Sync und Extra-Widgets.
+
+Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Premium-Status aktualisieren</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Songify-Premium-Status wird geprüft…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify bleibt kostenlos</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>Premium ergänzt Stream-Recap, Top-Songs und Top-Requester, Cloud-Sync und Extra-Widgets. Freischalten kannst du jederzeit über Start oder Info.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Dieser Hinweis verschwindet in {0} Sekunden</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Dieser Hinweis verschwindet in {0} Sekunde</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Dieser Hinweis verschwindet jetzt :)</value>
+  </data>
 </root>

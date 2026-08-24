@@ -1,6 +1,7 @@
 using System;
 using System.Threading.Tasks;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Spotify;
 
@@ -26,6 +27,12 @@ internal static class AccountLinking
 
     public const string SongifyAccountUrl = "https://songify.rocks/account";
 
+    public const string SongifyRecapUrl = "https://songify.rocks/recap";
+
+    public const string SongifyStatsUrl = "https://songify.rocks/stats";
+
+    public const string SongifyKofiUrl = "https://ko-fi.com/overcodetv";
+
     /// <summary>
     /// Website route that should log in with Twitch, mint a token, and redirect to
     /// <c>songify://import-token?token=...</c>. Point <see cref="OpenSongifyTokenPage"/> at this
@@ -42,6 +49,20 @@ internal static class AccountLinking
     public static void OpenSongifyTokenPage() => ShellHelper.OpenUrl(SongifyDesktopImportTokenUrl);
 
     public static void OpenSongifyTokenFaq() => ShellHelper.OpenUrl(SongifyTokenFaqUrl);
+
+    public static void OpenAccount() => ShellHelper.OpenUrl(SongifyAccountUrl);
+
+    public static void OpenRecap() => ShellHelper.OpenUrl(SongifyRecapUrl);
+
+    public static void OpenStats() => ShellHelper.OpenUrl(SongifyStatsUrl);
+
+    public static void OpenPremium()
+    {
+        if (SongifyPremiumService.IsActive)
+            OpenRecap();
+        else
+            OpenAccount();
+    }
 
     public static async Task<SpotifyLinkResult> LinkSpotifyAsync()
     {

@@ -4,7 +4,9 @@ using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
 using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Microsoft.Win32;
 using Songify_Slim.Models;
+
 using Songify_Slim.Util.General;
+
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
@@ -40,7 +42,7 @@ namespace Songify_Slim
     public partial class App
     {
         private static Mutex _mutex;
-        public static bool IsBeta = false;
+        public static bool IsBeta = true;
         private const string PipeName = "SongifyPipe";
         private const string FolderName = "Songify.Rocks";
 
@@ -299,6 +301,7 @@ namespace Songify_Slim
                 Settings.SongifyApiKey = token;
                 SongifyAuthService.Invalidate();
                 _ = SongifyAuthService.EnsureAuthenticatedAsync();
+                _ = SongifyPremiumService.RefreshAsync();
 
                 await AppShellBridge.Current.ShowMessageAsync(
                     "Notification",

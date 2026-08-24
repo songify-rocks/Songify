@@ -78,6 +78,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private readonly FolderBrowserDialog _fbd = new();
         private Window_ResponseParams _wRp;
         private bool _showPassword;
+        private CancellationTokenSource _premiumRefreshCts;
         private bool _isSettingControls;
         private int _externalUiMutationDepth;
         private bool _rewardsLoadStarted;
@@ -185,6 +186,17 @@ namespace Songify_Slim.Views.WPFUI.Controls
         public SettingsPanel()
         {
             InitializeComponent();
+        }
+
+        private void OnPremiumStatusChanged()
+        {
+            if (!Dispatcher.CheckAccess())
+            {
+                Dispatcher.BeginInvoke(UpdateSongifyTokenStatus);
+                return;
+            }
+
+            UpdateSongifyTokenStatus();
         }
 
         public async Task SetControls()
@@ -1255,6 +1267,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private async void SettingsPanel_Loaded(object sender, RoutedEventArgs e)
         {
             SettingsUi.Register(this);
+            SongifyPremiumService.StatusChanged -= OnPremiumStatusChanged;
+            SongifyPremiumService.StatusChanged += OnPremiumStatusChanged;
+            _ = SongifyPremiumService.RefreshAsync();
 
             // Theme + window backdrop (WPF-UI system accent; no custom accent color list)
             ThemeToggleSwitch.IsChecked = Settings.Theme is "BaseDark" or "Dark";
@@ -1276,6 +1291,12 @@ namespace Songify_Slim.Views.WPFUI.Controls
             CbxWindowBackdrop.SelectionChanged += CbxWindowBackdrop_OnSelectionChanged;
 
             await SetControls();
+        }
+
+        private void SettingsPanel_Unloaded(object sender, RoutedEventArgs e)
+        {
+            SongifyPremiumService.StatusChanged -= OnPremiumStatusChanged;
+            _premiumRefreshCts?.Cancel();
         }
 
         private void Tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
@@ -2170,18 +2191,20 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Settings.DonationReminder = ((ToggleSwitch)sender).IsChecked == true;
             if (!((ToggleSwitch)sender).IsChecked == true) return;
 
-            AppDialogResult msgResult = await ShowMsgAsync("Hey ??",
-                "No more donation messages!\n\nRemember, our app stays free and accessible thanks to the support from people like you. If you ever feel like getting those warm, fuzzy feelings that come from supporting a good cause, you can \"Open Ko-Fi\" and donate right away.\n\nEnjoy your clutter-free experience! ?",
+            AppDialogResult msgResult = await ShowMsgAsync(
+                Loc("window_settings_premium_reminder_title", "Premium reminders off"),
+                Loc("window_settings_premium_reminder_body",
+                    "Songify stays free. Premium adds stream recap, top songs and requesters, cloud sync, and extra widgets.\n\nYou can still open Songify Premium any time from Home or About."),
                 AppDialogStyle.PrimaryAndSecondary,
                 new AppDialogSettings
                 {
-                    PrimaryButtonText = "Just Close ??",
-                    NegativeButtonText = "Open Ko-Fi ??"
+                    PrimaryButtonText = Loc("common_close", "Close"),
+                    NegativeButtonText = Loc("cta_premium", "Songify Premium")
                 });
             switch (msgResult)
             {
                 case AppDialogResult.Secondary:
-                    ShellHelper.OpenUrl("https://ko-fi.com/overcodetv");
+                    AccountLinking.OpenPremium();
                     return;
 
                 case AppDialogResult.Primary:
@@ -2609,7 +2632,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
                             return;
 
                         case HttpStatusCode.Forbidden:
-                            TblError.Text = Loc("window_settings_cloud_forbidden", "Forbidden access. This feature is only available for Ko-Fi members.");
+                            TblError.Text = Loc("window_settings_cloud_forbidden_premium",
+                                "Cloud sync is included with Songify Premium.");
                             return;
 
                         case HttpStatusCode.InternalServerError:
@@ -2665,7 +2689,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
                             return;
 
                         case HttpStatusCode.Forbidden:
-                            TblError.Text = Loc("window_settings_cloud_forbidden", "Forbidden access. This feature is only available for Ko-Fi members.");
+                            TblError.Text = Loc("window_settings_cloud_forbidden_premium",
+                                "Cloud sync is included with Songify Premium.");
                             return;
 
                         case HttpStatusCode.InternalServerError:
@@ -2758,10 +2783,42 @@ namespace Songify_Slim.Views.WPFUI.Controls
             AccountLinking.OpenSongifyTokenPage();
         }
 
+        private async void BtnRefreshPremium_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (BtnRefreshPremium != null)
+                BtnRefreshPremium.IsEnabled = false;
+            SongifyAuthService.Invalidate();
+            await SongifyPremiumService.RefreshAsync();
+            UpdateSongifyTokenStatus();
+        }
+
         private void NotifySongifyTokenChanged()
         {
             UpdateSongifyTokenStatus();
             Pages.OverviewPage.RefreshChecklist();
+            SchedulePremiumRefresh();
+        }
+
+        private void SchedulePremiumRefresh()
+        {
+            _premiumRefreshCts?.Cancel();
+            _premiumRefreshCts = new CancellationTokenSource();
+            CancellationToken token = _premiumRefreshCts.Token;
+            _ = RefreshPremiumDebouncedAsync(token);
+        }
+
+        private static async Task RefreshPremiumDebouncedAsync(CancellationToken token)
+        {
+            try
+            {
+                await Task.Delay(800, token);
+                SongifyAuthService.Invalidate();
+                await SongifyPremiumService.RefreshAsync();
+            }
+            catch (TaskCanceledException)
+            {
+                // A newer token edit replaced this refresh.
+            }
         }
 
         private void UpdateSongifyTokenStatus()
@@ -2769,17 +2826,47 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (TblSongifyTokenStatus == null)
                 return;
 
-            if (AccountLinking.HasSongifyApiToken())
+            if (BtnRefreshPremium != null)
+                BtnRefreshPremium.IsEnabled = !SongifyPremiumService.IsRefreshing;
+
+            if (SongifyPremiumService.IsRefreshing)
             {
-                TblSongifyTokenStatus.Text = Loc("setup_token_present",
-                    "Token saved. Generate a new one on your account page if you need to replace it.");
-                TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.LawnGreen);
+                TblSongifyTokenStatus.Text = Loc("setup_token_checking_premium",
+                    "Checking Songify Premium status…");
+                TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.Gray);
+                return;
             }
-            else
+
+            if (!AccountLinking.HasSongifyApiToken())
             {
                 TblSongifyTokenStatus.Text = Loc("setup_token_missing",
                     "No token yet. Song data and queue uploads will not work until you add one.");
                 TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.Orange);
+                return;
+            }
+
+            switch (SongifyPremiumService.Current)
+            {
+                case SongifyPremiumState.Active:
+                    TblSongifyTokenStatus.Text = Loc("setup_token_premium_active",
+                        "Token saved. Songify Premium is active.");
+                    TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.LawnGreen);
+                    return;
+                case SongifyPremiumState.Inactive:
+                    TblSongifyTokenStatus.Text = Loc("setup_token_premium_inactive",
+                        "Token saved. Link Ko-fi on your account page to unlock recap, stats, and cloud sync.");
+                    TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.DarkOrange);
+                    return;
+                case SongifyPremiumState.InvalidToken:
+                    TblSongifyTokenStatus.Text = Loc("setup_token_invalid",
+                        "This token is invalid. Generate a new one on your account page.");
+                    TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.OrangeRed);
+                    return;
+                default:
+                    TblSongifyTokenStatus.Text = Loc("setup_token_present",
+                        "Token saved. Generate a new one on your account page if you need to replace it.");
+                    TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.LawnGreen);
+                    return;
             }
         }
 
