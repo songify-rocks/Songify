@@ -63,7 +63,7 @@ namespace Songify_Slim.Util.General
 
                 TextBlock val = new()
                 {
-                    Text = value ?? "�",
+                    Text = value ?? "—",
                     VerticalAlignment = VerticalAlignment.Top,
                     Foreground =
                         Application.Current.TryFindResource("TextFillColorPrimaryBrush") as Brush
@@ -77,7 +77,15 @@ namespace Songify_Slim.Util.General
                 r++;
             }
 
-            return new ToolTip { Content = grid, Style = style };
+            return new ToolTip
+            {
+                Content = grid,
+                Style = style,
+                Background = ThemeBrushes.CreateOpaqueSurfaceBrush(),
+                BorderBrush =
+                    Application.Current.TryFindResource("AccentFillColorDefaultBrush") as Brush
+                    ?? SystemColors.ActiveBorderBrush,
+            };
         }
 
         private static SymbolIcon CloneIcon(SymbolIcon src)

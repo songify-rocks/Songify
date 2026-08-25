@@ -407,61 +407,120 @@
                         Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                         Text="{Binding ApiMetrics.TotalRequestsPerMinute, StringFormat=API: {0} rpm}"
                         Visibility="{Binding ApiMetrics.ShowTotalInStatusbar, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                    <Ellipse
-                        Width="8"
-                        Height="8"
+                    <Button
+                        Margin="0,0,12,0"
                         VerticalAlignment="Center"
-                        Fill="{Binding TwitchApiBrush}" />
-                    <TextBlock
-                        Margin="6,0,12,0"
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="TwitchAPI"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding TwitchApiBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_twitch_api}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        Margin="0,0,12,0"
                         VerticalAlignment="Center"
-                        FontSize="12"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{DynamicResource window_main_status_twitch_api}" />
-                    <Ellipse
-                        Width="8"
-                        Height="8"
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="TwitchBot"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding TwitchBotBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_twitch_bot}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        Margin="0,0,12,0"
                         VerticalAlignment="Center"
-                        Fill="{Binding TwitchBotBrush}" />
-                    <TextBlock
-                        Margin="6,0,12,0"
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="Spotify"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding SpotifyBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_spotify}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        Margin="0,0,12,0"
                         VerticalAlignment="Center"
-                        FontSize="12"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{DynamicResource window_main_status_twitch_bot}" />
-                    <Ellipse
-                        Width="8"
-                        Height="8"
-                        VerticalAlignment="Center"
-                        Fill="{Binding SpotifyBrush}" />
-                    <TextBlock
-                        Margin="6,0,12,0"
-                        VerticalAlignment="Center"
-                        FontSize="12"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{DynamicResource window_main_status_spotify}" />
-                    <Ellipse
-                        Width="8"
-                        Height="8"
-                        VerticalAlignment="Center"
-                        Fill="{Binding PearBrush}"
-                        ToolTip="{Binding PearStatusText}" />
-                    <TextBlock
-                        Margin="6,0,12,0"
-                        VerticalAlignment="Center"
-                        FontSize="12"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{DynamicResource window_main_status_pear}"
-                        ToolTip="{Binding PearStatusText}" />
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="PearDesktop"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding PearBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_pear}" />
+                        </StackPanel>
+                    </Button>
                     <ui:Button
                         MinHeight="22"
-                        Margin="0,0,8,0"
+                        Margin="0,0,12,0"
                         Padding="0"
                         VerticalAlignment="Center"
                         Appearance="Transparent"
                         Click="BtnPremiumStatus_Click"
                         Cursor="Hand"
-                        ToolTip="{Binding PremiumStatusText}">
+                        Tag="Premium"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
                         <StackPanel Orientation="Horizontal">
                             <Ellipse
                                 Width="8"
@@ -476,17 +535,30 @@
                                 Text="{DynamicResource window_main_status_premium}" />
                         </StackPanel>
                     </ui:Button>
-                    <Ellipse
-                        Width="8"
-                        Height="8"
+                    <Button
                         VerticalAlignment="Center"
-                        Fill="{Binding WebServerBrush}" />
-                    <TextBlock
-                        Margin="6,0,0,0"
-                        VerticalAlignment="Center"
-                        FontSize="12"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{DynamicResource window_main_status_webserver}" />
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="WebServer"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding WebServerBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_webserver}" />
+                        </StackPanel>
+                    </Button>
                 </StackPanel>
                 <ui:Button
                     x:Name="BtnSpotifyIdleBackoff"

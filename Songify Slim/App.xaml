@@ -16,6 +16,9 @@
                 <ui:ThemesDictionary Theme="Dark" />
                 <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+            <!--  Seeded opaque surfaces; ThemeHandler refreshes these after theme apply.  -->
+            <SolidColorBrush x:Key="SongifyOpaqueSurfaceBrush" Color="#FF202020" />
+            <SolidColorBrush x:Key="SongifyOpaqueSecondaryBrush" Color="#FF2C2C2C" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

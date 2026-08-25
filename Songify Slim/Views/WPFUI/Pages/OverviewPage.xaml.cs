@@ -67,6 +67,8 @@ public partial class OverviewPage
         SettingsUi.Refreshed += OnSettingsRefreshed;
         IsVisibleChanged += OverviewPage_IsVisibleChanged;
         SongifyPremiumService.StatusChanged += OnPremiumStatusChanged;
+        AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
+        AppFetchService.PlayerSourceChanged += OnPlayerSourceChanged;
 
         UpdatePremiumButton();
         UpdateNowPlaying();
@@ -86,6 +88,7 @@ public partial class OverviewPage
         SettingsUi.Refreshed -= OnSettingsRefreshed;
         IsVisibleChanged -= OverviewPage_IsVisibleChanged;
         SongifyPremiumService.StatusChanged -= OnPremiumStatusChanged;
+        AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
         _updateTimer?.Stop();
         _canvasPlaying = false;
         StopCanvasPlayback();
@@ -107,6 +110,25 @@ public partial class OverviewPage
     }
 
     private void OnSettingsRefreshed() => RefreshChecklist();
+
+    private void OnPlayerSourceChanged()
+    {
+        void Sync()
+        {
+            if (!_playerDropdownInitialized || CbxPlayer == null)
+                return;
+
+            if (CbxPlayer.SelectedValue is PlayerType selected && selected == Settings.Player)
+                return;
+
+            CbxPlayer.SelectedValue = Settings.Player;
+        }
+
+        if (!Dispatcher.CheckAccess())
+            Dispatcher.BeginInvoke(Sync);
+        else
+            Sync();
+    }
 
     private void OverviewPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
     {
@@ -289,7 +311,7 @@ public partial class OverviewPage
         TrackInfo current = GlobalObjects.CurrentSong;
         if (current != null)
         {
-            TxtNowPlaying.Text = string.IsNullOrEmpty(current.Title) ? "—" : current.Title;
+            TxtNowPlaying.Text = string.IsNullOrEmpty(current.Title) ? "�" : current.Title;
             TxtArtist.Text = current.Artists ?? "";
 
             // Album cover: null-safe (Albums can be null or empty; Image has Url)
@@ -398,7 +420,7 @@ public partial class OverviewPage
             items.Add(new UpNextItem
             {
                 Position = $"{i + 1}",
-                Title = string.IsNullOrWhiteSpace(t.Title) ? "—" : t.Title,
+                Title = string.IsNullOrWhiteSpace(t.Title) ? "�" : t.Title,
                 Subtitle = subtitle,
                 CoverUrl = t.Albumcover,
                 Requester = showRequester ? requester : ""
@@ -598,7 +620,7 @@ public partial class OverviewPage
             row.Children.Add(go);
             row.Children.Add(new TextBlock
             {
-                Text = (item.IsDone ? "✓  " : "○  ") + item.Title,
+                Text = (item.IsDone ? "?  " : "?  ") + item.Title,
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 13,
                 Opacity = item.IsDone ? 0.7 : 1

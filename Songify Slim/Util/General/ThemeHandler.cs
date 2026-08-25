@@ -30,6 +30,7 @@ internal static class ThemeHandler
         {
             // Still sync backdrop on any new FluentWindow that just opened.
             ApplyBackdropToWindows(backdrop);
+            ThemeBrushes.EnsureAppResources();
             return;
         }
 
@@ -40,6 +41,7 @@ internal static class ThemeHandler
         {
             ApplicationThemeManager.Apply(theme, backdrop, updateAccent: true);
             ApplyBackdropToWindows(backdrop);
+            ThemeBrushes.EnsureAppResources();
             _appliedTheme = Settings.Theme;
             _appliedBackdrop = Settings.WindowBackdrop;
         }

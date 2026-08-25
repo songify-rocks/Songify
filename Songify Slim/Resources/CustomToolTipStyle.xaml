@@ -8,7 +8,7 @@
         <Setter Property="Placement" Value="Top" />
         <Setter Property="HasDropShadow" Value="True" />
         <Setter Property="Padding" Value="10" />
-        <Setter Property="Background" Value="{DynamicResource ControlFillColorDefaultBrush}" />
+        <Setter Property="Background" Value="{DynamicResource SongifyOpaqueSurfaceBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
         <Setter Property="BorderThickness" Value="1" />

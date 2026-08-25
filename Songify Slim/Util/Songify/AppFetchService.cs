@@ -31,6 +31,18 @@ public static class AppFetchService
     public static int GetEffectiveSpotifyFetchIntervalSeconds() =>
         Sf.GetEffectiveSpotifyFetchIntervalSeconds();
 
+    public static TimeSpan? GetPearConnectBackoffRemaining() =>
+        Sf.GetPearConnectBackoffRemaining();
+
+    public static Task ForceFetchSpotifyAsync(bool forceUpdate = true) =>
+        Sf.FetchSpotifyWeb(forceUpdate);
+
+    public static Task ForceFetchPearAsync(bool forceNow = true) =>
+        Sf.FetchPear(forceNow);
+
+    public static Task NotifyPearPlayerInactiveAsync() =>
+        Sf.NotifyPearPlayerInactiveAsync();
+
     public static void Start()
     {
         if (_running) return;

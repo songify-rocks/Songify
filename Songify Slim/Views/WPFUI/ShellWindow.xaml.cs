@@ -15,14 +15,18 @@ using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.Pear;
+using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using Songify_Slim.Views;
+using TwitchLib.Api.Helix.Models.EventSub;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Tray.Controls;
 using static Songify_Slim.Util.General.Enums;
 using Button = System.Windows.Controls.Button;
 using TextBlock = Wpf.Ui.Controls.TextBlock;
+using SymbolIcon = Wpf.Ui.Controls.SymbolIcon;
 
 namespace Songify_Slim.Views.WPFUI;
 
@@ -736,6 +740,252 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         AccountLinking.OpenPremium();
     }
 
+    private async void ServiceToolTipOpening(object sender, ToolTipEventArgs e)
+    {
+        try
+        {
+            await ShowServiceToolTip(sender);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
+    private async Task ShowServiceToolTip(object sender)
+    {
+        if (sender is not FrameworkElement { Tag: string tag } host)
+            return;
+
+        Style style = TryFindResource("StatusToolTip") as Style;
+        SymbolIcon icon = new() { Width = 14, Height = 14 };
+        string header;
+        List<(string Label, string Value)> rows;
+
+        switch (tag)
+        {
+            case "TwitchBot":
+            {
+                header = "Twitch Chat Bot";
+                icon.Symbol = SymbolRegular.Live24;
+                List<EventSubSubscription> subs = await GetEventSubsSafeAsync();
+                bool connected = _twitchBotState == ConnectionIndicatorState.Connected ||
+                                 subs.Any(sub => sub.Type == "channel.chat.message" && sub.Status == "enabled");
+                rows =
+                [
+                    ("Status", connected ? "Connected" : "Disconnected"),
+                    ("Channel", Settings.TwitchUser?.DisplayName ?? "—"),
+                ];
+                break;
+            }
+
+            case "TwitchAPI":
+            {
+                header = "Twitch API";
+                icon.Symbol = SymbolRegular.Live24;
+                List<EventSubSubscription> subs = await GetEventSubsSafeAsync();
+                string eventSubs = string.Join("\n",
+                    subs.Where(s => s.Status == "enabled").Select(s => s.Type));
+                rows =
+                [
+                    ("Status", _twitchApiState == ConnectionIndicatorState.Connected ? "Connected" : "Disconnected"),
+                    ("Channel", Settings.TwitchUser?.DisplayName ?? "—"),
+                    ("EventSubs", string.IsNullOrWhiteSpace(eventSubs) ? "—" : eventSubs)
+                ];
+                break;
+            }
+
+            case "Spotify":
+                header = "Spotify";
+                icon.Symbol = SymbolRegular.MusicNote224;
+                rows = await BuildSpotifyStatusRowsAsync();
+                break;
+
+            case "PearDesktop":
+                header = "Pear Desktop";
+                icon.Symbol = SymbolRegular.PlayCircle24;
+                rows = BuildPearStatusRows();
+                break;
+
+            case "Premium":
+                header = "Songify Premium";
+                icon.Symbol = SymbolRegular.Star24;
+                rows =
+                [
+                    ("Status", PremiumStatusText),
+                    ("Action", "Click to open Premium / account")
+                ];
+                break;
+
+            default:
+                header = "WebServer";
+                icon.Symbol = SymbolRegular.Server24;
+                rows =
+                [
+                    ("Status", _webServerRunning ? "Running" : "Not running"),
+                    ("Port", Settings.WebServerPort.ToString()),
+                    ("Action", "Click to start/stop")
+                ];
+                break;
+        }
+
+        host.ToolTip = ServiceToolTip.Build(header, rows, style, icon);
+    }
+
+    private static async Task<List<EventSubSubscription>> GetEventSubsSafeAsync()
+    {
+        try
+        {
+            if (TwitchHandler.TwitchApi == null || string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
+                return [];
+
+            return await TwitchApiHelper.GetEventSubscriptions() ?? [];
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+            return [];
+        }
+    }
+
+    private ServiceIndicatorState GetSpotifyIndicatorState()
+    {
+        string product = Settings.SpotifyProfile?.Product ?? GlobalObjects.SpotifyProfile?.Product;
+        bool isPremium = string.Equals(product, "premium", StringComparison.OrdinalIgnoreCase);
+        return new ServiceIndicatorState(
+            isSelected: Settings.Player == PlayerType.Spotify,
+            isConnecting: false,
+            isConnected: SpotifyApiHandler.Client != null,
+            connectedStatusText: isPremium ? "Connected (Premium)" : "Connected (Free)");
+    }
+
+    private async Task<List<(string Label, string Value)>> BuildSpotifyStatusRowsAsync()
+    {
+        ServiceIndicatorState indicatorState = GetSpotifyIndicatorState();
+        bool hasTokens = !string.IsNullOrWhiteSpace(Settings.SpotifyAccessToken) ||
+                         !string.IsNullOrWhiteSpace(Settings.SpotifyRefreshToken);
+
+        string action = !indicatorState.IsSelected
+            ? "Click indicator to switch to Spotify and connect"
+            : !indicatorState.IsConnected
+                ? "Click indicator to connect"
+                : "Click indicator to refresh Spotify status";
+
+        string deviceName;
+        try
+        {
+            deviceName = await SpotifyApiHandler.GetDeviceNameForId(Settings.SpotifyDeviceId);
+        }
+        catch
+        {
+            deviceName = "Unknown";
+        }
+
+        return indicatorState.BuildRows(
+            ("Linked", hasTokens ? "Yes" : "No"),
+            ("User", Settings.SpotifyProfile?.DisplayName ?? "Unknown"),
+            ("Device", string.IsNullOrWhiteSpace(deviceName) ? "Unknown" : deviceName),
+            ("Fetch rate", AppFetchService.IsSpotifyIdleBackoffActive
+                ? $"{AppFetchService.GetEffectiveSpotifyFetchIntervalSeconds()}s (idle — click status chip to restore)"
+                : $"{MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30)}s"),
+            ("Action", action));
+    }
+
+    private List<(string Label, string Value)> BuildPearStatusRows()
+    {
+        ServiceIndicatorState indicatorState = new(
+            isSelected: Settings.Player == PlayerType.Pear,
+            isConnecting: PearWebSocketClient.IsConnecting,
+            isConnected: PearWebSocketClient.IsConnected,
+            connectedStatusText: Loc("common_connected", "Connected"),
+            disconnectedStatusText: Loc("common_disconnected", "Disconnected"),
+            showInactiveStatusWhenUnselected: false,
+            inactiveStatusText: Loc("common_inactive", "Inactive"));
+
+        TimeSpan? backoffRemaining = AppFetchService.GetPearConnectBackoffRemaining();
+
+        string action = indicatorState.IsConnecting
+            ? "Connecting"
+            : indicatorState.IsConnected
+                ? "Click indicator to disconnect"
+                : Settings.Player == PlayerType.Pear && backoffRemaining is { } remaining
+                    ? $"Auto-retry in {Math.Ceiling(remaining.TotalSeconds)}s (backoff active). Click to force check"
+                    : Settings.Player == PlayerType.Pear
+                        ? "Click indicator to reconnect"
+                        : "Click indicator to switch to Pear and connect";
+
+        return indicatorState.BuildRows(
+            ("WebSocket", PearWebSocketClient.Endpoint),
+            ("HTTP API", YtmDesktopApi.Endpoint),
+            ("Action", action));
+    }
+
+    private async void ServiceIcon_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is not FrameworkElement { Tag: string tag })
+            return;
+
+        try
+        {
+            switch (tag)
+            {
+                case "TwitchBot":
+                case "TwitchAPI":
+                    break;
+
+                case "Spotify":
+                    if (Settings.Player != PlayerType.Spotify)
+                    {
+                        PlayerType previous = Settings.Player;
+                        Settings.Player = PlayerType.Spotify;
+                        await AppFetchService.ApplyPlayerSourceAsync(previous, PlayerType.Spotify);
+                        OnPropertyChanged(nameof(SpotifyBrush));
+                        UpdatePearStatusIndicator();
+                        break;
+                    }
+
+                    if (SpotifyApiHandler.Client == null)
+                        await SpotifyApiHandler.Auth();
+                    else
+                        await AppFetchService.ForceFetchSpotifyAsync();
+
+                    SpotifyApiHandler.RefreshShellSpotifyIndicator();
+                    OnPropertyChanged(nameof(SpotifyBrush));
+                    break;
+
+                case "PearDesktop":
+                    if (Settings.Player != PlayerType.Pear)
+                    {
+                        PlayerType previous = Settings.Player;
+                        Settings.Player = PlayerType.Pear;
+                        await AppFetchService.ApplyPlayerSourceAsync(previous, PlayerType.Pear);
+                        OnPropertyChanged(nameof(SpotifyBrush));
+                        UpdatePearStatusIndicator();
+                        break;
+                    }
+
+                    if (PearWebSocketClient.IsConnecting || PearWebSocketClient.IsConnected)
+                        await AppFetchService.NotifyPearPlayerInactiveAsync();
+                    else
+                        await AppFetchService.ForceFetchPearAsync();
+
+                    UpdatePearStatusIndicator();
+                    break;
+
+                case "WebServer":
+                    if (GlobalObjects.WebServer.Run)
+                        GlobalObjects.WebServer.StopWebServer();
+                    else
+                        GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
     public void SetCoverImage(string coverPath)
     {
         // OverviewPage reads from GlobalObjects.CurrentSong
@@ -977,13 +1227,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         if (FlyPsa == null)
             return;
 
-        Color color = Color.FromRgb(0x20, 0x20, 0x20);
-        if (TryFindResource("ApplicationBackgroundBrush") is SolidColorBrush app)
-            color = Color.FromArgb(255, app.Color.R, app.Color.G, app.Color.B);
-        else if (TryFindResource("CardBackgroundFillColorDefaultBrush") is SolidColorBrush card)
-            color = Color.FromArgb(255, card.Color.R, card.Color.G, card.Color.B);
-
-        FlyPsa.Background = new SolidColorBrush(color);
+        FlyPsa.Background = ThemeBrushes.CreateOpaqueSurfaceBrush();
     }
 
     private void BtnPsaMarkAllRead_OnClick(object sender, RoutedEventArgs e)

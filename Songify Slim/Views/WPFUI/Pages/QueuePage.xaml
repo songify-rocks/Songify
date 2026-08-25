@@ -79,11 +79,13 @@
                         Width="60"
                         Height="60"
                         Margin="0,0,12,0"
-                        Background="{DynamicResource ControlFillColorDefaultBrush}"
+                        Background="{DynamicResource SongifyOpaqueSecondaryBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
                         ClipToBounds="True"
-                        CornerRadius="4">
+                        CornerRadius="8">
                         <Grid>
-                            <Border Background="{DynamicResource ControlFillColorSecondaryBrush}" CornerRadius="6">
+                            <Border Background="{DynamicResource SongifyOpaqueSecondaryBrush}" CornerRadius="8">
                                 <TextBlock
                                     HorizontalAlignment="Center"
                                     VerticalAlignment="Center"
@@ -92,7 +94,7 @@
                                     Text="{DynamicResource window_queue_no_art}" />
                             </Border>
                             <ui:Image
-                                CornerRadius="6"
+                                CornerRadius="8"
                                 RenderOptions.BitmapScalingMode="HighQuality"
                                 Source="{Binding NowPlayingDisplay.AlbumcoverImageSource}"
                                 Stretch="UniformToFill" />
@@ -196,11 +198,13 @@
                                     Width="56"
                                     Height="56"
                                     Margin="0,0,16,0"
-                                    Background="{DynamicResource ControlFillColorDefaultBrush}"
+                                    Background="{DynamicResource SongifyOpaqueSecondaryBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
                                     ClipToBounds="True"
-                                    CornerRadius="6">
+                                    CornerRadius="8">
                                     <Grid>
-                                        <Border Background="{DynamicResource ControlFillColorSecondaryBrush}" CornerRadius="12">
+                                        <Border Background="{DynamicResource SongifyOpaqueSecondaryBrush}" CornerRadius="8">
                                             <TextBlock
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
@@ -209,7 +213,7 @@
                                                 Text="{DynamicResource window_queue_no_art}" />
                                         </Border>
                                         <ui:Image
-                                            CornerRadius="12"
+                                            CornerRadius="8"
                                             RenderOptions.BitmapScalingMode="HighQuality"
                                             Source="{Binding Albumcover, Converter={StaticResource UrlToImageSourceConverter}}"
                                             Stretch="UniformToFill" />

@@ -157,7 +157,7 @@
                             MinWidth="120"
                             MinHeight="120"
                             Padding="0"
-                            Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                            Background="{DynamicResource SongifyOpaqueSecondaryBrush}"
                             Visibility="Visible">
                             <Grid
                                 Width="120"
@@ -298,7 +298,9 @@
                                         Width="64"
                                         Height="64"
                                         HorizontalAlignment="Left"
-                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                        Background="{DynamicResource SongifyOpaqueSecondaryBrush}"
+                                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
                                         ClipToBounds="True"
                                         CornerRadius="8">
                                         <ui:Image
