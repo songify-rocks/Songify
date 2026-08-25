@@ -12,7 +12,9 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.Configuration;
+
 using Songify_Slim.Util.General;
+
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Songify;
@@ -1136,7 +1138,7 @@ public static class TwitchHandler
             return "";
         }
 
-        if (input.StartsWith("https://spotify.link/"))
+        if (input.StartsWith("https://spotify.link/") || input.StartsWith("https://open.spotify.com/s/"))
         {
             input = await GetFullSpotifyUrl(input);
             //return "shortened";
