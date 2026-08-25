@@ -519,6 +519,10 @@
     <value>Starts a Twitch skip poll for the current song</value>
     <comment>Label content for the skip poll command</comment>
   </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Displays the current playlist</value>
+    <comment>Label content for the playlist command</comment>
+  </data>
   <data name="window_botresponses_cmd_skipvote" xml:space="preserve">
     <value>Starts a vote to skip the current song</value>
     <comment>Label content for "Starts a vote to skip the current song"</comment>

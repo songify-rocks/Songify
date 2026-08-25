@@ -393,6 +393,9 @@
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
     <value>Startet eine Twitch-Abstimmung zum Überspringen des aktuellen Songs</value>
   </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Zeigt die aktuelle Playlist an</value>
+  </data>
   <data name="window_botresponses_cmd_skipvote" xml:space="preserve">
     <value>Startet eine Abstimmung, um den aktuellen Song zu überspringen</value>
   </data>

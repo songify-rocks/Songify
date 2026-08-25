@@ -2224,6 +2224,9 @@ gwyden - Hertz - karimawii
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
     <value>Inicia uma enquete no Twitch para pular a música atual.</value>
   </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Exibe a playlist atual</value>
+  </data>
   <data name="setup_wizard_title" xml:space="preserve">
     <value>Configure o Songify</value>
   </data>

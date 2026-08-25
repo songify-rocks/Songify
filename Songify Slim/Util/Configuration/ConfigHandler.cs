@@ -234,6 +234,18 @@ namespace Songify_Slim.Util.Configuration
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
                 CustomProperties = new Dictionary<string, object>()
+            },
+
+            new()
+            {
+                CommandType = CommandType.Playlist,
+                Trigger = "playlist",
+                Response = "@{user} {playlist_name} {playlist_url}",
+                IsEnabled = false,
+                AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
+                IsAnnouncement = false,
+                AnnouncementColor = AnnouncementColor.Blue,
+                CustomProperties = new Dictionary<string, object>()
             }
         ];
 

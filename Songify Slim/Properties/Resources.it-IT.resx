@@ -2224,6 +2224,9 @@ gwyden - Hertz - karimawii
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
     <value>Avvia un sondaggio Twitch per saltare la canzone in corso</value>
   </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Mostra la playlist corrente</value>
+  </data>
   <data name="setup_wizard_title" xml:space="preserve">
     <value>Configura Songify</value>
   </data>

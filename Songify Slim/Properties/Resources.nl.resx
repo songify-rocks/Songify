@@ -2278,6 +2278,9 @@ gwyden - Hertz - karimawii
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
     <value>Start een Twitch-enquête om het huidige nummer over te slaan.</value>
   </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Toont de huidige afspeellijst</value>
+  </data>
   <data name="setup_wizard_title" xml:space="preserve">
     <value>Stel Songify in.</value>
   </data>

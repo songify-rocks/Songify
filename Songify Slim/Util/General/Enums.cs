@@ -99,7 +99,10 @@ public static class Enums
         ToggleSr,
 
         [Description("Skip Poll")]
-        SkipPoll
+        SkipPoll,
+
+        [Description("Playlist")]
+        Playlist
     }
 
     public enum ConfigTypes

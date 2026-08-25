@@ -2225,6 +2225,9 @@ gwyden - Hertz - karimawii
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
     <value>Запускает опрос на Twitch о пропуске текущей песни.</value>
   </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Показывает текущий плейлист</value>
+  </data>
   <data name="setup_wizard_title" xml:space="preserve">
     <value>Настройте Songify</value>
   </data>

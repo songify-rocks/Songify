@@ -1618,6 +1618,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Displays the current playlist.
+        /// </summary>
+        public static string window_botresponses_cmd_playlist {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Displays the queue position of the users songrequests.
         /// </summary>
         public static string window_botresponses_cmd_pos {

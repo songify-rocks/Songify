@@ -1776,6 +1776,7 @@ public static class TwitchHandler
                 Enums.CommandType.BanSong => HandleBanSongCommand,
                 Enums.CommandType.ToggleSr => HandleToggleSrCommand,
                 Enums.CommandType.SkipPoll => HandleSkipPollCommand,
+                Enums.CommandType.Playlist => HandlePlaylistCommand,
                 _ => null
             };
 
@@ -1799,6 +1800,7 @@ public static class TwitchHandler
                 case Enums.CommandType.BanSong:
                 case Enums.CommandType.ToggleSr:
                 case Enums.CommandType.SkipPoll:
+                case Enums.CommandType.Playlist:
                     break;
 
                 case Enums.CommandType.Voteskip:
@@ -2272,6 +2274,78 @@ public static class TwitchHandler
         {
             Logger.Error(LogSource.Twitch, "Error while starting skip poll from command", ex);
         }
+    }
+
+    private static async Task HandlePlaylistCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+    {
+        try
+        {
+            if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+                return;
+
+            PlaylistInfo playlist = GlobalObjects.CurrentSong?.Playlist;
+            if (Settings.Player == Enums.PlayerType.Spotify)
+            {
+                PlaylistInfo livePlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
+                if (livePlaylist != null)
+                    playlist = livePlaylist;
+            }
+
+            if (!HasPlaylistInfo(playlist))
+            {
+                SendOrAnnounceMessage("No playlist information available", cmd);
+                return;
+            }
+
+            string response = CreateResponse(new PlaceholderContext
+            {
+                User = message.ChatterUserName,
+                PlaylistName = playlist.Name,
+                PlaylistUrl = ResolvePlaylistUrl(playlist)
+            }, cmd.Response);
+
+            SendOrAnnounceMessage(response, cmd);
+        }
+        catch (Exception e)
+        {
+            Logger.Error(LogSource.Twitch, "Error in Playlist command.", e);
+        }
+    }
+
+    private static bool HasPlaylistInfo(PlaylistInfo playlist)
+    {
+        if (playlist == null)
+            return false;
+
+        bool hasName = !string.IsNullOrWhiteSpace(playlist.Name) &&
+                       !string.Equals(playlist.Name, "unknown", StringComparison.OrdinalIgnoreCase);
+        return hasName ||
+               !string.IsNullOrWhiteSpace(playlist.Url) ||
+               !string.IsNullOrWhiteSpace(playlist.Id);
+    }
+
+    private static string ResolvePlaylistUrl(PlaylistInfo playlist)
+    {
+        if (playlist == null)
+            return "";
+
+        if (!string.IsNullOrWhiteSpace(playlist.Url) &&
+            (playlist.Url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+             playlist.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+        {
+            return playlist.Url;
+        }
+
+        string id = !string.IsNullOrWhiteSpace(playlist.Id) ? playlist.Id : playlist.Url;
+        if (string.IsNullOrWhiteSpace(id))
+            return playlist.Url ?? "";
+
+        return Settings.Player switch
+        {
+            Enums.PlayerType.Spotify => $"https://open.spotify.com/playlist/{id}",
+            Enums.PlayerType.Pear => $"https://music.youtube.com/playlist?list={id}",
+            _ => id
+        };
     }
 
     private static async Task HandleSongCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -3419,6 +3493,10 @@ public static class TwitchHandler
 
             if (placeholder == "{singleartist}")
                 placeholder = "{single_artist}";
+            else if (placeholder == "{playlistname}")
+                placeholder = "{playlist_name}";
+            else if (placeholder == "{playlisturl}")
+                placeholder = "{playlist_url}";
 
             string value = property.GetValue(context)?.ToString() ?? string.Empty; // Get property value or empty string if null
             template = template.Replace(placeholder, value); // Replace placeholder in the template with value

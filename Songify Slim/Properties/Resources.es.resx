@@ -2225,6 +2225,9 @@ gwyden - Hertz - karimawii
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
     <value>Inicia una encuesta de Twitch para saltar la canción actual.</value>
   </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Muestra la playlist actual</value>
+  </data>
   <data name="setup_wizard_title" xml:space="preserve">
     <value>Configurar Songify</value>
   </data>
