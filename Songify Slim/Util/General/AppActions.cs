@@ -47,10 +47,8 @@ internal static class AppActions
         AutoUpdater.UpdateMode = Mode.Normal;
         AutoUpdater.AppTitle = "Songify";
         AutoUpdater.RunUpdateAsAdmin = false;
-        Logger.Info(LogSource.Core, "Checking for update...");
-        AutoUpdater.Start(Settings.BetaUpdates
-            ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
-            : $"{GlobalObjects.BaseUrl}/update.xml");
+        Logger.Info(LogSource.Core, $"Checking for update ({Settings.ReleaseChannel})...");
+        AutoUpdater.Start(Settings.GetUpdateFeedUrl());
     }
 
     public static void OpenFaq() =>

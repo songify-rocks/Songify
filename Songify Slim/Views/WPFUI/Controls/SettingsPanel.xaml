@@ -134,13 +134,26 @@
                                     Focusable="False"
                                     TabIndex="3"
                                     Unchecked="ChbxMinimizeSystrayChecked" />
-                                <ui:ToggleSwitch
-                                    x:Name="TglBetaUpdates"
-                                    Margin="0,0,0,8"
-                                    Checked="TglBetaUpdates_Toggled"
-                                    Content="{DynamicResource window_settings_config_beta_updates}"
-                                    TabIndex="4"
-                                    Unchecked="TglBetaUpdates_Toggled" />
+                                <Grid Margin="0,0,0,8">
+                                    <StackPanel VerticalAlignment="Center" Margin="0,0,180,0">
+                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_system_release_channel}" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{DynamicResource window_settings_system_release_channel_hint}" />
+                                    </StackPanel>
+                                    <ComboBox
+                                        x:Name="CbxReleaseChannel"
+                                        MinWidth="160"
+                                        HorizontalAlignment="Right"
+                                        VerticalAlignment="Center"
+                                        SelectionChanged="CbxReleaseChannel_SelectionChanged"
+                                        TabIndex="4">
+                                        <ComboBoxItem d:Content="{x:Static local:Resources.window_settings_release_channel_stable}" Content="{DynamicResource window_settings_release_channel_stable}" />
+                                        <ComboBoxItem d:Content="{x:Static local:Resources.window_settings_release_channel_beta}" Content="{DynamicResource window_settings_release_channel_beta}" />
+                                        <ComboBoxItem d:Content="{x:Static local:Resources.window_settings_release_channel_dev}" Content="{DynamicResource window_settings_release_channel_dev}" />
+                                    </ComboBox>
+                                </Grid>
                                 <ui:ToggleSwitch
                                     x:Name="ChbxOpenQueueOnStartup"
                                     Margin="0,0,0,8"

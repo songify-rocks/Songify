@@ -513,6 +513,21 @@
   <data name="window_settings_config_beta_updates" xml:space="preserve">
     <value>Obtener actualizaciones de la beta</value>
   </data>
+  <data name="window_settings_system_release_channel" xml:space="preserve">
+    <value>Canal de actualizaciones</value>
+  </data>
+  <data name="window_settings_system_release_channel_hint" xml:space="preserve">
+    <value>Elige qué actualizaciones quieres recibir.</value>
+  </data>
+  <data name="window_settings_release_channel_stable" xml:space="preserve">
+    <value>Estable</value>
+  </data>
+  <data name="window_settings_release_channel_beta" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="window_settings_release_channel_dev" xml:space="preserve">
+    <value>Dev (Inestable)</value>
+  </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Por favor conecta tu cuenta de Spotify. Archivo -&gt; Ajustes -&gt; Spotify</value>
   </data>
@@ -1968,6 +1983,14 @@ gwyden - Hertz - karimawii
     <value>Visto a las {0}.</value>
     <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
   </data>
+  <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
+    <value>La app de la API de Spotify necesita Premium</value>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
+    <value>Spotify exige que el propietario de tu app de API (la cuenta en developer.spotify.com que creó el Client ID) tenga Spotify Premium activo.
+
+No es Songify Premium ni la cuenta de Spotify vinculada en Songify para la reproducción. Activa Premium en esa cuenta del dashboard y espera unas horas: Spotify indica que el acceso puede tardar tras un cambio de suscripción.</value>
+  </data>
   <data name="common_duration_hours" xml:space="preserve">
     <value>{0} hora(s)</value>
     <comment>Context: Relative duration; {0} = hours.</comment>
@@ -2401,5 +2424,14 @@ gwyden - Hertz - karimawii
   </data>
   <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
     <value>Mensajes mínimos entre anuncios de canciones</value>
+  </data>
+  <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="cta_premium_tooltip" xml:space="preserve">
+    <value>Resumen del stream, canciones más pedidas, sincronización en la nube y widgets extra. Songify sigue siendo gratis.</value>
+  </data>
+  <data name="window_main_title_premium" xml:space="preserve">
+    <value>Songify Premium</value>
   </data>
 </root>

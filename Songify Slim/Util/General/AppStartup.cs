@@ -5,7 +5,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows;
-using AutoUpdaterDotNET;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.APIs;
@@ -286,7 +285,7 @@ public static class AppStartup
             Logger.LogExc(e);
         }
 
-        CheckForUpdates();
+        AppActions.CheckForUpdates();
     }
 
     private static async Task SendTelemetryAsync()
@@ -322,17 +321,5 @@ public static class AppStartup
         var wPn = new WindowPatchnotes { Owner = owner ?? Application.Current.MainWindow };
         wPn.Show();
         wPn.Activate();
-    }
-
-    private static void CheckForUpdates()
-    {
-        AutoUpdater.Mandatory = false;
-        AutoUpdater.UpdateMode = Mode.Normal;
-        AutoUpdater.AppTitle = "Songify";
-        AutoUpdater.RunUpdateAsAdmin = false;
-        Logger.Info(LogSource.Core, "Checking for update...");
-        AutoUpdater.Start(Settings.BetaUpdates
-            ? $"{GlobalObjects.BaseUrl}/update-beta.xml"
-            : $"{GlobalObjects.BaseUrl}/update.xml");
     }
 }

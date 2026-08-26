@@ -48,6 +48,7 @@
                         Source="pack://application:,,,/Resources/songify.ico"
                         Stretch="Uniform" />
                     <TextBlock
+                        x:Name="TxtTitleBarAppName"
                         VerticalAlignment="Center"
                         FontSize="13"
                         Text="Songify" />
@@ -507,34 +508,6 @@
                                 Text="{DynamicResource window_main_status_pear}" />
                         </StackPanel>
                     </Button>
-                    <ui:Button
-                        MinHeight="22"
-                        Margin="0,0,12,0"
-                        Padding="0"
-                        VerticalAlignment="Center"
-                        Appearance="Transparent"
-                        Click="BtnPremiumStatus_Click"
-                        Cursor="Hand"
-                        Tag="Premium"
-                        ToolTip=""
-                        ToolTipOpening="ServiceToolTipOpening"
-                        ToolTipService.BetweenShowDelay="100"
-                        ToolTipService.InitialShowDelay="0"
-                        ToolTipService.ShowDuration="20000">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse
-                                Width="8"
-                                Height="8"
-                                VerticalAlignment="Center"
-                                Fill="{Binding PremiumBrush}" />
-                            <TextBlock
-                                Margin="6,0,4,0"
-                                VerticalAlignment="Center"
-                                FontSize="12"
-                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                Text="{DynamicResource window_main_status_premium}" />
-                        </StackPanel>
-                    </ui:Button>
                     <Button
                         VerticalAlignment="Center"
                         Click="ServiceIcon_Click"

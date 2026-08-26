@@ -114,6 +114,7 @@
                     </Border>
                     <StackPanel VerticalAlignment="Center">
                         <TextBlock
+                            x:Name="TxtAppName"
                             FontSize="34"
                             FontWeight="Bold"
                             Foreground="{DynamicResource TextFillColorPrimaryBrush}"
@@ -129,7 +130,8 @@
                             Margin="0,4,0,0"
                             FontSize="12"
                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
-                            Text="" />
+                            Text=""
+                            Visibility="Collapsed" />
                     </StackPanel>
                 </StackPanel>
 
@@ -169,11 +171,13 @@
                         Content="{DynamicResource common_website}"
                         Icon="{ui:SymbolIcon Globe24}" />
                     <ui:Button
+                        x:Name="BtnSupport"
                         Appearance="Secondary"
                         Click="BtnSupport_Click"
                         Content="{DynamicResource cta_premium}"
                         Icon="{ui:SymbolIcon Heart24,
-                                             Filled=True}" />
+                                             Filled=True}"
+                        ToolTip="{DynamicResource cta_premium_tooltip}" />
                 </StackPanel>
             </StackPanel>
 

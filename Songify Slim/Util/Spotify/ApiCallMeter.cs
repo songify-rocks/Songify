@@ -194,8 +194,23 @@ public static class ApiCallMeter
                     Logger.Error(LogSource.Spotify,
                         $"Spotify API: Can't get public playlist Info. {FormatApiExceptionDetails(ex)}");
                 }
+                else if (SpotifyUserNotifier.IsAppOwnerPremiumRequired(ex))
+                {
+                    Logger.Error(LogSource.Spotify,
+                        $"Spotify blocked '{key}': the Developer Dashboard app owner needs Spotify Premium (not Songify Premium). {FormatApiExceptionDetails(ex)}");
+                    try
+                    {
+                        SpotifyUserNotifier.NotifyAppOwnerPremiumRequired();
+                    }
+                    catch (Exception notifyEx)
+                    {
+                        Logger.Log(LogLevel.Debug, LogSource.Spotify,
+                            "App-owner Premium user notification failed: " + notifyEx.Message);
+                    }
+                }
                 else if (ex.Response?.StatusCode == System.Net.HttpStatusCode.Forbidden &&
-                         ex.Message?.Contains("Restriction violated") == true)
+                         $"{ex.Message}\n{SpotifyUserNotifier.GetResponseBodyText(ex)}"
+                             .Contains("Restriction violated", StringComparison.OrdinalIgnoreCase))
                 {
                     // 403 Restriction violated is expected when Spotify has no active playback
                     // (e.g. nothing playing, no active device, or skip attempted on a restricted context).

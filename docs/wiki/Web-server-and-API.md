@@ -25,7 +25,9 @@ Connect to:
 
 Send **JSON** messages with an `"action"` field (and optional `"data"`). Supported actions include queue, volume, skip, play/pause, blocklist actions, and more.
 
-Full reference: [WebSocket commands](WebSocket-commands).
+Full control-command reference: [WebSocket commands](WebSocket-commands).
+
+To **subscribe** to live track/queue updates (instead of polling HTTP), see [WebSocket data stream](WebSocket-data).
 
 ---
 

@@ -355,6 +355,17 @@ namespace Songify_Slim.Util.Configuration
             }
         }
 
+        internal static void MigrateReleaseChannel(AppConfig appConfig)
+        {
+            if (appConfig.ReleaseChannel != null)
+            {
+                appConfig.BetaUpdates = appConfig.ReleaseChannel == ReleaseChannel.Beta;
+                return;
+            }
+
+            appConfig.ReleaseChannel = appConfig.BetaUpdates ? ReleaseChannel.Beta : ReleaseChannel.Stable;
+        }
+
         private static T LoadOrCreateConfig<T>(string path, string fileName, IDeserializer deserializer) where T : new()
         {
             string yamlPath = Path.Combine(path, fileName + ".yaml");
@@ -430,6 +441,7 @@ namespace Songify_Slim.Util.Configuration
                     case ConfigTypes.AppConfig:
                         config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
                         config.AppConfig.DownloadCover = true;
+                        MigrateReleaseChannel(config.AppConfig);
                         WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
@@ -966,7 +978,10 @@ namespace Songify_Slim.Util.Configuration
         public bool AutoClearQueue { get; set; }
         public bool Autostart { get; set; }
         public bool AutoStartWebServer { get; set; }
+        /// <summary>Legacy bool from before <see cref="ReleaseChannel"/>. Kept so old YAML still deserializes.</summary>
         public bool BetaUpdates { get; set; }
+        /// <summary>Null in configs written before release channels existed.</summary>
+        public ReleaseChannel? ReleaseChannel { get; set; }
         public bool BlockAllExplicitSongs { get; set; }
         public bool BotOnlyWorkWhenLive { get; set; }
         public bool CustomPauseTextEnabled { get; set; }

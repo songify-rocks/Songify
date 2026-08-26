@@ -399,8 +399,25 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool BetaUpdates
         {
-            get => GetBetaUpdates();
-            set => SetBetaUpdates(value);
+            get => GetReleaseChannel() == ReleaseChannel.Beta;
+            set => SetReleaseChannel(value ? ReleaseChannel.Beta : ReleaseChannel.Stable);
+        }
+
+        public static ReleaseChannel ReleaseChannel
+        {
+            get => GetReleaseChannel();
+            set => SetReleaseChannel(value);
+        }
+
+        public static string GetUpdateFeedUrl()
+        {
+            string manifest = GetReleaseChannel() switch
+            {
+                ReleaseChannel.Beta => "update-beta.xml",
+                ReleaseChannel.Dev => "update-dev.xml",
+                _ => "update.xml"
+            };
+            return $"{GlobalObjects.BaseUrl}/{manifest}";
         }
 
         public static bool BlockAllExplicitSongs { get => GetBlockAllExplicitSongs(); set => SetBlockAllExplicitSongs(value); }
@@ -1346,7 +1363,8 @@ namespace Songify_Slim.Util.Configuration
                 MinimumMessagesBetweenAnnounces = GetMinimumMessagesBetweenAnnounces(),
                 AutoStartWebServer = GetAutoStartWebServer(),
                 BaseUrl = GetBaseUrl(),
-                BetaUpdates = GetBetaUpdates(),
+                BetaUpdates = GetReleaseChannel() == ReleaseChannel.Beta,
+                ReleaseChannel = GetReleaseChannel(),
                 BlockAllExplicitSongs = GetBlockAllExplicitSongs(),
                 BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
                 ChromeFetchRate = GetChromeFetchRate(),
@@ -1482,6 +1500,9 @@ namespace Songify_Slim.Util.Configuration
 
         public static void Import(Configuration config)
         {
+            if (config.AppConfig != null)
+                ConfigHandler.MigrateReleaseChannel(config.AppConfig);
+
             CurrentConfig = config;
 
             ConfigHandler.WriteAllConfig(config);
@@ -1500,6 +1521,9 @@ namespace Songify_Slim.Util.Configuration
             CurrentConfig.TwitchCommands = config.TwitchCommands;
             CurrentConfig.BlockedSpotifyArtists = config.BlockedSpotifyArtists ?? new BlockedSpotifyArtists();
             CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
+
+            if (CurrentConfig.AppConfig != null)
+                ConfigHandler.MigrateReleaseChannel(CurrentConfig.AppConfig);
 
             // Older cloud saves may still keep artists on AppConfig; migrate into BlockedSpotifyArtists.
             List<BlockedArtist> legacyArtists = CurrentConfig.AppConfig?.ArtistBlacklist;
@@ -1596,9 +1620,10 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.BaseUrl;
         }
 
-        private static bool GetBetaUpdates()
+        private static ReleaseChannel GetReleaseChannel()
         {
-            return CurrentConfig.AppConfig.BetaUpdates;
+            return CurrentConfig.AppConfig.ReleaseChannel
+                   ?? (CurrentConfig.AppConfig.BetaUpdates ? ReleaseChannel.Beta : ReleaseChannel.Stable);
         }
 
         private static bool GetBlockAllExplicitSongs()
@@ -2362,9 +2387,10 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetBetaUpdates(bool value)
+        private static void SetReleaseChannel(ReleaseChannel value)
         {
-            CurrentConfig.AppConfig.BetaUpdates = value;
+            CurrentConfig.AppConfig.ReleaseChannel = value;
+            CurrentConfig.AppConfig.BetaUpdates = value == ReleaseChannel.Beta;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

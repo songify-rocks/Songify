@@ -77,6 +77,8 @@ Configure Twitch polls integration (when available in your build).
 
 Settings for linking **YTM Desktop** or related integrations. See [YTM Desktop](YTM-Desktop) and [Pear (YouTube Music)](Pear-YouTube-Music).
 
+Optional: use [your own YouTube Data API key](YouTube-Data-API-Key) for more reliable YouTube metadata.
+
 ---
 
 ## Web server
@@ -88,7 +90,7 @@ Settings for linking **YTM Desktop** or related integrations. See [YTM Desktop](
 
 ## Config
 
-- Beta updates, export/import configuration.
+- Release channel (Stable / Beta / Dev), export/import configuration.
 
 ---
 

@@ -389,7 +389,8 @@
                 VerticalAlignment="Center"
                 Appearance="Secondary"
                 Click="BtnSupport_Click"
-                Content="{DynamicResource cta_premium}" />
+                Content="{DynamicResource cta_premium}"
+                ToolTip="{DynamicResource cta_premium_tooltip}" />
 
             <!--  Kept for code-behind / localization hooks  -->
             <!--<ui:Button

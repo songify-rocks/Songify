@@ -662,6 +662,21 @@
   <data name="window_settings_config_beta_updates" xml:space="preserve">
     <value>Ontvang bèta-updates</value>
   </data>
+  <data name="window_settings_system_release_channel" xml:space="preserve">
+    <value>Updatekanaal</value>
+  </data>
+  <data name="window_settings_system_release_channel_hint" xml:space="preserve">
+    <value>Kies welke updates je ontvangt.</value>
+  </data>
+  <data name="window_settings_release_channel_stable" xml:space="preserve">
+    <value>Stabiel</value>
+  </data>
+  <data name="window_settings_release_channel_beta" xml:space="preserve">
+    <value>Bèta</value>
+  </data>
+  <data name="window_settings_release_channel_dev" xml:space="preserve">
+    <value>Dev (Onstabiel)</value>
+  </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Koppel je Spotify-account. Instellingen -&gt; Spotify</value>
   </data>
@@ -2021,6 +2036,14 @@ gwyden - Hertz - karimawii
     <value>Gezien om {0}.</value>
     <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
   </data>
+  <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
+    <value>Spotify API-app heeft Premium nodig</value>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
+    <value>Spotify vereist dat de eigenaar van je API-app (het account op developer.spotify.com dat de Client ID heeft aangemaakt) een actief Spotify Premium-abonnement heeft.
+
+Dit is niet Songify Premium, en niet het Spotify-account dat in Songify is gekoppeld voor afspelen. Neem Premium op dat dashboard-account en wacht een paar uur — Spotify zegt dat toegang na een abonnementswijziging kan naijlen.</value>
+  </data>
   <data name="common_duration_hours" xml:space="preserve">
     <value>{0} uur</value>
     <comment>Context: Relative duration; {0} = hours.</comment>
@@ -2454,5 +2477,14 @@ gwyden - Hertz - karimawii
   </data>
   <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
     <value>Minimale berichten tussen aankondigingen van nummers</value>
+  </data>
+  <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="cta_premium_tooltip" xml:space="preserve">
+    <value>Stream-recap, topnummers, cloud-sync en extra widgets. Songify blijft gratis.</value>
+  </data>
+  <data name="window_main_title_premium" xml:space="preserve">
+    <value>Songify Premium</value>
   </data>
 </root>

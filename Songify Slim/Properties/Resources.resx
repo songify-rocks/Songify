@@ -689,6 +689,26 @@
     <value>Get beta updates</value>
     <comment>Toggleswitch Content for "get beta updates"</comment>
   </data>
+  <data name="window_settings_system_release_channel" xml:space="preserve">
+    <value>Release channel</value>
+    <comment>Settings label for the update channel dropdown.</comment>
+  </data>
+  <data name="window_settings_system_release_channel_hint" xml:space="preserve">
+    <value>Choose which updates you receive.</value>
+    <comment>Hint under the release channel setting.</comment>
+  </data>
+  <data name="window_settings_release_channel_stable" xml:space="preserve">
+    <value>Stable</value>
+    <comment>Release channel option.</comment>
+  </data>
+  <data name="window_settings_release_channel_beta" xml:space="preserve">
+    <value>Beta</value>
+    <comment>Release channel option.</comment>
+  </data>
+  <data name="window_settings_release_channel_dev" xml:space="preserve">
+    <value>Dev (Unstable)</value>
+    <comment>Release channel option for development builds.</comment>
+  </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Please link your Spotify account. Settings -&gt; Spotify</value>
     <comment>Textblock content for "Please link your Spotify account Settings -&gt; Spotify"</comment>
@@ -2291,6 +2311,15 @@ gwyden - Hertz - karimawii
     <value>Seen at {0}.</value>
     <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
   </data>
+  <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
+    <value>Spotify API app needs Premium</value>
+    <comment>Banner/toast when Spotify blocks the Developer Dashboard app because its owner is not Premium.</comment>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
+    <value>Spotify requires the owner of your API app (the account on developer.spotify.com that created the Client ID) to have an active Spotify Premium subscription.
+
+This is not Songify Premium, and not the Spotify account linked in Songify for playback. Subscribe that dashboard account to Premium, then wait a few hours — Spotify says access can lag after the subscription changes.</value>
+  </data>
   <data name="common_duration_hours" xml:space="preserve">
     <value>{0} hour(s)</value>
     <comment>Context: Relative duration; {0} = hours.</comment>
@@ -2711,6 +2740,14 @@ gwyden - Hertz - karimawii
   <data name="cta_premium" xml:space="preserve">
     <value>Songify Premium</value>
     <comment>Quiet home/about CTA that opens the account or recap page.</comment>
+  </data>
+  <data name="cta_premium_tooltip" xml:space="preserve">
+    <value>Stream recap, top songs, cloud sync, and extra widgets. Songify stays free either way.</value>
+    <comment>Tooltip on the Home/About Premium CTA.</comment>
+  </data>
+  <data name="window_main_title_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+    <comment>Window title when Songify Premium is active.</comment>
   </data>
   <data name="window_main_status_premium" xml:space="preserve">
     <value>Premium</value>

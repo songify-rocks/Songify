@@ -513,6 +513,21 @@
   <data name="window_settings_config_beta_updates" xml:space="preserve">
     <value>Получать бета-обновления</value>
   </data>
+  <data name="window_settings_system_release_channel" xml:space="preserve">
+    <value>Канал обновлений</value>
+  </data>
+  <data name="window_settings_system_release_channel_hint" xml:space="preserve">
+    <value>Выберите, какие обновления получать.</value>
+  </data>
+  <data name="window_settings_release_channel_stable" xml:space="preserve">
+    <value>Стабильный</value>
+  </data>
+  <data name="window_settings_release_channel_beta" xml:space="preserve">
+    <value>Бета</value>
+  </data>
+  <data name="window_settings_release_channel_dev" xml:space="preserve">
+    <value>Dev (Нестабильный)</value>
+  </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Пожалуйста, привяжите свою учетную запись Spotify. Настройки -&gt; Spotify</value>
   </data>
@@ -1968,6 +1983,14 @@ gwyden - Hertz - karimawii
     <value>Замечено в {0}.</value>
     <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
   </data>
+  <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
+    <value>Приложению Spotify API нужен Premium</value>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
+    <value>Spotify требует, чтобы у владельца вашего API-приложения (аккаунт на developer.spotify.com, создавший Client ID) была активная подписка Spotify Premium.
+
+Это не Songify Premium и не аккаунт Spotify, привязанный в Songify для воспроизведения. Оформите Premium на этом аккаунте в кабинете разработчика и подождите несколько часов — Spotify пишет, что доступ может задержаться после смены подписки.</value>
+  </data>
   <data name="common_duration_hours" xml:space="preserve">
     <value>{0} ч</value>
     <comment>Context: Relative duration; {0} = hours.</comment>
@@ -2401,5 +2424,14 @@ gwyden - Hertz - karimawii
   </data>
   <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
     <value>Минимальное количество сообщений между объявлениями песен</value>
+  </data>
+  <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="cta_premium_tooltip" xml:space="preserve">
+    <value>Итоги стрима, топ треков, облачная синхронизация и дополнительные виджеты. Songify по-прежнему бесплатный.</value>
+  </data>
+  <data name="window_main_title_premium" xml:space="preserve">
+    <value>Songify Premium</value>
   </data>
 </root>

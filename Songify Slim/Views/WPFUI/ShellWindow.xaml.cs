@@ -54,7 +54,6 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private ConnectionIndicatorState _twitchBotState = ConnectionIndicatorState.Unknown;
     private bool _webServerRunning;
     private SpotifyIndicatorState _spotifyState = SpotifyIndicatorState.Disconnected;
-    private SongifyPremiumState _premiumState = SongifyPremiumState.Unknown;
     private Brush _pearBrush = Brushes.Gray;
     private string _pearStatusText = "";
     private int _tourStep;
@@ -90,27 +89,6 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     public Brush PearBrush => _pearBrush;
     public string PearStatusText => _pearStatusText;
-
-    public Brush PremiumBrush => _premiumState switch
-    {
-        SongifyPremiumState.Active => Brushes.GreenYellow,
-        SongifyPremiumState.Inactive => Brushes.DarkOrange,
-        SongifyPremiumState.InvalidToken => Brushes.IndianRed,
-        _ => Brushes.DarkGray
-    };
-
-    public string PremiumStatusText => _premiumState switch
-    {
-        SongifyPremiumState.Active => Loc("window_main_status_premium_active",
-            "Songify Premium is active. Click to open stream recap."),
-        SongifyPremiumState.Inactive => Loc("window_main_status_premium_inactive",
-            "Songify Premium is inactive. Click to unlock recap, stats, and cloud sync."),
-        SongifyPremiumState.NoToken => Loc("window_main_status_premium_no_token",
-            "Add a Songify token, then unlock Premium on your account page."),
-        SongifyPremiumState.InvalidToken => Loc("window_main_status_premium_invalid",
-            "This Songify token is invalid. Generate a new one on songify.rocks."),
-        _ => Loc("window_main_status_premium_unknown", "Checking Songify Premium status…")
-    };
 
     /// <summary>Allow Exit / AppActions to bypass minimize-to-tray.</summary>
     public void RequestForceClose() => _forceClose = true;
@@ -724,20 +702,19 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     private void ApplySongifyPremiumStatus()
     {
-        if (_premiumState != SongifyPremiumService.Current)
-        {
-            _premiumState = SongifyPremiumService.Current;
-            OnPropertyChanged(nameof(PremiumBrush));
-            OnPropertyChanged(nameof(PremiumStatusText));
-        }
-
+        UpdateWindowTitle();
         if (SongifyPremiumService.IsActive)
             HidePremiumReminder();
     }
 
-    private void BtnPremiumStatus_Click(object sender, RoutedEventArgs e)
+    private void UpdateWindowTitle()
     {
-        AccountLinking.OpenPremium();
+        string title = SongifyPremiumService.IsActive
+            ? Loc("window_main_title_premium", "Songify Premium")
+            : "Songify";
+        Title = title;
+        if (TxtTitleBarAppName != null)
+            TxtTitleBarAppName.Text = title;
     }
 
     private async void ServiceToolTipOpening(object sender, ToolTipEventArgs e)
@@ -805,16 +782,6 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 header = "Pear Desktop";
                 icon.Symbol = SymbolRegular.PlayCircle24;
                 rows = BuildPearStatusRows();
-                break;
-
-            case "Premium":
-                header = "Songify Premium";
-                icon.Symbol = SymbolRegular.Star24;
-                rows =
-                [
-                    ("Status", PremiumStatusText),
-                    ("Action", "Click to open Premium / account")
-                ];
                 break;
 
             default:

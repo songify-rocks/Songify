@@ -15,10 +15,6 @@
     <GenerateManifests>false</GenerateManifests>
     <BootstrapperEnabled>false</BootstrapperEnabled>
   </PropertyGroup>
-  <!-- PublishSingleFile already bundles deps; Costura would double-embed and confuse publish. -->
-  <PropertyGroup Condition="'$(PublishSingleFile)' == 'true'">
-    <DisableFody>true</DisableFody>
-  </PropertyGroup>
   <!-- Drop IntelliSense XML from the publish folder (WebView2 etc.). -->
   <Target Name="Songify_RemoveXmlFromPublish" AfterTargets="ComputeResolvedFilesToPublishList">
     <ItemGroup>
@@ -77,18 +73,8 @@
     <PackageReference Include="Common.Logging">
       <Version>3.4.1</Version>
     </PackageReference>
-    <PackageReference Include="Costura.Fody">
-      <Version>6.1.0</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
     <PackageReference Include="EmbedIO">
       <Version>3.5.2</Version>
-    </PackageReference>
-    <PackageReference Include="Fody">
-      <Version>6.9.3</Version>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="FuzzySharp">
       <Version>2.0.2</Version>

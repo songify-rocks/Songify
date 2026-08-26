@@ -157,6 +157,18 @@ public static class Enums
         ClearAll = 2
     }
 
+    public enum ReleaseChannel
+    {
+        [Description("Stable")]
+        Stable,
+
+        [Description("Beta")]
+        Beta,
+
+        [Description("Dev (Unstable)")]
+        Dev
+    }
+
     public enum PlaybackAction
     {
         Toggle,

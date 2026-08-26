@@ -5,19 +5,9 @@
     "url": "https://github.com/ravibpatel/AutoUpdater.NET"
   },
   {
-    "name": "Costura.Fody",
-    "license": "MIT",
-    "url": "https://github.com/Fody/Costura"
-  },
-  {
     "name": "EmbedIO",
     "license": "MIT",
     "url": "https://github.com/unosquare/embedio"
-  },
-  {
-    "name": "Fody",
-    "license": "MIT",
-    "url": "https://github.com/Fody/Fody"
   },
   {
     "name": "FuzzySharp",
@@ -33,21 +23,6 @@
     "name": "LiveChartsCore",
     "license": "MIT",
     "url": "https://github.com/beto-rodriguez/LiveCharts2"
-  },
-  {
-    "name": "Microsoft.Extensions.Hosting",
-    "license": "MIT",
-    "url": "https://github.com/dotnet/runtime"
-  },
-  {
-    "name": "Microsoft.Toolkit.Uwp.Notifications",
-    "license": "MIT",
-    "url": "https://github.com/CommunityToolkit/WindowsCommunityToolkit"
-  },
-  {
-    "name": "Microsoft.Web.WebView2",
-    "license": "Microsoft",
-    "url": "https://developer.microsoft.com/microsoft-edge/webview2"
   },
   {
     "name": "Newtonsoft.Json",

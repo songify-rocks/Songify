@@ -2689,6 +2689,51 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Release channel.
+        /// </summary>
+        public static string window_settings_system_release_channel {
+            get {
+                return ResourceManager.GetString("window_settings_system_release_channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose which updates you receive.
+        /// </summary>
+        public static string window_settings_system_release_channel_hint {
+            get {
+                return ResourceManager.GetString("window_settings_system_release_channel_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stable.
+        /// </summary>
+        public static string window_settings_release_channel_stable {
+            get {
+                return ResourceManager.GetString("window_settings_release_channel_stable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beta.
+        /// </summary>
+        public static string window_settings_release_channel_beta {
+            get {
+                return ResourceManager.GetString("window_settings_release_channel_beta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dev (Unstable).
+        /// </summary>
+        public static string window_settings_release_channel_dev {
+            get {
+                return ResourceManager.GetString("window_settings_release_channel_dev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EXPORT CONFIG.
         /// </summary>
         public static string window_settings_config_export {

@@ -519,6 +519,21 @@
   <data name="window_settings_config_beta_updates" xml:space="preserve">
     <value>Beta-Updates erhalten</value>
   </data>
+  <data name="window_settings_system_release_channel" xml:space="preserve">
+    <value>Update-Kanal</value>
+  </data>
+  <data name="window_settings_system_release_channel_hint" xml:space="preserve">
+    <value>Wähle, welche Updates du erhältst.</value>
+  </data>
+  <data name="window_settings_release_channel_stable" xml:space="preserve">
+    <value>Stabil</value>
+  </data>
+  <data name="window_settings_release_channel_beta" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="window_settings_release_channel_dev" xml:space="preserve">
+    <value>Dev (Unstabil)</value>
+  </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Bitte verknüpfen Sie Ihr Spotify-Konto. Einstellungen -&gt; Spotify</value>
   </data>
@@ -1983,6 +1998,14 @@ gwyden - Hertz - karimawii
     <value>Gesehen um {0}.</value>
     <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
   </data>
+  <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
+    <value>Spotify-API-App braucht Premium</value>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
+    <value>Spotify verlangt, dass der Inhaber deiner API-App (das Konto auf developer.spotify.com, das die Client-ID angelegt hat) ein aktives Spotify Premium hat.
+
+Das ist nicht Songify Premium und nicht das in Songify verknüpfte Wiedergabe-Konto. Schließe für das Dashboard-Konto Premium ab und warte ein paar Stunden — Spotify schreibt, dass der Zugriff nach einer Abo-Änderung verzögert greifen kann.</value>
+  </data>
   <data name="common_duration_hours" xml:space="preserve">
     <value>{0} Stunde(n)</value>
     <comment>Context: Relative duration; {0} = hours.</comment>
@@ -2406,6 +2429,12 @@ gwyden - Hertz - karimawii
     <value>Mindestanzahl an Nachrichten zwischen den Songankündigungen</value>
   </data>
   <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="cta_premium_tooltip" xml:space="preserve">
+    <value>Stream-Recap, Top-Songs, Cloud-Sync und Extra-Widgets. Songify bleibt trotzdem kostenlos.</value>
+  </data>
+  <data name="window_main_title_premium" xml:space="preserve">
     <value>Songify Premium</value>
   </data>
   <data name="window_main_status_premium" xml:space="preserve">

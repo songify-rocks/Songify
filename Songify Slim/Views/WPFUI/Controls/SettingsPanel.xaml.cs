@@ -422,7 +422,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             TbWebServerAdminWarning.Visibility = WebServer.IsRunningAsAdministrator()
                 ? Visibility.Visible
                 : Visibility.Collapsed;
-            TglBetaUpdates.IsChecked = Settings.BetaUpdates;
+            CbxReleaseChannel.SelectedIndex = (int)Settings.ReleaseChannel;
             TglOnlyWorkWhenLive.IsChecked = Settings.BotOnlyWorkWhenLive;
             TglInformChat.IsEnabled = Settings.BotOnlyWorkWhenLive;
             ToggleSwitchUnlimitedSr.IsChecked = Settings.TwSrUnlimitedSr;
@@ -1590,11 +1590,16 @@ namespace Songify_Slim.Views.WPFUI.Controls
             createCustomReward.ShowDialog();
         }
 
-        private void TglBetaUpdates_Toggled(object sender, RoutedEventArgs e)
+        private void CbxReleaseChannel_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (IgnoreControlEvents)
                 return;
-            Settings.BetaUpdates = ((ToggleSwitch)sender).IsChecked == true;
+            if (CbxReleaseChannel.SelectedIndex < 0)
+                return;
+            Enums.ReleaseChannel channel = (Enums.ReleaseChannel)CbxReleaseChannel.SelectedIndex;
+            if (channel == Settings.ReleaseChannel)
+                return;
+            Settings.ReleaseChannel = channel;
         }
 
         private void BtnWebserverOpenUrl_OnClick(object sender, RoutedEventArgs e)

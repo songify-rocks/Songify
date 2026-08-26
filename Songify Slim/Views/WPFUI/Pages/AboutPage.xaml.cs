@@ -104,21 +104,29 @@ public partial class AboutPage : Page
 
     private void UpdatePremiumStatus()
     {
+        bool isPremium = SongifyPremiumService.IsActive;
+
+        if (TxtAppName != null)
+            TxtAppName.Text = isPremium
+                ? TryFindResource("window_main_title_premium") as string ?? "Songify Premium"
+                : "Songify";
+
+        if (BtnSupport != null)
+            BtnSupport.Visibility = isPremium ? Visibility.Collapsed : Visibility.Visible;
+
         if (TxtPremiumStatus == null)
             return;
 
-        TxtPremiumStatus.Text = SongifyPremiumService.Current switch
+        if (SongifyPremiumService.Current == SongifyPremiumState.InvalidToken)
         {
-            SongifyPremiumState.Active => TryFindResource("window_about_premium_active") as string
-                ?? "Songify Premium is active",
-            SongifyPremiumState.Inactive => TryFindResource("window_about_premium_inactive") as string
-                ?? "Premium is inactive — unlock recap, stats, and cloud sync",
-            SongifyPremiumState.InvalidToken => TryFindResource("window_about_premium_invalid") as string
-                ?? "Songify token is invalid",
-            SongifyPremiumState.NoToken => TryFindResource("window_about_premium_no_token") as string
-                ?? "Add a Songify token to enable Premium",
-            _ => ""
-        };
+            TxtPremiumStatus.Text = TryFindResource("window_about_premium_invalid") as string
+                ?? "Songify token is invalid";
+            TxtPremiumStatus.Visibility = Visibility.Visible;
+            return;
+        }
+
+        TxtPremiumStatus.Text = "";
+        TxtPremiumStatus.Visibility = Visibility.Collapsed;
     }
 
     private static void OpenUrl(string url)
