@@ -7,6 +7,10 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:util="clr-namespace:Songify_Slim.Util"
     Title="{DynamicResource nav_home}"
+    ScrollViewer.CanContentScroll="False"
+    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+    ScrollViewer.PanningMode="None"
+    ScrollViewer.VerticalScrollBarVisibility="Disabled"
     mc:Ignorable="d">
     <Page.Resources>
         <ResourceDictionary>
@@ -31,17 +35,20 @@
             </Style>
         </ResourceDictionary>
     </Page.Resources>
-    <ScrollViewer VerticalScrollBarVisibility="Auto">
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        PanningMode="VerticalOnly"
+        VerticalScrollBarVisibility="Auto">
         <Grid
             MaxWidth="800"
             Margin="24"
-            VerticalAlignment="Stretch">
+            VerticalAlignment="Top">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <Grid Margin="0,0,0,12">
                 <Grid.ColumnDefinitions>
@@ -386,7 +393,7 @@
                 Grid.Row="4"
                 Padding="10,4"
                 HorizontalAlignment="Right"
-                VerticalAlignment="Center"
+                VerticalAlignment="Top"
                 Appearance="Secondary"
                 Click="BtnSupport_Click"
                 Content="{DynamicResource cta_premium}"

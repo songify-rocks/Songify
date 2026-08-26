@@ -14,7 +14,10 @@ using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Views.WPFUI;
+using Wpf.Ui.Controls;
 using static Songify_Slim.Util.General.Enums;
+using Button = System.Windows.Controls.Button;
+using TextBlock = System.Windows.Controls.TextBlock;
 
 namespace Songify_Slim.Views.WPFUI.Pages;
 
@@ -311,7 +314,7 @@ public partial class OverviewPage
         TrackInfo current = GlobalObjects.CurrentSong;
         if (current != null)
         {
-            TxtNowPlaying.Text = string.IsNullOrEmpty(current.Title) ? "ù" : current.Title;
+            TxtNowPlaying.Text = string.IsNullOrEmpty(current.Title) ? "?" : current.Title;
             TxtArtist.Text = current.Artists ?? "";
 
             // Album cover: null-safe (Albums can be null or empty; Image has Url)
@@ -420,7 +423,7 @@ public partial class OverviewPage
             items.Add(new UpNextItem
             {
                 Position = $"{i + 1}",
-                Title = string.IsNullOrWhiteSpace(t.Title) ? "ù" : t.Title,
+                Title = string.IsNullOrWhiteSpace(t.Title) ? "?" : t.Title,
                 Subtitle = subtitle,
                 CoverUrl = t.Albumcover,
                 Requester = showRequester ? requester : ""
@@ -618,9 +621,24 @@ public partial class OverviewPage
             go.Click += ChecklistGo_Click;
             DockPanel.SetDock(go, Dock.Right);
             row.Children.Add(go);
+
+            var icon = new SymbolIcon
+            {
+                Symbol = item.IsDone ? SymbolRegular.CheckmarkCircle24 : SymbolRegular.Circle24,
+                FontSize = 16,
+                Filled = item.IsDone,
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 8, 0)
+            };
+            icon.SetResourceReference(
+                Control.ForegroundProperty,
+                item.IsDone ? "AccentTextFillColorPrimaryBrush" : "TextFillColorTertiaryBrush");
+            DockPanel.SetDock(icon, Dock.Left);
+            row.Children.Add(icon);
+
             row.Children.Add(new TextBlock
             {
-                Text = (item.IsDone ? "?  " : "?  ") + item.Title,
+                Text = item.Title,
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 13,
                 Opacity = item.IsDone ? 0.7 : 1
