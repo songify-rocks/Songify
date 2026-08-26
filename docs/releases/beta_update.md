@@ -1,4 +1,4 @@
-# ✨ Songify **2.0.0** – Beta
+# Songify **2.0.0** – Beta
 
 Songify 2.0 is a full visual and platform rewrite on top of everything from **1.8.13**.
 New shell, new onboarding, Songify Premium, and a pile of quality-of-life features.
@@ -7,7 +7,7 @@ This is a beta. Settings and history are migrated automatically, but keep a back
 
 ---
 
-## 🎨 Brand-new app (WPF UI)
+## Brand-new app (WPF UI)
 
 The old MahApps windows are gone. Songify now runs in a modern **WPF-UI** shell:
 
@@ -18,11 +18,11 @@ The old MahApps windows are gone. Songify now runs in a modern **WPF-UI** shell:
 - Detachable **Console window** (Tools → Console window)
 - In-app **PSAs / notifications** instead of a separate popup window
 
-Same Songify under the hood — it just looks and feels like a 2026 app.
+Same Songify under the hood, it just looks and feels like a 2026 app.
 
 ---
 
-## 🧠 Easier first run
+## Easier first run
 
 - **Setup wizard** on first launch (language, Spotify, Twitch, Songify token)
 - Home **onboarding checklist** until the basics are done (dismiss anytime)
@@ -31,7 +31,7 @@ Same Songify under the hood — it just looks and feels like a 2026 app.
 
 ---
 
-## 💎 Songify Premium
+## Songify Premium
 
 Premium is optional. Songify stays free.
 
@@ -43,14 +43,14 @@ Premium is optional. Songify stays free.
 
 **How it shows up**
 - Not subscribed: a quiet **Songify Premium** button on Home and About (hover for what’s included)
-- Subscribed: the window title becomes **Songify Premium** — no status-bar badge, no nag
+- Subscribed: the window title becomes **Songify Premium**
 - Optional startup reminder (can be turned off in Settings → Behavior)
 
 Open recap or your account any time from Home, About, or History.
 
 ---
 
-## 📜 History & queue
+## History & queue
 
 - History is stored as **`history.yaml`** (legacy `.shr` files are migrated with a progress dialog)
 - History page is a **calendar** with day markers, delete-day, and context actions
@@ -59,11 +59,11 @@ Open recap or your account any time from Home, About, or History.
 - **Canvas** (looping `canvas.mp4`) on Home when a track has one; album covers always download
 - Safer queue updates (thread-safe snapshots so the UI doesn’t glitch mid-request)
 
-The old “upload history to the website” path is retired — recap lives on songify.rocks instead.
+The old “upload history to the website” path is retired, recap lives on songify.rocks instead.
 
 ---
 
-## 💬 Twitch & song requests
+## Twitch & song requests
 
 - New **`!playlist`** command — posts the current playlist name and URL (Spotify and Pear). Placeholders: `{playlist_name}`, `{playlist_url}`
 - New **Skip Poll** command — start a skip poll from chat (won’t stack a second poll if one is already running)
@@ -74,18 +74,9 @@ The old “upload history to the website” path is retired — recap lives on s
 
 ---
 
-## ☁️ Cloud, API & accounts
+## Settings & tools
 
-- Songify API auth is centralized (JWT in memory, refresh on its own)
-- Cloud save / restore uses the same auth flow, with a clearer **local vs cloud** preview and permission warnings
-- **AccessKey** is gone — everything keys off your UUID + Songify token
-- Linking Spotify / Twitch is shared between the wizard, Settings, and menus
-
----
-
-## ⚙️ Settings & tools
-
-- Settings live **in the sidebar**, not a separate window — same options, cleaner layout
+- Settings live **in the sidebar**, not a separate window, same options, cleaner layout
 - Bot responses are a single catalog (edit, reset, live preview)
 - Blocklist is a two-column page with a Spotify artist picker when a search is ambiguous
 - Create Custom Reward dialog is a modern single-column Fluent window
@@ -98,7 +89,7 @@ The old “upload history to the website” path is retired — recap lives on s
 
 ---
 
-## 🌍 Localization
+## Localization
 
 The whole new UI is resource-based and switches language live.
 
@@ -118,17 +109,13 @@ Including wizard, Premium, playlist command, skip poll, and release channel.
 
 ---
 
-## 🛠️ Under the hood
+## Under the hood
 
 - Migrated from .NET Framework to **.NET 10** (Windows)
-- Charts now use LiveChartsCore
-- Single-file publish paths work (no more “can’t find the app folder” after publish)
-- ClickOnce leftovers removed
-- Album cover download is always on (the old toggle is gone)
 
 ---
 
-## 🐞 Fixes & polish
+## Fixes & polish
 
 - Queue / now-playing stay in sync under load
 - Spotify `/s/` short URLs work for song requests
@@ -136,19 +123,17 @@ Including wizard, Premium, playlist command, skip poll, and release channel.
 - Secret fields (API keys, passwords) no longer get wiped when the theme or language changes
 - Status bar services are clickable (connect / start / open) instead of decoration-only
 - Pear connection status shows in the status bar
-- Spotify idle backoff chip is back when polling slows down
 
 ---
 
-## ⚠️ Beta notes
+## Beta notes
 
 - First launch after 1.8.x will migrate history to YAML and may rewrite `AppConfig.yaml`
-- Dev channel has no feed until `update-dev.xml` is published
 - Please report UI glitches, missing translations, and anything that used to work in 1.8.13
 
 ---
 
-## ❤️ Thank you
+## Thank you
 
 Huge thanks to everyone who used 1.8.x, translated on Weblate, and tested early 2.0 builds.
 
