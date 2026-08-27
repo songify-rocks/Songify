@@ -1,143 +1,179 @@
-# Songify **2.0.0** – Beta
+# Songify 2.0.0 Beta
 
-Songify 2.0 is a full visual and platform rewrite on top of everything from **1.8.13**.
-New shell, new onboarding, Songify Premium, and a pile of quality-of-life features.
+Songify 2.0 is a new app on the outside, with the same job as 1.8.x: now playing for your overlay, Twitch song requests, and the players you already use.
 
-This is a beta. Settings and history are migrated automatically, but keep a backup of your config folder if you like to be extra safe.
+This is a **beta**. Settings and history migrate automatically. Before you switch, copy the folder that contains `Songify.exe` (that is where `AppConfig.yaml` and history live).
 
----
-
-## Brand-new app (WPF UI)
-
-The old MahApps windows are gone. Songify now runs in a modern **WPF-UI** shell:
-
-- Sidebar navigation: Home, Queue, History, Blocklist, Users, Console, Settings, About
-- Mica / Acrylic window backdrop and light/dark theme
-- Clickable status bar for Twitch, Spotify, Pear, and the web server (with live tooltips)
-- Fluent dialogs throughout (cloud import, Twitch login, rewards, artist import, …)
-- Detachable **Console window** (Tools → Console window)
-- In-app **PSAs / notifications** instead of a separate popup window
-
-Same Songify under the hood, it just looks and feels like a 2026 app.
+Compared with **1.8.13**, a few things you relied on have changed. Those are listed first.
 
 ---
 
-## Easier first run
+## Do this after updating
 
-- **Setup wizard** on first launch (language, Spotify, Twitch, Songify token)
-- Home **onboarding checklist** until the basics are done (dismiss anytime)
-- Optional interactive **tour** of the new layout
-- Clear **Songify API token** setup in Settings, with status and a Home warning if it’s missing
+1. **Add a Songify API token** (Home checklist, or Settings → System → Songify token). Widget upload, the online queue, recap, and cloud sync need it. Get one at [songify.rocks](https://songify.rocks/token-import).
+2. **Link Spotify and Twitch again** if the status bar dots stay red. Tokens and your Client ID / Secret from 1.8 usually carry over; if they do not, use Home → Getting started.
+3. Confirm **OBS** still points at the same output folder (`Songify.txt`, `cover.png`). Covers are always written now.
+4. If you used **in-app history on the website**, that upload is gone. Local history is still in Songify; recap is on [songify.rocks/recap](https://songify.rocks/recap).
 
 ---
 
-## Songify Premium
+## Breaking changes (read this)
 
-Premium is optional. Songify stays free.
+### Windows and install
 
-**Included with Premium**
-- Stream recap
-- Top songs and top requesters
+- Songify now runs on **.NET 10**. You need **Windows 10 version 1809** (October 2018) or later, or **Windows 11**. Windows 7 / 8 are not supported.
+- Keep using the **zip + `Songify.exe`** install. The leftover ClickOnce/publish machinery from old builds is gone.
+- The window is larger: **minimum 900×500**. On a small screen, Home now **scrolls**.
+- In-app patch notes use **WebView2**. If it is missing, Songify opens them in your browser instead.
+
+### Songify API token (replaces AccessKey)
+
+Songify no longer stores or sends an **AccessKey**. Uploads to songify.rocks now authenticate with:
+
+- your **UUID** (unchanged, still in config), and
+- a **Songify API token** from your website account (Bearer auth).
+
+**If you skip the token:** now-playing files and the local web server still work. The **hosted widget**, **online queue page**, **song upload**, **YouTube metadata helper**, **cloud settings**, and **recap** will not.
+
+Generate the token once on [songify.rocks](https://songify.rocks/token-import). It is shown once; if you lose it, rotate it on the site.
+
+### History
+
+- Local history is now **`history.yaml`** next to Songify. On first start, **`history.shr` is converted and then deleted**.
+- You may see a short **migration progress** window if the old file is large.
+- **Uploading history to the website from the app is removed.** Stream recap lives on [songify.rocks](https://songify.rocks/recap) (Premium). The in-app History page is local only.
+
+### Album covers
+
+**Download album cover** is always on. There is no toggle anymore. `cover.png` is written whenever the player provides art (Spotify, Pear, and other sources that have it).
+
+### First-run wizard
+
+Existing 1.8 installs skip the wizard. New installs get a **setup wizard** (language, Spotify, Twitch, token) and a **Getting started** list on Home until the basics are done. Spotify still uses **your** Client ID and Secret, same as 1.8.
+
+---
+
+## Where things moved (1.x → 2.0)
+
+The old MahApps windows (main window, separate Settings, History, Queue, Blocklist, Console popups) are replaced by one **sidebar shell**.
+
+| 1.8 location | 2.0 location |
+|--------------|----------------|
+| Center of the main window (now playing) | **Home** |
+| Song requests → Queue | **Queue** in the sidebar |
+| History window | **History** in the sidebar (calendar) |
+| Song requests → Blocklist | **Blocklist** in the sidebar |
+| User list | **Users** in the sidebar |
+| View → Console | **Console** in the sidebar, or **Tools → Console window** (detach) |
+| File → Settings | **Settings** in the sidebar |
+| File → Widget | **Tools → Widget** |
+| File → Patch notes / Help | **Help** menu |
+| Twitch → Connect / login | **Twitch** menu, or click the **Twitch** dots in the status bar |
+| Player dropdown | Still on **Home** (top right) |
+| Footer status icons | Same idea — **clickable** (connect, start web server, open Pear, …) |
+
+Settings tabs are the same ideas (System, Output, Twitch, Rewards, Song requests, Bot commands, Spotify, …) in a cleaner layout. Bot responses are one catalog with edit, reset, and preview.
+
+**“Get beta updates”** is gone. Use **Settings → System → Release channel**:
+
+- **Stable** — `update.xml`
+- **Beta** — `update-beta.xml` (this 2.0 beta)
+- **Dev (Unstable)** — `update-dev.xml`
+
+If you had “Get beta updates” turned **on**, you are on **Beta** automatically.
+
+---
+
+## What is new
+
+### Home
+
+- **Getting started** checklist (Spotify, Twitch, API token, OBS output file) with Go buttons into Settings. Dismiss when you are done.
+- **Up Next** — next three queued songs with art and requester chips. Click through to the full queue.
+- **Canvas** — when a Spotify track has a canvas and download is enabled, Home can play looping `canvas.mp4` (also saved in your output folder for OBS).
+- Quiet **Songify Premium** button on Home and About if you are not subscribed (tooltip lists what it includes). No status-bar nag.
+
+### Queue and History
+
+- Queue: larger now-playing art, request badges, pending list kept in sync under load.
+- History: **calendar** with days that have plays, delete-a-day, context actions. Data is YAML, grouped by local date.
+
+### Twitch and song requests
+
+- **`!playlist`** — posts the current playlist name and URL (Spotify and Pear). Placeholders: `{playlist_name}`, `{playlist_url}`. Off by default; enable under Bot commands.
+- **`!skippoll`** — starts a skip poll from chat. Moderators by default. Will not start a second poll if one is already running. You can also bind a **channel point reward** to start a skip poll.
+- **Explicit songs** — if “block all explicit” is on, you can allow specific **user levels** (VIP, mods, …) to request them anyway.
+- **Minimum messages between song announcements** — auto-announce waits until chat has had N messages, so quiet chats are not spammed.
+- Spotify short links: **`spotify.link`** and **`open.spotify.com/s/`** both work for requests.
+
+Commands you already used (`!ssr`, `!song`, `!skip`, `!voteskip`, `!queue`, …) are unchanged. Triggers and responses still live under Bot commands / Bot responses.
+
+### Songify Premium (optional)
+
+The core app stays **free**. Premium does not lock now playing, requests, or OBS files.
+
+Included when active:
+
+- Stream recap, top songs, top requesters
 - Cloud settings sync
-- Extra widgets
+- Extra widget styles on songify.rocks
 
-**How it shows up**
-- Not subscribed: a quiet **Songify Premium** button on Home and About (hover for what’s included)
-- Subscribed: the window title becomes **Songify Premium**
-- Optional startup reminder (can be turned off in Settings → Behavior)
+When subscribed, the window title becomes **Songify Premium**. Open recap or your account from Home, About, or History. The optional startup reminder can be turned off under Settings → Behavior.
 
-Open recap or your account any time from Home, About, or History.
+Activate: Ko-fi → [songify.rocks](https://songify.rocks) → link Ko-fi with the same email → generate token → paste in Songify.
 
----
+### Status bar and notifications
 
-## History & queue
+- Twitch API, Twitch bot, Spotify, Pear, and WebServer indicators are **buttons**, not just lights.
+- In-app **notifications / PSAs** replace the old separate popup window.
+- Clearer Spotify errors. If Spotify returns 403 “app owner must have Premium”, that refers to the **Developer Dashboard account that created your Client ID**, not Songify Premium and not necessarily the playback account you linked. Subscribe that Dashboard account to Spotify Premium and wait — access can lag a few hours.
 
-- History is stored as **`history.yaml`** (legacy `.shr` files are migrated with a progress dialog)
-- History page is a **calendar** with day markers, delete-day, and context actions
-- Queue shows **pending tracks only**, with larger now-playing art and request badges
-- Home **Up Next** list with requester chips and album art
-- **Canvas** (looping `canvas.mp4`) on Home when a track has one; album covers always download
-- Safer queue updates (thread-safe snapshots so the UI doesn’t glitch mid-request)
+### Localization
 
-The old “upload history to the website” path is retired, recap lives on songify.rocks instead.
+The new UI is fully resource-based and switches language live (Settings → System). Strings for the wizard, Premium, new commands, and release channel are included for:
+
+English, German, Dutch, French, Spanish, Italian, Polish, Portuguese (PT & BR), Russian, Belarusian.
+
+Help finish translations on [Weblate](https://translate.songify.rocks/projects/songify/songify/).
 
 ---
 
-## Twitch & song requests
+## Unchanged (so overlays keep working)
 
-- New **`!playlist`** command — posts the current playlist name and URL (Spotify and Pear). Placeholders: `{playlist_name}`, `{playlist_url}`
-- New **Skip Poll** command — start a skip poll from chat (won’t stack a second poll if one is already running)
-- **User levels for explicit songs** — when “block all explicit” is on, choose which roles can still request them
-- **Minimum messages between song announcements** — optional chat-activity gate so auto-announce doesn’t spam quiet chats
-- Spotify short links: both `spotify.link` and `open.spotify.com/s/` expand correctly
-- Skip-only-non-requested-songs, Bits SR, aliases, and permission detection from 1.8 still apply
+These still behave like 1.8 for a typical OBS setup:
 
----
+- Output folder: `Songify.txt`, `Artist.txt` / `Title.txt`, `url.txt`, `cover.png`
+- **Upload song info** for the [widget generator](https://widget.songify.rocks) (needs the new API token)
+- Local **web server** HTTP JSON and WebSocket control (`ws://127.0.0.1:<port>/`) and data stream (`/ws/data`)
+- Optional **WebSocket password** (added in 1.8.13)
+- Players: Spotify, Windows Playback API, foobar2000, VLC, Browser Companion, Pear Desktop
+- Twitch rewards, refunds, Bits SR, aliases, skip-only-non-requested, artist CSV blocklist sync from 1.8.13
 
-## Settings & tools
-
-- Settings live **in the sidebar**, not a separate window, same options, cleaner layout
-- Bot responses are a single catalog (edit, reset, live preview)
-- Blocklist is a two-column page with a Spotify artist picker when a search is ambiguous
-- Create Custom Reward dialog is a modern single-column Fluent window
-- **Release channel** dropdown: **Stable**, **Beta**, or **Dev (Unstable)**  
-  (replaces the old “Get beta updates” toggle)
-  - Stable → `update.xml`
-  - Beta → `update-beta.xml`
-  - Dev → `update-dev.xml`
-- Existing “beta updates on” configs migrate to the **Beta** channel automatically
+New file you may want in OBS: **`canvas.mp4`** in the same output folder, if canvas download is enabled.
 
 ---
 
-## Localization
+## Fixes worth knowing
 
-The whole new UI is resource-based and switches language live.
-
-Updated or completed strings for:
-
-- German
-- Dutch
-- French
-- Spanish
-- Italian
-- Polish
-- Portuguese (PT & BR)
-- Russian
-- Belarusian
-
-Including wizard, Premium, playlist command, skip poll, and release channel.
+- Queue and now playing stay aligned when many requests come in at once.
+- Light theme: section titles and icons no longer wash out.
+- Secret fields (tokens, passwords) are not wiped when you change theme or language.
+- Pear connection state shows in the status bar.
+- Skip poll will not stack on an already running poll.
 
 ---
 
-## Under the hood
+## Beta caveats
 
-- Migrated from .NET Framework to **.NET 10** (Windows)
-
----
-
-## Fixes & polish
-
-- Queue / now-playing stay in sync under load
-- Spotify `/s/` short URLs work for song requests
-- Theme-safe icons and headers (light theme no longer greys out section titles)
-- Secret fields (API keys, passwords) no longer get wiped when the theme or language changes
-- Status bar services are clickable (connect / start / open) instead of decoration-only
-- Pear connection status shows in the status bar
+- First launch after 1.8.x migrates history and may rewrite `AppConfig.yaml`.
+- The UI is new; a few labels or empty states may still be rough. Missing translations will fall back to English.
+- Report anything that worked in **1.8.13** and does not in 2.0: [GitHub issues](https://github.com/songify-rocks/Songify/issues) or [Discord](https://discord.gg/H8nd4T4). Attach logs from `%LocalAppData%\Songify.Rocks\Logs`.
 
 ---
 
-## Beta notes
+## Support
 
-- First launch after 1.8.x will migrate history to YAML and may rewrite `AppConfig.yaml`
-- Please report UI glitches, missing translations, and anything that used to work in 1.8.13
+Songify stays free. Premium and [Ko-fi](https://ko-fi.com/overcodetv) keep recap, cloud sync, and the site running.
 
----
-
-## Thank you
-
-Huge thanks to everyone who used 1.8.x, translated on Weblate, and tested early 2.0 builds.
-
-Songify is still free. Premium helps keep recap, cloud sync, and the site going.
-
-👉 https://songify.rocks  
-👉 https://ko-fi.com/overcodetv
+- https://songify.rocks
+- https://ko-fi.com/overcodetv

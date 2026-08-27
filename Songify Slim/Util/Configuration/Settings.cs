@@ -1506,6 +1506,7 @@ namespace Songify_Slim.Util.Configuration
             CurrentConfig = config;
 
             ConfigHandler.WriteAllConfig(config);
+            RebindTwitchCommands();
         }
 
         public static async Task ImportCloudSave(Configuration config)
@@ -1548,6 +1549,8 @@ namespace Songify_Slim.Util.Configuration
             WebServerPassword = existingWebServerPassword;
             YoutubeApiKey = existingYoutubeApiKey;
 
+            RebindTwitchCommands();
+
             // Re-apply UI settings and refresh blocklist pages
             await Application.Current.Dispatcher.Invoke(async () =>
             {
@@ -1560,6 +1563,15 @@ namespace Songify_Slim.Util.Configuration
         {
             CurrentConfig = new Configuration();
             ArtistBlocklistStore.InitializeFromConfigAndUnload();
+        }
+
+        /// <summary>Chat uses the registered command objects, not the settings list. Re-bind after import.</summary>
+        private static void RebindTwitchCommands()
+        {
+            List<TwitchCommand> commands = CurrentConfig?.TwitchCommands?.Commands;
+            if (commands == null)
+                return;
+            TwitchHandler.InitializeCommands(commands);
         }
 
         private static bool GetAddSrToPlaylist()
