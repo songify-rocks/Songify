@@ -46,16 +46,13 @@ namespace Songify_Slim.Models.Spotify
         /// <summary>Most recent observation time (UTC).</summary>
         public DateTime LastSeenAtUtc { get; set; }
 
+        /// <summary>True when the TTL has elapsed (independent of dismiss).</summary>
+        public bool IsExpired(DateTime utcNow)
+            => ExpiresAtUtc is { } exp && exp <= utcNow;
+
+        /// <summary>Hidden in the UI: dismissed this session or past TTL.</summary>
         public bool IsStale(DateTime utcNow)
-        {
-            if (Dismissed)
-                return true;
-
-            if (ExpiresAtUtc is { } exp && exp <= utcNow)
-                return true;
-
-            return false;
-        }
+            => Dismissed || IsExpired(utcNow);
     }
 }
 

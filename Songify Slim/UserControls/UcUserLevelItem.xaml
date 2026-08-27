@@ -251,7 +251,7 @@
             x:Name="Border"
             Height="28"
             MinWidth="28"
-            Padding="6,6"
+            Padding="6,4,0,4"
             CornerRadius="8"
             Style="{StaticResource UserLevelBorderStyle}">
             <StackPanel Orientation="Horizontal">
@@ -271,17 +271,34 @@
                     FontWeight="Bold"
                     Foreground="White"
                     Style="{StaticResource UserLevelTextStyle}" />
-                <Border
+                <Button
+                    x:Name="BtnRemoveBadge"
                     Width="0"
-                    Height="12"
+                    Height="14"
                     MinWidth="0"
                     MinHeight="0"
-                    Margin="6,0,0,0"
-                    BorderBrush="Black"
-                    BorderThickness="1"
-                    CornerRadius="5">
-                    <Border.Style>
-                        <Style TargetType="Border">
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    Click="BtnRemoveBadge_OnClick"
+                    ClipToBounds="True"
+                    Cursor="Hand"
+                    Focusable="False"
+                    ToolTip="{DynamicResource common_remove}">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <ui:SymbolIcon
+                                Width="18"
+                                Height="10"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Foreground="White"
+                                Symbol="Dismiss24" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.Style>
+                        <Style TargetType="Button">
                             <Setter Property="Width" Value="0" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding IsMouseOver, RelativeSource={RelativeSource AncestorType=UserControl}}" Value="True">
@@ -290,8 +307,8 @@
                                             <Storyboard>
                                                 <DoubleAnimation
                                                     Storyboard.TargetProperty="Width"
-                                                    To="12"
-                                                    Duration="0:0:0.1">
+                                                    To="16"
+                                                    Duration="0:0:0.12">
                                                     <DoubleAnimation.EasingFunction>
                                                         <QuadraticEase EasingMode="EaseOut" />
                                                     </DoubleAnimation.EasingFunction>
@@ -305,9 +322,9 @@
                                                 <DoubleAnimation
                                                     Storyboard.TargetProperty="Width"
                                                     To="0"
-                                                    Duration="0:0:0.1">
+                                                    Duration="0:0:0.12">
                                                     <DoubleAnimation.EasingFunction>
-                                                        <QuadraticEase EasingMode="EaseOut" />
+                                                        <QuadraticEase EasingMode="EaseIn" />
                                                     </DoubleAnimation.EasingFunction>
                                                 </DoubleAnimation>
                                             </Storyboard>
@@ -316,22 +333,8 @@
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Border.Style>
-
-                    <Button
-                        x:Name="BtnRemoveBadge"
-                        Width="10"
-                        Height="10"
-                        MinWidth="0"
-                        MinHeight="0"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Click="BtnRemoveBadge_OnClick"
-                        Content="{DynamicResource common_close_x}"
-                        FontSize="6"
-                        FontWeight="Black"
-                        Foreground="Black" />
-                </Border>
+                    </Button.Style>
+                </Button>
             </StackPanel>
         </Border>
     </Grid>

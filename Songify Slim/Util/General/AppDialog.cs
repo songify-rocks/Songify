@@ -35,6 +35,7 @@ public sealed class AppDialogSettings
     public string SecondaryButtonText { get; set; } = "Cancel";
     public bool AnimateShow { get; set; }
     public bool AnimateHide { get; set; }
+    public bool ShowInput { get; set; }
 
     public string AffirmativeButtonText
     {
@@ -103,5 +104,38 @@ public static class AppDialog
             return dialog.Result;
 
         return closed == true ? AppDialogResult.Primary : AppDialogResult.Secondary;
+    }
+
+    /// <summary>Themed Fluent prompt with a text field. Returns the input, or null if cancelled.</summary>
+    public static Task<string> PromptAsync(string title, string message, Window owner = null)
+    {
+        if (Application.Current?.Dispatcher == null)
+            return Task.FromResult<string>(null);
+
+        if (!Application.Current.Dispatcher.CheckAccess())
+        {
+            return Application.Current.Dispatcher.InvokeAsync(() =>
+                PromptCore(title, message, owner)).Task;
+        }
+
+        return Task.FromResult(PromptCore(title, message, owner));
+    }
+
+    private static string PromptCore(string title, string message, Window owner)
+    {
+        var settings = new AppDialogSettings { ShowInput = true };
+        var dialog = new MessageDialogWindow(title, message, AppDialogStyle.PrimaryAndSecondary, settings);
+
+        owner ??= Application.Current?.Windows.OfType<Window>()
+            .FirstOrDefault(w => w.IsActive && w is not MessageDialogWindow);
+        owner ??= Application.Current?.MainWindow is { IsLoaded: true } main ? main : null;
+        if (owner != null && !ReferenceEquals(owner, dialog))
+            dialog.Owner = owner;
+
+        bool? closed = dialog.ShowDialog();
+        if (dialog.Result == AppDialogResult.Primary || closed == true)
+            return dialog.InputText;
+
+        return null;
     }
 }

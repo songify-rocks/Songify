@@ -37,6 +37,10 @@
                 FontSize="13"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                 TextWrapping="Wrap" />
+            <ui:TextBox
+                x:Name="TxtInput"
+                Margin="0,14,0,0"
+                Visibility="Collapsed" />
         </StackPanel>
 
         <StackPanel
@@ -50,13 +54,15 @@
                 Margin="0,0,8,0"
                 Appearance="Secondary"
                 Click="BtnSecondary_OnClick"
-                Content="{DynamicResource common_cancel}" />
+                Content="{DynamicResource common_cancel}"
+                IsCancel="True" />
             <ui:Button
                 x:Name="BtnPrimary"
                 MinWidth="88"
                 Appearance="Primary"
                 Click="BtnPrimary_OnClick"
-                Content="{DynamicResource common_ok}" />
+                Content="{DynamicResource common_ok}"
+                IsDefault="True" />
         </StackPanel>
     </Grid>
 </ui:FluentWindow>

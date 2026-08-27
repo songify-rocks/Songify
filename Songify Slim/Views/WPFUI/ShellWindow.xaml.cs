@@ -406,9 +406,6 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             .Where(x => x != null && !x.IsStale(nowUtc))
             .ToList();
 
-        if (list.Count != (Settings.SpotifyPersistentIssues?.Count ?? 0))
-            Settings.SpotifyPersistentIssues = list;
-
         SpotifyPersistentIssue issue = list.FirstOrDefault();
 
         if (issue == null)
@@ -521,7 +518,9 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     {
         try
         {
-            SpotifyPersistentIssue current = Settings.SpotifyPersistentIssues?.FirstOrDefault();
+            DateTime nowUtc = DateTime.UtcNow;
+            SpotifyPersistentIssue current = Settings.SpotifyPersistentIssues?
+                .FirstOrDefault(x => x != null && !x.IsStale(nowUtc));
             if (current != null)
                 SpotifyUserNotifier.DismissPersistentIssue(current.Id);
 

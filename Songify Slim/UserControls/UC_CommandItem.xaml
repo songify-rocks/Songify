@@ -319,7 +319,6 @@
                     Grid.Row="4"
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
-                    MaxWidth="600"
                     Margin="0,6,0,0"
                     HorizontalAlignment="Left"
                     Visibility="Visible" />

@@ -587,8 +587,10 @@ namespace Songify_Slim.UserControls
                 if (_isUpdating)
                     return;
 
-                string result = PromptInput($"Explicit user for !{Command.Trigger}",
-                    "Enter the usernames (comma separated)");
+                string result = await AppDialog.PromptAsync(
+                    $"Explicit user for !{Command.Trigger}",
+                    "Enter the usernames (comma separated)",
+                    Window.GetWindow(this));
 
                 if (string.IsNullOrWhiteSpace(result)) return;
 
@@ -637,8 +639,10 @@ namespace Songify_Slim.UserControls
                     return;
                 if (_isUpdating)
                     return;
-                string result = PromptInput($"Aliases for !{Command.Trigger}",
-                    "Enter aliases (comma separated)");
+                string result = await AppDialog.PromptAsync(
+                    $"Aliases for !{Command.Trigger}",
+                    "Enter aliases (comma separated)",
+                    Window.GetWindow(this));
 
                 List<string> aliases = result?.Split(',')
                     .Select(alias => alias.Trim().Replace("!", ""))
@@ -670,45 +674,5 @@ namespace Songify_Slim.UserControls
             }
         }
 
-        private string PromptInput(string title, string message)
-        {
-            string result = null;
-            Window owner = Window.GetWindow(this);
-            Window dialog = new()
-            {
-                Title = title,
-                Width = 420,
-                Height = 160,
-                WindowStartupLocation = WindowStartupLocation.CenterOwner,
-                Owner = owner,
-                ResizeMode = ResizeMode.NoResize
-            };
-
-            Grid root = new() { Margin = new Thickness(12) };
-            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            root.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-
-            TextBlock label = new() { Text = message, TextWrapping = TextWrapping.Wrap, Margin = new Thickness(0, 0, 0, 8) };
-            TextBox input = new() { Margin = new Thickness(0, 0, 0, 12) };
-            StackPanel buttons = new() { Orientation = Orientation.Horizontal, HorizontalAlignment = HorizontalAlignment.Right };
-            Button ok = new() { Content = "OK", MinWidth = 80, Margin = new Thickness(0, 0, 8, 0), IsDefault = true };
-            Button cancel = new() { Content = "Cancel", MinWidth = 80, IsCancel = true };
-            ok.Click += (_, _) => { result = input.Text; dialog.DialogResult = true; };
-            cancel.Click += (_, _) => { dialog.DialogResult = false; };
-            buttons.Children.Add(ok);
-            buttons.Children.Add(cancel);
-
-            Grid.SetRow(label, 0);
-            Grid.SetRow(input, 1);
-            Grid.SetRow(buttons, 2);
-            root.Children.Add(label);
-            root.Children.Add(input);
-            root.Children.Add(buttons);
-            dialog.Content = root;
-            dialog.Loaded += (_, _) => input.Focus();
-
-            return dialog.ShowDialog() == true ? result : null;
-        }
     }
 }

@@ -20,6 +20,7 @@ public static class SpotifyUserNotifier
 {
     private static readonly object Gate = new();
     private static readonly Dictionary<string, DateTimeOffset> LastShownByKey = new(StringComparer.Ordinal);
+    private static readonly HashSet<string> SessionDismissedDedupKeys = new(StringComparer.Ordinal);
 
     /// <summary>
     /// After any operational error toast (unauthorized / API / unexpected), suppress further
@@ -97,6 +98,9 @@ public static class SpotifyUserNotifier
         DateTime nowUtc = DateTime.UtcNow;
         UpsertOperationalIssue(title, body, issueKind, dedupKind, nowUtc, expiresAtUtc);
 
+        if (IsDismissedThisSession(dedupKind, issueKind))
+            return;
+
         if (TryClaimToastSlot(throttleKey, perCategoryInterval ?? TimeSpan.FromMinutes(3), operational: true))
             ShowToastOnUiThread(title, body);
     }
@@ -169,8 +173,10 @@ public static class SpotifyUserNotifier
         List<SpotifyPersistentIssue> list = new(Settings.SpotifyPersistentIssues ?? new List<SpotifyPersistentIssue>());
 
         DateTime nowUtc = DateTime.UtcNow;
-        list = list.Where(x => x != null && !x.IsStale(nowUtc)).ToList();
+        // Keep dismissed-this-session rows so the next API error does not recreate the banner.
+        list = list.Where(x => x != null && !x.IsExpired(nowUtc)).ToList();
 
+        bool sessionDismissed = IsDismissedThisSession(dedup, issue.Kind);
         int existingIndex = list.FindIndex(x => string.Equals(x.DedupKey, dedup, StringComparison.Ordinal));
         if (existingIndex >= 0)
         {
@@ -178,16 +184,18 @@ public static class SpotifyUserNotifier
             existing.Title = issue.Title ?? existing.Title;
             existing.Body = ComposeBodyWithCount(issue.Body ?? existing.Body, existing.OccurrenceCount + 1);
             existing.Kind = issue.Kind ?? existing.Kind;
-            existing.OccurrenceCount = existing.OccurrenceCount + 1;
+            existing.OccurrenceCount += 1;
             existing.LastSeenAtUtc = issue.LastSeenAtUtc != default ? issue.LastSeenAtUtc : nowUtc;
             existing.RetryUntilUtc = issue.RetryUntilUtc ?? existing.RetryUntilUtc;
             existing.ExpiresAtUtc = issue.ExpiresAtUtc ?? existing.ExpiresAtUtc;
-            existing.Dismissed = false;
+            // New process: empty session set, so a recurring error may show once more after restart.
+            existing.Dismissed = sessionDismissed;
             list[existingIndex] = existing;
         }
         else
         {
             issue.Body = ComposeBodyWithCount(issue.Body, issue.OccurrenceCount);
+            issue.Dismissed = sessionDismissed;
             list.Insert(0, issue);
         }
 
@@ -196,7 +204,8 @@ public static class SpotifyUserNotifier
             list = list.Take(max).ToList();
 
         Settings.SpotifyPersistentIssues = list;
-        PersistentIssuesChanged?.Invoke(list);
+        if (!sessionDismissed)
+            PersistentIssuesChanged?.Invoke(list);
     }
 
     public static void DismissPersistentIssue(string issueId)
@@ -210,6 +219,7 @@ public static class SpotifyUserNotifier
             return;
 
         item.Dismissed = true;
+        RememberSessionDismiss(item);
         Settings.SpotifyPersistentIssues = list;
         PersistentIssuesChanged?.Invoke(list);
     }
@@ -225,7 +235,7 @@ public static class SpotifyUserNotifier
 
         List<SpotifyPersistentIssue> list = new(Settings.SpotifyPersistentIssues ?? new List<SpotifyPersistentIssue>());
         DateTime nowUtc = DateTime.UtcNow;
-        list = list.Where(x => x != null && !x.IsStale(nowUtc) && !set.Contains(x.Kind ?? "")).ToList();
+        list = list.Where(x => x != null && !x.IsExpired(nowUtc) && !set.Contains(x.Kind ?? "")).ToList();
         Settings.SpotifyPersistentIssues = list;
         PersistentIssuesChanged?.Invoke(list);
     }
@@ -257,6 +267,33 @@ public static class SpotifyUserNotifier
         catch
         {
             // ignored
+        }
+    }
+
+    private static bool IsDismissedThisSession(string dedupKey, string issueKind)
+    {
+        lock (Gate)
+        {
+            if (!string.IsNullOrWhiteSpace(dedupKey) && SessionDismissedDedupKeys.Contains(dedupKey.Trim()))
+                return true;
+            if (!string.IsNullOrWhiteSpace(issueKind) && SessionDismissedDedupKeys.Contains(issueKind.Trim()))
+                return true;
+            return false;
+        }
+    }
+
+    private static void RememberSessionDismiss(SpotifyPersistentIssue item)
+    {
+        if (item == null)
+            return;
+
+        lock (Gate)
+        {
+            string dedup = !string.IsNullOrWhiteSpace(item.DedupKey)
+                ? item.DedupKey.Trim()
+                : ComputeDedupKey(item);
+            if (!string.IsNullOrWhiteSpace(dedup))
+                SessionDismissedDedupKeys.Add(dedup);
         }
     }
 

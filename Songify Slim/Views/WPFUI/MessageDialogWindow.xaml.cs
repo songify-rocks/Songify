@@ -39,7 +39,15 @@ public partial class MessageDialogWindow
                 : settings.SecondaryButtonText;
             BtnSecondary.Visibility = Visibility.Visible;
         }
+
+        if (settings.ShowInput && TxtInput != null)
+        {
+            TxtInput.Visibility = Visibility.Visible;
+            Loaded += (_, _) => TxtInput.Focus();
+        }
     }
+
+    public string InputText => TxtInput?.Text;
 
     private void BtnPrimary_OnClick(object sender, RoutedEventArgs e)
     {
