@@ -815,6 +815,12 @@ namespace Songify_Slim.Util.Configuration
             set => SetWindowBackdrop(value);
         }
 
+        public static double UiScale
+        {
+            get => GetUiScale();
+            set => SetUiScale(value);
+        }
+
         public static string TwAcc
         {
             get => GetTwAcc();
@@ -1425,6 +1431,7 @@ namespace Songify_Slim.Util.Configuration
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),
                 WindowBackdrop = GetWindowBackdrop(),
+                UiScale = GetUiScale(),
                 TwAutoConnect = GetTwAutoConnect(),
                 TwitchFetchPort = GetTwitchFetchPort(),
                 TwitchRedirectPort = GetTwitchRedirectPort(),
@@ -2113,6 +2120,11 @@ namespace Songify_Slim.Util.Configuration
             return string.IsNullOrWhiteSpace(CurrentConfig.AppConfig.WindowBackdrop)
                 ? "Mica"
                 : CurrentConfig.AppConfig.WindowBackdrop;
+        }
+
+        private static double GetUiScale()
+        {
+            return UiScaleHandler.Clamp(CurrentConfig.AppConfig.UiScale);
         }
 
         private static string GetTwAcc()
@@ -2961,6 +2973,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetWindowBackdrop(string value)
         {
             CurrentConfig.AppConfig.WindowBackdrop = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetUiScale(double value)
+        {
+            CurrentConfig.AppConfig.UiScale = UiScaleHandler.Clamp(value);
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

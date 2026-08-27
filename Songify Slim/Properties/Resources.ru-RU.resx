@@ -2434,4 +2434,96 @@ gwyden - Hertz - karimawii
   <data name="window_main_title_premium" xml:space="preserve">
     <value>Songify Premium</value>
   </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Премиум</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Подписка Songify Premium активна. Нажмите, чтобы открыть сводку трансляции.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Подписка Songify Premium неактивна. Нажмите, чтобы разблокировать сводку, статистику и облачную синхронизацию.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Добавьте токен Songify, затем разблокируйте Premium на странице своего аккаунта.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Этот токен Songify недействителен. Сгенерируйте новый на songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Проверка статуса Songify Premium…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Подписка Songify Premium активна.</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>Премиум-подписка неактивна — разблокируйте обзор, статистику и облачную синхронизацию.</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Токен Songify недействителен.</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Добавьте токен Songify, чтобы активировать Premium.</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Краткий обзор трансляции</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Откройте ежедневный обзор запросов на songify.rocks. Полный список песен доступен для подписчиков Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>В Songify Premium включена облачная синхронизация.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>В Songify Premium включена облачная синхронизация.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Токен сохранен. Songify Premium активен.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Токен сохранен. Привяжите Ko-fi на странице своего аккаунта, чтобы разблокировать сводку, статистику и облачную синхронизацию.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Этот токен недействителен. Сгенерируйте новый на странице своего аккаунта.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Скрыть напоминания о премиум-подписке</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Премиум-напоминания отключены</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify остаётся бесплатным. Премиум-версия добавляет обзор прослушиваний, список самых популярных песен и запросов, облачную синхронизацию и дополнительные виджеты.
+
+Вы по-прежнему можете открыть Songify Premium в любое время с главного экрана или из раздела «О программе».</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Обновить статус Premium</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Проверка статуса Songify Premium…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify остаётся бесплатным</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>В премиум-версию входят краткий обзор трансляции, самые популярные песни и запросы, облачная синхронизация и дополнительные виджеты. Разблокировать её можно в любое время на главном экране или в разделе «О программе».</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Это сообщение исчезнет через {0} секунд</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Это сообщение исчезнет через {0} секунд.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Это сообщение исчезнет :)</value>
+  </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Масштаб интерфейса</value>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Увеличьте изображение приложения в разрешении 1440p и 4K.</value>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
 </root>

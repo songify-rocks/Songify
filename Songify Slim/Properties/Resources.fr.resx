@@ -2434,4 +2434,96 @@ Ce n’est pas Songify Premium, ni le compte Spotify lié dans Songify pour la l
   <data name="window_main_title_premium" xml:space="preserve">
     <value>Songify Premium</value>
   </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Prime</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Songify Premium est activé. Cliquez pour ouvrir le récapitulatif du stream.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Songify Premium est inactif. Cliquez pour débloquer le récapitulatif, les statistiques et la synchronisation cloud.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Ajoutez un jeton Songify, puis débloquez l'accès Premium sur votre page de compte.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Ce jeton Songify est invalide. Veuillez en générer un nouveau sur songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Vérification du statut Songify Premium…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Songify Premium est actif</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>L'abonnement Premium est inactif — débloquez le récapitulatif, les statistiques et la synchronisation cloud</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Le jeton Songify est invalide.</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Ajoutez un jeton Songify pour activer l'abonnement Premium.</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Récapitulatif du stream</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Consultez le récapitulatif quotidien des demandes sur songify.rocks. La liste complète des chansons est incluse dans l'abonnement Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>La synchronisation cloud est incluse avec Songify Premium.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>La synchronisation cloud est incluse avec Songify Premium.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Jeton enregistré. Songify Premium est actif.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Jeton enregistré. Liez votre compte Ko-fi sur votre page de compte pour débloquer le récapitulatif, les statistiques et la synchronisation cloud.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Ce jeton est invalide. Veuillez en générer un nouveau sur votre page de compte.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Masquer les rappels Premium</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Rappels Premium désactivés</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify reste gratuit. La version Premium ajoute le récapitulatif des écoutes, les titres les plus populaires et les demandes d'écoute, la synchronisation cloud et des widgets supplémentaires.
+
+Vous pouvez toujours accéder à Songify Premium à tout moment depuis l'accueil ou la section « À propos ».</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Actualiser le statut Premium</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Vérification du statut Songify Premium…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify reste gratuit</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>La version Premium ajoute le récapitulatif du stream, les titres les plus populaires et les demandes d'écoute, la synchronisation cloud et des widgets supplémentaires. Débloquez-la à tout moment depuis l'accueil ou la section À propos.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Ce message disparaîtra dans {0} secondes</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Ce message disparaîtra dans {0} seconde</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Ce message va disparaître maintenant :)</value>
+  </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Échelle d'interface</value>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Agrandir l'application en 1440p et 4K.</value>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
 </root>

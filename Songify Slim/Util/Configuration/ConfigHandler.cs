@@ -1070,6 +1070,12 @@ namespace Songify_Slim.Util.Configuration
         /// <summary>WPF-UI window backdrop: None, Auto, Mica, Acrylic, Tabbed.</summary>
         public string WindowBackdrop { get; set; } = "Mica";
 
+        /// <summary>
+        /// Extra UI zoom on top of Windows DPI (1.0 = 100%, 2.0 = 200%).
+        /// Helps 1440p / 4K when the 900×500 layout is too small to read.
+        /// </summary>
+        public double UiScale { get; set; } = 1.0;
+
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;

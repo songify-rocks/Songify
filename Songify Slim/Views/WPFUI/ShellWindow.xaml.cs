@@ -40,6 +40,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         InitializeComponent();
         DataContext = this;
         ThemeHandler.ApplyTheme();
+        UiScaleHandler.ApplyToWindow(this, Settings.UiScale);
         // Don't navigate here: NavigationView's frame may not be ready until Loaded
     }
 

@@ -2618,4 +2618,96 @@ gwyden - Hertz - karimawii
   <data name="window_main_title_premium" xml:space="preserve">
     <value>Songify Premium</value>
   </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Прэміум</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Падпіска Songify Premium актыўная. Націсніце, каб адкрыць агляд трансляцыі.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Падпіска Songify Premium неактыўная. Націсніце, каб разблакіраваць агляд, статыстыку і сінхранізацыю з воблакам.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Дадайце токен Songify, а затым разблакуйце Premium на старонцы вашага ўліковага запісу.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Гэты токен Songify несапраўдны. Згенеруйце новы на songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Праверка статусу Songify Premium…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Прэміум-акаўнт Songify актыўны</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>Прэміум-падпіска неактыўная — разблакуйце агляд, статыстыку і сінхранізацыю з воблакам</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Токен Songify несапраўдны</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Дадайце токен Songify, каб уключыць Premium</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Кароткі змест трансляцыі</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Адкрыйце штодзённы агляд запытаў на songify.rocks. Поўны спіс песень уключаны ў Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>Сінхранізацыя з воблакам уключана ў Songify Premium.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>Сінхранізацыя з воблакам уключана ў Songify Premium.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Токен захаваны. Прэміум-падпіска Songify актыўная.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Токен захаваны. Дадайце спасылку на Ko-fi на старонцы вашага ўліковага запісу, каб разблакіраваць агляд, статыстыку і сінхранізацыю з воблакам.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Гэты токен несапраўдны. Згенеруйце новы на старонцы вашага ўліковага запісу.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Схаваць прэміум-напаміны</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Прэміум-напаміны выключаны</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify застаецца бясплатным. Прэміум-версія дадае агляд трансляцый, лепшыя песні і аўтараў запытаў, сінхранізацыю з воблакам і дадатковыя віджэты.
+
+Вы ўсё яшчэ можаце адкрыць Songify Premium у любы час з галоўнай старонкі або з раздзела "Аб праграме".</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Абнавіць статус прэміум-класа</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Праверка статусу Songify Premium…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify застаецца бясплатным</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>Прэміум-клас дадае агляд трансляцый, лепшыя песні і аўтараў запытаў, сінхранізацыю з воблакам і дадатковыя віджэты. Разблакуйце яго ў любы час на галоўнай старонцы або ў раздзеле "Пра праграму".</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Гэтае паведамленне знікне праз {0} секунд</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Гэтае паведамленне знікне праз {0} секунду</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Гэтае паведамленне зараз знікне :)</value>
+  </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Маштаб інтэрфейсу</value>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Павялічце праграму на 1440p і 4K.</value>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
 </root>

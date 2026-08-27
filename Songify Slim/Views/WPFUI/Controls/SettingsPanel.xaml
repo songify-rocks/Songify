@@ -195,7 +195,7 @@
                             </StackPanel>
                         </ui:Card>
 
-                        <!--  Appearance: theme + WPF-UI backdrop (no custom accent colors)  -->
+                        <!--  Appearance: theme, backdrop, UI scale  -->
                         <ui:Card Padding="16">
                             <StackPanel>
                                 <TextBlock
@@ -251,6 +251,48 @@
                                         SelectionChanged="CbxWindowBackdrop_OnSelectionChanged"
                                         TabIndex="10" />
                                 </Grid>
+                                <StackPanel Margin="0,16,0,0">
+                                    <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_appearance_scale}" />
+                                    <TextBlock
+                                        Margin="0,0,0,8"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{DynamicResource window_settings_appearance_scale_hint}"
+                                        TextWrapping="Wrap" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <Slider
+                                            x:Name="SliderUiScale"
+                                            VerticalAlignment="Center"
+                                            IsMoveToPointEnabled="True"
+                                            IsSnapToTickEnabled="True"
+                                            LargeChange="0.25"
+                                            LostMouseCapture="SliderUiScale_OnLostMouseCapture"
+                                            Maximum="2"
+                                            Minimum="1"
+                                            PreviewMouseLeftButtonDown="SliderUiScale_OnPreviewPointerDown"
+                                            PreviewMouseLeftButtonUp="SliderUiScale_OnPreviewPointerUp"
+                                            SmallChange="0.05"
+                                            TabIndex="11"
+                                            TickFrequency="0.05"
+                                            TickPlacement="None"
+                                            ValueChanged="SliderUiScale_OnValueChanged" />
+                                        <TextBlock
+                                            x:Name="TbUiScaleValue"
+                                            Grid.Column="1"
+                                            MinWidth="48"
+                                            Margin="12,0,0,0"
+                                            VerticalAlignment="Center"
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="100%"
+                                            TextAlignment="Right" />
+                                    </Grid>
+                                </StackPanel>
                             </StackPanel>
                         </ui:Card>
                     </StackPanel>

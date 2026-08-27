@@ -2487,4 +2487,96 @@ Dit is niet Songify Premium, en niet het Spotify-account dat in Songify is gekop
   <data name="window_main_title_premium" xml:space="preserve">
     <value>Songify Premium</value>
   </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Premie</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Songify Premium is geactiveerd. Klik om het streamoverzicht te openen.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Songify Premium is inactief. Klik om overzichten, statistieken en cloudsynchronisatie te ontgrendelen.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Voeg een Songify-token toe en ontgrendel vervolgens Premium op je accountpagina.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Dit Songify-token is ongeldig. Genereer een nieuw token op songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Mijn Songify Premium-status controleren…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Songify Premium is actief</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>Premium is inactief — ontgrendel samenvattingen, statistieken en cloudsynchronisatie</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Het Songify-token is ongeldig.</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Voeg een Songify-token toe om Premium te activeren.</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Samenvatting van de stream</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Bekijk het dagelijkse overzicht van de verzoeknummers op songify.rocks. De volledige lijst met nummers is beschikbaar met Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>Cloudsynchronisatie is inbegrepen bij Songify Premium.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>Cloudsynchronisatie is inbegrepen bij Songify Premium.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Token opgeslagen. Songify Premium is geactiveerd.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Token opgeslagen. Koppel Ko-fi aan je accountpagina om samenvattingen, statistieken en cloudsynchronisatie te ontgrendelen.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Dit token is ongeldig. Genereer een nieuw token op uw accountpagina.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Premium-herinneringen verbergen</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Premium-herinneringen uitgeschakeld</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify blijft gratis. Premium biedt een overzicht van streams, de populairste nummers en verzoeknummers, cloudsynchronisatie en extra widgets.
+
+Je kunt Songify Premium nog steeds op elk moment openen via Home of Over.</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Vernieuw de Premium-status</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Mijn Songify Premium-status controleren…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify blijft gratis</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>Premium biedt een samenvatting van je stream, de populairste nummers en verzoeknummers, cloudsynchronisatie en extra widgets. Je kunt het op elk moment activeren via Home of Over.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Dit bericht verdwijnt over {0} seconden.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Dit bericht verdwijnt over {0} seconden</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Dit bericht verdwijnt nu :)</value>
+  </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Interface schaal</value>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Vergroot de app in 1440p en 4K.</value>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
 </root>

@@ -48,7 +48,8 @@ internal static class AppActions
         AutoUpdater.AppTitle = "Songify";
         AutoUpdater.RunUpdateAsAdmin = false;
         Logger.Info(LogSource.Core, $"Checking for update ({Settings.ReleaseChannel})...");
-        AutoUpdater.Start(Settings.GetUpdateFeedUrl());
+        string updateUri = Settings.GetUpdateFeedUrl();
+        AutoUpdater.Start(updateUri);
     }
 
     public static void OpenFaq() =>

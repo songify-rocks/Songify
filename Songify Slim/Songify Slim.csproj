@@ -164,6 +164,9 @@
     <EmbeddedResource Include="default_site\spotify.png" />
   </ItemGroup>
   <PropertyGroup />
-  <PropertyGroup />
+  <PropertyGroup>
+    <AssemblyVersion>2.0.0.1</AssemblyVersion>
+    <FileVersion>2.0.0.1</FileVersion>
+  </PropertyGroup>
 </Project>
 

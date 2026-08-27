@@ -2094,6 +2094,18 @@
     <value>App backdrop effects.</value>
     <comment>Context: Hint under Window backdrop in Settings.</comment>
   </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Interface scale</value>
+    <comment>Context: Settings appearance label for the UI zoom slider.</comment>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Enlarge the app on 1440p and 4K.</value>
+    <comment>Context: Hint under Interface scale in Settings appearance.</comment>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
+    <comment>Context: Percentage label next to the UI scale slider. {0} is 100–200.</comment>
+  </data>
   <data name="window_settings_options" xml:space="preserve">
     <value>Options</value>
     <comment>Context: Section header for misc options in Settings.</comment>

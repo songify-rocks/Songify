@@ -84,6 +84,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private bool _rewardsLoadStarted;
         private bool _rewardsLoading;
         private BitmapImage? _defaultSongifyProfileImage;
+        private bool _uiScalePointerActive;
 
         /// <summary>True while binding controls or before the window is ready - skip save/side-effect handlers.</summary>
         private bool IgnoreControlEvents => !IsLoaded || _isSettingControls || _externalUiMutationDepth > 0;
@@ -1119,6 +1120,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             _wRp?.LoadItems();
 
             GenerateRefundConditionToggles();
+            UpdateUiScaleLabel(Settings.UiScale);
         }
 
         private void CbxWindowBackdrop_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -1130,6 +1132,78 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
             Settings.WindowBackdrop = name;
             ThemeHandler.ApplyTheme();
+        }
+
+        private void BindUiScaleSlider()
+        {
+            if (SliderUiScale == null)
+                return;
+
+            SliderUiScale.ValueChanged -= SliderUiScale_OnValueChanged;
+            double scale = Settings.UiScale;
+            SliderUiScale.Value = scale;
+            UpdateUiScaleLabel(scale);
+            SliderUiScale.ValueChanged += SliderUiScale_OnValueChanged;
+        }
+
+        private void SliderUiScale_OnPreviewPointerDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            _uiScalePointerActive = true;
+        }
+
+        private void SliderUiScale_OnPreviewPointerUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CommitUiScaleFromPointer();
+        }
+
+        private void SliderUiScale_OnLostMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            CommitUiScaleFromPointer();
+        }
+
+        private void SliderUiScale_OnValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (IgnoreControlEvents)
+                return;
+
+            double scale = UiScaleHandler.Clamp(e.NewValue);
+            UpdateUiScaleLabel(scale);
+
+            // Don't apply while dragging: scaling this window moves the slider under the cursor.
+            if (_uiScalePointerActive || SliderUiScale.IsMouseCaptureWithin)
+                return;
+
+            CommitUiScale(scale);
+        }
+
+        private void CommitUiScaleFromPointer()
+        {
+            if (!_uiScalePointerActive && SliderUiScale is { IsMouseCaptureWithin: false })
+                return;
+
+            _uiScalePointerActive = false;
+            if (IgnoreControlEvents || SliderUiScale == null)
+                return;
+
+            CommitUiScale(UiScaleHandler.Clamp(SliderUiScale.Value));
+        }
+
+        private void CommitUiScale(double scale)
+        {
+            scale = UiScaleHandler.Clamp(scale);
+            UpdateUiScaleLabel(scale);
+            if (Math.Abs(Settings.UiScale - scale) > 0.001)
+                Settings.UiScale = scale;
+            UiScaleHandler.Apply(scale);
+        }
+
+        private void UpdateUiScaleLabel(double scale)
+        {
+            if (TbUiScaleValue == null)
+                return;
+
+            int percent = (int)Math.Round(scale * 100);
+            TbUiScaleValue.Text = LocFormat("window_settings_appearance_scale_value", "{0}%", percent);
         }
 
         private void MenuBtnArtist_Click(object sender, RoutedEventArgs e)
@@ -1289,6 +1363,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (CbxWindowBackdrop.SelectedItem == null)
                 CbxWindowBackdrop.SelectedIndex = 0;
             CbxWindowBackdrop.SelectionChanged += CbxWindowBackdrop_OnSelectionChanged;
+
+            BindUiScaleSlider();
 
             await SetControls();
         }

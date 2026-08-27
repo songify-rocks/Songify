@@ -2433,4 +2433,96 @@ To nie jest Songify Premium ani konto Spotify powiązane w Songify do odtwarzani
   <data name="window_main_title_premium" xml:space="preserve">
     <value>Songify Premium</value>
   </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Premia</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Usługa Songify Premium jest aktywna. Kliknij, aby otworzyć podsumowanie transmisji.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Usługa Songify Premium jest nieaktywna. Kliknij, aby odblokować podsumowanie, statystyki i synchronizację z chmurą.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Dodaj token Songify, a następnie odblokuj Premium na stronie swojego konta.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Ten token Songify jest nieprawidłowy. Wygeneruj nowy w songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Sprawdzanie statusu Songify Premium…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Songify Premium jest aktywny</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>Premium jest nieaktywny — odblokuj podsumowanie, statystyki i synchronizację z chmurą</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Token Songify jest nieprawidłowy</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Dodaj token Songify, aby włączyć Premium</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Podsumowanie transmisji strumieniowej</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Otwórz podsumowanie próśb z dnia na songify.rocks. Pełna lista utworów jest dostępna w ramach Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>Synchronizacja z chmurą jest zawarta w Songify Premium.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>Synchronizacja z chmurą jest zawarta w Songify Premium.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Token zapisany. Usługa Songify Premium jest aktywna.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Token zapisany. Dodaj link do Ko-fi na stronie swojego konta, aby odblokować podsumowanie, statystyki i synchronizację z chmurą.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Ten token jest nieprawidłowy. Wygeneruj nowy na stronie swojego konta.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Ukryj przypomnienia Premium</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Przypomnienia premium wyłączone</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify pozostaje darmowy. Wersja Premium oferuje podsumowanie transmisji, listę najpopularniejszych utworów i osób proszących o nie, synchronizację z chmurą oraz dodatkowe widżety.
+
+Wciąż możesz otworzyć Songify Premium w dowolnym momencie z ekranu głównego lub zakładki Informacje.</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Odśwież status Premium</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Sprawdzanie statusu Songify Premium…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify pozostaje darmowy</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>Wersja Premium oferuje podsumowanie transmisji, listę najlepszych utworów i osób proszących o wsparcie, synchronizację z chmurą oraz dodatkowe widżety. Odblokuj w dowolnym momencie z ekranu głównego lub zakładki Informacje.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Ta wiadomość zniknie za {0} sekund</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Ta wiadomość zniknie za {0} sekundę</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Ta wiadomość zniknie teraz :)</value>
+  </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Skala interfejsu</value>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Powiększ aplikację do rozdzielczości 1440p i 4K.</value>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
 </root>

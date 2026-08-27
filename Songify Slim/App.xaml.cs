@@ -372,6 +372,8 @@ namespace Songify_Slim
             // Add it to the merged dictionaries so that your UI has access to the keys from the start.
             Current.Resources.MergedDictionaries.Add(defaultLocalizationDict);
 
+            UiScaleHandler.Initialize();
+
             StartPipeServer();
         }
 
