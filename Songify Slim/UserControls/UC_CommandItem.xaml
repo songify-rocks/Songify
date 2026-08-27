@@ -292,8 +292,7 @@
                     <Label HorizontalAlignment="Right" Content="{DynamicResource window_botresponses_cmd_skipvotecount}" />
                     <ui:NumberBox
                         x:Name="NudSkipVoteCount"
-                        Width="98"
-                        Height="26"
+                        Margin="8,0,0,0"
                         HorizontalAlignment="Left"
                         ClearButtonEnabled="False"
                         Minimum="1"
