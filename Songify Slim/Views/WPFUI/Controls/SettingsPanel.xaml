@@ -135,7 +135,7 @@
                                     TabIndex="3"
                                     Unchecked="ChbxMinimizeSystrayChecked" />
                                 <Grid Margin="0,0,0,8">
-                                    <StackPanel VerticalAlignment="Center" Margin="0,0,180,0">
+                                    <StackPanel Margin="0,0,180,0" VerticalAlignment="Center">
                                         <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_system_release_channel}" />
                                         <TextBlock
                                             FontSize="12"
@@ -437,7 +437,6 @@
                                         x:Name="NudSpaces"
                                         Grid.Row="0"
                                         Grid.Column="1"
-                                        Width="100"
                                         VerticalAlignment="Center"
                                         ClearButtonEnabled="False"
                                         Minimum="1"
