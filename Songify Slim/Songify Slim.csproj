@@ -5,7 +5,13 @@
     <OutputType>WinExe</OutputType>
     <RootNamespace>Songify_Slim</RootNamespace>
     <AssemblyName>Songify</AssemblyName>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Description>Spotify Song Fetcher</Description>
+    <Company>Songify.Rocks</Company>
+    <Product>Songify</Product>
+    <Copyright>Copyright © 2026</Copyright>
+    <NeutralLanguage>en</NeutralLanguage>
+    <!-- Single source of truth for AssemblyVersion, FileVersion, and InformationalVersion. -->
+    <Version>2.0.0.3</Version>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
@@ -163,10 +169,5 @@
     <EmbeddedResource Include="default_site\songify.png" />
     <EmbeddedResource Include="default_site\spotify.png" />
   </ItemGroup>
-  <PropertyGroup />
-  <PropertyGroup>
-    <AssemblyVersion>2.0.0.2</AssemblyVersion>
-    <FileVersion>2.0.0.2</FileVersion>
-  </PropertyGroup>
 </Project>
 

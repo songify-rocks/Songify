@@ -163,6 +163,15 @@
                                     TabIndex="5"
                                     Unchecked="ChbxOpenQueueOnStartup_Toggled" />
                                 <ui:ToggleSwitch
+                                    x:Name="TglOpenQueuePopOutOnStartup"
+                                    Margin="24,0,0,8"
+                                    Checked="TglOpenQueuePopOutOnStartup_Toggled"
+                                    Content="{DynamicResource window_settings_system_open_queue_pop_out}"
+                                    Focusable="False"
+                                    TabIndex="5"
+                                    Unchecked="TglOpenQueuePopOutOnStartup_Toggled"
+                                    Visibility="Collapsed" />
+                                <ui:ToggleSwitch
                                     x:Name="TglDonationReminder"
                                     Margin="0,0,0,8"
                                     Checked="TglDonationReminder_OnToggled"
@@ -292,6 +301,21 @@
                                             Text="100%"
                                             TextAlignment="Right" />
                                     </Grid>
+                                </StackPanel>
+                                <StackPanel Margin="0,16,0,0">
+                                    <ui:ToggleSwitch
+                                        x:Name="TglOverruleShellMinWidth"
+                                        Margin="0,0,0,4"
+                                        Checked="TglOverruleShellMinWidth_OnToggled"
+                                        Content="{DynamicResource window_settings_appearance_overrule_min_width}"
+                                        Focusable="False"
+                                        TabIndex="12"
+                                        Unchecked="TglOverruleShellMinWidth_OnToggled" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{DynamicResource window_settings_appearance_overrule_min_width_hint}"
+                                        TextWrapping="Wrap" />
                                 </StackPanel>
                             </StackPanel>
                         </ui:Card>

@@ -551,6 +551,10 @@
     <value>Open queue window on startup</value>
     <comment>ToggleSwitch content for "open queue window on startup"</comment>
   </data>
+  <data name="window_settings_system_open_queue_pop_out" xml:space="preserve">
+    <value>Pop out as a standalone window</value>
+    <comment>Context: Nested toggle under Open queue on startup. Opens the detached queue window instead of the Queue page.</comment>
+  </data>
   <data name="window_settings_integration_auto_announce" xml:space="preserve">
     <value>Automatically announce song to chat (uses the !song response)</value>
     <comment>TollgeSwitch content for "Automatically Announce Song To Chat"</comment>
@@ -2846,5 +2850,33 @@ You can still open Songify Premium any time from Home or About.</value>
   </data>
   <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
     <value>This message will disappear now :)</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width" xml:space="preserve">
+    <value>Overrule minimum size</value>
+    <comment>Context: Settings appearance toggle to allow resizing the main window below the designed 900×500 minimum.</comment>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width_hint" xml:space="preserve">
+    <value>Lets you resize the main window below 900×500. This may break the UI layout.</value>
+    <comment>Context: Hint under Overrule minimum size in Settings appearance.</comment>
+  </data>
+  <data name="window_queue_pop_out" xml:space="preserve">
+    <value>Pop out</value>
+    <comment>Context: Button on Queue page to open the queue in a separate window.</comment>
+  </data>
+  <data name="window_queue_pop_out_tooltip" xml:space="preserve">
+    <value>Open the queue in a separate window with no minimum size</value>
+    <comment>Context: Tooltip on Queue page Pop out button.</comment>
+  </data>
+  <data name="window_queue_open_window" xml:space="preserve">
+    <value>Queue window</value>
+    <comment>Context: Tools menu item that opens the detached queue window.</comment>
+  </data>
+  <data name="window_queue_detached_title" xml:space="preserve">
+    <value>Queue is in another window</value>
+    <comment>Context: Title on Queue page while the queue is popped out.</comment>
+  </data>
+  <data name="window_queue_detached_body" xml:space="preserve">
+    <value>The queue is open in a separate window so you can keep it visible while you use the rest of Songify. Close that window to bring it back here.</value>
+    <comment>Context: Body on Queue page while the queue is popped out.</comment>
   </data>
 </root>

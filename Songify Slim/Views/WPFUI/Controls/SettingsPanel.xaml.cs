@@ -10,6 +10,7 @@ using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.Youtube;
 using Songify_Slim.Views;
+using Songify_Slim.Views.WPFUI;
 using SpotifyAPI.Web;
 using System;
 using System.Collections.Generic;
@@ -387,6 +388,11 @@ namespace Songify_Slim.Views.WPFUI.Controls
             CbPauseOptions.SelectedIndex = (int)Settings.PauseOption;
             ChbxMinimizeSystray.IsChecked = Settings.Systray;
             ChbxOpenQueueOnStartup.IsChecked = Settings.OpenQueueOnStartup;
+            if (TglOpenQueuePopOutOnStartup != null)
+                TglOpenQueuePopOutOnStartup.IsChecked = Settings.OpenQueuePopOutOnStartup;
+            UpdateOpenQueuePopOutVisibility();
+            if (TglOverruleShellMinWidth != null)
+                TglOverruleShellMinWidth.IsChecked = Settings.OverruleShellMinWidth;
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             ChbxSpacesSplitFiles.IsChecked = Settings.AppendSpacesSplitFiles;
             ChbxSplit.IsChecked = Settings.SplitOutput;
@@ -1075,6 +1081,23 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             Settings.OpenQueueOnStartup = ((ToggleSwitch)sender).IsChecked == true;
+            UpdateOpenQueuePopOutVisibility();
+        }
+
+        private void TglOpenQueuePopOutOnStartup_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            Settings.OpenQueuePopOutOnStartup = TglOpenQueuePopOutOnStartup.IsChecked == true;
+        }
+
+        private void UpdateOpenQueuePopOutVisibility()
+        {
+            if (TglOpenQueuePopOutOnStartup == null)
+                return;
+            TglOpenQueuePopOutOnStartup.Visibility = ChbxOpenQueueOnStartup.IsChecked == true
+                ? Visibility.Visible
+                : Visibility.Collapsed;
         }
 
         private void ChbxSpaces_Checked(object sender, RoutedEventArgs e)
@@ -1195,6 +1218,21 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (Math.Abs(Settings.UiScale - scale) > 0.001)
                 Settings.UiScale = scale;
             UiScaleHandler.Apply(scale);
+        }
+
+        private void TglOverruleShellMinWidth_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+
+            Settings.OverruleShellMinWidth = TglOverruleShellMinWidth.IsChecked == true;
+            if (Application.Current?.Windows == null)
+                return;
+            foreach (Window window in Application.Current.Windows)
+            {
+                if (window is ShellWindow shell)
+                    shell.ApplyMinSizeOverride();
+            }
         }
 
         private void UpdateUiScaleLabel(double scale)

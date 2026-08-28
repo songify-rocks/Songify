@@ -231,7 +231,12 @@ public static class AppStartup
             GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
 
         if (useShellWindow && Settings.OpenQueueOnStartup && owner is Views.WPFUI.ShellWindow shell)
-            shell.NavigateToQueue();
+        {
+            if (Settings.OpenQueuePopOutOnStartup)
+                Views.WPFUI.QueueWindow.ShowOrActivate();
+            else
+                shell.NavigateToQueue();
+        }
 
         if (Settings.TwAutoConnect)
             TwitchHandler.ConnectTwitchChatClient();

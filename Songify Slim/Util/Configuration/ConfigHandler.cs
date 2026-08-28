@@ -992,6 +992,11 @@ namespace Songify_Slim.Util.Configuration
         public bool LimitSrToPlaylist { get; set; }
         public bool MsgLoggingEnabled { get; set; }
         public bool OpenQueueOnStartup { get; set; }
+
+        /// <summary>
+        /// When <see cref="OpenQueueOnStartup"/> is true, open the standalone queue window instead of the Queue page.
+        /// </summary>
+        public bool OpenQueuePopOutOnStartup { get; set; }
         public bool RewardGoalEnabled { get; set; }
         public bool SaveHistory { get; set; }
         public bool SplitOutput { get; set; }
@@ -1075,6 +1080,12 @@ namespace Songify_Slim.Util.Configuration
         /// Helps 1440p / 4K when the 900×500 layout is too small to read.
         /// </summary>
         public double UiScale { get; set; } = 1.0;
+
+        /// <summary>
+        /// When true, the main shell can be resized below its designed minimum size (900×500).
+        /// This may break the UI layout.
+        /// </summary>
+        public bool OverruleShellMinWidth { get; set; }
 
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";

@@ -41,7 +41,22 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         DataContext = this;
         ThemeHandler.ApplyTheme();
         UiScaleHandler.ApplyToWindow(this, Settings.UiScale);
+        ApplyMinSizeOverride();
         // Don't navigate here: NavigationView's frame may not be ready until Loaded
+    }
+
+    /// <summary>Designed minimum size when "overrule min size" is off.</summary>
+    public const double DefaultMinWidth = 900;
+    public const double DefaultMinHeight = 500;
+
+    /// <summary>Applies or clears the shell min-width/height constraints from settings.</summary>
+    public void ApplyMinSizeOverride()
+    {
+        bool overrule = Settings.OverruleShellMinWidth;
+        UiScaleHandler.SetUnscaledMinSize(
+            this,
+            overrule ? 0 : DefaultMinWidth,
+            overrule ? 0 : DefaultMinHeight);
     }
 
     /// <summary>For status bar binding.</summary>
@@ -96,6 +111,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
     {
+        ApplyMinSizeOverride();
         AppShellBridge.Register(this);
         Title = "Songify";
 
@@ -203,6 +219,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         AppShellBridge.Unregister(this);
         Settings.PosX = Left;
         Settings.PosY = Top;
+        QueueWindow.CloseIfOpen();
         Util.Songify.AppFetchService.Stop();
         try
         {
@@ -557,6 +574,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     #region TitleBar menu
 
     private void MenuWidget_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWidget();
+
+    private void MenuQueueWindow_OnClick(object sender, RoutedEventArgs e) => QueueWindow.ShowOrActivate();
 
     private void MenuConsoleWindow_OnClick(object sender, RoutedEventArgs e) => ConsoleWindow.ShowOrActivate();
 

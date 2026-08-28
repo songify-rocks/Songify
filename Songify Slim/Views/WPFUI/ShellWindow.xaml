@@ -67,6 +67,7 @@
                         <ui:DropDownButton.Flyout>
                             <ContextMenu>
                                 <MenuItem Click="MenuWidget_OnClick" Header="{DynamicResource menu_file_widget}" />
+                                <MenuItem Click="MenuQueueWindow_OnClick" Header="{DynamicResource window_queue_open_window}" />
                                 <MenuItem Click="MenuConsoleWindow_OnClick" Header="{DynamicResource window_console_open_window}" />
                                 <MenuItem Click="MenuWebServerUrl_OnClick" Header="{DynamicResource menu_view_webserver_url}" />
                                 <MenuItem Click="MenuQueueBrowser_OnClick" Header="{DynamicResource menu_song_requests_queue_browser}" />
@@ -625,7 +626,8 @@
                         Appearance="Primary"
                         Click="BtnPremiumReminderCta_OnClick"
                         Content="{DynamicResource cta_premium}"
-                        Icon="{ui:SymbolIcon Heart24, Filled=True}" />
+                        Icon="{ui:SymbolIcon Heart24,
+                                             Filled=True}" />
                     <TextBlock
                         x:Name="TbPremiumReminderDismiss"
                         Margin="0,16,0,0"

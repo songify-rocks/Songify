@@ -239,4 +239,12 @@ Please send any questions about this EULA to info@songify.rocks.</system:String>
     <system:String x:Key="setup_tour_twitch_body">Link your broadcaster account here for song requests, rewards, and chat commands. A bot account is optional.</system:String>
     <system:String x:Key="setup_tour_output_title">Output and widget</system:String>
     <system:String x:Key="setup_tour_output_body">Point OBS at the Songify.txt file in Output settings. Tools → Widget opens the browser overlay. That's the tour — you're set.</system:String>
+    <system:String x:Key="window_settings_appearance_overrule_min_width">Overrule minimum size</system:String>
+    <system:String x:Key="window_settings_appearance_overrule_min_width_hint">Lets you resize the main window below 900×500. This may break the UI layout.</system:String>
+    <system:String x:Key="window_queue_pop_out">Pop out</system:String>
+    <system:String x:Key="window_queue_pop_out_tooltip">Open the queue in a separate window with no minimum size</system:String>
+    <system:String x:Key="window_queue_open_window">Queue window</system:String>
+    <system:String x:Key="window_queue_detached_title">Queue is in another window</system:String>
+    <system:String x:Key="window_queue_detached_body">The queue is open in a separate window so you can keep it visible while you use the rest of Songify. Close that window to bring it back here.</system:String>
+    <system:String x:Key="window_settings_system_open_queue_pop_out">Pop out as a standalone window</system:String>
 </ResourceDictionary>

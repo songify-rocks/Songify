@@ -77,6 +77,49 @@ internal static class UiScaleHandler
         ApplyWindowSize(window, scale);
     }
 
+    /// <summary>
+    /// Replaces the unscaled min size used by zoom (0 = no minimum).
+    /// Call after changing a window's designed min size at runtime.
+    /// </summary>
+    public static void SetUnscaledMinSize(Window window, double minWidth, double minHeight)
+    {
+        if (window == null)
+            return;
+
+        minWidth = minWidth < 0 ? 0 : minWidth;
+        minHeight = minHeight < 0 ? 0 : minHeight;
+        WindowScaleState state = States.GetValue(window, static w => new WindowScaleState
+        {
+            AppliedScale = Default,
+            OriginalMinWidth = 0,
+            OriginalMinHeight = 0
+        });
+
+        state.OriginalMinWidth = minWidth;
+        state.OriginalMinHeight = minHeight;
+        double scale = state.AppliedScale > 0 ? state.AppliedScale : Clamp(Settings.UiScale);
+        window.MinWidth = minWidth <= 0 ? 0 : minWidth * scale;
+        window.MinHeight = minHeight <= 0 ? 0 : minHeight * scale;
+    }
+
+    public static void SetUnscaledMinWidth(Window window, double minWidth)
+    {
+        if (window == null)
+            return;
+
+        minWidth = minWidth < 0 ? 0 : minWidth;
+        WindowScaleState state = States.GetValue(window, static w => new WindowScaleState
+        {
+            AppliedScale = Default,
+            OriginalMinWidth = 0,
+            OriginalMinHeight = SafeMin(w.MinHeight)
+        });
+
+        state.OriginalMinWidth = minWidth;
+        double scale = state.AppliedScale > 0 ? state.AppliedScale : Clamp(Settings.UiScale);
+        window.MinWidth = minWidth <= 0 ? 0 : minWidth * scale;
+    }
+
     private static void OnWindowLoaded(object sender, RoutedEventArgs e)
     {
         // Loaded bubbles; only handle the window's own Loaded.

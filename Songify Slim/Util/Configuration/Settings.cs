@@ -685,6 +685,12 @@ namespace Songify_Slim.Util.Configuration
             set => SetOpenQueueOnStartup(value);
         }
 
+        public static bool OpenQueuePopOutOnStartup
+        {
+            get => GetOpenQueuePopOutOnStartup();
+            set => SetOpenQueuePopOutOnStartup(value);
+        }
+
         public static string OutputString
         {
             get => GetOutputString();
@@ -819,6 +825,12 @@ namespace Songify_Slim.Util.Configuration
         {
             get => GetUiScale();
             set => SetUiScale(value);
+        }
+
+        public static bool OverruleShellMinWidth
+        {
+            get => GetOverruleShellMinWidth();
+            set => SetOverruleShellMinWidth(value);
         }
 
         public static string TwAcc
@@ -1393,6 +1405,7 @@ namespace Songify_Slim.Util.Configuration
                 MinimumBitsForSR = GetMinimumBitsForSr(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
+                OpenQueuePopOutOnStartup = GetOpenQueuePopOutOnStartup(),
                 OutputString = GetOutputString(),
                 OutputString2 = GetOutputString2(),
                 PauseOption = GetPauseOption(),
@@ -1432,6 +1445,7 @@ namespace Songify_Slim.Util.Configuration
                 Theme = GetTheme(),
                 WindowBackdrop = GetWindowBackdrop(),
                 UiScale = GetUiScale(),
+                OverruleShellMinWidth = GetOverruleShellMinWidth(),
                 TwAutoConnect = GetTwAutoConnect(),
                 TwitchFetchPort = GetTwitchFetchPort(),
                 TwitchRedirectPort = GetTwitchRedirectPort(),
@@ -1970,6 +1984,11 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.OpenQueueOnStartup;
         }
 
+        private static bool GetOpenQueuePopOutOnStartup()
+        {
+            return CurrentConfig.AppConfig.OpenQueuePopOutOnStartup;
+        }
+
         private static string GetOutputString()
         {
             return CurrentConfig.AppConfig.OutputString;
@@ -2125,6 +2144,11 @@ namespace Songify_Slim.Util.Configuration
         private static double GetUiScale()
         {
             return UiScaleHandler.Clamp(CurrentConfig.AppConfig.UiScale);
+        }
+
+        private static bool GetOverruleShellMinWidth()
+        {
+            return CurrentConfig.AppConfig.OverruleShellMinWidth;
         }
 
         private static string GetTwAcc()
@@ -2808,6 +2832,12 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
+        private static void SetOpenQueuePopOutOnStartup(bool value)
+        {
+            CurrentConfig.AppConfig.OpenQueuePopOutOnStartup = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
         private static void SetOutputString(string value)
         {
             CurrentConfig.AppConfig.OutputString = value;
@@ -2979,6 +3009,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetUiScale(double value)
         {
             CurrentConfig.AppConfig.UiScale = UiScaleHandler.Clamp(value);
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetOverruleShellMinWidth(bool value)
+        {
+            CurrentConfig.AppConfig.OverruleShellMinWidth = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

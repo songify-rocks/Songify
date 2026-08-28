@@ -420,6 +420,10 @@
   <data name="window_settings_system_open_queue_on_startup" xml:space="preserve">
     <value>Warteschlangenfenster beim Start öffnen</value>
   </data>
+  <data name="window_settings_system_open_queue_pop_out" xml:space="preserve">
+    <value>Als eigenes Fenster abtrennen</value>
+    <comment>Context: Nested toggle under Open queue on startup. Opens the detached queue window instead of the Queue page.</comment>
+  </data>
   <data name="window_settings_integration_only_when_live" xml:space="preserve">
     <value>Funktion auf Live-status limitieren. (Funktioniert mit Login über Twitch)</value>
   </data>
@@ -2531,5 +2535,33 @@ Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
   </data>
   <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
     <value>Dieser Hinweis verschwindet jetzt :)</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width" xml:space="preserve">
+    <value>Mindestgröße aufheben</value>
+    <comment>Context: Settings appearance toggle to allow resizing the main window below the designed 900×500 minimum.</comment>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width_hint" xml:space="preserve">
+    <value>Erlaubt, das Hauptfenster kleiner als 900×500 zu ziehen. Das kann das Layout zerstören.</value>
+    <comment>Context: Hint under Overrule minimum size in Settings appearance.</comment>
+  </data>
+  <data name="window_queue_pop_out" xml:space="preserve">
+    <value>Abtrennen</value>
+    <comment>Context: Button on Queue page to open the queue in a separate window.</comment>
+  </data>
+  <data name="window_queue_pop_out_tooltip" xml:space="preserve">
+    <value>Öffnet die Queue in einem eigenen Fenster ohne Mindestgröße</value>
+    <comment>Context: Tooltip on Queue page Pop out button.</comment>
+  </data>
+  <data name="window_queue_open_window" xml:space="preserve">
+    <value>Queue-Fenster</value>
+    <comment>Context: Tools menu item that opens the detached queue window.</comment>
+  </data>
+  <data name="window_queue_detached_title" xml:space="preserve">
+    <value>Queue ist in einem anderen Fenster</value>
+    <comment>Context: Title on Queue page while the queue is popped out.</comment>
+  </data>
+  <data name="window_queue_detached_body" xml:space="preserve">
+    <value>Die Queue ist in einem eigenen Fenster geöffnet, damit du sie sichtbar halten kannst. Schließe dieses Fenster, um sie hier wieder anzuzeigen.</value>
+    <comment>Context: Body on Queue page while the queue is popped out.</comment>
   </data>
 </root>

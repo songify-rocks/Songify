@@ -32,30 +32,48 @@
             </Style>
         </ResourceDictionary>
     </Page.Resources>
-    <Grid Margin="24" VerticalAlignment="Stretch">
+    <Grid
+        x:Name="RootGrid"
+        Margin="24"
+        VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="Auto" MinHeight="52" />
-            <RowDefinition Height="*" MinHeight="80" />
+            <RowDefinition Height="Auto" MinHeight="0" />
+            <RowDefinition Height="*" MinHeight="0" />
         </Grid.RowDefinitions>
         <!--  Header  -->
-        <Grid Grid.Row="0" Margin="0,0,0,16">
+        <Grid
+            x:Name="HeaderGrid"
+            Grid.Row="0"
+            Margin="0,0,0,16">
             <TextBlock
+                x:Name="TxtQueueTitle"
                 VerticalAlignment="Center"
                 FontSize="28"
                 FontWeight="SemiBold"
                 Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                 Text="{DynamicResource menu_queue}" />
-            <ui:Button
-                x:Name="BtnClearQueue"
+            <StackPanel
                 HorizontalAlignment="Right"
                 VerticalAlignment="Center"
-                Appearance="Secondary"
-                Command="{Binding ClearQueueCommand}"
-                Content="{DynamicResource menu_queue_clear}" />
+                Orientation="Horizontal">
+                <ui:Button
+                    x:Name="BtnDetachQueue"
+                    Margin="0,0,8,0"
+                    Appearance="Secondary"
+                    Click="BtnDetachQueue_Click"
+                    Content="{DynamicResource window_queue_pop_out}"
+                    ToolTip="{DynamicResource window_queue_pop_out_tooltip}" />
+                <ui:Button
+                    x:Name="BtnClearQueue"
+                    Appearance="Secondary"
+                    Command="{Binding ClearQueueCommand}"
+                    Content="{DynamicResource menu_queue_clear}" />
+            </StackPanel>
         </Grid>
         <!--  Fixed row: currently playing (compact; Border avoids Card Content-set-twice designer issue)  -->
         <Border
+            x:Name="NowPlayingBorder"
             Grid.Row="1"
             Margin="0,0,0,12"
             Padding="0,0,0,10"
@@ -357,5 +375,33 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </ScrollViewer>
+        <ui:Card
+            x:Name="CardDetached"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Padding="16"
+            VerticalAlignment="Top"
+            Visibility="Collapsed">
+            <StackPanel>
+                <TextBlock
+                    Margin="0,0,0,8"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource window_queue_detached_title}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    Margin="0,0,0,12"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{DynamicResource window_queue_detached_body}"
+                    TextWrapping="Wrap" />
+                <ui:Button
+                    HorizontalAlignment="Left"
+                    Appearance="Primary"
+                    Click="BtnShowQueueWindow_Click"
+                    Content="{DynamicResource window_console_show_window}" />
+            </StackPanel>
+        </ui:Card>
     </Grid>
 </Page>
