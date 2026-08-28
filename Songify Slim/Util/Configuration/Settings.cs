@@ -2026,7 +2026,7 @@ namespace Songify_Slim.Util.Configuration
 
         private static List<RefundCondition> GetRefundConditons()
         {
-            return CurrentConfig.AppConfig.RefundConditons;
+            return CurrentConfig.AppConfig.RefundConditons ??= [];
         }
 
         private static string GetRequesterPrefix()

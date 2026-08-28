@@ -739,21 +739,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private void ApplyRefundConditions()
         {
-            if (Settings.RefundConditons == null)
-                return;
-
-            foreach (int condition in Settings.RefundConditons)
-            {
-                foreach (UIElement child in GrdTwitchReward.Children)
-                {
-                    if (child is CheckBox box &&
-                        box.Name.StartsWith("ChkRefund") &&
-                        box.Tag?.ToString() == condition.ToString())
-                    {
-                        box.IsChecked = true;
-                    }
-                }
-            }
+            List<Enums.RefundCondition> selected = Settings.RefundConditons ?? [];
+            foreach (KeyValuePair<Enums.RefundCondition, ToggleSwitch> kvp in _toggleMap)
+                kvp.Value.IsChecked = selected.Contains(kvp.Key);
         }
 
         private void ApplyLanguageSettings()
@@ -2675,8 +2663,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     FontWeight = condition == Enums.RefundCondition.OnSuccess ? FontWeights.Bold : FontWeights.Normal
                 };
 
+                toggle.IsChecked = (Settings.RefundConditons ?? []).Contains(condition);
                 toggle.Checked += RefundCondition_Toggled;
-                toggle.IsChecked = Settings.RefundConditons.Contains(condition);
+                toggle.Unchecked += RefundCondition_Toggled;
 
                 _toggleMap[condition] = toggle;
 
@@ -2696,7 +2685,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents) return;
 
             if (sender is not ToggleSwitch { Tag: Enums.RefundCondition conditionValue } toggle) return;
-            List<Enums.RefundCondition> current = Settings.RefundConditons;
+            List<Enums.RefundCondition> current = [..(Settings.RefundConditons ?? [])];
             if (toggle.IsChecked == true)
             {
                 if (!current.Contains(conditionValue))
