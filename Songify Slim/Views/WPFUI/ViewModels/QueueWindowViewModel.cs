@@ -205,8 +205,14 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
     private static bool CanSkip(RequestObject req)
     {
         if (req == null) return false;
-        return string.Equals(req.PlayerType, "Spotify", StringComparison.OrdinalIgnoreCase)
-               && !string.Equals(req.Requester, "Skipping...", StringComparison.OrdinalIgnoreCase);
+        if (string.Equals(req.Requester, "Skipping...", StringComparison.OrdinalIgnoreCase))
+            return false;
+
+        if (string.Equals(req.PlayerType, "Spotify", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(req.PlayerType, "YouTube", StringComparison.OrdinalIgnoreCase))
+            return true;
+
+        return Settings.Player is PlayerType.Spotify or PlayerType.Pear;
     }
 
     private static bool CanAddToFavorites(RequestObject req)
@@ -253,18 +259,53 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
     private async Task SkipAsync(RequestObject req)
     {
         if (req == null) return;
-        if (GlobalObjects.CurrentSong != null && req.Trackid == GlobalObjects.CurrentSong.SongId)
+
+        bool isCurrent = req.Played == -1
+                         || (GlobalObjects.CurrentSong != null
+                             && string.Equals(req.Trackid, GlobalObjects.CurrentSong.SongId, StringComparison.Ordinal));
+
+        if (isCurrent)
         {
-            await SpotifyApiHandler.SkipSong();
+            switch (Settings.Player)
+            {
+                case PlayerType.Spotify:
+                    await SpotifyApiHandler.SkipSong();
+                    break;
+                case PlayerType.Pear:
+                    await PearApi.SkipAsync();
+                    break;
+            }
             return;
         }
-        var payload = new { uuid = Settings.Uuid, queueid = req.Queueid };
-        await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
-        await Application.Current.Dispatcher.InvokeAsync(() =>
+
+        if (Settings.Player == PlayerType.Pear
+            || string.Equals(req.PlayerType, "YouTube", StringComparison.OrdinalIgnoreCase))
         {
-            GlobalObjects.ReqList.Remove(req);
-            GlobalObjects.SkipList.Add(req);
-        });
+            int index = await PearApi.GetIndexAsync(req.Trackid);
+            if (index < 0)
+            {
+                Logger.Warning(LogSource.Pear, $"Skip from queue: Pear index not found for {req.Trackid}");
+                return;
+            }
+
+            if (!(await PearApi.RemoveQueueItem(index)).Ok)
+            {
+                Logger.Warning(LogSource.Pear, $"Skip from queue: failed to remove Pear queue item {index} ({req.Title})");
+                return;
+            }
+        }
+        else
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() => GlobalObjects.SkipList.Add(req));
+        }
+
+        if (req.Queueid != 0)
+        {
+            var payload = new { uuid = Settings.Uuid, queueid = req.Queueid };
+            await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
+        }
+
+        await Application.Current.Dispatcher.InvokeAsync(() => GlobalObjects.ReqList.Remove(req));
         await GlobalObjects.QueueUpdateQueueWindow();
     }
 

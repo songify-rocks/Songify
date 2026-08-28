@@ -268,13 +268,16 @@ namespace Songify_Slim.Util.Songify.Pear
         public static async Task<int> GetIndexAsync(string reqObjTrackid)
         {
             List<Song> queue = await GetQueueAsync();
-            int index = queue.FindIndex(s => s.Id == reqObjTrackid);
-            return index;
+            if (queue == null || string.IsNullOrWhiteSpace(reqObjTrackid))
+                return -1;
+            return queue.FindIndex(s => string.Equals(s.Id, reqObjTrackid, StringComparison.Ordinal));
         }
 
         public static async Task<ApiOk> RemoveQueueItem(int index)
         {
             HttpResponseMessage result = await _httpClient.DeleteAsync($"queue/{index}");
+            if (!result.IsSuccessStatusCode)
+                Logger.Error(LogSource.Pear, $"remove queue item {index} failed with status code: {result.StatusCode}");
 
             return new ApiOk
             {

@@ -1109,7 +1109,13 @@ namespace Songify_Slim.Util.Spotify
             {
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
-                return await ApiCallMeter.RunAsync("Tracks.Get", () => Client.Tracks.Get(id, cts.Token), SoftLimitPerminute, cts.Token);
+                // market=from_token enables track relinking and populates is_playable
+                // instead of available_markets, which is what region-lock checks need.
+                return await ApiCallMeter.RunAsync(
+                    "Tracks.Get",
+                    () => Client.Tracks.Get(id, new TrackRequest { Market = "from_token" }, cts.Token),
+                    SoftLimitPerminute,
+                    cts.Token);
             }
             catch (Exception ex)
             {
@@ -1133,7 +1139,8 @@ namespace Songify_Slim.Util.Spotify
             {
                 SearchRequest request = new(SearchRequest.Types.Track, query)
                 {
-                    Limit = take
+                    Limit = take,
+                    Market = "from_token"
                 };
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 

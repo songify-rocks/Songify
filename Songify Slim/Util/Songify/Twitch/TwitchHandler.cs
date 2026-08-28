@@ -211,6 +211,14 @@ public static class TwitchHandler
             }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Explicit Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
+            if (IsTrackUnavailable(track, e, out response))
+            {
+                await SendChatMessage(response);
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
+                return;
+            }
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Region lock Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
+
             if (IsArtistBlacklisted(track, e, out response))
             {
                 await SendChatMessage(response);
@@ -274,7 +282,7 @@ public static class TwitchHandler
 
             if (!Settings.AddSrtoPlaylistOnly)
             {
-                if (!await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId))
+                if (!await SpotifyApiHandler.AddToQueue("spotify:track:" + track.Id))
                 {
                     return;
                 }
@@ -378,7 +386,7 @@ public static class TwitchHandler
                     if (!valid)
                         return message;
 
-                    await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
+                    await SpotifyApiHandler.AddToQueue("spotify:track:" + track.Id);
 
                     if (Settings.AddSrToPlaylist)
                         await SpotifyApiHandler.AddToPlaylist(track.Id);
@@ -1195,9 +1203,13 @@ public static class TwitchHandler
             return "";
         }
 
-        if (searchItem.Restrictions is not { Count: > 0 }) return searchItem.Id;
-        await SendChatMessage(string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}: {kv.Value}")));
-        return "";
+        if (searchItem.Restrictions is { Count: > 0 })
+        {
+            Logger.Info(LogSource.Songrequest,
+                $"Search result has restrictions: {string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}={kv.Value}"))}");
+        }
+
+        return searchItem.Id;
 
         // if a track was found convert the object to FullTrack (easier use than searchItem)
     }
@@ -4392,6 +4404,54 @@ public static class TwitchHandler
         return false;
     }
 
+    private static bool IsTrackUnavailable(FullTrack track, TwitchRequestUser e, out string response)
+    {
+        response = string.Empty;
+        if (track == null)
+            return false;
+
+        try
+        {
+            // Spotify dropped available_markets / profile.country. GetTrack uses market=from_token
+            // so is_playable and restrictions.reason=market are the region-lock signals.
+            string restrictionReason = null;
+            bool marketRestricted = track.Restrictions != null &&
+                track.Restrictions.TryGetValue("reason", out restrictionReason) &&
+                string.Equals(restrictionReason, "market", StringComparison.OrdinalIgnoreCase);
+
+            if (track.IsPlayable && !marketRestricted)
+                return false;
+
+            Logger.Info(LogSource.Songrequest,
+                $"Track unavailable in streamer market: {track.Name} ({track.Id}). " +
+                $"IsPlayable={track.IsPlayable}, Restrictions={restrictionReason ?? "none"}");
+
+            string song = track.Artists is { Count: > 0 }
+                ? $"{string.Join(", ", track.Artists.Select(a => a.Name))} - {track.Name}"
+                : track.Name ?? "";
+
+            Dictionary<string, string> parameters = new()
+            {
+                { "user", e?.DisplayName ?? "" },
+                { "song", song },
+                { "artist", track.Artists != null ? string.Join(", ", track.Artists.Select(a => a.Name)) : "" },
+                { "single_artist", track.Artists?.FirstOrDefault()?.Name ?? "" },
+                { "title", track.Name ?? "" },
+                { "errormsg", "" },
+                { "maxreq", "" }
+            };
+
+            response = ReplaceParameters(Settings.BotRespUnavailable, parameters);
+            response = CleanFormatString(response);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Unavailable", ex);
+            return false;
+        }
+    }
+
     private static bool IsTrackExplicit(FullTrack track, TwitchRequestUser e, IReadOnlyCollection<int> userLevels, out string response)
     {
         response = string.Empty;
@@ -4799,7 +4859,7 @@ public static class TwitchHandler
             return (false, null, "No song found.");
 
         if (IsTrackExplicit(track, null, null, out string msg)) return (false, null, msg);
-        //if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
+        if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
         if (IsArtistBlacklisted(track, null, out msg)) return (false, null, msg);
         if (IsTrackTooLong(track, null, out msg)) return (false, null, msg);
         if (IsTrackAlreadyInQueue(track, null, out msg)) return (false, null, msg);
