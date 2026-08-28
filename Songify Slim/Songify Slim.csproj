@@ -165,8 +165,8 @@
   </ItemGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <AssemblyVersion>2.0.0.1</AssemblyVersion>
-    <FileVersion>2.0.0.1</FileVersion>
+    <AssemblyVersion>2.0.0.2</AssemblyVersion>
+    <FileVersion>2.0.0.2</FileVersion>
   </PropertyGroup>
 </Project>
 
