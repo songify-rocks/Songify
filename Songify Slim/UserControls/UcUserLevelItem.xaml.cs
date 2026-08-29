@@ -41,6 +41,12 @@ namespace Songify_Slim.UserControls
             set => SetValue(LongNameProperty, value);
         }
 
+        public bool IsRemovable
+        {
+            get => (bool)GetValue(IsRemovableProperty);
+            set => SetValue(IsRemovableProperty, value);
+        }
+
         public string UserName
         {
             get => (string)GetValue(UserNameProperty);
@@ -62,6 +68,13 @@ namespace Songify_Slim.UserControls
                 typeof(bool),
                 typeof(UcUserLevelItem),
                 new FrameworkPropertyMetadata(false, null, null));
+
+        public static readonly DependencyProperty IsRemovableProperty =
+            DependencyProperty.Register(
+                nameof(IsRemovable),
+                typeof(bool),
+                typeof(UcUserLevelItem),
+                new FrameworkPropertyMetadata(true));
 
         public static readonly DependencyProperty UserLevelProperty =
             DependencyProperty.Register(

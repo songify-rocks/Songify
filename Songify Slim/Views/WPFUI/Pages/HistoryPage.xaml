@@ -69,7 +69,11 @@
                 <EventSetter Event="Loaded" Handler="HistoryDayButton_Loaded" />
             </Style>
             <ContextMenu x:Key="HistoryDeleteDayMenu" x:Shared="false">
-                <MenuItem Click="DeleteDayMenuItem_Click" Header="{DynamicResource window_history_delete_day}" />
+                <MenuItem Click="DeleteDayMenuItem_Click" Header="{DynamicResource window_history_delete_day}">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon FontSize="16" Symbol="Delete24" />
+                    </MenuItem.Icon>
+                </MenuItem>
             </ContextMenu>
             <Style x:Key="HistorySongItemStyle" TargetType="ListBoxItem">
                 <Setter Property="Padding" Value="0" />
@@ -137,12 +141,14 @@
                     Appearance="Secondary"
                     Click="BtnRecap_Click"
                     Content="{DynamicResource window_history_open_recap}"
+                    Icon="{ui:SymbolIcon Open24}"
                     ToolTip="{DynamicResource window_history_open_recap_tooltip}" />
                 <ui:Button
                     VerticalAlignment="Center"
                     Appearance="Secondary"
                     Command="{Binding RefreshCommand}"
                     Content="{DynamicResource common_refresh}"
+                    Icon="{ui:SymbolIcon ArrowSync24}"
                     ToolTip="{DynamicResource window_history_refresh_tooltip}" />
             </StackPanel>
         </Grid>
@@ -240,7 +246,11 @@
                         Visibility="{Binding HasSongs, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <ListBox.ContextMenu>
                             <ContextMenu DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Self}}">
-                                <MenuItem Command="{Binding DeleteSongCommand}" Header="{DynamicResource window_history_delete_song}" />
+                                <MenuItem Command="{Binding DeleteSongCommand}" Header="{DynamicResource window_history_delete_song}">
+                                    <MenuItem.Icon>
+                                        <ui:SymbolIcon FontSize="16" Symbol="Delete24" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
                             </ContextMenu>
                         </ListBox.ContextMenu>
                         <ListBox.ItemTemplate>

@@ -42,6 +42,7 @@ using Button = System.Windows.Controls.Button;
 using CheckBox = System.Windows.Controls.CheckBox;
 using Clipboard = System.Windows.Clipboard;
 using Color = System.Windows.Media.Color;
+using Colors = System.Windows.Media.Colors;
 using ComboBox = System.Windows.Controls.ComboBox;
 using File = System.IO.File;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
@@ -408,6 +409,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
             TglUseDefaultBrowser.IsChecked = Settings.UseDefaultBrowser;
             Tglsw_OnlyAddToPlaylist.IsChecked = Settings.AddSrtoPlaylistOnly;
             TglSharedChat.IsChecked = Settings.SharedChatEnabled;
+            if (TglIgnoreBotMessages != null)
+                TglIgnoreBotMessages.IsChecked = Settings.IgnoreBotMessages;
+            RefreshIgnoredChatUsers();
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
             UpdateSongifyTokenStatus();
@@ -1145,6 +1149,147 @@ namespace Songify_Slim.Views.WPFUI.Controls
             ThemeHandler.ApplyTheme();
         }
 
+        private static readonly (string Hex, string Label)[] AccentPresets =
+        [
+            ("", "System"),
+            ("#0078D4", "Blue"),
+            ("#8764B8", "Purple"),
+            ("#C239B3", "Pink"),
+            ("#E74856", "Red"),
+            ("#FF8C00", "Orange"),
+            ("#107C10", "Green"),
+            ("#00B7C3", "Teal")
+        ];
+
+        private void BuildAccentSwatches()
+        {
+            if (PnlAccentSwatches == null)
+                return;
+
+            PnlAccentSwatches.Children.Clear();
+            string current = Settings.AccentColor ?? "";
+            string systemLabel = TryFindResource("window_settings_appearance_accent_system") as string ?? "System";
+
+            foreach ((string hex, string label) in AccentPresets)
+            {
+                Color fill = Colors.Gray;
+                if (!string.IsNullOrEmpty(hex) && ThemeHandler.TryParseHex(hex, out Color parsed))
+                    fill = parsed;
+
+                Button btn = new()
+                {
+                    Width = 32,
+                    Height = 32,
+                    Margin = new Thickness(0, 0, 8, 8),
+                    Tag = hex,
+                    Focusable = false,
+                    ToolTip = string.IsNullOrEmpty(hex) ? systemLabel : label,
+                    Background = new SolidColorBrush(fill),
+                    BorderThickness = IsCurrentAccent(hex, current)
+                        ? new Thickness(3)
+                        : new Thickness(1),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF))
+                };
+                btn.PreviewMouseLeftButtonDown += AccentSwatch_OnPreviewMouseDown;
+                PnlAccentSwatches.Children.Add(btn);
+            }
+
+            SyncAccentHexText(current);
+        }
+
+        private static bool IsCurrentAccent(string hex, string current)
+            => string.Equals(hex ?? "", current ?? "", StringComparison.OrdinalIgnoreCase);
+
+        private void SyncAccentHexText(string current, bool force = false)
+        {
+            if (TbAccentHex == null)
+                return;
+            if (!force && TbAccentHex.IsKeyboardFocusWithin)
+                return;
+            string shown = current ?? "";
+            if (!string.Equals(TbAccentHex.Text, shown, StringComparison.Ordinal))
+                TbAccentHex.Text = shown;
+        }
+
+        private void RefreshAccentSwatchSelection()
+        {
+            if (PnlAccentSwatches == null)
+                return;
+
+            string current = Settings.AccentColor ?? "";
+            foreach (object child in PnlAccentSwatches.Children)
+            {
+                if (child is not Button { Tag: string hex } btn)
+                    continue;
+                btn.BorderThickness = IsCurrentAccent(hex, current)
+                    ? new Thickness(3)
+                    : new Thickness(1);
+            }
+
+            SyncAccentHexText(current);
+        }
+
+        private void AccentSwatch_OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            if (sender is not Button { Tag: string hex })
+                return;
+            ApplyAccentChoice(hex);
+        }
+
+        private void ApplyAccentChoice(string hex)
+        {
+            string value = string.IsNullOrEmpty(hex) ? "" : hex.ToUpperInvariant();
+            Settings.AccentColor = value;
+            // Always overwrite the hex box so LostFocus cannot write the previous custom value back.
+            SyncAccentHexText(value, force: true);
+            ThemeHandler.ApplyTheme(force: true);
+            RefreshAccentSwatchSelection();
+        }
+
+        private void TbAccentHex_OnLostFocus(object sender, RoutedEventArgs e)
+            => CommitAccentHex();
+
+        private void TbAccentHex_OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Enter)
+                return;
+            e.Handled = true;
+            CommitAccentHex();
+        }
+
+        private void CommitAccentHex()
+        {
+            if (IgnoreControlEvents || TbAccentHex == null)
+                return;
+
+            string text = (TbAccentHex.Text ?? "").Trim();
+            if (string.IsNullOrEmpty(text))
+            {
+                if (string.IsNullOrEmpty(Settings.AccentColor))
+                    return;
+                Settings.AccentColor = "";
+                ThemeHandler.ApplyTheme(force: true);
+                RefreshAccentSwatchSelection();
+                return;
+            }
+
+            if (!text.StartsWith('#'))
+                text = "#" + text;
+
+            if (!ThemeHandler.TryParseHex(text, out _))
+                return;
+
+            string normalized = text.ToUpperInvariant();
+            if (string.Equals(Settings.AccentColor ?? "", normalized, StringComparison.OrdinalIgnoreCase))
+                return;
+
+            Settings.AccentColor = normalized;
+            ThemeHandler.ApplyTheme(force: true);
+            RefreshAccentSwatchSelection();
+        }
+
         private void BindUiScaleSlider()
         {
             if (SliderUiScale == null)
@@ -1389,6 +1534,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (CbxWindowBackdrop.SelectedItem == null)
                 CbxWindowBackdrop.SelectedIndex = 0;
             CbxWindowBackdrop.SelectionChanged += CbxWindowBackdrop_OnSelectionChanged;
+
+            BuildAccentSwatches();
 
             BindUiScaleSlider();
 
@@ -3102,6 +3249,66 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             Settings.SharedChatEnabled = ((ToggleSwitch)sender).IsChecked == true;
+        }
+
+        private void Tgl_IgnoreBotMessages_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            Settings.IgnoreBotMessages = ((ToggleSwitch)sender).IsChecked == true;
+        }
+
+        private void TbIgnoreChatUser_OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Enter)
+                return;
+            e.Handled = true;
+            AddIgnoredChatUserFromInput();
+        }
+
+        private void BtnAddIgnoredChatUser_Click(object sender, RoutedEventArgs e)
+            => AddIgnoredChatUserFromInput();
+
+        private void AddIgnoredChatUserFromInput()
+        {
+            if (IgnoreControlEvents)
+                return;
+            string login = TwitchChatIgnore.NormalizeIgnoreName(TbIgnoreChatUser?.Text);
+            if (login.Length == 0)
+                return;
+
+            List<string> list = [.. Settings.IgnoredChatUsers ?? []];
+            if (list.Any(u => string.Equals(TwitchChatIgnore.NormalizeIgnoreName(u), login, StringComparison.OrdinalIgnoreCase)))
+            {
+                TbIgnoreChatUser.Text = "";
+                return;
+            }
+
+            list.Add(login);
+            Settings.IgnoredChatUsers = list;
+            TbIgnoreChatUser.Text = "";
+            RefreshIgnoredChatUsers();
+        }
+
+        private void BtnRemoveIgnoredChatUser_Click(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            if (sender is not System.Windows.Controls.Button { Tag: string login })
+                return;
+
+            List<string> list = [.. Settings.IgnoredChatUsers ?? []];
+            list.RemoveAll(u => string.Equals(TwitchChatIgnore.NormalizeIgnoreName(u), login, StringComparison.OrdinalIgnoreCase));
+            Settings.IgnoredChatUsers = list;
+            RefreshIgnoredChatUsers();
+        }
+
+        private void RefreshIgnoredChatUsers()
+        {
+            if (IcIgnoredChatUsers == null)
+                return;
+            IcIgnoredChatUsers.ItemsSource = null;
+            IcIgnoredChatUsers.ItemsSource = (Settings.IgnoredChatUsers ?? []).ToList();
         }
 
         private void TbBitsKeyword_OnTextChanged(object sender, TextChangedEventArgs e)

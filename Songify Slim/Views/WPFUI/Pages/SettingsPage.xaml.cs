@@ -225,12 +225,42 @@ public partial class SettingsPage : Page
             Source = tab
         });
 
+        FrameworkElement icon = NavIconForTag(tab.Tag?.ToString());
+        if (icon != null)
+            icon.Margin = new Thickness(0, 0, 8, 0);
+
+        var row = new StackPanel
+        {
+            Orientation = Orientation.Horizontal,
+            VerticalAlignment = VerticalAlignment.Center
+        };
+        if (icon != null)
+            row.Children.Add(icon);
+        row.Children.Add(label);
+
         return new ListBoxItem
         {
-            Content = label,
+            Content = row,
             Tag = tab
         };
     }
+
+    private static FrameworkElement NavIconForTag(string tag) => tag switch
+    {
+        "System" => AppIcons.Fluent(SymbolRegular.Settings24, 14),
+        "Output" => AppIcons.Fluent(SymbolRegular.Folder24, 14),
+        "Config" => AppIcons.Fluent(SymbolRegular.Document24, 14),
+        "Spotify" => AppIcons.Fluent(SymbolRegular.MusicNote224, 14),
+        "Youtube" => AppIcons.Fluent(SymbolRegular.Video24, 14),
+        "Twitch" => AppIcons.TryBrand(AppIcons.Twitch, 14) ?? AppIcons.Fluent(SymbolRegular.Live24, 14),
+        "TwitchRewards" => AppIcons.Fluent(SymbolRegular.Gift24, 14),
+        "TwitchPolls" => AppIcons.Fluent(SymbolRegular.Megaphone24, 14),
+        "TwitchSongRequest" => AppIcons.Fluent(SymbolRegular.MusicNote124, 14),
+        "TwitchCommands" => AppIcons.Fluent(SymbolRegular.Chat24, 14),
+        "TwitchResponses" => AppIcons.Fluent(SymbolRegular.Comment24, 14),
+        "WebServer" => AppIcons.Fluent(SymbolRegular.Server24, 14),
+        _ => AppIcons.Fluent(SymbolRegular.MoreHorizontal24, 14)
+    };
 
     private void NavList_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {

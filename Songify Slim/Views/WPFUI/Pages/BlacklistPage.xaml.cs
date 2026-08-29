@@ -47,10 +47,107 @@ public partial class BlacklistPage : Page
 
     private void ArtistInput_OnPreviewKeyDown(object sender, KeyEventArgs e)
     {
-        if (e.Key != Key.Enter) return;
+        if (DataContext is not BlocklistViewModel vm)
+            return;
+
+        if (e.Key == Key.Escape)
+        {
+            vm.ClearArtistSuggestions();
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Down && vm.IsArtistSuggestionsOpen && vm.ArtistSuggestions.Count > 0)
+        {
+            vm.SelectedArtistSuggestion ??= vm.ArtistSuggestions[0];
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key != Key.Enter)
+            return;
+
         e.Handled = true;
-        if (DataContext is BlocklistViewModel vm && vm.AddArtistCommand.CanExecute(null))
+        if (vm.IsArtistSuggestionsOpen && vm.SelectedArtistSuggestion != null)
+        {
+            vm.SelectArtistSuggestion(vm.SelectedArtistSuggestion);
+            return;
+        }
+
+        if (vm.AddArtistCommand.CanExecute(null))
             vm.AddArtistCommand.Execute(null);
+    }
+
+    private void ArtistSuggestion_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (DataContext is not BlocklistViewModel vm)
+            return;
+        if (vm.SelectedArtistSuggestion != null)
+            vm.SelectArtistSuggestion(vm.SelectedArtistSuggestion);
+    }
+
+    private void SongInput_OnPreviewKeyDown(object sender, KeyEventArgs e)
+    {
+        if (DataContext is not BlocklistViewModel vm)
+            return;
+
+        if (e.Key == Key.Escape)
+        {
+            vm.ClearSongSuggestions();
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key == Key.Down && vm.IsSongSuggestionsOpen && vm.SongSuggestions.Count > 0)
+        {
+            vm.SelectedSongSuggestion ??= vm.SongSuggestions[0];
+            e.Handled = true;
+            return;
+        }
+
+        if (e.Key != Key.Enter)
+            return;
+
+        e.Handled = true;
+        if (vm.IsSongSuggestionsOpen && vm.SelectedSongSuggestion != null)
+        {
+            vm.SelectSongSuggestion(vm.SelectedSongSuggestion);
+            return;
+        }
+
+        if (vm.AddSongCommand.CanExecute(null))
+            vm.AddSongCommand.Execute(null);
+    }
+
+    private void SongSuggestion_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+        if (DataContext is not BlocklistViewModel vm)
+            return;
+        if (vm.SelectedSongSuggestion != null)
+            vm.SelectSongSuggestion(vm.SelectedSongSuggestion);
+    }
+
+    private void SongPickerGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (DataContext is not BlocklistViewModel vm || sender is not DataGrid grid)
+            return;
+
+        vm.SyncSongPickerSelection(grid.SelectedItems.OfType<ViewModels.SongPickerRow>());
+    }
+
+    private void SongPickerOverlay_OnKeyDown(object sender, KeyEventArgs e)
+    {
+        if (e.Key != Key.Escape) return;
+        if (DataContext is BlocklistViewModel vm)
+            vm.CancelSongPickCommand.Execute(null);
+        e.Handled = true;
+    }
+
+    private void SongPickerGrid_OnMouseDoubleClick(object sender, MouseButtonEventArgs e)
+    {
+        if (DataContext is not BlocklistViewModel vm) return;
+        if (vm.ConfirmSongPickCommand.CanExecute(null))
+            vm.ConfirmSongPickCommand.Execute(null);
     }
 
     private void ArtistPickerGrid_OnSelectionChanged(object sender, SelectionChangedEventArgs e)

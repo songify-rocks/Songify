@@ -1072,6 +1072,12 @@
   <data name="window_blocklist_multiple_artists_match" xml:space="preserve">
     <value>Mehrere Künstler entsprechen Ihrer Suche. Wählen Sie einen zum Blockieren.</value>
   </data>
+  <data name="window_blocklist_select_song" xml:space="preserve">
+    <value>Song auswählen</value>
+  </data>
+  <data name="window_blocklist_multiple_songs_match" xml:space="preserve">
+    <value>Mehrere Songs entsprechen Ihrer Suche. Wählen Sie einen zum Blockieren.</value>
+  </data>
   <data name="window_blocklist_block_selected" xml:space="preserve">
     <value>Ausgewählte blockieren</value>
   </data>
@@ -1613,6 +1619,10 @@
     <value>Spotify-Künstler suchen…</value>
     <comment>Context: Placeholder in artist search box (Spotify lookup).</comment>
   </data>
+  <data name="window_blocklist_search_song_placeholder" xml:space="preserve">
+    <value>Spotify-Song suchen oder Link einfügen…</value>
+    <comment>Context: Placeholder in song search box (Spotify lookup or track URL).</comment>
+  </data>
   <data name="window_blocklist_filter_artists" xml:space="preserve">
     <value>Künstler filtern…</value>
     <comment>Context: Placeholder for filtering the artists list.</comment>
@@ -1736,6 +1746,10 @@
   <data name="window_main_status_twitch_bot" xml:space="preserve">
     <value>Twitch-Bot</value>
     <comment>Context: Status bar label for Twitch chat bot connection.</comment>
+  </data>
+  <data name="window_main_status_twitch_click_hint" xml:space="preserve">
+    <value>Klicken für Login, Verbinden und Live-Status</value>
+    <comment>Context: Status-bar tooltip hint that Twitch chips open the Twitch actions menu.</comment>
   </data>
   <data name="window_main_status_spotify" xml:space="preserve">
     <value>Spotify</value>
@@ -2085,6 +2099,14 @@ Das ist nicht Songify Premium und nicht das in Songify verknüpfte Wiedergabe-Ko
   <data name="window_blocklist_search_failed" xml:space="preserve">
     <value>Suche nach diesem Künstler bei Spotify fehlgeschlagen.</value>
     <comment>Context: Dialog when Spotify artist search fails.</comment>
+  </data>
+  <data name="window_blocklist_song_not_found" xml:space="preserve">
+    <value>Kein Song mit diesem Namen auf Spotify gefunden.</value>
+    <comment>Context: Dialog when Spotify song search finds no match.</comment>
+  </data>
+  <data name="window_blocklist_search_song_failed" xml:space="preserve">
+    <value>Suche nach diesem Song bei Spotify fehlgeschlagen.</value>
+    <comment>Context: Dialog when Spotify song search fails.</comment>
   </data>
   <data name="window_blocklist_spotify_refresh_hint" xml:space="preserve">
     <value>Spotify ist nicht verbunden. Verbinde Spotify, um Künstler-IDs zu aktualisieren.</value>

@@ -28,6 +28,12 @@ namespace Songify_Slim.Util.Configuration
         }
 
         public static bool SharedChatEnabled { get => GetSharedChatEnabled(); set => SetSharedChatEnabled(value); }
+
+        public static bool IgnoreBotMessages { get => GetIgnoreBotMessages(); set => SetIgnoreBotMessages(value); }
+
+        public static List<string> IgnoredChatUsers { get => GetIgnoredChatUsers(); set => SetIgnoredChatUsers(value); }
+
+        public static string AccentColor { get => GetAccentColor(); set => SetAccentColor(value); }
         public static long SpotifyTokenExpiresAt { get => GetSpotifyTokenExpiresAt(); set => SetSpotifyTokenExpiresAt(value); }
         public static string SrForBitsKeyWord { get => GetSrForBitsKeyWord(); set => SetSrForBitsKeyWord(value); }
         public static int MinimumMessagesBetweenAnnounces { get => GetMinimumMessagesBetweenAnnounces(); set => SetMinimumMessagesBetweenAnnounces(value); }
@@ -74,6 +80,39 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetSharedChatEnabled()
         {
             return CurrentConfig.AppConfig.SharedChatEnabled;
+        }
+
+        private static void SetIgnoreBotMessages(bool value)
+        {
+            CurrentConfig.AppConfig.IgnoreBotMessages = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetIgnoreBotMessages()
+        {
+            return CurrentConfig.AppConfig.IgnoreBotMessages;
+        }
+
+        private static void SetIgnoredChatUsers(List<string> value)
+        {
+            CurrentConfig.AppConfig.IgnoredChatUsers = value ?? [];
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static List<string> GetIgnoredChatUsers()
+        {
+            return CurrentConfig.AppConfig.IgnoredChatUsers ??= [];
+        }
+
+        private static void SetAccentColor(string value)
+        {
+            CurrentConfig.AppConfig.AccentColor = value ?? "";
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetAccentColor()
+        {
+            return CurrentConfig.AppConfig.AccentColor ?? "";
         }
 
         private static void SetTwRewardSkipPoll(List<string> value)
@@ -1415,6 +1454,7 @@ namespace Songify_Slim.Util.Configuration
                 QueueWindowColumns = GetQueueWindowColumns(),
                 ReadNotificationIds = GetReadNotificationIds(),
                 RefundConditons = GetRefundConditons(),
+                RefundConditionsMigrated = CurrentConfig.AppConfig.RefundConditionsMigrated,
                 RequesterPrefix = GetRequesterPrefix(),
                 RewardGoalAmount = GetRewardGoalAmount(),
                 RewardGoalEnabled = GetRewardGoalEnabled(),
@@ -1490,6 +1530,9 @@ namespace Songify_Slim.Util.Configuration
                 TwitchPollSettings = GetTwitchPollSettings(),
                 TwRewardSkipPoll = GetTwRewardSkipPoll(),
                 SharedChatEnabled = GetSharedChatEnabled(),
+                IgnoreBotMessages = GetIgnoreBotMessages(),
+                IgnoredChatUsers = GetIgnoredChatUsers(),
+                AccentColor = GetAccentColor(),
                 SrForBitsKeyWord = GetSrForBitsKeyWord(),
             };
 
@@ -1522,7 +1565,10 @@ namespace Songify_Slim.Util.Configuration
         public static void Import(Configuration config)
         {
             if (config.AppConfig != null)
+            {
                 ConfigHandler.MigrateReleaseChannel(config.AppConfig);
+                ConfigHandler.MigrateRefundConditions(config.AppConfig);
+            }
 
             CurrentConfig = config;
 

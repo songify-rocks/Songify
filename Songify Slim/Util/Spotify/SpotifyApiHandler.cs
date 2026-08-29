@@ -1596,7 +1596,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 5 };
+                SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 8 };
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
                 SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request, cts.Token),
@@ -1609,6 +1609,70 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             }
         }
+
+        public static async Task<List<FullTrack>> GetTracks(string search)
+        {
+            if (Client == null)
+                return null;
+            try
+            {
+                SearchRequest request = new(SearchRequest.Types.Track, search)
+                {
+                    Limit = 8,
+                    Market = "from_token"
+                };
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                SearchResponse result = await ApiCallMeter.RunAsync("Search.Item",
+                    () => Client.Search.Item(request, cts.Token), SoftLimitPerminute, cts.Token);
+                return result.Tracks?.Items?
+                    .Where(t => t != null && !string.IsNullOrWhiteSpace(t.Id))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                return null;
+            }
+        }
+
+        /// <summary>Extracts a Spotify track ID from a URI, URL, or raw 22-character ID.</summary>
+        public static string TryParseSpotifyTrackId(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return null;
+
+            string value = input.Trim();
+
+            if (value.StartsWith("spotify:track:", StringComparison.OrdinalIgnoreCase))
+            {
+                string id = value["spotify:track:".Length..].Split('?', '#')[0];
+                return IsSpotifyBase62Id(id) ? id : null;
+            }
+
+            Match urlMatch = Regex.Match(
+                value,
+                @"open\.spotify\.com/(?:intl-[a-z]{2}/)?track/([A-Za-z0-9]{22})",
+                RegexOptions.IgnoreCase);
+            if (urlMatch.Success)
+                return urlMatch.Groups[1].Value;
+
+            return IsSpotifyBase62Id(value) ? value : null;
+        }
+
+        public static bool LooksLikeSpotifyTrackReference(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return false;
+
+            string value = input.Trim();
+            return value.Contains("open.spotify.com/", StringComparison.OrdinalIgnoreCase)
+                   || value.StartsWith("spotify:track:", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("spotify.link/", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsSpotifyBase62Id(string value)
+            => value is { Length: 22 } && value.All(char.IsLetterOrDigit);
 
         public static async Task<PrivateUser> GetUser(CancellationToken ct = default)
         {

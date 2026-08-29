@@ -5,10 +5,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Threading;
+using Songify_Slim.Models;
 using Songify_Slim.Models.Responses;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.UserControls;
@@ -34,6 +36,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 {
     private bool _forceClose;
     private DispatcherTimer _spotifyIssueEtaTimer;
+    private DispatcherTimer _nowPlayingTimer;
 
     public ShellWindow()
     {
@@ -140,6 +143,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
         StateChanged += ShellWindow_OnStateChanged;
         SetupSpotifyPersistentIssueBanner();
+        StartTitleBarNowPlayingTimer();
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
         AppFetchService.IdleBackoffChanged += OnSpotifyIdleBackoffChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
@@ -207,6 +211,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         }
 
         HidePremiumReminder();
+        _nowPlayingTimer?.Stop();
         TeardownSpotifyPersistentIssueBanner();
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
@@ -591,9 +596,35 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private async void MenuTwitchOnline_OnClick(object sender, RoutedEventArgs e)
     {
         bool isLive = await AppActions.CheckTwitchOnlineStatusAsync();
+        string header =
+            $"{Properties.Resources.menu_twitch_check_online_status} ({(isLive ? "Live" : "Offline")})";
         if (MiTwitchCheckOnlineStatus != null)
-            MiTwitchCheckOnlineStatus.Header =
-                $"{Properties.Resources.menu_twitch_check_online_status} ({(isLive ? "Live" : "Offline")})";
+            MiTwitchCheckOnlineStatus.Header = header;
+        SetTwitchLiveMenuHeader(BtnStatusTwitchApi?.ContextMenu, header);
+        SetTwitchLiveMenuHeader(BtnStatusTwitchBot?.ContextMenu, header);
+    }
+
+    private static void SetTwitchLiveMenuHeader(System.Windows.Controls.ContextMenu menu, string header)
+    {
+        if (menu == null)
+            return;
+
+        foreach (object item in menu.Items)
+        {
+            if (item is System.Windows.Controls.MenuItem { Tag: "TwitchLiveCheck" } mi)
+                mi.Header = header;
+        }
+    }
+
+    private void OpenTwitchStatusMenu(FrameworkElement host)
+    {
+        if (host?.ContextMenu is not { } menu)
+            return;
+
+        menu.PlacementTarget = host;
+        menu.Placement = PlacementMode.Top;
+        // Open after the click finishes so the mouse-up does not immediately close the menu.
+        Dispatcher.BeginInvoke(() => menu.IsOpen = true, DispatcherPriority.Input);
     }
 
     private void MenuPatchNotes_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenPatchNotes();
@@ -617,6 +648,63 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private void MenuAppFolder_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenAppFolder();
 
     private void MenuCheckUpdates_OnClick(object sender, RoutedEventArgs e) => AppActions.CheckForUpdates();
+
+    private void TitleBarNowPlaying_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        => NavigateToQueue();
+
+    private void StartTitleBarNowPlayingTimer()
+    {
+        _nowPlayingTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(500) };
+        _nowPlayingTimer.Tick += (_, _) => UpdateTitleBarNowPlaying();
+        _nowPlayingTimer.Start();
+        UpdateTitleBarNowPlaying();
+    }
+
+    private void UpdateTitleBarNowPlaying()
+    {
+        if (TxtTitleBarNowPlaying == null)
+            return;
+
+        TrackInfo current = GlobalObjects.CurrentSong;
+        bool hasSong = current != null &&
+                       (!string.IsNullOrWhiteSpace(current.Title) || !string.IsNullOrWhiteSpace(current.Artists));
+
+        if (!hasSong)
+        {
+            TxtTitleBarNowPlaying.Text = "";
+            if (TxtTitleBarUpNext != null)
+                TxtTitleBarUpNext.Text = "";
+            return;
+        }
+
+        string artist = current.Artists ?? "";
+        string title = current.Title ?? "";
+        TxtTitleBarNowPlaying.Text = string.IsNullOrWhiteSpace(artist)
+            ? title
+            : $"{artist} — {title}";
+
+        if (TxtTitleBarUpNext == null)
+            return;
+
+        string currentId = current.SongId;
+        RequestObject next = GlobalObjects.QueueTracks?
+            .FirstOrDefault(t => t != null
+                                 && t.Played != -1
+                                 && (string.IsNullOrEmpty(currentId) ||
+                                     !string.Equals(t.Trackid, currentId, StringComparison.Ordinal)));
+
+        if (next == null)
+        {
+            TxtTitleBarUpNext.Text = "";
+            return;
+        }
+
+        string nextLine = string.IsNullOrWhiteSpace(next.Artist)
+            ? next.Title
+            : $"{next.Artist} — {next.Title}";
+        string fmt = TryFindResource("window_titlebar_up_next") as string ?? "Up next: {0}";
+        TxtTitleBarUpNext.Text = string.Format(fmt, nextLine);
+    }
 
     #endregion TitleBar menu
 
@@ -771,6 +859,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 [
                     ("Status", connected ? "Connected" : "Disconnected"),
                     ("Channel", Settings.TwitchUser?.DisplayName ?? "—"),
+                    ("Action", Loc("window_main_status_twitch_click_hint", "Click for Login, Connect, and live status")),
                 ];
                 break;
             }
@@ -786,7 +875,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 [
                     ("Status", _twitchApiState == ConnectionIndicatorState.Connected ? "Connected" : "Disconnected"),
                     ("Channel", Settings.TwitchUser?.DisplayName ?? "—"),
-                    ("EventSubs", string.IsNullOrWhiteSpace(eventSubs) ? "—" : eventSubs)
+                    ("EventSubs", string.IsNullOrWhiteSpace(eventSubs) ? "—" : eventSubs),
+                    ("Action", Loc("window_main_status_twitch_click_hint", "Click for Login, Connect, and live status")),
                 ];
                 break;
             }
@@ -917,6 +1007,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             {
                 case "TwitchBot":
                 case "TwitchAPI":
+                    OpenTwitchStatusMenu(sender as FrameworkElement);
                     break;
 
                 case "Spotify":

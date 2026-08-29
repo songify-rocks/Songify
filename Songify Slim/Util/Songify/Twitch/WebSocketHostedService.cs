@@ -674,6 +674,9 @@ namespace Songify_Slim.Util.Songify.Twitch
                 chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id)
                 return Task.CompletedTask;
 
+            if (TwitchChatIgnore.ShouldIgnore(chatMsg))
+                return Task.CompletedTask;
+
             TwitchHandler.ExecuteChatCommand(chatMsg);
             return Task.CompletedTask;
         }

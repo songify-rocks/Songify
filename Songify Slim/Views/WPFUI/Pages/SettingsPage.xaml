@@ -80,7 +80,8 @@
                 VerticalAlignment="Center"
                 Appearance="Secondary"
                 Click="BtnResponseParams_OnClick"
-                Content="{DynamicResource window_settings_response_variables}" />
+                Content="{DynamicResource window_settings_response_variables}"
+                Icon="{ui:SymbolIcon Code24}" />
         </Grid>
 
         <Grid Grid.Row="1">

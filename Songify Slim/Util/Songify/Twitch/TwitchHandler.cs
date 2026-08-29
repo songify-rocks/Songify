@@ -284,6 +284,8 @@ public static class TwitchHandler
             {
                 if (!await SpotifyApiHandler.AddToQueue("spotify:track:" + track.Id))
                 {
+                    await SendChatMessage("Could not add the song to the Spotify queue.");
+                    await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
                     return;
                 }
                 Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Queue after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
@@ -1429,9 +1431,9 @@ public static class TwitchHandler
                 if (SpotifyApiHandler.Client == null)
                 {
                     await SendChatMessage("It seems that Spotify is not connected right now.");
-                    if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.NoSongFound))
+                    if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.SpotifyNotConnected))
                     {
-                        await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.NoSongFound);
+                        await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.SpotifyNotConnected);
                     }
                     return;
                 }
@@ -1462,9 +1464,9 @@ public static class TwitchHandler
             case Enums.PlayerType.BrowserCompanion:
             default:
                 await SendChatMessage("No player selected. Please select a player on the main window.");
-                if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.NoSongFound))
+                if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.SpotifyNotConnected))
                 {
-                    await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.NoSongFound);
+                    await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.SpotifyNotConnected);
                 }
                 return;
         }
@@ -1585,6 +1587,7 @@ public static class TwitchHandler
             if (cmd == null)
             {
                 Logger.Log(LogLevel.Error, LogSource.Pear, "Command 'Song Request' not found.");
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
                 return;
             }
 
@@ -1593,6 +1596,7 @@ public static class TwitchHandler
             {
                 Logger.Log(LogLevel.Error, LogSource.Pear, "Error adding the song to the Pear queue.");
                 SendOrAnnounceMessage("Error adding the song to the Pear queue.", cmd);
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
                 return;
             }
 
@@ -4659,7 +4663,8 @@ public static class TwitchHandler
 
                 if (resp.Data == null || !resp.Data.Any())
                 {
-                    Logger.Warning(LogSource.Twitch, "TWITCH API: Cannot refund because the reward is not created through Songify.");
+                    Logger.Warning(LogSource.Twitch,
+                        $"TWITCH API: Cannot refund reward {rewardId} because it was not created through Songify. Create the song-request reward in Songify (Settings → Rewards) so failed requests can be refunded.");
                     return;
                 }
 

@@ -160,20 +160,37 @@
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
 
                     <TextBlock
-                        Margin="0,0,0,12"
+                        Margin="0,0,0,8"
                         FontSize="16"
                         FontWeight="SemiBold"
                         Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                         Text="{Binding SelectedCategoryTitle}" />
 
+                    <Grid Grid.Row="1" Margin="0,0,0,12">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <ui:TextBox
+                            Margin="0,0,12,0"
+                            Icon="{ui:SymbolIcon Search24}"
+                            PlaceholderText="{DynamicResource window_blocklist_search_list}"
+                            Text="{Binding ListFilter, UpdateSourceTrigger=PropertyChanged}" />
+                        <TextBlock
+                            Grid.Column="1"
+                            VerticalAlignment="Center"
+                            Opacity="0.7"
+                            Text="{Binding ListStatusText}" />
+                    </Grid>
+
                     <!--  Artists  -->
-                    <Grid Grid.Row="1" Visibility="{Binding IsArtistsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid Grid.Row="2" Visibility="{Binding IsArtistsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
@@ -185,34 +202,43 @@
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
+                                x:Name="TbNewArtist"
                                 Margin="0,0,12,0"
+                                Icon="{ui:SymbolIcon Search24}"
                                 PlaceholderText="{DynamicResource window_blocklist_search_artist_placeholder}"
                                 Text="{Binding NewArtistName, UpdateSourceTrigger=PropertyChanged}" />
+                            <Popup
+                                AllowsTransparency="True"
+                                IsOpen="{Binding IsArtistSuggestionsOpen, Mode=TwoWay}"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=TbNewArtist}"
+                                StaysOpen="False">
+                                <Border
+                                    MinWidth="280"
+                                    MaxHeight="280"
+                                    Padding="4"
+                                    Background="{DynamicResource ApplicationBackgroundBrush}"
+                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <ListBox
+                                        x:Name="LbArtistSuggestions"
+                                        DisplayMemberPath="Artist"
+                                        ItemsSource="{Binding ArtistSuggestions}"
+                                        MouseLeftButtonUp="ArtistSuggestion_OnMouseLeftButtonUp"
+                                        SelectedItem="{Binding SelectedArtistSuggestion, Mode=TwoWay}" />
+                                </Border>
+                            </Popup>
                             <ui:Button
                                 Grid.Column="1"
                                 Appearance="Primary"
                                 Command="{Binding AddArtistCommand}"
-                                Content="{DynamicResource common_add}" />
-                        </Grid>
-
-                        <Grid Grid.Row="1" Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ui:TextBox
-                                Margin="0,0,12,0"
-                                PlaceholderText="{DynamicResource window_blocklist_filter_artists}"
-                                Text="{Binding ArtistFilter, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Opacity="0.7"
-                                Text="{Binding ArtistStatusText}" />
+                                Content="{DynamicResource common_add}"
+                                Icon="{ui:SymbolIcon Add24}" />
                         </Grid>
 
                         <ListBox
-                            Grid.Row="2"
+                            Grid.Row="1"
                             DisplayMemberPath="Display"
                             ItemsSource="{Binding VisibleArtists}"
                             ScrollViewer.CanContentScroll="True"
@@ -229,35 +255,38 @@
                         </ListBox>
 
                         <StackPanel
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Margin="0,12,0,0"
                             Orientation="Horizontal">
                             <ui:Button
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Click="BtnImportArtists_OnClick"
-                                Content="{DynamicResource common_import}" />
+                                Content="{DynamicResource common_import}"
+                                Icon="{ui:SymbolIcon ArrowDownload24}" />
                             <ui:Button
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Click="BtnRefreshArtistIds_OnClick"
-                                Content="{DynamicResource window_blocklist_refresh_ids}" />
+                                Content="{DynamicResource window_blocklist_refresh_ids}"
+                                Icon="{ui:SymbolIcon ArrowSync24}" />
                             <ui:Button
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Command="{Binding RemoveSelectedArtistCommand}"
-                                Content="{DynamicResource common_remove_selected}" />
+                                Content="{DynamicResource common_remove_selected}"
+                                Icon="{ui:SymbolIcon Delete24}" />
                             <ui:Button
                                 Appearance="Secondary"
                                 Command="{Binding ClearArtistsCommand}"
-                                Content="{DynamicResource window_blocklist_clear_artists}" />
+                                Content="{DynamicResource window_blocklist_clear_artists}"
+                                Icon="{ui:SymbolIcon Delete24}" />
                         </StackPanel>
                     </Grid>
 
                     <!--  Users  -->
-                    <Grid Grid.Row="1" Visibility="{Binding IsUsersSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid Grid.Row="2" Visibility="{Binding IsUsersSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
@@ -270,33 +299,19 @@
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
                                 Margin="0,0,12,0"
+                                Icon="{ui:SymbolIcon Person28}"
                                 PlaceholderText="{DynamicResource window_blocklist_add_username}"
                                 Text="{Binding NewUsername, UpdateSourceTrigger=PropertyChanged}" />
                             <ui:Button
                                 Grid.Column="1"
                                 Appearance="Primary"
                                 Command="{Binding AddUserCommand}"
-                                Content="{DynamicResource common_add}" />
-                        </Grid>
-
-                        <Grid Grid.Row="1" Margin="0,0,0,8">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                                <ColumnDefinition Width="Auto" />
-                            </Grid.ColumnDefinitions>
-                            <ui:TextBox
-                                Margin="0,0,12,0"
-                                PlaceholderText="{DynamicResource window_blocklist_filter_users}"
-                                Text="{Binding UserFilter, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock
-                                Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Opacity="0.7"
-                                Text="{Binding UserStatusText}" />
+                                Content="{DynamicResource common_add}"
+                                Icon="{ui:SymbolIcon Add24}" />
                         </Grid>
 
                         <ListBox
-                            Grid.Row="2"
+                            Grid.Row="1"
                             DisplayMemberPath="Display"
                             ItemsSource="{Binding VisibleUsers}"
                             ScrollViewer.CanContentScroll="True"
@@ -313,43 +328,70 @@
                         </ListBox>
 
                         <StackPanel
-                            Grid.Row="3"
+                            Grid.Row="2"
                             Margin="0,12,0,0"
                             Orientation="Horizontal">
                             <ui:Button
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Command="{Binding RemoveSelectedUserCommand}"
-                                Content="{DynamicResource common_remove_selected}" />
+                                Content="{DynamicResource common_remove_selected}"
+                                Icon="{ui:SymbolIcon Delete24}" />
                             <ui:Button
                                 Appearance="Secondary"
                                 Command="{Binding ClearUsersCommand}"
-                                Content="{DynamicResource window_blocklist_clear_users}" />
+                                Content="{DynamicResource window_blocklist_clear_users}"
+                                Icon="{ui:SymbolIcon Delete24}" />
                         </StackPanel>
                     </Grid>
 
                     <!--  Songs  -->
-                    <Grid Grid.Row="1" Visibility="{Binding IsSongsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid Grid.Row="2" Visibility="{Binding IsSongsSelected, Converter={StaticResource BooleanToVisibilityConverter}}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
 
-                        <Grid Grid.Row="0" Margin="0,0,0,8">
+                        <Grid Grid.Row="0" Margin="0,0,0,8" PreviewKeyDown="SongInput_OnPreviewKeyDown">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="Auto" />
                             </Grid.ColumnDefinitions>
                             <ui:TextBox
+                                x:Name="TbNewSong"
                                 Margin="0,0,12,0"
-                                PlaceholderText="{DynamicResource window_blocklist_filter_songs}"
-                                Text="{Binding SongFilter, UpdateSourceTrigger=PropertyChanged}" />
-                            <TextBlock
+                                Icon="{ui:SymbolIcon Search24}"
+                                PlaceholderText="{DynamicResource window_blocklist_search_song_placeholder}"
+                                Text="{Binding NewSongQuery, UpdateSourceTrigger=PropertyChanged}" />
+                            <Popup
+                                AllowsTransparency="True"
+                                IsOpen="{Binding IsSongSuggestionsOpen, Mode=TwoWay}"
+                                Placement="Bottom"
+                                PlacementTarget="{Binding ElementName=TbNewSong}"
+                                StaysOpen="False">
+                                <Border
+                                    MinWidth="320"
+                                    MaxHeight="280"
+                                    Padding="4"
+                                    Background="{DynamicResource ApplicationBackgroundBrush}"
+                                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <ListBox
+                                        x:Name="LbSongSuggestions"
+                                        DisplayMemberPath="Display"
+                                        ItemsSource="{Binding SongSuggestions}"
+                                        MouseLeftButtonUp="SongSuggestion_OnMouseLeftButtonUp"
+                                        SelectedItem="{Binding SelectedSongSuggestion, Mode=TwoWay}" />
+                                </Border>
+                            </Popup>
+                            <ui:Button
                                 Grid.Column="1"
-                                VerticalAlignment="Center"
-                                Opacity="0.7"
-                                Text="{Binding SongStatusText}" />
+                                Appearance="Primary"
+                                Command="{Binding AddSongCommand}"
+                                Content="{DynamicResource common_add}"
+                                Icon="{ui:SymbolIcon Add24}" />
                         </Grid>
 
                         <ListBox
@@ -377,11 +419,13 @@
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Command="{Binding RemoveSelectedSongCommand}"
-                                Content="{DynamicResource common_remove_selected}" />
+                                Content="{DynamicResource common_remove_selected}"
+                                Icon="{ui:SymbolIcon Delete24}" />
                             <ui:Button
                                 Appearance="Secondary"
                                 Command="{Binding ClearSongsCommand}"
-                                Content="{DynamicResource window_blocklist_clear_songs}" />
+                                Content="{DynamicResource window_blocklist_clear_songs}"
+                                Icon="{ui:SymbolIcon Delete24}" />
                         </StackPanel>
                     </Grid>
                 </Grid>
@@ -460,12 +504,103 @@
                             Margin="0,0,10,0"
                             Appearance="Secondary"
                             Command="{Binding CancelArtistPickCommand}"
-                            Content="{DynamicResource common_close}" />
+                            Content="{DynamicResource common_close}"
+                            Icon="{ui:SymbolIcon Dismiss24}" />
                         <ui:Button
                             MinWidth="140"
                             Appearance="Primary"
                             Command="{Binding ConfirmArtistPickCommand}"
-                            Content="{DynamicResource window_blocklist_block_selected}" />
+                            Content="{DynamicResource window_blocklist_block_selected}"
+                            Icon="{ui:SymbolIcon ShieldDismiss24}" />
+                    </StackPanel>
+                </Grid>
+            </Border>
+        </Border>
+
+        <!--  Spotify song picker (multiple matches)  -->
+        <Border
+            Grid.RowSpan="2"
+            Panel.ZIndex="100"
+            Background="#AA000000"
+            Focusable="True"
+            KeyDown="SongPickerOverlay_OnKeyDown"
+            Visibility="{Binding IsSongPickerOpen, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Border
+                MaxWidth="640"
+                MaxHeight="420"
+                Margin="24"
+                Padding="12"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource ApplicationBackgroundBrush}"
+                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Grid.Row="0"
+                        Margin="0,0,0,8"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{DynamicResource window_blocklist_select_song}" />
+                    <TextBlock
+                        Grid.Row="1"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Opacity="0.75"
+                        Text="{DynamicResource window_blocklist_multiple_songs_match}" />
+                    <DataGrid
+                        x:Name="SongPickerGrid"
+                        Grid.Row="2"
+                        Margin="0,10,0,10"
+                        AutoGenerateColumns="False"
+                        CanUserAddRows="False"
+                        IsReadOnly="True"
+                        ItemsSource="{Binding SongPickerItems}"
+                        MouseDoubleClick="SongPickerGrid_OnMouseDoubleClick"
+                        ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto"
+                        SelectionChanged="SongPickerGrid_OnSelectionChanged"
+                        SelectionMode="Extended"
+                        SelectionUnit="FullRow">
+                        <DataGrid.Columns>
+                            <DataGridTextColumn
+                                Width="50"
+                                Binding="{Binding Num}"
+                                Header="{DynamicResource common_column_number}" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Artist}"
+                                Header="{DynamicResource common_artist}" />
+                            <DataGridTextColumn
+                                Width="*"
+                                Binding="{Binding Title}"
+                                Header="{DynamicResource common_title}" />
+                        </DataGrid.Columns>
+                    </DataGrid>
+                    <StackPanel
+                        Grid.Row="3"
+                        HorizontalAlignment="Right"
+                        Orientation="Horizontal">
+                        <ui:Button
+                            MinWidth="100"
+                            Margin="0,0,10,0"
+                            Appearance="Secondary"
+                            Command="{Binding CancelSongPickCommand}"
+                            Content="{DynamicResource common_close}"
+                            Icon="{ui:SymbolIcon Dismiss24}" />
+                        <ui:Button
+                            MinWidth="140"
+                            Appearance="Primary"
+                            Command="{Binding ConfirmSongPickCommand}"
+                            Content="{DynamicResource window_blocklist_block_selected}"
+                            Icon="{ui:SymbolIcon ShieldDismiss24}" />
                     </StackPanel>
                 </Grid>
             </Border>

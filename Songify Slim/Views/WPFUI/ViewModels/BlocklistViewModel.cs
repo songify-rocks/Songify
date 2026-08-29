@@ -70,6 +70,15 @@ public sealed class ArtistPickerRow
     public string ArtistId { get; set; } = "";
 }
 
+public sealed class SongPickerRow
+{
+    public int Num { get; set; }
+    public string Title { get; set; } = "";
+    public string Artist { get; set; } = "";
+    public string TrackId { get; set; } = "";
+    public string Display => string.IsNullOrWhiteSpace(Artist) ? Title : $"{Artist} — {Title}";
+}
+
 /// <summary>
 /// Blocklist UI never binds the full 6k+ artist list. We keep an in-memory snapshot and only
 /// expose a capped, filtered window so WPF cannot materialize thousands of containers.
@@ -90,11 +99,25 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     private bool _isLoaded;
     private bool _isLoading;
     private CancellationTokenSource _filterCts;
+    private CancellationTokenSource _suggestCts;
+    private CancellationTokenSource _songSuggestCts;
+    private readonly DispatcherTimer _suggestTimer;
+    private readonly DispatcherTimer _songSuggestTimer;
     private BlocklistCategoryItem _selectedCategoryItem;
     private readonly ObservableCollection<ArtistPickerRow> _artistPickerItems = [];
     private readonly ObservableCollection<ArtistPickerRow> _selectedArtistPickerItems = [];
+    private readonly ObservableCollection<ArtistPickerRow> _artistSuggestions = [];
+    private readonly ObservableCollection<SongPickerRow> _songPickerItems = [];
+    private readonly ObservableCollection<SongPickerRow> _selectedSongPickerItems = [];
+    private readonly ObservableCollection<SongPickerRow> _songSuggestions = [];
     private bool _isArtistPickerOpen;
+    private bool _isArtistSuggestionsOpen;
     private bool _isSearchingArtist;
+    private bool _isSongPickerOpen;
+    private bool _isSongSuggestionsOpen;
+    private bool _isSearchingSong;
+    private ArtistPickerRow _selectedArtistSuggestion;
+    private SongPickerRow _selectedSongSuggestion;
 
     public ObservableCollection<BlockedArtist> VisibleArtists => _visibleArtists;
     public ObservableCollection<BlockedUser> VisibleUsers => _visibleUsers;
@@ -103,6 +126,10 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     public ObservableCollection<BlocklistCategoryItem> Categories { get; }
     public ObservableCollection<ArtistPickerRow> ArtistPickerItems => _artistPickerItems;
     public ObservableCollection<ArtistPickerRow> SelectedArtistPickerItems => _selectedArtistPickerItems;
+    public ObservableCollection<ArtistPickerRow> ArtistSuggestions => _artistSuggestions;
+    public ObservableCollection<SongPickerRow> SongPickerItems => _songPickerItems;
+    public ObservableCollection<SongPickerRow> SelectedSongPickerItems => _selectedSongPickerItems;
+    public ObservableCollection<SongPickerRow> SongSuggestions => _songSuggestions;
 
     public bool IsArtistPickerOpen
     {
@@ -122,6 +149,24 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
         }
     }
 
+    public bool IsSongPickerOpen
+    {
+        get => _isSongPickerOpen;
+        private set { if (_isSongPickerOpen == value) return; _isSongPickerOpen = value; OnPropertyChanged(); }
+    }
+
+    public bool IsSearchingSong
+    {
+        get => _isSearchingSong;
+        private set
+        {
+            if (_isSearchingSong == value) return;
+            _isSearchingSong = value;
+            OnPropertyChanged();
+            RelayCommand.InvalidateRequerySuggested();
+        }
+    }
+
     public BlocklistCategoryItem SelectedCategoryItem
     {
         get => _selectedCategoryItem;
@@ -135,6 +180,8 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             OnPropertyChanged(nameof(IsArtistsSelected));
             OnPropertyChanged(nameof(IsUsersSelected));
             OnPropertyChanged(nameof(IsSongsSelected));
+            OnPropertyChanged(nameof(ListFilter));
+            OnPropertyChanged(nameof(ListStatusText));
         }
     }
 
@@ -162,6 +209,7 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(ArtistStatusText));
+            OnPropertyChanged(nameof(ListStatusText));
             UpdateCategoryCount(BlocklistCategory.Artists, value);
         }
     }
@@ -174,6 +222,7 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(UserStatusText));
+            OnPropertyChanged(nameof(ListStatusText));
             UpdateCategoryCount(BlocklistCategory.Users, value);
         }
     }
@@ -186,6 +235,7 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             field = value;
             OnPropertyChanged();
             OnPropertyChanged(nameof(SongStatusText));
+            OnPropertyChanged(nameof(ListStatusText));
             UpdateCategoryCount(BlocklistCategory.Songs, value);
         }
     }
@@ -193,6 +243,83 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     public string ArtistStatusText => BuildStatus(ArtistCount, _visibleArtists.Count, _artistFilter);
     public string UserStatusText => BuildStatus(UserCount, _visibleUsers.Count, _userFilter);
     public string SongStatusText => BuildStatus(SongCount, _visibleSongs.Count, _songFilter);
+
+    public string ListStatusText => SelectedCategory switch
+    {
+        BlocklistCategory.Artists => ArtistStatusText,
+        BlocklistCategory.Users => UserStatusText,
+        _ => SongStatusText
+    };
+
+    public string ListFilter
+    {
+        get => SelectedCategory switch
+        {
+            BlocklistCategory.Artists => ArtistFilter,
+            BlocklistCategory.Users => UserFilter,
+            _ => SongFilter
+        };
+        set
+        {
+            switch (SelectedCategory)
+            {
+                case BlocklistCategory.Artists:
+                    ArtistFilter = value;
+                    break;
+                case BlocklistCategory.Users:
+                    UserFilter = value;
+                    break;
+                default:
+                    SongFilter = value;
+                    break;
+            }
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsArtistSuggestionsOpen
+    {
+        get => _isArtistSuggestionsOpen;
+        set
+        {
+            if (_isArtistSuggestionsOpen == value) return;
+            _isArtistSuggestionsOpen = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public ArtistPickerRow SelectedArtistSuggestion
+    {
+        get => _selectedArtistSuggestion;
+        set
+        {
+            if (ReferenceEquals(_selectedArtistSuggestion, value)) return;
+            _selectedArtistSuggestion = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public bool IsSongSuggestionsOpen
+    {
+        get => _isSongSuggestionsOpen;
+        set
+        {
+            if (_isSongSuggestionsOpen == value) return;
+            _isSongSuggestionsOpen = value;
+            OnPropertyChanged();
+        }
+    }
+
+    public SongPickerRow SelectedSongSuggestion
+    {
+        get => _selectedSongSuggestion;
+        set
+        {
+            if (ReferenceEquals(_selectedSongSuggestion, value)) return;
+            _selectedSongSuggestion = value;
+            OnPropertyChanged();
+        }
+    }
 
     public bool IsLoading
     {
@@ -209,6 +336,8 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             if (_artistFilter == value) return;
             _artistFilter = value ?? "";
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ListFilter));
+            OnPropertyChanged(nameof(ListStatusText));
             ScheduleRebuildVisible(RebuildArtistsVisible);
         }
     }
@@ -222,6 +351,8 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             if (_userFilter == value) return;
             _userFilter = value ?? "";
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ListFilter));
+            OnPropertyChanged(nameof(ListStatusText));
             ScheduleRebuildVisible(RebuildUsersVisible);
         }
     }
@@ -235,6 +366,8 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
             if (_songFilter == value) return;
             _songFilter = value ?? "";
             OnPropertyChanged();
+            OnPropertyChanged(nameof(ListFilter));
+            OnPropertyChanged(nameof(ListStatusText));
             ScheduleRebuildVisible(RebuildSongsVisible);
         }
     }
@@ -243,7 +376,21 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     public string NewArtistName
     {
         get => _newArtistName;
-        set { _newArtistName = value; OnPropertyChanged(); }
+        set
+        {
+            _newArtistName = value;
+            OnPropertyChanged();
+            RelayCommand.InvalidateRequerySuggested();
+            _suggestTimer.Stop();
+            string query = (_newArtistName ?? "").Trim();
+            if (query.Length < 2)
+            {
+                ClearArtistSuggestions();
+                return;
+            }
+
+            _suggestTimer.Start();
+        }
     }
 
     private string _newUsername;
@@ -251,6 +398,27 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     {
         get => _newUsername;
         set { _newUsername = value; OnPropertyChanged(); }
+    }
+
+    private string _newSongQuery;
+    public string NewSongQuery
+    {
+        get => _newSongQuery;
+        set
+        {
+            _newSongQuery = value;
+            OnPropertyChanged();
+            RelayCommand.InvalidateRequerySuggested();
+            _songSuggestTimer.Stop();
+            string query = (_newSongQuery ?? "").Trim();
+            if (query.Length < 2 || SpotifyApiHandler.LooksLikeSpotifyTrackReference(query))
+            {
+                ClearSongSuggestions();
+                return;
+            }
+
+            _songSuggestTimer.Start();
+        }
     }
 
     private BlockedArtist _selectedArtist;
@@ -277,6 +445,9 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     public RelayCommand AddArtistCommand { get; }
     public RelayCommand ConfirmArtistPickCommand { get; }
     public RelayCommand CancelArtistPickCommand { get; }
+    public RelayCommand AddSongCommand { get; }
+    public RelayCommand ConfirmSongPickCommand { get; }
+    public RelayCommand CancelSongPickCommand { get; }
     public RelayCommand AddUserCommand { get; }
     public RelayCommand RemoveSelectedArtistCommand { get; }
     public RelayCommand RemoveSelectedUserCommand { get; }
@@ -310,11 +481,29 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
         ];
         _selectedCategoryItem = Categories[0];
 
+        _suggestTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+        _suggestTimer.Tick += (_, _) =>
+        {
+            _suggestTimer.Stop();
+            _ = SearchArtistSuggestionsAsync();
+        };
+        _songSuggestTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(300) };
+        _songSuggestTimer.Tick += (_, _) =>
+        {
+            _songSuggestTimer.Stop();
+            _ = SearchSongSuggestionsAsync();
+        };
+
         AddArtistCommand = new RelayCommand(
             () => _ = AddArtistAsync(),
             () => !string.IsNullOrWhiteSpace(NewArtistName) && !IsSearchingArtist);
         ConfirmArtistPickCommand = new RelayCommand(ConfirmArtistPick, () => SelectedArtistPickerItems.Count > 0);
         CancelArtistPickCommand = new RelayCommand(CancelArtistPick);
+        AddSongCommand = new RelayCommand(
+            () => _ = AddSongAsync(),
+            () => !string.IsNullOrWhiteSpace(NewSongQuery) && !IsSearchingSong);
+        ConfirmSongPickCommand = new RelayCommand(ConfirmSongPick, () => SelectedSongPickerItems.Count > 0);
+        CancelSongPickCommand = new RelayCommand(CancelSongPick);
         AddUserCommand = new RelayCommand(AddUser, () => !string.IsNullOrWhiteSpace(NewUsername));
 
         RemoveSelectedArtistCommand = new RelayCommand(_ => RemoveArtist(SelectedArtist), _ => SelectedArtist != null);
@@ -337,6 +526,12 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     public void Unload()
     {
         _filterCts?.Cancel();
+        _suggestCts?.Cancel();
+        _songSuggestCts?.Cancel();
+        _suggestTimer.Stop();
+        _songSuggestTimer.Stop();
+        ClearArtistSuggestions();
+        ClearSongSuggestions();
         _allArtists = [];
         _visibleArtists.Clear();
         ArtistCount = 0;
@@ -622,6 +817,71 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
         }
     }
 
+    public void SelectArtistSuggestion(ArtistPickerRow row)
+    {
+        if (row == null || string.IsNullOrWhiteSpace(row.ArtistId))
+            return;
+        AddArtistFromSpotify(row.ArtistId, row.Artist);
+        NewArtistName = "";
+        ClearArtistSuggestions();
+    }
+
+    public void ClearArtistSuggestions()
+    {
+        _suggestCts?.Cancel();
+        _artistSuggestions.Clear();
+        SelectedArtistSuggestion = null;
+        IsArtistSuggestionsOpen = false;
+    }
+
+    private async Task SearchArtistSuggestionsAsync()
+    {
+        string query = (NewArtistName ?? "").Trim();
+        if (query.Length < 2 || SpotifyApiHandler.Client == null)
+        {
+            ClearArtistSuggestions();
+            return;
+        }
+
+        _suggestCts?.Cancel();
+        CancellationTokenSource cts = new();
+        _suggestCts = cts;
+        try
+        {
+            List<FullArtist> matches = await SpotifyApiHandler.GetArtist(query);
+            if (cts.IsCancellationRequested)
+                return;
+
+            _artistSuggestions.Clear();
+            if (matches == null || matches.Count == 0)
+            {
+                IsArtistSuggestionsOpen = false;
+                return;
+            }
+
+            int num = 1;
+            foreach (FullArtist artist in matches)
+            {
+                _artistSuggestions.Add(new ArtistPickerRow
+                {
+                    Num = num++,
+                    Artist = artist.Name,
+                    ArtistId = artist.Id
+                });
+            }
+
+            IsArtistSuggestionsOpen = _artistSuggestions.Count > 0;
+        }
+        catch (OperationCanceledException)
+        {
+            /* ignored */
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
     /// <summary>
     /// DataGrid.SelectedItems is not bindable — page syncs selection here on SelectionChanged.
     /// </summary>
@@ -686,6 +946,232 @@ public sealed class BlocklistViewModel : INotifyPropertyChanged
     {
         if (TryAddArtistFromSpotify(id, name))
             PersistArtists();
+    }
+
+    /// <summary>
+    /// Searches Spotify for the typed title, or resolves a pasted track URL/URI/ID.
+    /// One match is added immediately; multiple opens the picker.
+    /// </summary>
+    public async Task AddSongAsync()
+    {
+        string query = (NewSongQuery ?? "").Trim();
+        if (query.Length == 0 || IsSearchingSong)
+            return;
+
+        if (SpotifyApiHandler.Client == null)
+        {
+            await AppDialog.ShowAsync(
+                Loc("common_notification", "Notification"),
+                Loc("window_blocklist_spotify_not_connected",
+                    "Spotify is not connected. You need to connect to Spotify in order to fill the blocklist."));
+            return;
+        }
+
+        IsSearchingSong = true;
+        try
+        {
+            string trackId = SpotifyApiHandler.TryParseSpotifyTrackId(query);
+            if (!string.IsNullOrWhiteSpace(trackId))
+            {
+                FullTrack byId = await SpotifyApiHandler.GetTrack(trackId);
+                if (byId != null && !string.IsNullOrWhiteSpace(byId.Id))
+                {
+                    AddSongFromSpotify(byId);
+                    NewSongQuery = "";
+                    return;
+                }
+
+                if (SpotifyApiHandler.LooksLikeSpotifyTrackReference(query))
+                {
+                    await AppDialog.ShowAsync(
+                        Loc("common_notification", "Notification"),
+                        Loc("window_blocklist_song_not_found",
+                            "Could not find a song matching that name on Spotify."));
+                    return;
+                }
+            }
+
+            List<FullTrack> searchItem = await SpotifyApiHandler.GetTracks(query);
+            if (searchItem == null || searchItem.Count == 0)
+            {
+                await AppDialog.ShowAsync(
+                    Loc("common_notification", "Notification"),
+                    Loc("window_blocklist_song_not_found",
+                        "Could not find a song matching that name on Spotify."));
+                return;
+            }
+
+            if (searchItem.Count == 1)
+            {
+                AddSongFromSpotify(searchItem[0]);
+                NewSongQuery = "";
+                return;
+            }
+
+            _songPickerItems.Clear();
+            _selectedSongPickerItems.Clear();
+            int count = 1;
+            foreach (FullTrack track in searchItem)
+                _songPickerItems.Add(ToSongPickerRow(count++, track));
+
+            IsSongPickerOpen = true;
+            RelayCommand.InvalidateRequerySuggested();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+            await AppDialog.ShowAsync(
+                Loc("common_error", "Error"),
+                Loc("window_blocklist_search_song_failed", "Failed to search Spotify for that song."));
+        }
+        finally
+        {
+            IsSearchingSong = false;
+        }
+    }
+
+    public void SelectSongSuggestion(SongPickerRow row)
+    {
+        if (row == null || string.IsNullOrWhiteSpace(row.TrackId))
+            return;
+        AddSongFromSpotify(row.TrackId, row.Artist, row.Title);
+        NewSongQuery = "";
+        ClearSongSuggestions();
+    }
+
+    public void ClearSongSuggestions()
+    {
+        _songSuggestCts?.Cancel();
+        _songSuggestions.Clear();
+        SelectedSongSuggestion = null;
+        IsSongSuggestionsOpen = false;
+    }
+
+    private async Task SearchSongSuggestionsAsync()
+    {
+        string query = (NewSongQuery ?? "").Trim();
+        if (query.Length < 2 || SpotifyApiHandler.Client == null ||
+            SpotifyApiHandler.LooksLikeSpotifyTrackReference(query))
+        {
+            ClearSongSuggestions();
+            return;
+        }
+
+        _songSuggestCts?.Cancel();
+        CancellationTokenSource cts = new();
+        _songSuggestCts = cts;
+        try
+        {
+            List<FullTrack> matches = await SpotifyApiHandler.GetTracks(query);
+            if (cts.IsCancellationRequested)
+                return;
+
+            _songSuggestions.Clear();
+            if (matches == null || matches.Count == 0)
+            {
+                IsSongSuggestionsOpen = false;
+                return;
+            }
+
+            int num = 1;
+            foreach (FullTrack track in matches)
+                _songSuggestions.Add(ToSongPickerRow(num++, track));
+
+            IsSongSuggestionsOpen = _songSuggestions.Count > 0;
+        }
+        catch (OperationCanceledException)
+        {
+            /* ignored */
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
+    public void SyncSongPickerSelection(IEnumerable<SongPickerRow> selected)
+    {
+        _selectedSongPickerItems.Clear();
+        if (selected != null)
+        {
+            foreach (SongPickerRow row in selected)
+                _selectedSongPickerItems.Add(row);
+        }
+
+        RelayCommand.InvalidateRequerySuggested();
+    }
+
+    private void ConfirmSongPick()
+    {
+        if (_selectedSongPickerItems.Count == 0)
+            return;
+
+        bool added = false;
+        foreach (SongPickerRow row in _selectedSongPickerItems.ToList())
+        {
+            if (TryAddSongFromSpotify(row.TrackId, row.Artist, row.Title))
+                added = true;
+        }
+
+        if (added)
+            PersistSongs();
+
+        NewSongQuery = "";
+        CancelSongPick();
+    }
+
+    private void CancelSongPick()
+    {
+        IsSongPickerOpen = false;
+        _songPickerItems.Clear();
+        _selectedSongPickerItems.Clear();
+        RelayCommand.InvalidateRequerySuggested();
+    }
+
+    private static SongPickerRow ToSongPickerRow(int num, FullTrack track)
+    {
+        return new SongPickerRow
+        {
+            Num = num,
+            Title = track?.Name ?? "",
+            Artist = FormatTrackArtists(track),
+            TrackId = track?.Id ?? ""
+        };
+    }
+
+    private static string FormatTrackArtists(FullTrack track)
+        => track?.Artists == null || track.Artists.Count == 0
+            ? ""
+            : string.Join(", ", track.Artists.Select(a => a.Name));
+
+    private bool TryAddSongFromSpotify(string id, string artist, string title)
+    {
+        if (string.IsNullOrWhiteSpace(id) || string.IsNullOrWhiteSpace(title))
+            return false;
+
+        if (_allSongs.Any(s => string.Equals(s?.Key, id, StringComparison.OrdinalIgnoreCase)))
+            return false;
+
+        _allSongs.Add(new BlockedSong
+        {
+            Id = id,
+            Artist = artist,
+            Title = title
+        });
+        return true;
+    }
+
+    private void AddSongFromSpotify(FullTrack track)
+    {
+        if (track == null)
+            return;
+        AddSongFromSpotify(track.Id, FormatTrackArtists(track), track.Name);
+    }
+
+    private void AddSongFromSpotify(string id, string artist, string title)
+    {
+        if (TryAddSongFromSpotify(id, artist, title))
+            PersistSongs();
     }
 
     private void AddUser()

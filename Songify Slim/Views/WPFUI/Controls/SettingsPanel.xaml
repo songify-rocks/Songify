@@ -260,6 +260,27 @@
                                         SelectionChanged="CbxWindowBackdrop_OnSelectionChanged"
                                         TabIndex="10" />
                                 </Grid>
+                                <Grid Margin="0,16,0,0">
+                                    <StackPanel>
+                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_appearance_accent}" />
+                                        <TextBlock
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{DynamicResource window_settings_appearance_accent_hint}"
+                                            TextWrapping="Wrap" />
+                                        <WrapPanel
+                                            x:Name="PnlAccentSwatches"
+                                            Margin="0,10,0,8" />
+                                        <ui:TextBox
+                                            x:Name="TbAccentHex"
+                                            MinWidth="140"
+                                            HorizontalAlignment="Left"
+                                            Icon="{ui:SymbolIcon Edit24}"
+                                            LostFocus="TbAccentHex_OnLostFocus"
+                                            PlaceholderText="#0078D4"
+                                            PreviewKeyDown="TbAccentHex_OnPreviewKeyDown" />
+                                    </StackPanel>
+                                </Grid>
                                 <StackPanel Margin="0,16,0,0">
                                     <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_appearance_scale}" />
                                     <TextBlock
@@ -355,9 +376,15 @@
                                         Width="32"
                                         Height="32"
                                         Margin="0,0,6,0"
-                                        d:Content="{x:Static local:Resources.common_browse}"
+                                        d:ToolTip="{x:Static local:Resources.common_browse}"
                                         Click="BtnOutputdirectoryClick"
-                                        Content="{DynamicResource common_browse}" />
+                                        Focusable="False"
+                                        ToolTip="{DynamicResource common_browse}">
+                                        <ui:SymbolIcon
+                                            Width="16"
+                                            Height="16"
+                                            Symbol="FolderOpen24" />
+                                    </Button>
                                     <Button
                                         x:Name="BtnCopyToClip"
                                         Grid.Column="2"
@@ -1003,8 +1030,12 @@
                                                 HorizontalAlignment="Right"
                                                 d:ToolTip="{x:Static local:Resources.window_settings_oauth_token_tooltip}"
                                                 Click="Button_Click"
-                                                Content="?"
-                                                ToolTip="{DynamicResource window_settings_oauth_token_tooltip}" />
+                                                ToolTip="{DynamicResource window_settings_oauth_token_tooltip}">
+                                                <ui:SymbolIcon
+                                                    Width="14"
+                                                    Height="14"
+                                                    Symbol="QuestionCircle24" />
+                                            </Button>
                                         </Grid>
                                     </Grid>
                                     <Grid>
@@ -1094,6 +1125,7 @@
                                 </ui:ToggleSwitch>
                                 <ui:ToggleSwitch
                                     x:Name="TglSharedChat"
+                                    Margin="0,0,0,8"
                                     d:ToolTip="{x:Static local:Resources.window_settings_shared_chat_tooltip}"
                                     Checked="Tgl_SharedChat_Toggled"
                                     ToolTip="{DynamicResource window_settings_shared_chat_tooltip}"
@@ -1105,6 +1137,86 @@
                                             TextWrapping="Wrap" />
                                     </ui:ToggleSwitch.Content>
                                 </ui:ToggleSwitch>
+                                <ui:ToggleSwitch
+                                    x:Name="TglIgnoreBotMessages"
+                                    Margin="0,0,0,4"
+                                    Checked="Tgl_IgnoreBotMessages_Toggled"
+                                    Unchecked="Tgl_IgnoreBotMessages_Toggled">
+                                    <ui:ToggleSwitch.Content>
+                                        <StackPanel Orientation="Horizontal">
+                                            <ui:SymbolIcon
+                                                Margin="0,0,8,0"
+                                                VerticalAlignment="Center"
+                                                Symbol="Bot24" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                Text="{DynamicResource window_settings_ignore_bot_messages}"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </ui:ToggleSwitch.Content>
+                                </ui:ToggleSwitch>
+                                <TextBlock
+                                    Margin="0,0,0,8"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    Text="{DynamicResource window_settings_ignore_bot_messages_hint}"
+                                    TextWrapping="Wrap" />
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ui:TextBox
+                                        x:Name="TbIgnoreChatUser"
+                                        Margin="0,0,8,0"
+                                        Icon="{ui:SymbolIcon Person28}"
+                                        PlaceholderText="{DynamicResource window_settings_ignore_bot_placeholder}"
+                                        PreviewKeyDown="TbIgnoreChatUser_OnPreviewKeyDown" />
+                                    <ui:Button
+                                        Grid.Column="1"
+                                        Appearance="Secondary"
+                                        Click="BtnAddIgnoredChatUser_Click"
+                                        Content="{DynamicResource common_add}"
+                                        Icon="{ui:SymbolIcon Add24}" />
+                                </Grid>
+                                <ItemsControl
+                                    x:Name="IcIgnoredChatUsers"
+                                    Margin="0,8,0,0">
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel />
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border
+                                                Margin="0,0,8,8"
+                                                Padding="8,4"
+                                                Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                CornerRadius="8">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <ui:SymbolIcon
+                                                        Margin="0,0,6,0"
+                                                        VerticalAlignment="Center"
+                                                        FontSize="12"
+                                                        Symbol="Bot24" />
+                                                    <TextBlock
+                                                        Margin="0,0,6,0"
+                                                        VerticalAlignment="Center"
+                                                        Text="{Binding}" />
+                                                    <ui:Button
+                                                        Padding="4"
+                                                        Appearance="Transparent"
+                                                        Click="BtnRemoveIgnoredChatUser_Click"
+                                                        Tag="{Binding}"
+                                                        ToolTip="{DynamicResource common_remove}">
+                                                        <ui:SymbolIcon FontSize="12" Symbol="Dismiss24" />
+                                                    </ui:Button>
+                                                </StackPanel>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
                             </StackPanel>
                         </ui:Card>
                     </StackPanel>
@@ -1208,13 +1320,15 @@
                                     Margin="0,0,4,0"
                                     Appearance="Primary"
                                     Click="BtnRewardsSegmentChannel_Click"
-                                    Content="{DynamicResource window_settings_tab_channel_rewards}" />
+                                    Content="{DynamicResource window_settings_tab_channel_rewards}"
+                                    Icon="{ui:SymbolIcon Gift24}" />
                                 <ui:Button
                                     x:Name="BtnRewardsSegmentRefund"
                                     MinWidth="140"
                                     Appearance="Secondary"
                                     Click="BtnRewardsSegmentRefund_Click"
-                                    Content="{DynamicResource window_settings_tab_refund_conditions}" />
+                                    Content="{DynamicResource window_settings_tab_refund_conditions}"
+                                    Icon="{ui:SymbolIcon Money24}" />
                             </StackPanel>
                         </Border>
 
@@ -1256,7 +1370,10 @@
                                 x:Name="PnlRefundConditions"
                                 Orientation="Vertical"
                                 Visibility="Collapsed">
-                                <TextBlock Margin="0,0,0,6" Text="{DynamicResource window_settings_refund_conditions_info}" />
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    Text="{DynamicResource window_settings_refund_conditions_info}"
+                                    TextWrapping="Wrap" />
                                 <Grid
                                     x:Name="RefundSwitchesPanel"
                                     VerticalAlignment="Top"
@@ -2378,14 +2495,14 @@
                                             Content="{DynamicResource window_settings_integration_spotify_linked}" />
                                     </StackPanel>
                                 </DockPanel>
-                                <Button
+                                <ui:Button
                                     x:Name="BtnSpotifyLink"
                                     MinWidth="90"
                                     HorizontalAlignment="Right"
                                     VerticalAlignment="Center"
-                                    d:Content="{x:Static local:Resources.window_settings_integration_link}"
                                     Click="Btn_spotifyLink_Click"
-                                    Content="{DynamicResource window_settings_integration_link}" />
+                                    Content="{DynamicResource window_settings_integration_link}"
+                                    Icon="{ui:SymbolIcon Link24}" />
                             </Grid>
                         </ui:Card>
 
@@ -2418,7 +2535,12 @@
                                         Padding="0"
                                         HorizontalAlignment="Right"
                                         Click="Btn_OwnAppHelp_Click"
-                                        Content="{DynamicResource common_help}" />
+                                        ToolTip="{DynamicResource common_help}">
+                                        <ui:SymbolIcon
+                                            Width="16"
+                                            Height="16"
+                                            Symbol="QuestionCircle24" />
+                                    </Button>
                                 </Grid>
                                 <Label Content="{DynamicResource window_settings_client_secret}" Visibility="Collapsed" />
                                 <PasswordBox
@@ -2925,9 +3047,14 @@
                                         x:Name="btnApiToken"
                                         Grid.Column="3"
                                         Width="32"
-                                        d:Content="{x:Static local:Resources.common_help}"
+                                        d:ToolTip="{x:Static local:Resources.common_help}"
                                         Click="BtnApiToken_OnClick"
-                                        Content="{DynamicResource common_help}" />
+                                        ToolTip="{DynamicResource common_help}">
+                                        <ui:SymbolIcon
+                                            Width="16"
+                                            Height="16"
+                                            Symbol="QuestionCircle24" />
+                                    </Button>
                                 </Grid>
                             </StackPanel>
                         </ui:Card>

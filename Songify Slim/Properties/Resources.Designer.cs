@@ -3391,7 +3391,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To be able to refund points the Reward has to be created through Songify!.
+        ///   Looks up a localized string similar to Failed requests are refunded automatically when the matching condition is on. The channel-point reward must be created in Songify (not in the Twitch dashboard) — Twitch only lets the creating app cancel redemptions.
         /// </summary>
         public static string window_settings_refund_conditions_info {
             get {

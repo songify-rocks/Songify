@@ -355,6 +355,23 @@ namespace Songify_Slim.Util.Configuration
             }
         }
 
+        internal static readonly List<RefundCondition> DefaultFailureRefundConditions =
+        [
+            RefundCondition.UserLevelTooLow,
+            RefundCondition.UserBlocked,
+            RefundCondition.WrongPlayerRequested,
+            RefundCondition.SpotifyNotConnected,
+            RefundCondition.SongUnavailable,
+            RefundCondition.ArtistBlocked,
+            RefundCondition.SongTooLong,
+            RefundCondition.SongAlreadyInQueue,
+            RefundCondition.NoSongFound,
+            RefundCondition.SongAddedButError,
+            RefundCondition.TrackIsExplicit,
+            RefundCondition.SongBlocked,
+            RefundCondition.QueueLimitReached
+        ];
+
         internal static void MigrateReleaseChannel(AppConfig appConfig)
         {
             if (appConfig.ReleaseChannel != null)
@@ -364,6 +381,17 @@ namespace Songify_Slim.Util.Configuration
             }
 
             appConfig.ReleaseChannel = appConfig.BetaUpdates ? ReleaseChannel.Beta : ReleaseChannel.Stable;
+        }
+
+        internal static void MigrateRefundConditions(AppConfig appConfig)
+        {
+            if (appConfig.RefundConditionsMigrated)
+                return;
+
+            if (appConfig.RefundConditons == null || appConfig.RefundConditons.Count == 0)
+                appConfig.RefundConditons = [.. DefaultFailureRefundConditions];
+
+            appConfig.RefundConditionsMigrated = true;
         }
 
         private static T LoadOrCreateConfig<T>(string path, string fileName, IDeserializer deserializer) where T : new()
@@ -442,6 +470,7 @@ namespace Songify_Slim.Util.Configuration
                         config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
                         config.AppConfig.DownloadCover = true;
                         MigrateReleaseChannel(config.AppConfig);
+                        MigrateRefundConditions(config.AppConfig);
                         WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
@@ -1049,6 +1078,12 @@ namespace Songify_Slim.Util.Configuration
         public string WebServerPassword { get; set; } = "";
 
         public List<RefundCondition> RefundConditons { get; set; } = [];
+
+        /// <summary>
+        /// True after empty refund lists have been filled with default failure conditions.
+        /// Distinguishes "never configured" from "user turned every refund off".
+        /// </summary>
+        public bool RefundConditionsMigrated { get; set; }
         public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
         public List<int> ReadNotificationIds { get; set; } = [];
         public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];
@@ -1142,6 +1177,15 @@ namespace Songify_Slim.Util.Configuration
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();
         public List<string> TwRewardSkipPoll { get; set; } = [];
         public bool SharedChatEnabled { get; set; } = false;
+
+        /// <summary>When true, chat commands from known bots and the linked bot account are ignored.</summary>
+        public bool IgnoreBotMessages { get; set; } = true;
+
+        /// <summary>Twitch logins or display names (no @) whose <c>!</c> messages are always ignored, including the broadcaster.</summary>
+        public List<string> IgnoredChatUsers { get; set; } = [];
+
+        /// <summary>Hex accent (e.g. #0078D4). Empty = Windows system accent.</summary>
+        public string AccentColor { get; set; } = "";
         public string SrForBitsKeyWord { get; set; }
         public SpotifyPersistentIssue SpotifyPersistentIssue { get; set; }
         public List<SpotifyPersistentIssue> SpotifyPersistentIssues { get; set; } = new();

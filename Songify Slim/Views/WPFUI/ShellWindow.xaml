@@ -22,6 +22,26 @@
     <ui:FluentWindow.Resources>
         <ResourceDictionary>
             <util:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <ContextMenu x:Key="TwitchStatusContextMenu" x:Shared="false">
+                <MenuItem Click="MenuTwitchLogin_OnClick" Header="{DynamicResource menu_twitch_login}">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon FontSize="16" Symbol="Person24" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Click="MenuTwitchConnect_OnClick" Header="{DynamicResource menu_twitch_connect}">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon FontSize="16" Symbol="PlugConnected24" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Click="MenuTwitchOnline_OnClick"
+                    Header="{DynamicResource menu_twitch_check_online_status}"
+                    Tag="TwitchLiveCheck">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon FontSize="16" Symbol="Live24" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
         </ResourceDictionary>
     </ui:FluentWindow.Resources>
     <Grid>
@@ -31,143 +51,230 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <ui:TitleBar x:Name="ShellTitleBar" CloseClicked="TitleBar_OnCloseClicked">
-            <!--  Custom header: TitleBar.Icon/ImageIcon often clips .ico assets  -->
-            <ui:TitleBar.Header>
-                <StackPanel
-                    Margin="8,0,0,0"
-                    VerticalAlignment="Center"
-                    Orientation="Horizontal">
-                    <Image
-                        x:Name="TitleBarLogo"
-                        Width="16"
-                        Height="16"
-                        Margin="0,0,8,0"
-                        VerticalAlignment="Center"
-                        RenderOptions.BitmapScalingMode="HighQuality"
-                        Source="pack://application:,,,/Resources/songify.ico"
-                        Stretch="Uniform" />
-                    <TextBlock
-                        x:Name="TxtTitleBarAppName"
-                        VerticalAlignment="Center"
-                        FontSize="13"
-                        Text="Songify" />
-                </StackPanel>
-            </ui:TitleBar.Header>
-            <ui:TitleBar.TrailingContent>
-                <StackPanel Margin="0,0,4,0" Orientation="Horizontal">
-
-                    <ui:DropDownButton
-                        MinWidth="72"
-                        Margin="0,0,4,0"
-                        Padding="12,6"
-                        Appearance="Transparent"
-                        Content="{DynamicResource menu_tools}"
-                        FontSize="13">
-                        <ui:DropDownButton.Flyout>
-                            <ContextMenu>
-                                <MenuItem Click="MenuWidget_OnClick" Header="{DynamicResource menu_file_widget}" />
-                                <MenuItem Click="MenuQueueWindow_OnClick" Header="{DynamicResource window_queue_open_window}" />
-                                <MenuItem Click="MenuConsoleWindow_OnClick" Header="{DynamicResource window_console_open_window}" />
-                                <MenuItem Click="MenuWebServerUrl_OnClick" Header="{DynamicResource menu_view_webserver_url}" />
-                                <MenuItem Click="MenuQueueBrowser_OnClick" Header="{DynamicResource menu_song_requests_queue_browser}" />
-                            </ContextMenu>
-                        </ui:DropDownButton.Flyout>
-                    </ui:DropDownButton>
-
-                    <ui:DropDownButton
-                        MinWidth="72"
-                        Margin="0,0,4,0"
-                        Padding="12,6"
-                        Appearance="Transparent"
-                        Content="{DynamicResource menu_twitch}"
-                        FontSize="13">
-                        <ui:DropDownButton.Flyout>
-                            <ContextMenu>
-                                <MenuItem Click="MenuTwitchLogin_OnClick" Header="{DynamicResource menu_twitch_login}" />
-                                <MenuItem
-                                    x:Name="MiTwitchConnect"
-                                    Click="MenuTwitchConnect_OnClick"
-                                    Header="{DynamicResource menu_twitch_connect}" />
-                                <MenuItem
-                                    x:Name="MiTwitchCheckOnlineStatus"
-                                    Click="MenuTwitchOnline_OnClick"
-                                    Header="{DynamicResource menu_twitch_check_online_status}" />
-                            </ContextMenu>
-                        </ui:DropDownButton.Flyout>
-                    </ui:DropDownButton>
-
-                    <ui:DropDownButton
-                        MinWidth="72"
-                        Padding="12,6"
-                        Appearance="Transparent"
-                        Content="{DynamicResource menu_file_help}"
-                        FontSize="13">
-                        <ui:DropDownButton.Flyout>
-                            <ContextMenu x:Name="HelpContextMenu">
-                                <MenuItem Click="MenuPatchNotes_OnClick" Header="{DynamicResource menu_file_patchnotes}" />
-                                <MenuItem Click="MenuSetupWizard_OnClick" Header="{DynamicResource menu_setup_wizard}" />
-                                <MenuItem Click="MenuFaq_OnClick" Header="{DynamicResource menu_faq}" />
-                                <MenuItem Click="MenuGitHub_OnClick" Header="{DynamicResource menu_github}" />
-                                <MenuItem Click="MenuDiscord_OnClick" Header="{DynamicResource menu_discord}">
-                                    <MenuItem.Icon>
-                                        <Viewbox Width="14" Height="14">
-                                            <Path
-                                                Data="{StaticResource IconDiscordGeometry}"
-                                                Fill="{StaticResource BrandDiscordBrush}"
-                                                Stretch="Uniform" />
-                                        </Viewbox>
-                                    </MenuItem.Icon>
-                                </MenuItem>
-                                <Separator />
-                                <MenuItem Click="MenuLogFolder_OnClick" Header="{DynamicResource menu_help_log_folder}" />
-                                <MenuItem Click="MenuAppFolder_OnClick" Header="{DynamicResource menu_help_app_folder}" />
-                                <MenuItem Click="MenuCheckUpdates_OnClick" Header="{DynamicResource menu_check_for_updates}" />
-                            </ContextMenu>
-                        </ui:DropDownButton.Flyout>
-                    </ui:DropDownButton>
-
-                    <Grid
-                        Width="36"
-                        Height="32"
+        <Grid>
+            <ui:TitleBar x:Name="ShellTitleBar" CloseClicked="TitleBar_OnCloseClicked">
+                <!--  Custom header: TitleBar.Icon/ImageIcon often clips .ico assets  -->
+                <ui:TitleBar.Header>
+                    <StackPanel
                         Margin="8,0,0,0"
-                        VerticalAlignment="Center">
-                        <ui:Button
-                            x:Name="BtnPsa"
-                            Padding="6"
-                            Appearance="Transparent"
-                            Click="BtnPsa_OnClick"
-                            ToolTip="{DynamicResource menu_notifications}">
-                            <ui:SymbolIcon
-                                x:Name="PsaBadgeIcon"
-                                Width="16"
-                                Height="16"
-                                Symbol="Alert24" />
-                        </ui:Button>
-                        <Border
-                            x:Name="PsaBadgePill"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Image
+                            x:Name="TitleBarLogo"
+                            Width="16"
                             Height="16"
-                            MinWidth="16"
-                            Margin="0,-2,-2,0"
-                            Padding="4,0"
-                            HorizontalAlignment="Right"
-                            VerticalAlignment="Top"
-                            Background="IndianRed"
-                            CornerRadius="8"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/Resources/songify.ico"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            x:Name="TxtTitleBarAppName"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Text="Songify" />
+                    </StackPanel>
+                </ui:TitleBar.Header>
+                <ui:TitleBar.TrailingContent>
+                    <StackPanel Margin="0,0,4,0" Orientation="Horizontal">
+
+                        <ui:DropDownButton
+                            MinWidth="72"
+                            Margin="0,0,4,0"
+                            Padding="12,6"
+                            Appearance="Transparent"
+                            Content="{DynamicResource menu_tools}"
+                            FontSize="13"
+                            Visibility="Visible">
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu>
+                                    <MenuItem Click="MenuWidget_OnClick" Header="{DynamicResource menu_file_widget}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Window24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuQueueWindow_OnClick" Header="{DynamicResource window_queue_open_window}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Open24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuConsoleWindow_OnClick" Header="{DynamicResource window_console_open_window}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="CodeBlock28" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuWebServerUrl_OnClick" Header="{DynamicResource menu_view_webserver_url}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Server24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuQueueBrowser_OnClick" Header="{DynamicResource menu_song_requests_queue_browser}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Globe24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+
+                        <ui:DropDownButton
+                            MinWidth="72"
+                            Margin="0,0,4,0"
+                            Padding="12,6"
+                            Appearance="Transparent"
+                            Content="{DynamicResource menu_twitch}"
+                            FontSize="13"
                             Visibility="Collapsed">
-                            <TextBlock
-                                x:Name="PsaBadgeText"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="10"
-                                FontWeight="SemiBold"
-                                Foreground="White"
-                                Text="0" />
-                        </Border>
-                    </Grid>
-                </StackPanel>
-            </ui:TitleBar.TrailingContent>
-        </ui:TitleBar>
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu>
+                                    <MenuItem Click="MenuTwitchLogin_OnClick" Header="{DynamicResource menu_twitch_login}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Person24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        x:Name="MiTwitchConnect"
+                                        Click="MenuTwitchConnect_OnClick"
+                                        Header="{DynamicResource menu_twitch_connect}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="PlugConnected24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        x:Name="MiTwitchCheckOnlineStatus"
+                                        Click="MenuTwitchOnline_OnClick"
+                                        Header="{DynamicResource menu_twitch_check_online_status}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Live24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+
+                        <ui:DropDownButton
+                            MinWidth="72"
+                            Padding="12,6"
+                            Appearance="Transparent"
+                            Content="{DynamicResource menu_file_help}"
+                            FontSize="13"
+                            Visibility="Collapsed">
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu x:Name="HelpContextMenu">
+                                    <MenuItem Click="MenuPatchNotes_OnClick" Header="{DynamicResource menu_file_patchnotes}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="MailRead24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuSetupWizard_OnClick" Header="{DynamicResource menu_setup_wizard}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Clipboard24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuFaq_OnClick" Header="{DynamicResource menu_faq}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="QuestionCircle24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuGitHub_OnClick" Header="{DynamicResource menu_github}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="CodeBlock28" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuDiscord_OnClick" Header="{DynamicResource menu_discord}">
+                                        <MenuItem.Icon>
+                                            <Viewbox Width="14" Height="14">
+                                                <Path
+                                                    Data="{StaticResource IconDiscordGeometry}"
+                                                    Fill="{StaticResource BrandDiscordBrush}"
+                                                    Stretch="Uniform" />
+                                            </Viewbox>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Click="MenuLogFolder_OnClick" Header="{DynamicResource menu_help_log_folder}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Folder24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuAppFolder_OnClick" Header="{DynamicResource menu_help_app_folder}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="FolderOpen24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuCheckUpdates_OnClick" Header="{DynamicResource menu_check_for_updates}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="ArrowSync24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+
+                        <Grid
+                            Width="36"
+                            Height="32"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center">
+                            <ui:Button
+                                x:Name="BtnPsa"
+                                Padding="6"
+                                Appearance="Transparent"
+                                Click="BtnPsa_OnClick"
+                                ToolTip="{DynamicResource menu_notifications}">
+                                <ui:SymbolIcon
+                                    x:Name="PsaBadgeIcon"
+                                    Width="16"
+                                    Height="16"
+                                    Symbol="Alert24" />
+                            </ui:Button>
+                            <Border
+                                x:Name="PsaBadgePill"
+                                Height="16"
+                                MinWidth="16"
+                                Margin="0,-2,-2,0"
+                                Padding="4,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Background="IndianRed"
+                                CornerRadius="8"
+                                Visibility="Collapsed">
+                                <TextBlock
+                                    x:Name="PsaBadgeText"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="10"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"
+                                    Text="0" />
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </ui:TitleBar.TrailingContent>
+            </ui:TitleBar>
+            <StackPanel
+                x:Name="TitleBarNowPlaying"
+                MaxWidth="380"
+                Margin="200,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Cursor="Hand"
+                MouseLeftButtonUp="TitleBarNowPlaying_OnMouseLeftButtonUp">
+                <TextBlock
+                    x:Name="TxtTitleBarNowPlaying"
+                    HorizontalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    TextTrimming="CharacterEllipsis" />
+                <TextBlock
+                    x:Name="TxtTitleBarUpNext"
+                    HorizontalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Opacity="0.8"
+                    TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+        </Grid>
 
         <!--  Persistent Spotify API / rate-limit banner  -->
         <Border
@@ -313,6 +420,14 @@
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
+                    Content="{DynamicResource menu_file_help}"
+                    TargetPageTag="help"
+                    TargetPageType="{x:Type pages:HelpPage}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="QuestionCircle24" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
                     Content="{DynamicResource menu_help_about}"
                     TargetPageTag="about"
                     TargetPageType="{x:Type pages:AboutPage}">
@@ -351,6 +466,7 @@
                                 Appearance="Transparent"
                                 Click="BtnPsaMarkAllRead_OnClick"
                                 Content="All"
+                                Icon="{ui:SymbolIcon Checkmark24}"
                                 ToolTip="{DynamicResource common_mark_all_read}"
                                 Visibility="Collapsed" />
                             <ui:Button
@@ -410,9 +526,12 @@
                         Text="{Binding ApiMetrics.TotalRequestsPerMinute, StringFormat=API: {0} rpm}"
                         Visibility="{Binding ApiMetrics.ShowTotalInStatusbar, Converter={StaticResource BooleanToVisibilityConverter}}" />
                     <Button
+                        x:Name="BtnStatusTwitchApi"
                         Margin="0,0,12,0"
                         VerticalAlignment="Center"
                         Click="ServiceIcon_Click"
+                        ContextMenu="{StaticResource TwitchStatusContextMenu}"
+                        ContextMenuService.Placement="Top"
                         Style="{StaticResource IconOnlyButton}"
                         Tag="TwitchAPI"
                         ToolTip=""
@@ -435,9 +554,12 @@
                         </StackPanel>
                     </Button>
                     <Button
+                        x:Name="BtnStatusTwitchBot"
                         Margin="0,0,12,0"
                         VerticalAlignment="Center"
                         Click="ServiceIcon_Click"
+                        ContextMenu="{StaticResource TwitchStatusContextMenu}"
+                        ContextMenuService.Placement="Top"
                         Style="{StaticResource IconOnlyButton}"
                         Tag="TwitchBot"
                         ToolTip=""
@@ -682,7 +804,8 @@
                             Appearance="Transparent"
                             Click="TourOverlay_OnSkip"
                             Content="{DynamicResource setup_skip}"
-                            DockPanel.Dock="Left" />
+                            DockPanel.Dock="Left"
+                            Icon="{ui:SymbolIcon Dismiss24}" />
                         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
                             <ui:Button
                                 x:Name="BtnTourBack"
@@ -690,13 +813,15 @@
                                 Margin="0,0,8,0"
                                 Appearance="Secondary"
                                 Click="BtnTourBack_OnClick"
-                                Content="{DynamicResource setup_back}" />
+                                Content="{DynamicResource setup_back}"
+                                Icon="{ui:SymbolIcon ArrowLeft24}" />
                             <ui:Button
                                 x:Name="BtnTourNext"
                                 MinWidth="80"
                                 Appearance="Primary"
                                 Click="BtnTourNext_OnClick"
-                                Content="{DynamicResource setup_next}" />
+                                Content="{DynamicResource setup_next}"
+                                Icon="{ui:SymbolIcon ArrowRight24}" />
                         </StackPanel>
                     </DockPanel>
                 </StackPanel>
@@ -713,11 +838,27 @@
             <tray:NotifyIcon.Menu>
                 <ContextMenu>
                     <MenuItem Header="{DynamicResource menu_twitch}">
-                        <MenuItem Click="TrayConnect_OnClick" Header="{DynamicResource menu_twitch_connect}" />
-                        <MenuItem Click="TrayDisconnect_OnClick" Header="{DynamicResource menu_disconnect}" />
+                        <MenuItem Click="TrayConnect_OnClick" Header="{DynamicResource menu_twitch_connect}">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon FontSize="16" Symbol="PlugConnected24" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Click="TrayDisconnect_OnClick" Header="{DynamicResource menu_disconnect}">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon FontSize="16" Symbol="PlugDisconnected24" />
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </MenuItem>
-                    <MenuItem Click="TrayShow_OnClick" Header="{DynamicResource common_show}" />
-                    <MenuItem Click="TrayExit_OnClick" Header="{DynamicResource menu_file_exit}" />
+                    <MenuItem Click="TrayShow_OnClick" Header="{DynamicResource common_show}">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon FontSize="16" Symbol="Window24" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Click="TrayExit_OnClick" Header="{DynamicResource menu_file_exit}">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon FontSize="16" Symbol="SignOut24" />
+                        </MenuItem.Icon>
+                    </MenuItem>
                 </ContextMenu>
             </tray:NotifyIcon.Menu>
         </tray:NotifyIcon>

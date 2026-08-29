@@ -89,7 +89,8 @@
                                 Click="BtnDismissChecklist_Click"
                                 Content="{DynamicResource setup_checklist_dismiss}"
                                 DockPanel.Dock="Right"
-                                FontSize="12" />
+                                FontSize="12"
+                                Icon="{ui:SymbolIcon Dismiss24}" />
                             <TextBlock
                                 FontSize="14"
                                 FontWeight="SemiBold"
@@ -131,12 +132,14 @@
                                 Margin="0,0,8,0"
                                 Appearance="Primary"
                                 Click="BtnGetApiToken_Click"
-                                Content="{DynamicResource setup_token_get}" />
+                                Content="{DynamicResource setup_token_get}"
+                                Icon="{ui:SymbolIcon Key24}" />
                             <ui:Button
                                 MinWidth="110"
                                 Appearance="Secondary"
                                 Click="BtnApiTokenSettings_Click"
-                                Content="{DynamicResource menu_file_settings}" />
+                                Content="{DynamicResource menu_file_settings}"
+                                Icon="{ui:SymbolIcon Settings24}" />
                         </StackPanel>
                     </StackPanel>
                 </ui:Card>
@@ -397,6 +400,8 @@
                 Appearance="Secondary"
                 Click="BtnSupport_Click"
                 Content="{DynamicResource cta_premium}"
+                Icon="{ui:SymbolIcon Heart24,
+                                     Filled=True}"
                 ToolTip="{DynamicResource cta_premium_tooltip}" />
 
             <!--  Kept for code-behind / localization hooks  -->

@@ -1324,6 +1324,14 @@
     <value>Multiple artists matched your search. Select one to block.</value>
     <comment>Context: Message in blocklist dialog when search returns multiple artists.</comment>
   </data>
+  <data name="window_blocklist_select_song" xml:space="preserve">
+    <value>Select Song</value>
+    <comment>Context: Dialog title when multiple songs match search (choose one to block).</comment>
+  </data>
+  <data name="window_blocklist_multiple_songs_match" xml:space="preserve">
+    <value>Multiple songs matched your search. Select one to block.</value>
+    <comment>Context: Message in blocklist dialog when search returns multiple songs.</comment>
+  </data>
   <data name="window_blocklist_block_selected" xml:space="preserve">
     <value>Block selected</value>
     <comment>Context: Button in blocklist artist-resolve dialog to block selected artist(s).</comment>
@@ -1447,7 +1455,8 @@
     <value>Refund Conditions</value>
   </data>
   <data name="window_settings_refund_conditions_info" xml:space="preserve">
-    <value>To be able to refund points the Reward has to be created through Songify!</value>
+    <value>Failed requests are refunded automatically when the matching condition is on. The channel-point reward must be created in Songify (not in the Twitch dashboard) — Twitch only lets the creating app cancel redemptions.</value>
+    <comment>Context: Settings → Twitch → Refund Conditions explainer.</comment>
   </data>
   <data name="window_settings_poll_title" xml:space="preserve">
     <value>Poll Title</value>
@@ -1926,6 +1935,10 @@
     <value>Search Spotify artist…</value>
     <comment>Context: Placeholder in artist search box (Spotify lookup).</comment>
   </data>
+  <data name="window_blocklist_search_song_placeholder" xml:space="preserve">
+    <value>Search Spotify song or paste a link…</value>
+    <comment>Context: Placeholder in song search box (Spotify lookup or track URL).</comment>
+  </data>
   <data name="window_blocklist_filter_artists" xml:space="preserve">
     <value>Filter artists…</value>
     <comment>Context: Placeholder for filtering the artists list.</comment>
@@ -2049,6 +2062,10 @@
   <data name="window_main_status_twitch_bot" xml:space="preserve">
     <value>Twitch Bot</value>
     <comment>Context: Status bar label for Twitch chat bot connection.</comment>
+  </data>
+  <data name="window_main_status_twitch_click_hint" xml:space="preserve">
+    <value>Click for Login, Connect, and live status</value>
+    <comment>Context: Status-bar tooltip hint that Twitch chips open the Twitch actions menu.</comment>
   </data>
   <data name="window_main_status_spotify" xml:space="preserve">
     <value>Spotify</value>
@@ -2399,6 +2416,14 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
   <data name="window_blocklist_search_failed" xml:space="preserve">
     <value>Failed to search Spotify for that artist.</value>
     <comment>Context: Dialog when Spotify artist search fails.</comment>
+  </data>
+  <data name="window_blocklist_song_not_found" xml:space="preserve">
+    <value>Could not find a song matching that name on Spotify.</value>
+    <comment>Context: Dialog when Spotify song search finds no match.</comment>
+  </data>
+  <data name="window_blocklist_search_song_failed" xml:space="preserve">
+    <value>Failed to search Spotify for that song.</value>
+    <comment>Context: Dialog when Spotify song search fails.</comment>
   </data>
   <data name="window_blocklist_spotify_refresh_hint" xml:space="preserve">
     <value>Spotify is not connected. Connect Spotify to refresh artist IDs.</value>
@@ -2878,5 +2903,41 @@ You can still open Songify Premium any time from Home or About.</value>
   <data name="window_queue_detached_body" xml:space="preserve">
     <value>The queue is open in a separate window so you can keep it visible while you use the rest of Songify. Close that window to bring it back here.</value>
     <comment>Context: Body on Queue page while the queue is popped out.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_messages" xml:space="preserve">
+    <value>Ignore bot messages</value>
+    <comment>Context: Settings → Twitch toggle. Skip chat commands from bots.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_messages_hint" xml:space="preserve">
+    <value>Nightbot, StreamElements, Fossabot, and other known bots are ignored automatically. Names on the list below are always skipped, including your own.</value>
+    <comment>Context: Settings → Twitch hint under Ignore bot messages.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_placeholder" xml:space="preserve">
+    <value>Username to ignore</value>
+    <comment>Context: Placeholder for adding a custom ignored chat login.</comment>
+  </data>
+  <data name="window_help_subtitle" xml:space="preserve">
+    <value>Guides, updates, and folders.</value>
+    <comment>Context: Help page subtitle in the sidebar.</comment>
+  </data>
+  <data name="window_settings_appearance_accent" xml:space="preserve">
+    <value>Accent color</value>
+    <comment>Context: Settings → Appearance row title.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_hint" xml:space="preserve">
+    <value>Pick a color or leave System to use the Windows accent.</value>
+    <comment>Context: Settings → Appearance accent hint.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_system" xml:space="preserve">
+    <value>System</value>
+    <comment>Context: Accent swatch that uses the Windows accent color.</comment>
+  </data>
+  <data name="window_titlebar_up_next" xml:space="preserve">
+    <value>Up next: {0}</value>
+    <comment>Context: Compact title-bar next-song line. {0} is artist — title.</comment>
+  </data>
+  <data name="window_blocklist_search_list" xml:space="preserve">
+    <value>Search this list</value>
+    <comment>Context: Placeholder for the sticky search field on the blocklist.</comment>
   </data>
 </root>

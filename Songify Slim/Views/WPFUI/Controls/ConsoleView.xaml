@@ -18,11 +18,13 @@
                 Margin="0,0,12,0"
                 Appearance="Secondary"
                 Click="BtnClearConsole_Click"
-                Content="{DynamicResource window_console_clear}" />
+                Content="{DynamicResource window_console_clear}"
+                Icon="{ui:SymbolIcon Delete24}" />
             <ui:Button
                 Appearance="Secondary"
                 Click="BtnRefreshMetrics_Click"
-                Content="{DynamicResource window_console_refresh_metrics}" />
+                Content="{DynamicResource window_console_refresh_metrics}"
+                Icon="{ui:SymbolIcon ArrowSync24}" />
         </StackPanel>
 
         <TabControl

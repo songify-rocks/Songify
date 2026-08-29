@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:userControls="clr-namespace:Songify_Slim.UserControls"
     Title="{DynamicResource window_userlist_title}"
     ScrollViewer.CanContentScroll="False"
     ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -42,6 +43,9 @@
             <DataGrid.ContextMenu>
                 <ContextMenu>
                     <MenuItem Click="MenuItem_BlockSr_Click">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon FontSize="16" Symbol="PersonProhibited24" />
+                        </MenuItem.Icon>
                         <MenuItem.Style>
                             <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="MenuItem">
                                 <Style.Triggers>
@@ -61,18 +65,24 @@
                 <DataGridTemplateColumn Width="Auto" Header="{DynamicResource window_userlist_sr}">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Text" Value="✓" />
+                            <ui:SymbolIcon
+                                Width="16"
+                                Height="16"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">
+                                <ui:SymbolIcon.Style>
+                                    <Style TargetType="ui:SymbolIcon">
+                                        <Setter Property="Symbol" Value="Checkmark24" />
+                                        <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding IsSrBlocked}" Value="True">
-                                                <Setter Property="Text" Value="⛔" />
+                                                <Setter Property="Symbol" Value="PersonProhibited24" />
+                                                <Setter Property="Foreground" Value="{DynamicResource SystemFillColorCriticalBrush}" />
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
+                                </ui:SymbolIcon.Style>
+                            </ui:SymbolIcon>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
@@ -80,10 +90,32 @@
                     Width="*"
                     Binding="{Binding DisplayName, Mode=OneWay}"
                     Header="{DynamicResource window_userlist_name}" />
-                <DataGridTextColumn
+                <DataGridTemplateColumn
                     Width="*"
-                    Binding="{Binding ReadableUserLevel, Mode=OneWay}"
-                    Header="{DynamicResource window_userlist_user_levels}" />
+                    Header="{DynamicResource window_userlist_user_levels}">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <ItemsControl
+                                Margin="0,2"
+                                ItemsSource="{Binding UserLevels}"
+                                ToolTip="{Binding ReadableUserLevel}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <userControls:UcUserLevelItem
+                                            IsRemovable="False"
+                                            LongName="False"
+                                            UserLevel="{Binding}" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
                 <DataGridTemplateColumn
                     Width="Auto"
                     MinWidth="70"

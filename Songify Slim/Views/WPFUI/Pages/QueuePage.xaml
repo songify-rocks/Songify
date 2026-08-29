@@ -63,12 +63,14 @@
                     Appearance="Secondary"
                     Click="BtnDetachQueue_Click"
                     Content="{DynamicResource window_queue_pop_out}"
+                    Icon="{ui:SymbolIcon Open24}"
                     ToolTip="{DynamicResource window_queue_pop_out_tooltip}" />
                 <ui:Button
                     x:Name="BtnClearQueue"
                     Appearance="Secondary"
                     Command="{Binding ClearQueueCommand}"
-                    Content="{DynamicResource menu_queue_clear}" />
+                    Content="{DynamicResource menu_queue_clear}"
+                    Icon="{ui:SymbolIcon Delete24}" />
             </StackPanel>
         </Grid>
         <!--  Fixed row: currently playing (compact; Border avoids Card Content-set-twice designer issue)  -->
@@ -361,13 +363,15 @@
                                         Appearance="Secondary"
                                         Command="{Binding DataContext.SkipCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                         CommandParameter="{Binding}"
-                                        Content="{DynamicResource window_queue_skip_song}" />
+                                        Content="{DynamicResource window_queue_skip_song}"
+                                        Icon="{ui:SymbolIcon Next24}" />
                                     <ui:Button
                                         Margin="8,0,0,0"
                                         Appearance="Secondary"
                                         Command="{Binding DataContext.AddToFavoritesCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                         CommandParameter="{Binding}"
-                                        Content="♥" />
+                                        Icon="{ui:SymbolIcon Heart24}"
+                                        ToolTip="{DynamicResource window_queue_add_to_favorite_playlist}" />
                                 </StackPanel>
                             </Grid>
                         </ui:Card>
@@ -400,7 +404,8 @@
                     HorizontalAlignment="Left"
                     Appearance="Primary"
                     Click="BtnShowQueueWindow_Click"
-                    Content="{DynamicResource window_console_show_window}" />
+                    Content="{DynamicResource window_console_show_window}"
+                    Icon="{ui:SymbolIcon Open24}" />
             </StackPanel>
         </ui:Card>
     </Grid>

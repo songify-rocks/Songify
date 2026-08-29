@@ -67,7 +67,8 @@
                                 Appearance="Secondary"
                                 Click="ImportBrowse_Click"
                                 Content="{DynamicResource common_browse}"
-                                DockPanel.Dock="Right" />
+                                DockPanel.Dock="Right"
+                                Icon="{ui:SymbolIcon FolderOpen24}" />
                             <ui:TextBox
                                 x:Name="TbImportFilePath"
                                 IsReadOnly="True"
@@ -95,7 +96,8 @@
                             HorizontalAlignment="Right"
                             Appearance="Primary"
                             Click="ImportLoad_Click"
-                            Content="{DynamicResource window_artistimport_load_csv}" />
+                            Content="{DynamicResource window_artistimport_load_csv}"
+                            Icon="{ui:SymbolIcon ArrowDownload24}" />
                     </StackPanel>
                 </ui:Card>
 
@@ -207,6 +209,7 @@
                     Appearance="Secondary"
                     Click="ImportCancel_Click"
                     Content="{DynamicResource common_cancel}"
+                    Icon="{ui:SymbolIcon Dismiss24}"
                     IsCancel="True" />
                 <ui:Button
                     x:Name="BtnImportConfirm"
@@ -214,6 +217,7 @@
                     Appearance="Primary"
                     Click="ImportConfirm_Click"
                     Content="{DynamicResource window_cloudimport_import}"
+                    Icon="{ui:SymbolIcon ArrowDownload24}"
                     IsDefault="True"
                     IsEnabled="False" />
             </StackPanel>

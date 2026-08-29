@@ -1,0 +1,116 @@
+<Page
+    x:Class="Songify_Slim.Views.WPFUI.Pages.HelpPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{DynamicResource menu_file_help}"
+    ScrollViewer.CanContentScroll="False"
+    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        PanningMode="VerticalOnly"
+        VerticalScrollBarVisibility="Auto">
+        <StackPanel MaxWidth="640" Margin="24">
+            <TextBlock
+                FontSize="28"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="{DynamicResource menu_file_help}" />
+            <TextBlock
+                Margin="0,4,0,20"
+                FontSize="13"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                Text="{DynamicResource window_help_subtitle}"
+                TextWrapping="Wrap" />
+
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnPatchNotes_Click"
+                    Content="{DynamicResource menu_file_patchnotes}"
+                    Icon="{ui:SymbolIcon MailRead24}" />
+            </ui:Card>
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnSetupWizard_Click"
+                    Content="{DynamicResource menu_setup_wizard}"
+                    Icon="{ui:SymbolIcon Clipboard24}" />
+            </ui:Card>
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnFaq_Click"
+                    Content="{DynamicResource menu_faq}"
+                    Icon="{ui:SymbolIcon QuestionCircle24}" />
+            </ui:Card>
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnGitHub_Click"
+                    Content="{DynamicResource menu_github}"
+                    Icon="{ui:SymbolIcon CodeBlock28}" />
+            </ui:Card>
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnDiscord_Click">
+                    <StackPanel Orientation="Horizontal">
+                        <Viewbox
+                            Width="16"
+                            Height="16"
+                            VerticalAlignment="Center">
+                            <Path
+                                Data="{StaticResource IconDiscordGeometry}"
+                                Fill="{StaticResource BrandDiscordBrush}"
+                                Stretch="Uniform" />
+                        </Viewbox>
+                        <TextBlock
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center"
+                            Text="{DynamicResource menu_discord}" />
+                    </StackPanel>
+                </ui:Button>
+            </ui:Card>
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnLogFolder_Click"
+                    Content="{DynamicResource menu_help_log_folder}"
+                    Icon="{ui:SymbolIcon Folder24}" />
+            </ui:Card>
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnAppFolder_Click"
+                    Content="{DynamicResource menu_help_app_folder}"
+                    Icon="{ui:SymbolIcon FolderOpen24}" />
+            </ui:Card>
+            <ui:Card Margin="0,0,0,10" Padding="4">
+                <ui:Button
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    Appearance="Transparent"
+                    Click="BtnCheckUpdates_Click"
+                    Content="{DynamicResource menu_check_for_updates}"
+                    Icon="{ui:SymbolIcon ArrowSync24}" />
+            </ui:Card>
+        </StackPanel>
+    </ScrollViewer>
+</Page>
