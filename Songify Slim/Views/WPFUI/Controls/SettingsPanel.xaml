@@ -1137,24 +1137,11 @@
                                             TextWrapping="Wrap" />
                                     </ui:ToggleSwitch.Content>
                                 </ui:ToggleSwitch>
-                                <ui:ToggleSwitch
-                                    x:Name="TglIgnoreBotMessages"
-                                    Margin="0,0,0,4"
-                                    Checked="Tgl_IgnoreBotMessages_Toggled"
-                                    Unchecked="Tgl_IgnoreBotMessages_Toggled">
-                                    <ui:ToggleSwitch.Content>
-                                        <StackPanel Orientation="Horizontal">
-                                            <ui:SymbolIcon
-                                                Margin="0,0,8,0"
-                                                VerticalAlignment="Center"
-                                                Symbol="Bot24" />
-                                            <TextBlock
-                                                VerticalAlignment="Center"
-                                                Text="{DynamicResource window_settings_ignore_bot_messages}"
-                                                TextWrapping="Wrap" />
-                                        </StackPanel>
-                                    </ui:ToggleSwitch.Content>
-                                </ui:ToggleSwitch>
+                                <TextBlock
+                                    Margin="0,8,0,4"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{DynamicResource window_settings_ignore_bot_messages}"
+                                    TextWrapping="Wrap" />
                                 <TextBlock
                                     Margin="0,0,0,8"
                                     FontSize="12"
@@ -1179,6 +1166,13 @@
                                         Content="{DynamicResource common_add}"
                                         Icon="{ui:SymbolIcon Add24}" />
                                 </Grid>
+                                <ui:Button
+                                    Margin="0,8,0,0"
+                                    HorizontalAlignment="Left"
+                                    Appearance="Secondary"
+                                    Click="BtnAddKnownBots_Click"
+                                    Content="{DynamicResource window_settings_ignore_add_known_bots}"
+                                    Icon="{ui:SymbolIcon Bot24}" />
                                 <ItemsControl
                                     x:Name="IcIgnoredChatUsers"
                                     Margin="0,8,0,0">

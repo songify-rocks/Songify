@@ -1,13 +1,13 @@
 using System;
-using System.Linq;
+using System.Collections.Generic;
 using Songify_Slim.Util.Configuration;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 
 namespace Songify_Slim.Util.Songify.Twitch;
 
 /// <summary>
-/// Skips chat commands from known bots, the linked Songify bot account, and a user-defined ignore list.
-/// Automatic bot detection never ignores the broadcaster. Names on the custom list are always skipped.
+/// Skips chat commands from names on the ignore list (including the broadcaster)
+/// and from the linked Songify bot account.
 /// </summary>
 internal static class TwitchChatIgnore
 {
@@ -41,39 +41,44 @@ internal static class TwitchChatIgnore
         if (msg == null)
             return false;
 
-        // Explicit ignore list always wins — including the broadcaster.
         if (IsOnCustomIgnoreList(msg))
             return true;
 
-        if (!Settings.IgnoreBotMessages)
-            return false;
-
-        // Don't let automatic bot detection lock the streamer out of their own commands.
-        if (msg.IsBroadcaster)
-            return false;
-
-        string login = msg.ChatterUserLogin;
-        if (string.IsNullOrWhiteSpace(login))
-            return false;
-
-        if (Settings.TwitchBotUser != null)
-        {
-            if (!string.IsNullOrEmpty(Settings.TwitchBotUser.Id) &&
-                string.Equals(msg.ChatterUserId, Settings.TwitchBotUser.Id, StringComparison.Ordinal))
-                return true;
-
-            if (string.Equals(login, Settings.TwitchBotUser.Login, StringComparison.OrdinalIgnoreCase))
-                return true;
-        }
-
-        if (DefaultBotLogins.Any(b => string.Equals(b, login, StringComparison.OrdinalIgnoreCase)))
-            return true;
-
-        if (msg.Badges != null &&
-            msg.Badges.Any(b => string.Equals(b.SetId, "bot", StringComparison.OrdinalIgnoreCase)))
+        // The connected Songify bot account posts announcements, not viewer requests.
+        if (IsLinkedSongifyBot(msg) && !msg.IsBroadcaster)
             return true;
 
         return false;
+    }
+
+    /// <summary>Adds known bot logins that are not already on the list. Returns how many were added.</summary>
+    internal static int MergeKnownBots(List<string> list)
+    {
+        if (list == null)
+            return 0;
+
+        int added = 0;
+        foreach (string bot in DefaultBotLogins)
+        {
+            if (list.Exists(u => string.Equals(NormalizeIgnoreName(u), bot, StringComparison.OrdinalIgnoreCase)))
+                continue;
+            list.Add(bot);
+            added++;
+        }
+
+        return added;
+    }
+
+    private static bool IsLinkedSongifyBot(ChannelChatMessage msg)
+    {
+        if (Settings.TwitchBotUser == null)
+            return false;
+
+        if (!string.IsNullOrEmpty(Settings.TwitchBotUser.Id) &&
+            string.Equals(msg.ChatterUserId, Settings.TwitchBotUser.Id, StringComparison.Ordinal))
+            return true;
+
+        return string.Equals(msg.ChatterUserLogin, Settings.TwitchBotUser.Login, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsOnCustomIgnoreList(ChannelChatMessage msg)

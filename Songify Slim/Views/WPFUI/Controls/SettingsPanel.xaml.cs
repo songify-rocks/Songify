@@ -409,8 +409,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
             TglUseDefaultBrowser.IsChecked = Settings.UseDefaultBrowser;
             Tglsw_OnlyAddToPlaylist.IsChecked = Settings.AddSrtoPlaylistOnly;
             TglSharedChat.IsChecked = Settings.SharedChatEnabled;
-            if (TglIgnoreBotMessages != null)
-                TglIgnoreBotMessages.IsChecked = Settings.IgnoreBotMessages;
             RefreshIgnoredChatUsers();
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
@@ -902,16 +900,40 @@ namespace Songify_Slim.Views.WPFUI.Controls
             // set the apps directory as the default directory
             fbd.SelectedPath = AppPaths.GetAppDirectory();
             if (fbd.ShowDialog() != DialogResult.OK) return;
-            // Get the selected folder path and call the config handler
             string selectedFolder = fbd.SelectedPath;
-            ConfigHandler.ReadConfig(selectedFolder);
+            if (!ConfigHandler.HasImportableFiles(selectedFolder))
+            {
+                await ShowMsgAsync(
+                    Loc("common_error", "Error"),
+                    Loc("window_settings_config_import_empty", "No Songify config files were found in that folder."));
+                return;
+            }
+
+            Configuration incoming = ConfigHandler.LoadForImport(selectedFolder);
+            Configuration local = ConfigHandler.SnapshotLocalForCompare();
+            Window_CloudImportPreview preview = new(local, incoming, ImportPreviewKind.Backup)
+            {
+                Owner = Window.GetWindow(this),
+                WindowStartupLocation = WindowStartupLocation.CenterOwner
+            };
+
+            if (preview.DiffCount == 0)
+            {
+                preview.ShowDialog();
+                return;
+            }
+
+            preview.ShowDialog();
+            if (!preview.IsConfirmed)
+                return;
+
             try
             {
-                await SetControls();
+                await Settings.ApplySelectedImport(incoming, preview.SelectedPaths, preserveSecrets: false);
             }
             catch (Exception ex)
             {
-                Logger.Log(LogLevel.Error, LogSource.Core, "Error settings controls", ex);
+                Logger.Log(LogLevel.Error, LogSource.Core, "Error importing config", ex);
             }
         }
 
@@ -3251,13 +3273,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Settings.SharedChatEnabled = ((ToggleSwitch)sender).IsChecked == true;
         }
 
-        private void Tgl_IgnoreBotMessages_Toggled(object sender, RoutedEventArgs e)
-        {
-            if (IgnoreControlEvents)
-                return;
-            Settings.IgnoreBotMessages = ((ToggleSwitch)sender).IsChecked == true;
-        }
-
         private void TbIgnoreChatUser_OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key != System.Windows.Input.Key.Enter)
@@ -3268,6 +3283,19 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private void BtnAddIgnoredChatUser_Click(object sender, RoutedEventArgs e)
             => AddIgnoredChatUserFromInput();
+
+        private void BtnAddKnownBots_Click(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+
+            List<string> list = [.. Settings.IgnoredChatUsers ?? []];
+            if (TwitchChatIgnore.MergeKnownBots(list) == 0)
+                return;
+
+            Settings.IgnoredChatUsers = list;
+            RefreshIgnoredChatUsers();
+        }
 
         private void AddIgnoredChatUserFromInput()
         {

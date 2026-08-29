@@ -1352,7 +1352,7 @@
     <value>Cloud-Einstellungs-Importer</value>
   </data>
   <data name="window_cloudimport_intro" xml:space="preserve">
-    <value>Sie sind dabei, Einstellungen aus der Cloud zu importieren.</value>
+    <value>Wähle, welche Cloud-Einstellungen überschrieben werden sollen. Nicht ausgewählte Werte bleiben unverändert.</value>
   </data>
   <data name="window_cloudimport_import" xml:space="preserve">
     <value>Importieren</value>
@@ -2244,6 +2244,54 @@ Das ist nicht Songify Premium und nicht das in Songify verknüpfte Wiedergabe-Ko
     <value>Keine Unterschiede gefunden.</value>
     <comment>Context: Shown in cloud import preview when local and cloud configs match.</comment>
   </data>
+  <data name="window_backupimport_title" xml:space="preserve">
+    <value>Backup wiederherstellen</value>
+    <comment>Context: Title of the local config import picker.</comment>
+  </data>
+  <data name="window_backupimport_intro" xml:space="preserve">
+    <value>Wähle, welche Einstellungen aus diesem Backup überschrieben werden sollen. Nicht ausgewählte Werte bleiben unverändert.</value>
+    <comment>Context: Intro on the local config import picker.</comment>
+  </data>
+  <data name="window_import_select_all" xml:space="preserve">
+    <value>Alle auswählen</value>
+    <comment>Context: Button on config import picker.</comment>
+  </data>
+  <data name="window_import_select_none" xml:space="preserve">
+    <value>Keine auswählen</value>
+    <comment>Context: Button on config import picker.</comment>
+  </data>
+  <data name="window_import_selected_count" xml:space="preserve">
+    <value>{0} von {1} ausgewählt</value>
+    <comment>Context: Selection count on config import picker. {0} selected, {1} total.</comment>
+  </data>
+  <data name="window_import_group_app" xml:space="preserve">
+    <value>App-Einstellungen</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_bot" xml:space="preserve">
+    <value>Bot-Antworten</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_commands" xml:space="preserve">
+    <value>Twitch-Befehle</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_artists" xml:space="preserve">
+    <value>Blockierte Künstler</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_spotify" xml:space="preserve">
+    <value>Spotify-Konto</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_twitch" xml:space="preserve">
+    <value>Twitch-Konto</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_settings_config_import_empty" xml:space="preserve">
+    <value>In diesem Ordner wurden keine Songify-Konfigurationsdateien gefunden.</value>
+    <comment>Context: Error when the chosen backup folder has no YAML config files.</comment>
+  </data>
   <data name="window_artistimport_title" xml:space="preserve">
     <value>Künstler importieren</value>
     <comment>Context: Title of artist CSV import dialog from blocklist.</comment>
@@ -2585,5 +2633,21 @@ Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
   <data name="window_queue_detached_body" xml:space="preserve">
     <value>Die Queue ist in einem eigenen Fenster geöffnet, damit du sie sichtbar halten kannst. Schließe dieses Fenster, um sie hier wieder anzuzeigen.</value>
     <comment>Context: Body on Queue page while the queue is popped out.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_messages" xml:space="preserve">
+    <value>Ignorierte Chat-User</value>
+    <comment>Context: Settings → Twitch heading for the chat ignore list.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_messages_hint" xml:space="preserve">
+    <value>Befehle von diesen Namen werden übersprungen, auch von dir. Über „Bekannte Bots hinzufügen“ kommen Nightbot, StreamElements, SoundAlerts und andere auf die Liste — entferne Konten, die du als Relay für Songrequests nutzt.</value>
+    <comment>Context: Settings → Twitch hint under ignored chat users.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_placeholder" xml:space="preserve">
+    <value>Username zum Ignorieren</value>
+    <comment>Context: Placeholder for adding a custom ignored chat login.</comment>
+  </data>
+  <data name="window_settings_ignore_add_known_bots" xml:space="preserve">
+    <value>Bekannte Bots hinzufügen</value>
+    <comment>Context: Settings → Twitch button that inserts Nightbot, StreamElements, SoundAlerts, etc. into the ignore list.</comment>
   </data>
 </root>

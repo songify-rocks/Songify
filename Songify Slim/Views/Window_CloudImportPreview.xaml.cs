@@ -1,36 +1,67 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Media;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Views;
 
+public enum ImportPreviewKind
+{
+    Cloud,
+    Backup
+}
+
 /// <summary>
-/// Preview of cloud settings differences before import.
+/// Preview of settings differences before import, with per-item selection.
 /// </summary>
 public partial class Window_CloudImportPreview
 {
     public bool IsConfirmed { get; private set; }
     public int DiffCount { get; private set; }
+    public IReadOnlyList<string> SelectedPaths { get; private set; } = [];
 
-    public Window_CloudImportPreview(Configuration local, Configuration incoming)
+    private readonly List<ConfigDiffItem> _items = [];
+
+    public Window_CloudImportPreview(Configuration local, Configuration incoming, ImportPreviewKind kind = ImportPreviewKind.Cloud)
     {
         InitializeComponent();
         ThemeHandler.ApplyTheme();
-        PopulateDiff(local, incoming);
+        ApplyKind(kind);
+        PopulateDiff(local, incoming, includeCredentials: kind == ImportPreviewKind.Backup);
     }
 
     private static string Loc(string key, string fallback)
         => Application.Current?.TryFindResource(key) as string ?? fallback;
 
-    private void PopulateDiff(Configuration local, Configuration incoming)
+    private void ApplyKind(ImportPreviewKind kind)
     {
-        List<string> diffs = ConfigComparer.GetDifferences(local, incoming);
-        DiffCount = diffs.Count;
+        if (kind == ImportPreviewKind.Backup)
+        {
+            string title = Loc("window_backupimport_title", "Restore backup");
+            Title = title;
+            DlgTitleBar.Title = title;
+            TbIntro.Text = Loc(
+                "window_backupimport_intro",
+                "Choose which settings from this backup to overwrite. Unchecked items stay as they are.");
+        }
+        else
+        {
+            TbIntro.Text = Loc(
+                "window_cloudimport_intro",
+                "Choose which cloud settings to overwrite. Unchecked items stay as they are.");
+        }
+    }
+
+    private void PopulateDiff(Configuration local, Configuration incoming, bool includeCredentials)
+    {
+        _items.Clear();
+        _items.AddRange(ConfigComparer.GetDiffItems(local, incoming, includeCredentials));
+        DiffCount = _items.Count;
+
+        foreach (ConfigDiffItem item in _items)
+            item.PropertyChanged += DiffItemOnPropertyChanged;
 
         List<string> permissionWarnings = ConfigComparer.GetPermissionWideningWarnings(local, incoming);
         if (permissionWarnings.Count > 0)
@@ -47,90 +78,44 @@ public partial class Window_CloudImportPreview
             TbPermissionWarnings.Text = "";
         }
 
-        DiffTextBox.Document.Blocks.Clear();
-
-        if (diffs.Count == 0)
+        if (_items.Count == 0)
         {
-            DiffTextBox.Document.Blocks.Add(new Paragraph(new Run(
-                Loc("window_cloudimport_no_differences", "No differences detected."))));
+            DiffList.ItemsSource = null;
             BtnImport.IsEnabled = false;
+            TbSelectionCount.Text = Loc("window_cloudimport_no_differences", "No differences detected.");
             return;
         }
 
-        bool dark = IsDarkTheme();
-        Color oldBg = dark ? Color.FromRgb(0x4A, 0x1C, 0x1C) : Color.FromRgb(0xFF, 0xEB, 0xEB);
-        Color oldFg = dark ? Color.FromRgb(0xFF, 0x8A, 0x80) : Color.FromRgb(0xB7, 0x1C, 0x1C);
-        Color newBg = dark ? Color.FromRgb(0x1B, 0x3A, 0x1B) : Color.FromRgb(0xE6, 0xFF, 0xE6);
-        Color newFg = dark ? Color.FromRgb(0xA5, 0xD6, 0xA7) : Color.FromRgb(0x1B, 0x5E, 0x20);
-
-        foreach (string diff in diffs)
-        {
-            Paragraph paragraph = new()
-            {
-                Margin = new Thickness(0, 0, 0, 6)
-            };
-
-            string[] parts = diff.Split([": "], 2, StringSplitOptions.None);
-            if (parts.Length == 2)
-            {
-                paragraph.Inlines.Add(new Run(parts[0] + ": ")
-                {
-                    FontWeight = FontWeights.SemiBold
-                });
-
-                string[] valueParts = parts[1].Split([" → "], 2, StringSplitOptions.None);
-                if (valueParts.Length == 2)
-                {
-                    paragraph.Inlines.Add(CreateStyledBlock(valueParts[0], oldBg, oldFg));
-                    paragraph.Inlines.Add(new Run(" → "));
-                    paragraph.Inlines.Add(CreateStyledBlock(valueParts[1], newBg, newFg));
-                }
-                else
-                {
-                    paragraph.Inlines.Add(new Run(parts[1]));
-                }
-            }
-            else
-            {
-                paragraph.Inlines.Add(new Run(diff));
-            }
-
-            DiffTextBox.Document.Blocks.Add(paragraph);
-        }
+        DiffList.ItemsSource = ConfigComparer.GroupDiffs(_items);
+        RefreshSelectionUi();
     }
 
-    private static bool IsDarkTheme()
+    private void DiffItemOnPropertyChanged(object sender, PropertyChangedEventArgs e)
     {
-        try
-        {
-            return Settings.Theme is "Dark" or "BaseDark";
-        }
-        catch
-        {
-            return true;
-        }
+        if (e.PropertyName == nameof(ConfigDiffItem.IsSelected))
+            RefreshSelectionUi();
     }
 
-    private static InlineUIContainer CreateStyledBlock(string text, Color bg, Color fg)
+    private void RefreshSelectionUi()
     {
-        Border border = new()
-        {
-            Background = new SolidColorBrush(bg),
-            CornerRadius = new CornerRadius(4),
-            Padding = new Thickness(6, 1, 6, 1),
-            Margin = new Thickness(2, 0, 2, 0),
-            Child = new TextBlock
-            {
-                Text = text,
-                FontFamily = new FontFamily("Consolas"),
-                Foreground = new SolidColorBrush(fg),
-                VerticalAlignment = VerticalAlignment.Center
-            }
-        };
-        return new InlineUIContainer(border)
-        {
-            BaselineAlignment = BaselineAlignment.Center
-        };
+        int selected = _items.Count(i => i.IsSelected);
+        TbSelectionCount.Text = string.Format(
+            Loc("window_import_selected_count", "{0} of {1} selected"),
+            selected,
+            _items.Count);
+        BtnImport.IsEnabled = selected > 0;
+    }
+
+    private void BtnSelectAll_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (ConfigDiffItem item in _items)
+            item.IsSelected = true;
+    }
+
+    private void BtnSelectNone_Click(object sender, RoutedEventArgs e)
+    {
+        foreach (ConfigDiffItem item in _items)
+            item.IsSelected = false;
     }
 
     private void BtnCancel_Click(object sender, RoutedEventArgs e)
@@ -141,6 +126,10 @@ public partial class Window_CloudImportPreview
 
     private void BtnImport_Click(object sender, RoutedEventArgs e)
     {
+        SelectedPaths = _items.Where(i => i.IsSelected).Select(i => i.Path).ToList();
+        if (SelectedPaths.Count == 0)
+            return;
+
         IsConfirmed = true;
         Close();
     }

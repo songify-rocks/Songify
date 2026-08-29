@@ -1738,7 +1738,7 @@
     <value>Cloud Settings Importer</value>
   </data>
   <data name="window_cloudimport_intro" xml:space="preserve">
-    <value>You're about to import settings from the cloud.</value>
+    <value>Choose which cloud settings to overwrite. Unchecked items stay as they are.</value>
   </data>
   <data name="window_cloudimport_import" xml:space="preserve">
     <value>Import</value>
@@ -2561,6 +2561,54 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <value>No differences detected.</value>
     <comment>Context: Shown in cloud import preview when local and cloud configs match.</comment>
   </data>
+  <data name="window_backupimport_title" xml:space="preserve">
+    <value>Restore backup</value>
+    <comment>Context: Title of the local config import picker.</comment>
+  </data>
+  <data name="window_backupimport_intro" xml:space="preserve">
+    <value>Choose which settings from this backup to overwrite. Unchecked items stay as they are.</value>
+    <comment>Context: Intro on the local config import picker.</comment>
+  </data>
+  <data name="window_import_select_all" xml:space="preserve">
+    <value>Select all</value>
+    <comment>Context: Button on config import picker.</comment>
+  </data>
+  <data name="window_import_select_none" xml:space="preserve">
+    <value>Select none</value>
+    <comment>Context: Button on config import picker.</comment>
+  </data>
+  <data name="window_import_selected_count" xml:space="preserve">
+    <value>{0} of {1} selected</value>
+    <comment>Context: Selection count on config import picker. {0} selected, {1} total.</comment>
+  </data>
+  <data name="window_import_group_app" xml:space="preserve">
+    <value>App settings</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_bot" xml:space="preserve">
+    <value>Bot responses</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_commands" xml:space="preserve">
+    <value>Twitch commands</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_artists" xml:space="preserve">
+    <value>Blocked artists</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_spotify" xml:space="preserve">
+    <value>Spotify account</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_twitch" xml:space="preserve">
+    <value>Twitch account</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_settings_config_import_empty" xml:space="preserve">
+    <value>No Songify config files were found in that folder.</value>
+    <comment>Context: Error when the chosen backup folder has no YAML config files.</comment>
+  </data>
   <data name="window_artistimport_title" xml:space="preserve">
     <value>Import artists</value>
     <comment>Context: Title of artist CSV import dialog from blocklist.</comment>
@@ -2905,16 +2953,20 @@ You can still open Songify Premium any time from Home or About.</value>
     <comment>Context: Body on Queue page while the queue is popped out.</comment>
   </data>
   <data name="window_settings_ignore_bot_messages" xml:space="preserve">
-    <value>Ignore bot messages</value>
-    <comment>Context: Settings → Twitch toggle. Skip chat commands from bots.</comment>
+    <value>Ignored chat users</value>
+    <comment>Context: Settings → Twitch heading for the chat ignore list.</comment>
   </data>
   <data name="window_settings_ignore_bot_messages_hint" xml:space="preserve">
-    <value>Nightbot, StreamElements, Fossabot, and other known bots are ignored automatically. Names on the list below are always skipped, including your own.</value>
-    <comment>Context: Settings → Twitch hint under Ignore bot messages.</comment>
+    <value>Commands from these names are skipped, including your own. Add known bots, then remove any account you use as a song-request relay (for example SoundAlerts).</value>
+    <comment>Context: Settings → Twitch hint under ignored chat users.</comment>
   </data>
   <data name="window_settings_ignore_bot_placeholder" xml:space="preserve">
     <value>Username to ignore</value>
     <comment>Context: Placeholder for adding a custom ignored chat login.</comment>
+  </data>
+  <data name="window_settings_ignore_add_known_bots" xml:space="preserve">
+    <value>Add known bots</value>
+    <comment>Context: Settings → Twitch button that inserts Nightbot, StreamElements, SoundAlerts, etc. into the ignore list.</comment>
   </data>
   <data name="window_help_subtitle" xml:space="preserve">
     <value>Guides, updates, and folders.</value>

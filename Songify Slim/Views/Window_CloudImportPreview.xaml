@@ -6,8 +6,8 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Title="{DynamicResource window_cloudimport_title}"
-    Width="720"
-    Height="520"
+    Width="760"
+    Height="580"
     MinWidth="560"
     MinHeight="400"
     ExtendsContentIntoTitleBar="True"
@@ -24,7 +24,7 @@
         </Grid.RowDefinitions>
 
         <ui:TitleBar
-            Title="{DynamicResource window_cloudimport_title}"
+            x:Name="DlgTitleBar"
             ShowMaximize="False"
             ShowMinimize="False" />
 
@@ -32,10 +32,12 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
             <TextBlock
+                x:Name="TbIntro"
                 Margin="0,0,0,12"
                 FontSize="13"
                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -67,20 +69,72 @@
                 </StackPanel>
             </Border>
 
+            <DockPanel Grid.Row="2" Margin="0,0,0,8">
+                <ui:Button
+                    Margin="0,0,8,0"
+                    Appearance="Secondary"
+                    Click="BtnSelectAll_Click"
+                    Content="{DynamicResource window_import_select_all}" />
+                <ui:Button
+                    Appearance="Secondary"
+                    Click="BtnSelectNone_Click"
+                    Content="{DynamicResource window_import_select_none}" />
+                <TextBlock
+                    x:Name="TbSelectionCount"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}" />
+            </DockPanel>
+
             <ui:Card
-                Grid.Row="2"
+                Grid.Row="3"
                 Padding="0"
                 VerticalAlignment="Stretch">
-                <RichTextBox
-                    x:Name="DiffTextBox"
-                    Padding="12"
-                    Background="Transparent"
-                    BorderThickness="0"
-                    FontFamily="Consolas"
-                    FontSize="13"
-                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                    IsReadOnly="True"
-                    VerticalScrollBarVisibility="Auto" />
+                <ScrollViewer Padding="12" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl x:Name="DiffList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,0,14">
+                                    <TextBlock
+                                        Margin="0,0,0,6"
+                                        FontSize="13"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                        Text="{Binding Title}" />
+                                    <ItemsControl ItemsSource="{Binding Items}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <CheckBox
+                                                    Margin="0,0,0,8"
+                                                    VerticalContentAlignment="Top"
+                                                    IsChecked="{Binding IsSelected, Mode=TwoWay}">
+                                                    <StackPanel Margin="4,0,0,0">
+                                                        <TextBlock
+                                                            FontWeight="SemiBold"
+                                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                            Text="{Binding DisplayName}"
+                                                            TextWrapping="Wrap" />
+                                                        <TextBlock
+                                                            Margin="0,2,0,0"
+                                                            FontFamily="Consolas"
+                                                            FontSize="12"
+                                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                            TextWrapping="Wrap">
+                                                            <Run Text="{Binding OldText, Mode=OneWay}" />
+                                                            <Run Text=" → " />
+                                                            <Run Text="{Binding NewText, Mode=OneWay}" />
+                                                        </TextBlock>
+                                                    </StackPanel>
+                                                </CheckBox>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
             </ui:Card>
         </Grid>
 

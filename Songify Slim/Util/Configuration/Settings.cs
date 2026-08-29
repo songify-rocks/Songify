@@ -1568,12 +1568,63 @@ namespace Songify_Slim.Util.Configuration
             {
                 ConfigHandler.MigrateReleaseChannel(config.AppConfig);
                 ConfigHandler.MigrateRefundConditions(config.AppConfig);
+                ConfigHandler.MigrateIgnoreBotMessages(config.AppConfig);
             }
 
             CurrentConfig = config;
 
             ConfigHandler.WriteAllConfig(config);
             RebindTwitchCommands();
+        }
+
+        public static async Task ApplySelectedImport(Configuration incoming, IReadOnlyList<string> paths, bool preserveSecrets)
+        {
+            if (incoming == null || paths == null || paths.Count == 0)
+                return;
+
+            string existingApiKey = SongifyApiKey;
+            string existingWebServerPassword = WebServerPassword;
+            string existingYoutubeApiKey = YoutubeApiKey;
+
+            CurrentConfig ??= new Configuration();
+            CurrentConfig.AppConfig ??= new AppConfig();
+            CurrentConfig.BotConfig ??= new BotConfig();
+            CurrentConfig.TwitchCommands ??= new TwitchCommands { Commands = [] };
+
+            ConfigComparer.CopySelected(CurrentConfig, incoming, paths);
+
+            if (CurrentConfig.AppConfig != null)
+            {
+                ConfigHandler.MigrateReleaseChannel(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateRefundConditions(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateIgnoreBotMessages(CurrentConfig.AppConfig);
+            }
+
+            if (paths.Any(p => p.StartsWith("BlockedSpotifyArtists", StringComparison.OrdinalIgnoreCase)))
+            {
+                CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
+                CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
+                ArtistBlocklistStore.ReplaceAndUnload(CurrentConfig.BlockedSpotifyArtists.Artists);
+            }
+
+            if (preserveSecrets)
+            {
+                SongifyApiKey = existingApiKey;
+                WebServerPassword = existingWebServerPassword;
+                YoutubeApiKey = existingYoutubeApiKey;
+            }
+
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+            RebindTwitchCommands();
+
+            await Application.Current.Dispatcher.Invoke(async () =>
+            {
+                ThemeHandler.ApplyTheme();
+                LocalizationHelper.Apply(Language);
+                UiScaleHandler.Apply(UiScale);
+                await BlocklistUi.RefreshArtistsAsync();
+                await SettingsUi.RefreshAsync();
+            });
         }
 
         public static async Task ImportCloudSave(Configuration config)
@@ -1591,7 +1642,10 @@ namespace Songify_Slim.Util.Configuration
             CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
 
             if (CurrentConfig.AppConfig != null)
+            {
                 ConfigHandler.MigrateReleaseChannel(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateIgnoreBotMessages(CurrentConfig.AppConfig);
+            }
 
             // Older cloud saves may still keep artists on AppConfig; migrate into BlockedSpotifyArtists.
             List<BlockedArtist> legacyArtists = CurrentConfig.AppConfig?.ArtistBlacklist;

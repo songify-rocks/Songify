@@ -5,6 +5,7 @@ using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using System;
@@ -394,6 +395,20 @@ namespace Songify_Slim.Util.Configuration
             appConfig.RefundConditionsMigrated = true;
         }
 
+        /// <summary>
+        /// Known bots used to be ignored automatically. Copy them onto the editable list once
+        /// so existing installs keep the same behavior, then turn the toggle off permanently.
+        /// </summary>
+        internal static void MigrateIgnoreBotMessages(AppConfig appConfig)
+        {
+            if (appConfig == null || !appConfig.IgnoreBotMessages)
+                return;
+
+            appConfig.IgnoredChatUsers ??= [];
+            TwitchChatIgnore.MergeKnownBots(appConfig.IgnoredChatUsers);
+            appConfig.IgnoreBotMessages = false;
+        }
+
         private static T LoadOrCreateConfig<T>(string path, string fileName, IDeserializer deserializer) where T : new()
         {
             string yamlPath = Path.Combine(path, fileName + ".yaml");
@@ -471,6 +486,7 @@ namespace Songify_Slim.Util.Configuration
                         config.AppConfig.DownloadCover = true;
                         MigrateReleaseChannel(config.AppConfig);
                         MigrateRefundConditions(config.AppConfig);
+                        MigrateIgnoreBotMessages(config.AppConfig);
                         WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
@@ -545,6 +561,125 @@ namespace Songify_Slim.Util.Configuration
             Settings.Import(config);
             // Keep only compact ID/name indexes in RAM; full artist objects stay on disk until edited.
             ArtistBlocklistStore.InitializeFromConfigAndUnload();
+        }
+
+        /// <summary>Live settings plus blocked artists from disk, for import diffs.</summary>
+        public static Configuration SnapshotLocalForCompare()
+        {
+            Configuration local = DeepCloneYaml(Settings.CurrentConfig) ?? new Configuration();
+            local.BlockedSpotifyArtists = new BlockedSpotifyArtists
+            {
+                Artists = ArtistBlocklistStore.LoadCopy()
+            };
+            if (local.AppConfig != null)
+                local.AppConfig.ArtistBlacklist = [];
+            return local;
+        }
+
+        /// <summary>
+        /// Loads YAML from a backup folder without writing or replacing live settings.
+        /// Missing files stay null so they are not treated as empty defaults.
+        /// </summary>
+        public static Configuration LoadForImport(string path)
+        {
+            IDeserializer deserializer = CreateConfigDeserializer();
+            Configuration config = new();
+
+            if (ConfigFileExists(path, "AppConfig"))
+            {
+                config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
+                if (config.AppConfig != null)
+                {
+                    config.AppConfig.DownloadCover = true;
+                    MigrateReleaseChannel(config.AppConfig);
+                    MigrateRefundConditions(config.AppConfig);
+                    MigrateIgnoreBotMessages(config.AppConfig);
+                }
+            }
+
+            if (ConfigFileExists(path, "BotConfig"))
+                config.BotConfig = LoadOrCreateConfig<BotConfig>(path, "BotConfig", deserializer);
+
+            if (ConfigFileExists(path, "TwitchCommands"))
+            {
+                config.TwitchCommands = LoadOrCreateConfig<TwitchCommands>(path, "TwitchCommands", deserializer);
+                EnsureTwitchCommands(config.TwitchCommands);
+            }
+
+            if (ConfigFileExists(path, "BlockedSpotifyArtists"))
+                config.BlockedSpotifyArtists = LoadOrCreateConfig<BlockedSpotifyArtists>(path, "BlockedSpotifyArtists", deserializer);
+
+            if (ConfigFileExists(path, "SpotifyCredentials"))
+                config.SpotifyCredentials = LoadOrCreateConfig<SpotifyCredentials>(path, "SpotifyCredentials", deserializer);
+
+            if (ConfigFileExists(path, "TwitchCredentials"))
+                config.TwitchCredentials = LoadOrCreateConfig<TwitchCredentials>(path, "TwitchCredentials", deserializer);
+
+            if (config.BlockedSpotifyArtists != null || config.AppConfig?.ArtistBlacklist is { Count: > 0 })
+                NormalizeBlockedArtistsForCompare(config);
+
+            return config;
+        }
+
+        public static bool HasImportableFiles(string path)
+            => ConfigFileExists(path, "AppConfig")
+               || ConfigFileExists(path, "BotConfig")
+               || ConfigFileExists(path, "TwitchCommands")
+               || ConfigFileExists(path, "BlockedSpotifyArtists")
+               || ConfigFileExists(path, "SpotifyCredentials")
+               || ConfigFileExists(path, "TwitchCredentials");
+
+        private static bool ConfigFileExists(string path, string fileName)
+            => File.Exists(Path.Combine(path, fileName + ".yaml"))
+               || File.Exists(Path.Combine(path, fileName + ".bak"));
+
+        private static IDeserializer CreateConfigDeserializer()
+            => new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithTypeConverter(new PlaylistSnapshotYamlConverter())
+                .WithTypeConverter(new PlayerTypeYamlConverter())
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedUser>(s => new BlockedUser { Username = s }))
+                .WithTypeConverter(new SongBlacklistConverter())
+                .IgnoreUnmatchedProperties()
+                .Build();
+
+        private static void EnsureTwitchCommands(TwitchCommands twitchCommands)
+        {
+            if (twitchCommands == null)
+                return;
+
+            twitchCommands.Commands ??= [];
+            if (twitchCommands.Commands.Count == 0)
+                twitchCommands.Commands = [.. DefaultCommands];
+
+            foreach (CommandType cmdType in Enum.GetValues(typeof(CommandType)))
+            {
+                if (twitchCommands.Commands.All(c => c.CommandType != cmdType))
+                {
+                    twitchCommands.Commands.Add(DefaultCommands.First(c => c.CommandType == cmdType));
+                    continue;
+                }
+
+                TwitchCommand existingCommand = twitchCommands.Commands.First(c => c.CommandType == cmdType);
+                TwitchCommand defaultCommand = DefaultCommands.First(c => c.CommandType == cmdType);
+                existingCommand.CustomProperties ??= new Dictionary<string, object>();
+
+                if (cmdType == CommandType.Voteskip && !existingCommand.CustomProperties.ContainsKey("SkipCount"))
+                {
+                    existingCommand.CustomProperties["SkipCount"] =
+                        defaultCommand.CustomProperties.TryGetValue("SkipCount", out object skip)
+                            ? skip
+                            : 5;
+                }
+                else if (cmdType == CommandType.Volume && !existingCommand.CustomProperties.ContainsKey("VolumeSetResponse"))
+                {
+                    existingCommand.CustomProperties["VolumeSetResponse"] =
+                        defaultCommand.CustomProperties.TryGetValue("VolumeSetResponse", out object vol)
+                            ? vol
+                            : "Volume set to {vol}%.";
+                }
+            }
         }
 
         /// <summary>Load blocked artists from YAML without keeping them on <see cref="Settings.CurrentConfig"/>.</summary>
@@ -671,6 +806,9 @@ namespace Songify_Slim.Util.Configuration
 
         private static T DeepCloneYaml<T>(T obj)
         {
+            if (obj == null)
+                return default;
+
             ISerializer serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
@@ -682,6 +820,30 @@ namespace Songify_Slim.Util.Configuration
 
             string yaml = serializer.Serialize(obj);
             return deserializer.Deserialize<T>(yaml);
+        }
+
+        internal static T CloneYaml<T>(T obj) => DeepCloneYaml(obj);
+
+        internal static string CloneToYaml(object obj)
+        {
+            if (obj == null)
+                return "";
+
+            ISerializer serializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+            return serializer.Serialize(obj);
+        }
+
+        internal static object CloneYamlObject(object value)
+        {
+            if (value == null)
+                return null;
+
+            return typeof(ConfigHandler)
+                .GetMethod(nameof(CloneYaml), BindingFlags.NonPublic | BindingFlags.Static)!
+                .MakeGenericMethod(value.GetType())
+                .Invoke(null, [value]);
         }
 
         /// <summary>
@@ -771,11 +933,7 @@ namespace Songify_Slim.Util.Configuration
 
                 // Local blocked artists are usually unloaded from CurrentConfig (disk is source of truth).
                 // Build a comparison snapshot the same way cloud save attaches artists for upload.
-                Configuration localForCompare = DeepCloneYaml(Settings.CurrentConfig);
-                localForCompare.BlockedSpotifyArtists = new BlockedSpotifyArtists
-                {
-                    Artists = ArtistBlocklistStore.LoadCopy()
-                };
+                Configuration localForCompare = SnapshotLocalForCompare();
                 if (localForCompare.AppConfig != null)
                     localForCompare.AppConfig.ArtistBlacklist = [];
 
@@ -789,8 +947,7 @@ namespace Songify_Slim.Util.Configuration
                         sW = win;
                 }
 
-                // Preview the import
-                Window_CloudImportPreview preview = new(localForCompare, restoredConfig)
+                Window_CloudImportPreview preview = new(localForCompare, restoredConfig, ImportPreviewKind.Cloud)
                 {
                     Owner = sW,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
@@ -808,7 +965,7 @@ namespace Songify_Slim.Util.Configuration
                     return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NotAcceptable);
                 }
 
-                await Settings.ImportCloudSave(restoredConfig);
+                await Settings.ApplySelectedImport(restoredConfig, preview.SelectedPaths, preserveSecrets: true);
                 return new Tuple<bool, HttpStatusCode>(success, statusCode);
             }
             catch (Exception ex)
@@ -1178,7 +1335,10 @@ namespace Songify_Slim.Util.Configuration
         public List<string> TwRewardSkipPoll { get; set; } = [];
         public bool SharedChatEnabled { get; set; } = false;
 
-        /// <summary>When true, chat commands from known bots and the linked bot account are ignored.</summary>
+        /// <summary>
+        /// Legacy: known bots were ignored automatically. Kept so existing configs can be migrated onto
+        /// <see cref="IgnoredChatUsers"/>. New logic ignores only that list (plus the linked Songify bot).
+        /// </summary>
         public bool IgnoreBotMessages { get; set; } = true;
 
         /// <summary>Twitch logins or display names (no @) whose <c>!</c> messages are always ignored, including the broadcaster.</summary>
