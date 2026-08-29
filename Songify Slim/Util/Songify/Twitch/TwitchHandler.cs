@@ -2090,17 +2090,38 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                // Get Index of the request in the pear queue
-                int index = await PearApi.GetIndexAsync(reqObj.Trackid);
-                if (index != -1)
                 {
+                    bool isCurrent = GlobalObjects.CurrentSong != null
+                        && string.Equals(reqObj.Trackid, GlobalObjects.CurrentSong.SongId, StringComparison.Ordinal);
+
+                    if (isCurrent)
+                    {
+                        if (!await PearApi.SkipAsync())
+                        {
+                            Logger.Warning(LogSource.Pear,
+                                $"!remove: failed to skip currently playing Pear track {reqObj.Trackid}");
+                            return;
+                        }
+
+                        break;
+                    }
+
+                    int index = await PearApi.GetIndexAsync(reqObj.Trackid);
+                    if (index < 0)
+                    {
+                        Logger.Warning(LogSource.Pear,
+                            $"!remove: Pear queue index not found for {reqObj.Trackid} ({reqObj.Artist} - {reqObj.Title}); dropping Songify queue entry.");
+                        break;
+                    }
+
                     ApiOk result = await PearApi.RemoveQueueItem(index);
                     if (!result.Ok)
                     {
                         return;
                     }
+
+                    break;
                 }
-                break;
 
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
@@ -3915,6 +3936,11 @@ public static class TwitchHandler
         if (request == null)
         {
             return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(request.PlayerType))
+        {
+            return GetActiveRequestPlayerType().HasValue;
         }
 
         return TryParseRequestPlayerType(request.PlayerType, out Enums.RequestPlayerType parsed)
