@@ -2686,14 +2686,14 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
   </data>
   <data name="setup_wizard_title" xml:space="preserve">
-    <value>Set up Songify</value>
+    <value>Getting started</value>
     <comment>Context: Title of the first-launch setup wizard.</comment>
   </data>
   <data name="setup_welcome_title" xml:space="preserve">
     <value>Welcome to Songify</value>
   </data>
   <data name="setup_welcome_body" xml:space="preserve">
-    <value>Songify shows the current song on stream and can take Twitch song requests. This short setup gets Spotify, Twitch, and the OBS text file ready. You can skip anything and change it later in Settings.</value>
+    <value>This short guide links your music source, optional Twitch song requests, and a stream overlay (text file or widget). Skip anything and change it later in Settings or from Home.</value>
   </data>
   <data name="setup_player_title" xml:space="preserve">
     <value>Which player do you use?</value>
@@ -2737,6 +2737,134 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
   <data name="setup_twitch_not_linked" xml:space="preserve">
     <value>Optional if you only need a now-playing overlay.</value>
   </data>
+  <data name="setup_requests_title" xml:space="preserve">
+    <value>Song requests</value>
+    <comment>Context: Setup wizard step title for channel points vs chat commands.</comment>
+  </data>
+  <data name="setup_requests_body" xml:space="preserve">
+    <value>Viewers can request songs with channel points, chat commands, or both. Skip this if you only want a now-playing overlay.</value>
+  </data>
+  <data name="setup_requests_reward" xml:space="preserve">
+    <value>Channel points</value>
+  </data>
+  <data name="setup_requests_reward_hint" xml:space="preserve">
+    <value>Viewers redeem a reward to request a song. Next you can create a reward or pick an existing one. Refunds only work for rewards created in Songify.</value>
+  </data>
+  <data name="setup_requests_command" xml:space="preserve">
+    <value>Chat commands</value>
+  </data>
+  <data name="setup_requests_command_hint" xml:space="preserve">
+    <value>Viewers type !ssr plus a song name. This enables the song request command. Edit the trigger, user levels, and replies later in Settings → Commands. Connect the bot from the Twitch status icon when you go live.</value>
+  </data>
+  <data name="setup_requests_create_reward" xml:space="preserve">
+    <value>Create reward</value>
+  </data>
+  <data name="setup_requests_open_rewards" xml:space="preserve">
+    <value>Open reward settings</value>
+  </data>
+  <data name="setup_requests_open_commands" xml:space="preserve">
+    <value>Open command settings</value>
+  </data>
+  <data name="setup_requests_need_twitch" xml:space="preserve">
+    <value>Link Twitch first to create a reward or enable chat commands.</value>
+  </data>
+  <data name="setup_rewards_title" xml:space="preserve">
+    <value>Choose song request rewards</value>
+  </data>
+  <data name="setup_rewards_body" xml:space="preserve">
+    <value>Check every channel-point reward that should add a song. You can assign skip or skip-poll rewards later in Settings → Rewards.</value>
+  </data>
+  <data name="setup_rewards_refund" xml:space="preserve">
+    <value>Automatic refunds only work when Songify created the reward. Rewards made in the Twitch dashboard cannot be refunded from here. Songify-created rewards show the Songify icon.</value>
+  </data>
+  <data name="setup_rewards_loading" xml:space="preserve">
+    <value>Loading rewards…</value>
+  </data>
+  <data name="setup_rewards_empty" xml:space="preserve">
+    <value>No rewards yet. Create one below, or make one on Twitch and tap Refresh.</value>
+  </data>
+  <data name="setup_rewards_error" xml:space="preserve">
+    <value>Could not load rewards. Link Twitch and try Refresh.</value>
+  </data>
+  <data name="setup_rewards_refresh" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="setup_rewards_manageable" xml:space="preserve">
+    <value>Refunds work (created in Songify)</value>
+  </data>
+  <data name="setup_rewards_selected" xml:space="preserve">
+    <value>{0} selected for song requests</value>
+  </data>
+  <data name="setup_limits_title" xml:space="preserve">
+    <value>Request rules</value>
+  </data>
+  <data name="setup_limits_body" xml:space="preserve">
+    <value>Set who may request via channel points and how many songs they can have in the queue. You can change all of this later without running setup again.</value>
+  </data>
+  <data name="setup_limits_who" xml:space="preserve">
+    <value>Who can request with channel points</value>
+  </data>
+  <data name="setup_limits_who_hint" xml:space="preserve">
+    <value>Subscriber tiers and more options are in Settings → Song requests.</value>
+  </data>
+  <data name="setup_limits_queue" xml:space="preserve">
+    <value>Max songs in queue (per user)</value>
+  </data>
+  <data name="setup_limits_queue_hint" xml:space="preserve">
+    <value>Applies to every user level for now. Settings → Song requests lets you set a different limit per badge, plus cooldowns.</value>
+  </data>
+  <data name="setup_later_title" xml:space="preserve">
+    <value>Where to adjust this later</value>
+  </data>
+  <data name="setup_later_song_requests" xml:space="preserve">
+    <value>Settings → Song requests — who can request, queue limits, cooldowns.</value>
+  </data>
+  <data name="setup_later_rewards" xml:space="preserve">
+    <value>Settings → Rewards — pick rewards, skip rewards, and refund conditions.</value>
+  </data>
+  <data name="setup_later_commands" xml:space="preserve">
+    <value>Settings → Commands — enable !ssr and other chat commands, triggers, and who may use them.</value>
+  </data>
+  <data name="setup_later_responses" xml:space="preserve">
+    <value>Settings → Responses — what the bot says in chat.</value>
+  </data>
+  <data name="setup_widget_title" xml:space="preserve">
+    <value>Stream widget</value>
+    <comment>Context: Setup wizard step title for OBS browser widgets.</comment>
+  </data>
+  <data name="setup_widget_body" xml:space="preserve">
+    <value>A browser widget shows the current song in OBS with more style options than a text file. Hosted widgets (including Premium ones) live on songify.rocks. Skip this if you only want Songify.txt.</value>
+  </data>
+  <data name="setup_widget_use" xml:space="preserve">
+    <value>Use a widget overlay</value>
+  </data>
+  <data name="setup_widget_use_hint" xml:space="preserve">
+    <value>Turns on song upload so hosted widgets can follow what is playing. You can change this later in Settings → Output.</value>
+  </data>
+  <data name="setup_widget_gallery" xml:space="preserve">
+    <value>Browse widgets</value>
+  </data>
+  <data name="setup_widget_gallery_hint" xml:space="preserve">
+    <value>Full gallery, including Premium widgets. Copy a URL into an OBS Browser source.</value>
+  </data>
+  <data name="setup_widget_generator" xml:space="preserve">
+    <value>Widget generator</value>
+  </data>
+  <data name="setup_widget_generator_hint" xml:space="preserve">
+    <value>Simple customizer for a basic now-playing bar.</value>
+  </data>
+  <data name="setup_widget_local" xml:space="preserve">
+    <value>Local overlay (web server)</value>
+  </data>
+  <data name="setup_widget_local_hint" xml:space="preserve">
+    <value>For custom HTML overlays and the JSON API. Start the server, then open the local page.</value>
+  </data>
+  <data name="setup_widget_open_local" xml:space="preserve">
+    <value>Open local page</value>
+  </data>
+  <data name="setup_widget_port" xml:space="preserve">
+    <value>Web server port</value>
+  </data>
   <data name="setup_output_title" xml:space="preserve">
     <value>Song output file</value>
   </data>
@@ -2747,7 +2875,7 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <value>You're ready</value>
   </data>
   <data name="setup_done_body" xml:space="preserve">
-    <value>Anything still open can be finished from Home or Settings. A short tour can show you where things live.</value>
+    <value>Anything still open can be finished from Home or Settings. Use Show me around to see Song requests, Rewards, and widgets in the app.</value>
   </data>
   <data name="setup_skip" xml:space="preserve">
     <value>Skip</value>
@@ -2771,7 +2899,7 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <value>Getting started</value>
   </data>
   <data name="setup_checklist_body" xml:space="preserve">
-    <value>Finish these so Songify can show the current song and take requests.</value>
+    <value>Finish these so Songify can show the current song, take requests, and drive your overlay.</value>
   </data>
   <data name="setup_checklist_dismiss" xml:space="preserve">
     <value>Dismiss</value>
@@ -2791,6 +2919,18 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
   <data name="setup_checklist_token" xml:space="preserve">
     <value>Add Songify API token</value>
     <comment>Context: Home checklist item for the Songify website API token required by song/queue uploads.</comment>
+  </data>
+  <data name="setup_checklist_requests" xml:space="preserve">
+    <value>Choose channel points or chat commands</value>
+    <comment>Context: Home checklist item for picking a song-request method.</comment>
+  </data>
+  <data name="setup_checklist_reward" xml:space="preserve">
+    <value>Pick a song request reward</value>
+    <comment>Context: Home checklist item when channel-point song requests have no reward selected.</comment>
+  </data>
+  <data name="setup_checklist_widget" xml:space="preserve">
+    <value>Set up a stream widget</value>
+    <comment>Context: Home checklist item for the OBS browser widget.</comment>
   </data>
   <data name="setup_token_title" xml:space="preserve">
     <value>Songify API token</value>
@@ -2825,7 +2965,36 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <comment>Context: Home warning card body when the Songify API token is missing.</comment>
   </data>
   <data name="menu_setup_wizard" xml:space="preserve">
-    <value>Setup wizard</value>
+    <value>Getting started</value>
+    <comment>Context: Help / Tools entry that reopens the setup wizard.</comment>
+  </data>
+  <data name="menu_widget_gallery" xml:space="preserve">
+    <value>Widget gallery</value>
+    <comment>Context: Tools menu item that opens songify.rocks/widgets.</comment>
+  </data>
+  <data name="menu_widget_generator" xml:space="preserve">
+    <value>Widget generator</value>
+    <comment>Context: Tools menu item that opens the simpler widget.songify.rocks customizer.</comment>
+  </data>
+  <data name="window_overview_widget_title" xml:space="preserve">
+    <value>Stream widget</value>
+    <comment>Context: Home card title promoting OBS widgets.</comment>
+  </data>
+  <data name="window_overview_widget_body" xml:space="preserve">
+    <value>Show the current song in OBS with a browser overlay. The gallery includes Premium widgets; the generator is a simpler customizer.</value>
+  </data>
+  <data name="window_overview_widget_open_gallery" xml:space="preserve">
+    <value>Browse widgets</value>
+  </data>
+  <data name="window_overview_widget_open_generator" xml:space="preserve">
+    <value>Customize</value>
+  </data>
+  <data name="window_overview_widget_open_local" xml:space="preserve">
+    <value>Local preview</value>
+  </data>
+  <data name="window_overview_continue_setup" xml:space="preserve">
+    <value>Continue setup</value>
+    <comment>Context: Home checklist button that reopens Getting started.</comment>
   </data>
   <data name="setup_tour_home_title" xml:space="preserve">
     <value>Home</value>
@@ -2845,11 +3014,29 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
   <data name="setup_tour_twitch_body" xml:space="preserve">
     <value>Link your broadcaster account here for song requests, rewards, and chat commands. A bot account is optional.</value>
   </data>
+  <data name="setup_tour_requests_title" xml:space="preserve">
+    <value>Song request rules</value>
+  </data>
+  <data name="setup_tour_requests_body" xml:space="preserve">
+    <value>Settings → Song requests is where you choose who can redeem, queue limits per user level, and cooldowns. Command permissions live on each command under Settings → Commands.</value>
+  </data>
+  <data name="setup_tour_rewards_title" xml:space="preserve">
+    <value>Rewards and refunds</value>
+  </data>
+  <data name="setup_tour_rewards_body" xml:space="preserve">
+    <value>Pick which rewards add a song. Refunds only work for rewards Songify created (the Songify icon). Refund conditions are on the Refunds segment of this page.</value>
+  </data>
   <data name="setup_tour_output_title" xml:space="preserve">
     <value>Output and widget</value>
   </data>
   <data name="setup_tour_output_body" xml:space="preserve">
-    <value>Point OBS at the Songify.txt file in Output settings. Tools → Widget opens the browser overlay. That's the tour — you're set.</value>
+    <value>Point OBS at Songify.txt here, or use a Browser source with a widget URL from Tools → Widget gallery.</value>
+  </data>
+  <data name="setup_tour_widget_title" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="setup_tour_widget_body" xml:space="preserve">
+    <value>Home has a widget card, and Tools → Widget gallery opens the full overlay list (including Premium). Hover the left icons when the menu is collapsed to see where each page is.</value>
   </data>
   <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
     <value>Minimum messages between song announcements</value>
@@ -3001,20 +3188,67 @@ You can still open Songify Premium any time from Home or About.</value>
     <comment>Context: Settings → Twitch button that clears the ignored chat users list.</comment>
   </data>
   <data name="window_help_subtitle" xml:space="preserve">
-    <value>Guides, updates, and folders.</value>
-    <comment>Context: Help page subtitle in the sidebar.</comment>
+    <value>Setup, community, folders, and the live log.</value>
+    <comment>Context: Help page subtitle.</comment>
+  </data>
+  <data name="window_help_section_start" xml:space="preserve">
+    <value>Getting started</value>
+  </data>
+  <data name="window_help_section_community" xml:space="preserve">
+    <value>Community</value>
+  </data>
+  <data name="window_help_section_files" xml:space="preserve">
+    <value>Files</value>
+  </data>
+  <data name="window_help_section_updates" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="window_help_setup_desc" xml:space="preserve">
+    <value>Link accounts, song requests, and widgets.</value>
+  </data>
+  <data name="window_help_patchnotes_desc" xml:space="preserve">
+    <value>See what changed in this version.</value>
+  </data>
+  <data name="window_help_faq_desc" xml:space="preserve">
+    <value>Answers on songify.rocks.</value>
+  </data>
+  <data name="window_help_github_desc" xml:space="preserve">
+    <value>Report bugs and request features.</value>
+  </data>
+  <data name="window_help_discord_desc" xml:space="preserve">
+    <value>Chat with other streamers and the team.</value>
+  </data>
+  <data name="window_help_log_desc" xml:space="preserve">
+    <value>Open the folder used when reporting issues.</value>
+  </data>
+  <data name="window_help_app_desc" xml:space="preserve">
+    <value>Config, output files, and the app itself.</value>
+  </data>
+  <data name="window_help_updates_desc" xml:space="preserve">
+    <value>Download the latest Songify release.</value>
+  </data>
+  <data name="window_help_console_subtitle" xml:space="preserve">
+    <value>Live log and API metrics. Detach to keep it on screen while you use the rest of Songify.</value>
   </data>
   <data name="window_settings_appearance_accent" xml:space="preserve">
     <value>Accent color</value>
     <comment>Context: Settings → Appearance row title.</comment>
   </data>
   <data name="window_settings_appearance_accent_hint" xml:space="preserve">
-    <value>Pick a color or leave System to use the Windows accent.</value>
+    <value>Click the color to pick an accent, or leave System to use the Windows accent.</value>
     <comment>Context: Settings → Appearance accent hint.</comment>
   </data>
   <data name="window_settings_appearance_accent_system" xml:space="preserve">
     <value>System</value>
-    <comment>Context: Accent swatch that uses the Windows accent color.</comment>
+    <comment>Context: Accent option that uses the Windows accent color.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_system_hint" xml:space="preserve">
+    <value>Use the Windows accent color</value>
+    <comment>Context: Subtitle under the System accent button in the color popup.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_recent" xml:space="preserve">
+    <value>Recent</value>
+    <comment>Context: Label above the last-used accent color swatches.</comment>
   </data>
   <data name="window_titlebar_up_next" xml:space="preserve">
     <value>Up next: {0}</value>

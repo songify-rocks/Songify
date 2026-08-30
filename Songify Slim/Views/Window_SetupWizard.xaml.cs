@@ -9,7 +9,9 @@ using System.Windows.Threading;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views.WPFUI.Pages;
+using TwitchLib.Api.Helix.Models.ChannelPoints;
 using static Songify_Slim.Util.General.Enums;
 using Clipboard = System.Windows.Clipboard;
 using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
@@ -26,8 +28,12 @@ public partial class WindowSetupWizard
         Player,
         Spotify,
         Twitch,
+        Requests,
+        Rewards,
+        Limits,
         Token,
         Output,
+        Widget,
         Done
     }
 
@@ -37,6 +43,10 @@ public partial class WindowSetupWizard
     private int _index;
     private bool _languageComboReady;
     private bool _playerComboReady;
+    private bool _requestsReady;
+    private bool _widgetReady;
+    private bool _limitsReady;
+    private bool _rewardsLoading;
 
     public bool StartTourRequested { get; private set; }
 
@@ -63,6 +73,9 @@ public partial class WindowSetupWizard
         if (!string.IsNullOrEmpty(Settings.SongifyApiKey))
             PwbToken.Password = Settings.SongifyApiKey;
         RefreshOutputPath();
+        BindRequestChoices();
+        BindWidgetChoices();
+        BindLimitChoices();
         RebuildSteps(keepCurrent: false);
         ShowCurrentStep();
     }
@@ -79,11 +92,20 @@ public partial class WindowSetupWizard
     {
         if (!Dispatcher.CheckAccess())
         {
-            Dispatcher.Invoke(RefreshLinkStatus);
+            Dispatcher.Invoke(() =>
+            {
+                RefreshLinkStatus();
+                RebuildSteps(keepCurrent: true);
+                if (_steps.Count > 0 && _index < _steps.Count && _steps[_index] == WizardStep.Rewards)
+                    _ = LoadRewardsAsync();
+            });
             return;
         }
 
         RefreshLinkStatus();
+        RebuildSteps(keepCurrent: true);
+        if (_steps.Count > 0 && _index < _steps.Count && _steps[_index] == WizardStep.Rewards)
+            _ = LoadRewardsAsync();
     }
 
     private void BindLanguageCombo()
@@ -122,8 +144,15 @@ public partial class WindowSetupWizard
         if (Settings.Player == PlayerType.Spotify)
             _steps.Add(WizardStep.Spotify);
         _steps.Add(WizardStep.Twitch);
+        _steps.Add(WizardStep.Requests);
+        bool twitch = AccountLinking.IsTwitchMainLinked();
+        if (twitch && Settings.TwSrReward)
+            _steps.Add(WizardStep.Rewards);
+        if (twitch && (Settings.TwSrReward || Settings.TwSrCommand))
+            _steps.Add(WizardStep.Limits);
         _steps.Add(WizardStep.Token);
         _steps.Add(WizardStep.Output);
+        _steps.Add(WizardStep.Widget);
         _steps.Add(WizardStep.Done);
 
         if (!keepCurrent)
@@ -146,8 +175,12 @@ public partial class WindowSetupWizard
         StepPlayer.Visibility = step == WizardStep.Player ? Visibility.Visible : Visibility.Collapsed;
         StepSpotify.Visibility = step == WizardStep.Spotify ? Visibility.Visible : Visibility.Collapsed;
         StepTwitch.Visibility = step == WizardStep.Twitch ? Visibility.Visible : Visibility.Collapsed;
+        StepRequests.Visibility = step == WizardStep.Requests ? Visibility.Visible : Visibility.Collapsed;
+        StepRewards.Visibility = step == WizardStep.Rewards ? Visibility.Visible : Visibility.Collapsed;
+        StepLimits.Visibility = step == WizardStep.Limits ? Visibility.Visible : Visibility.Collapsed;
         StepToken.Visibility = step == WizardStep.Token ? Visibility.Visible : Visibility.Collapsed;
         StepOutput.Visibility = step == WizardStep.Output ? Visibility.Visible : Visibility.Collapsed;
+        StepWidget.Visibility = step == WizardStep.Widget ? Visibility.Visible : Visibility.Collapsed;
         StepDone.Visibility = step == WizardStep.Done ? Visibility.Visible : Visibility.Collapsed;
 
         TxtStepLabel.Text = string.Format(
@@ -162,8 +195,16 @@ public partial class WindowSetupWizard
             ? Loc("setup_finish", "Finish")
             : Loc("setup_next", "Next");
 
-        if (step is WizardStep.Spotify or WizardStep.Twitch or WizardStep.Token or WizardStep.Done)
+        if (step is WizardStep.Spotify or WizardStep.Twitch or WizardStep.Token or WizardStep.Requests or WizardStep.Rewards or WizardStep.Done)
             RefreshLinkStatus();
+        if (step == WizardStep.Requests)
+            UpdateRequestsUi();
+        if (step == WizardStep.Rewards)
+            _ = LoadRewardsAsync();
+        if (step == WizardStep.Limits)
+            BindLimitChoices();
+        if (step == WizardStep.Widget)
+            UpdateWidgetUi();
         if (step == WizardStep.Done)
             RebuildStatusChips();
     }
@@ -228,8 +269,17 @@ public partial class WindowSetupWizard
             Loc("setup_checklist_token", "Add Songify API token"),
             AccountLinking.HasSongifyApiToken());
         AddStatusRow(
+            Loc("setup_checklist_requests", "Choose channel points or chat commands"),
+            GuidedSetup.IsSongRequestsConfigured() || !AccountLinking.IsTwitchMainLinked());
+        AddStatusRow(
+            Loc("setup_checklist_reward", "Pick a song request reward"),
+            GuidedSetup.IsSongRequestRewardSelected() || !Settings.TwSrReward || !AccountLinking.IsTwitchMainLinked());
+        AddStatusRow(
             Loc("setup_checklist_output", "Song output file (OBS)"),
             GuidedSetup.IsOutputReady());
+        AddStatusRow(
+            Loc("setup_checklist_widget", "Set up a stream widget"),
+            Settings.Upload);
     }
 
     private void AddStatusRow(string label, bool done)
@@ -338,6 +388,257 @@ public partial class WindowSetupWizard
         OverviewPage.RefreshChecklist();
     }
 
+    private void BindRequestChoices()
+    {
+        _requestsReady = false;
+        if (ChkRequestsReward != null)
+            ChkRequestsReward.IsChecked = Settings.TwSrReward;
+        if (ChkRequestsCommand != null)
+            ChkRequestsCommand.IsChecked = Settings.TwSrCommand;
+        _requestsReady = true;
+        UpdateRequestsUi();
+    }
+
+    private void UpdateRequestsUi()
+    {
+        bool twitchLinked = AccountLinking.IsTwitchMainLinked();
+        if (TxtRequestsNeedTwitch != null)
+            TxtRequestsNeedTwitch.Visibility = twitchLinked ? Visibility.Collapsed : Visibility.Visible;
+        if (ChkRequestsReward != null)
+            ChkRequestsReward.IsEnabled = twitchLinked;
+        if (ChkRequestsCommand != null)
+            ChkRequestsCommand.IsEnabled = twitchLinked;
+    }
+
+    private void ChkRequests_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (!_requestsReady)
+            return;
+        GuidedSetup.ApplySongRequestChoices(
+            ChkRequestsReward?.IsChecked == true,
+            ChkRequestsCommand?.IsChecked == true);
+        RebuildSteps(keepCurrent: true);
+        UpdateRequestsUi();
+        OverviewPage.RefreshChecklist();
+    }
+
+    private void BtnCreateReward_OnClick(object sender, RoutedEventArgs e)
+    {
+        if (!AccountLinking.IsTwitchMainLinked())
+            return;
+        WindowCreateCustomReward dialog = new() { Owner = this };
+        dialog.ShowDialog();
+        OverviewPage.RefreshChecklist();
+        _ = LoadRewardsAsync();
+    }
+
+    private void BtnRefreshRewards_OnClick(object sender, RoutedEventArgs e)
+        => _ = LoadRewardsAsync();
+
+    private async Task LoadRewardsAsync()
+    {
+        if (TxtRewardsStatus == null || PnlRewardList == null)
+            return;
+        if (_rewardsLoading)
+            return;
+
+        if (!AccountLinking.IsTwitchMainLinked() || TwitchHandler.TwitchApi == null || TwitchHandler.TokenCheck == null)
+        {
+            TxtRewardsStatus.Text = Loc("setup_rewards_error", "Could not load rewards. Link Twitch and try Refresh.");
+            PnlRewardList.Children.Clear();
+            return;
+        }
+
+        _rewardsLoading = true;
+        TxtRewardsStatus.Text = Loc("setup_rewards_loading", "Loading rewards…");
+        PnlRewardList.Children.Clear();
+        try
+        {
+            Task<List<CustomReward>> manageableTask = TwitchApiHelper.GetChannelRewards(true);
+            Task<List<CustomReward>> allTask = TwitchApiHelper.GetChannelRewards(false);
+            await Task.WhenAll(manageableTask, allTask).ConfigureAwait(true);
+
+            List<CustomReward> all = await allTask.ConfigureAwait(true) ?? [];
+            HashSet<string> manageable = new((await manageableTask.ConfigureAwait(true) ?? []).Select(r => r.Id));
+
+            if (all.Count == 0)
+            {
+                TxtRewardsStatus.Text = Loc("setup_rewards_empty",
+                    "No rewards yet. Create one below, or make one on Twitch and tap Refresh.");
+                return;
+            }
+
+            foreach (CustomReward reward in all.OrderBy(r => r.Cost))
+            {
+                bool isSr = Settings.TwRewardId?.Contains(reward.Id) == true;
+                bool canRefund = manageable.Contains(reward.Id);
+                var row = new DockPanel { Margin = new Thickness(0, 0, 0, 8), LastChildFill = true };
+                var chk = new CheckBox
+                {
+                    IsChecked = isSr,
+                    Tag = reward.Id,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(0, 0, 8, 0)
+                };
+                chk.Checked += RewardCheck_OnChanged;
+                chk.Unchecked += RewardCheck_OnChanged;
+                DockPanel.SetDock(chk, Dock.Left);
+                row.Children.Add(chk);
+
+                if (canRefund)
+                {
+                    var badge = new TextBlock
+                    {
+                        Text = Loc("setup_rewards_manageable", "Refunds work (created in Songify)"),
+                        FontSize = 11,
+                        Margin = new Thickness(8, 0, 0, 0),
+                        VerticalAlignment = VerticalAlignment.Center,
+                        TextWrapping = TextWrapping.Wrap,
+                        MaxWidth = 160,
+                        Foreground = TryFindResource("TextFillColorTertiaryBrush") as Brush ?? Brushes.Gray
+                    };
+                    DockPanel.SetDock(badge, Dock.Right);
+                    row.Children.Add(badge);
+                }
+
+                row.Children.Add(new TextBlock
+                {
+                    Text = $"{reward.Title}  ·  {reward.Cost}",
+                    FontSize = 13,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    TextWrapping = TextWrapping.Wrap
+                });
+
+                PnlRewardList.Children.Add(row);
+            }
+
+            int selected = Settings.TwRewardId?.Count ?? 0;
+            TxtRewardsStatus.Text = string.Format(
+                Loc("setup_rewards_selected", "{0} selected for song requests"),
+                selected);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+            TxtRewardsStatus.Text = Loc("setup_rewards_error", "Could not load rewards. Link Twitch and try Refresh.");
+        }
+        finally
+        {
+            _rewardsLoading = false;
+        }
+    }
+
+    private void RewardCheck_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (sender is not CheckBox { Tag: string id } chk)
+            return;
+        GuidedSetup.SetSongRequestReward(id, chk.IsChecked == true);
+        int selected = Settings.TwRewardId?.Count ?? 0;
+        if (TxtRewardsStatus != null)
+            TxtRewardsStatus.Text = string.Format(
+                Loc("setup_rewards_selected", "{0} selected for song requests"),
+                selected);
+        OverviewPage.RefreshChecklist();
+    }
+
+    private void BindLimitChoices()
+    {
+        _limitsReady = false;
+        bool showWho = Settings.TwSrReward;
+        if (PnlLimitsWho != null)
+            PnlLimitsWho.Visibility = showWho ? Visibility.Visible : Visibility.Collapsed;
+
+        SetLevelBox(ChkUlViewer, 0);
+        SetLevelBox(ChkUlFollower, 1);
+        SetLevelBox(ChkUlSubscriber, 2);
+        SetLevelBox(ChkUlVip, 5);
+        SetLevelBox(ChkUlModerator, 6);
+
+        if (NudMaxQueue != null)
+            NudMaxQueue.Value = Math.Max(1, Settings.TwSrMaxReqEveryone);
+        _limitsReady = true;
+    }
+
+    private void SetLevelBox(CheckBox box, int level)
+    {
+        if (box == null)
+            return;
+        box.IsChecked = Settings.UserLevelsReward?.Contains(level) == true;
+    }
+
+    private void ChkUserLevel_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (!_limitsReady || sender is not CheckBox { Tag: string tag } chk)
+            return;
+        if (!int.TryParse(tag, out int level))
+            return;
+        GuidedSetup.SetRewardUserLevel(level, chk.IsChecked == true);
+    }
+
+    private void NudMaxQueue_OnValueChanged(object sender, Wpf.Ui.Controls.NumberBoxValueChangedEventArgs e)
+    {
+        if (!_limitsReady || NudMaxQueue?.Value is not double value)
+            return;
+        int n = Math.Clamp((int)value, 1, 100);
+        GuidedSetup.ApplyQueueLimitToAllLevels(n);
+    }
+
+    private void BindWidgetChoices()
+    {
+        _widgetReady = false;
+        if (ChkUseWidget != null)
+            ChkUseWidget.IsChecked = Settings.Upload;
+        if (NudWidgetPort != null)
+            NudWidgetPort.Value = Settings.WebServerPort;
+        _widgetReady = true;
+        UpdateWidgetUi();
+    }
+
+    private void UpdateWidgetUi()
+    {
+        if (PnlWidgetActions != null)
+            PnlWidgetActions.Visibility = ChkUseWidget?.IsChecked == true
+                ? Visibility.Visible
+                : Visibility.Collapsed;
+    }
+
+    private void ChkUseWidget_OnChanged(object sender, RoutedEventArgs e)
+    {
+        if (!_widgetReady)
+            return;
+        if (ChkUseWidget?.IsChecked == true)
+            GuidedSetup.EnableWidgetUpload();
+        UpdateWidgetUi();
+        OverviewPage.RefreshChecklist();
+    }
+
+    private void BtnWidgetGallery_OnClick(object sender, RoutedEventArgs e)
+        => AppActions.OpenWidgetGallery();
+
+    private void BtnWidgetGenerator_OnClick(object sender, RoutedEventArgs e)
+        => AppActions.OpenWidgetGenerator();
+
+    private void NudWidgetPort_OnValueChanged(object sender, Wpf.Ui.Controls.NumberBoxValueChangedEventArgs e)
+    {
+        if (!_widgetReady || NudWidgetPort?.Value is not double value)
+            return;
+        int port = (int)value;
+        if (port < 1025)
+            port = 1025;
+        if (port > 65535)
+            port = 65535;
+        if (port == Settings.WebServerPort)
+            return;
+        Settings.WebServerPort = port;
+    }
+
+    private void BtnWidgetLocal_OnClick(object sender, RoutedEventArgs e)
+    {
+        GuidedSetup.EnableWidgetUpload();
+        GuidedSetup.EnsureWebServerRunning();
+        AppActions.OpenWebServerUrl();
+    }
+
     private void BtnBrowseOutput_OnClick(object sender, RoutedEventArgs e)
     {
         _folderBrowser.Description = Loc("window_settings_folder_song_output", "Path where the text file will be located.");
@@ -374,6 +675,16 @@ public partial class WindowSetupWizard
             Close();
             return;
         }
+
+        if (_steps[_index] == WizardStep.Requests)
+        {
+            GuidedSetup.ApplySongRequestChoices(
+                ChkRequestsReward?.IsChecked == true,
+                ChkRequestsCommand?.IsChecked == true);
+        }
+
+        if (_steps[_index] == WizardStep.Widget && ChkUseWidget?.IsChecked == true)
+            GuidedSetup.EnableWidgetUpload();
 
         _index++;
         ShowCurrentStep();

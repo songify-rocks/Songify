@@ -269,35 +269,132 @@
                         </ui:Card>
 
                         <ui:Card Margin="0,0,0,12" Padding="16">
-                            <StackPanel>
-                                <TextBlock
-                                    Margin="0,0,0,12"
-                                    FontSize="14"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="{DynamicResource window_settings_appearance_accent}" />
-                                <TextBlock
-                                    FontSize="12"
-                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                    Text="{DynamicResource window_settings_appearance_accent_hint}"
-                                    TextWrapping="Wrap" />
-                                <StackPanel Margin="0,10,0,8" Orientation="Horizontal">
-                                    <userControls:AccentColorWheel
-                                        x:Name="AccentWheel"
-                                        VerticalAlignment="Top"
-                                        ColorChanged="AccentWheel_OnColorChanged"
-                                        PickingCompleted="AccentWheel_OnPickingCompleted" />
+                            <Grid>
+                                <StackPanel VerticalAlignment="Center" Margin="0,0,96,0">
+                                    <TextBlock
+                                        FontSize="14"
+                                        FontWeight="SemiBold"
+                                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                        Text="{DynamicResource window_settings_appearance_accent}" />
+                                    <TextBlock
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{DynamicResource window_settings_appearance_accent_hint}"
+                                        TextWrapping="Wrap" />
                                 </StackPanel>
-                                <WrapPanel x:Name="PnlAccentSwatches" Margin="0,0,0,8" />
-                                <ui:TextBox
-                                    x:Name="TbAccentHex"
-                                    MinWidth="140"
-                                    HorizontalAlignment="Left"
-                                    Icon="{ui:SymbolIcon Edit24}"
-                                    LostFocus="TbAccentHex_OnLostFocus"
-                                    PlaceholderText="#0078D4"
-                                    PreviewKeyDown="TbAccentHex_OnPreviewKeyDown" />
-                            </StackPanel>
+                                <ui:Button
+                                    x:Name="BtnAccentPicker"
+                                    MinWidth="72"
+                                    Padding="8,6"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
+                                    Click="BtnAccentPicker_OnClick"
+                                    TabIndex="11"
+                                    ToolTip="{DynamicResource window_settings_appearance_accent}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <Grid Width="22" Height="22">
+                                            <Border
+                                                x:Name="BdAccentPreview"
+                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="4" />
+                                            <ui:SymbolIcon
+                                                x:Name="IcoAccentSystem"
+                                                FontSize="11"
+                                                Foreground="White"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                Symbol="Desktop24"
+                                                Visibility="Collapsed" />
+                                        </Grid>
+                                        <ui:SymbolIcon
+                                            Margin="8,0,0,0"
+                                            FontSize="14"
+                                            Symbol="ChevronDown24" />
+                                    </StackPanel>
+                                </ui:Button>
+                                <Popup
+                                    x:Name="PopAccentPicker"
+                                    AllowsTransparency="True"
+                                    HorizontalOffset="-8"
+                                    Placement="Bottom"
+                                    PlacementTarget="{Binding ElementName=BtnAccentPicker}"
+                                    StaysOpen="False"
+                                    VerticalOffset="6"
+                                    Opened="PopAccentPicker_OnOpened">
+                                    <Border
+                                        MinWidth="248"
+                                        Padding="12"
+                                        Background="{DynamicResource ApplicationBackgroundBrush}"
+                                        BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8">
+                                        <StackPanel>
+                                            <userControls:AccentColorWheel
+                                                x:Name="AccentWheel"
+                                                HorizontalAlignment="Left"
+                                                ColorChanged="AccentWheel_OnColorChanged"
+                                                PickingCompleted="AccentWheel_OnPickingCompleted" />
+                                            <Border
+                                                x:Name="BdAccentSystemFrame"
+                                                Margin="0,12,0,0"
+                                                Padding="1"
+                                                BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="6">
+                                                <ui:Button
+                                                    x:Name="BtnAccentSystem"
+                                                    Padding="8,6"
+                                                    HorizontalAlignment="Stretch"
+                                                    HorizontalContentAlignment="Left"
+                                                    Click="BtnAccentSystem_OnClick">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <Grid Width="28" Height="28">
+                                                            <Border
+                                                                x:Name="BdAccentSystem"
+                                                                CornerRadius="4" />
+                                                            <ui:SymbolIcon
+                                                                FontSize="14"
+                                                                Foreground="White"
+                                                                HorizontalAlignment="Center"
+                                                                VerticalAlignment="Center"
+                                                                Symbol="Desktop24" />
+                                                        </Grid>
+                                                        <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock
+                                                                FontWeight="SemiBold"
+                                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                                Text="{DynamicResource window_settings_appearance_accent_system}" />
+                                                            <TextBlock
+                                                                FontSize="11"
+                                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                                Text="{DynamicResource window_settings_appearance_accent_system_hint}" />
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </ui:Button>
+                                            </Border>
+                                            <TextBlock
+                                                x:Name="TbAccentRecent"
+                                                Margin="0,10,0,4"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                Text="{DynamicResource window_settings_appearance_accent_recent}"
+                                                Visibility="Collapsed" />
+                                            <WrapPanel
+                                                x:Name="PnlAccentSwatches"
+                                                Margin="0,0,0,8" />
+                                            <ui:TextBox
+                                                x:Name="TbAccentHex"
+                                                MinWidth="140"
+                                                HorizontalAlignment="Left"
+                                                Icon="{ui:SymbolIcon Edit24}"
+                                                LostFocus="TbAccentHex_OnLostFocus"
+                                                PlaceholderText="#0078D4"
+                                                PreviewKeyDown="TbAccentHex_OnPreviewKeyDown" />
+                                        </StackPanel>
+                                    </Border>
+                                </Popup>
+                            </Grid>
                         </ui:Card>
 
                         <ui:Card Margin="0,0,0,12" Padding="16">

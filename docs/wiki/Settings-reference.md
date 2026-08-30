@@ -17,7 +17,7 @@ Settings are organized in tabs. Names may differ slightly when the UI is transla
 
 - **Theme** — Light or dark.
 - **Window backdrop** — Mica, Acrylic, Tabbed, Auto, or None.
-- **Accent color** — App accent (wheel, swatches, or hex).
+- **Accent color** — App accent (wheel, System / Windows accent, recent colors, or hex). The last 7 custom colors are remembered.
 - **Interface scale** — Extra zoom on top of Windows DPI.
 - **Overrule minimum size** — Allow resizing the main window below 900×500.
 - **Side menu** — Main navigation layout (expanded, top, or bottom). The expanded/collapsed state of the left menu is restored on launch.
@@ -31,7 +31,7 @@ Settings are organized in tabs. Names may differ slightly when the UI is transla
 - **Output format (Twitch chat)** — Format when posting current song to chat via command.
 - **Append spaces** — Pads text files for smoother scrolling in some setups.
 - **Pause text** — Text shown when playback is paused (if enabled).
-- **Upload song info** — Uploads track data for the [widget](Widget-and-OBS) and queue website features.
+- **Upload song info** — Uploads track data for hosted [widgets](Widget-and-OBS) and the queue website. Getting started and **Tools → Widget** turn this on when you open a widget.
 - **Split artist and title** — Writes separate `Artist.txt` / `Title.txt` files.
 - **Download album cover** — Saves cover art (works when metadata comes from APIs that provide it, e.g. Spotify).
 
@@ -109,4 +109,4 @@ Optional: use [your own YouTube Data API key](YouTube-Data-API-Key) for more rel
 - **Queue** — Request queue (app queue is not always identical to Spotify’s queue; deleting here may not remove from Spotify).
 - **Blocklist** — Block artists, songs, or users from requesting.
 - **History** — Listening history (optional upload/share).
-- **Console** — Log output for debugging.
+- **Help** — Getting started, support links, folders, and the live log / API metrics (detach to a separate window from Tools).

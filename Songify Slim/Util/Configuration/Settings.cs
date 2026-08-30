@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
@@ -34,6 +35,8 @@ namespace Songify_Slim.Util.Configuration
         public static List<string> IgnoredChatUsers { get => GetIgnoredChatUsers(); set => SetIgnoredChatUsers(value); }
 
         public static string AccentColor { get => GetAccentColor(); set => SetAccentColor(value); }
+
+        public static List<string> RecentAccentColors => GetRecentAccentColors();
         public static long SpotifyTokenExpiresAt { get => GetSpotifyTokenExpiresAt(); set => SetSpotifyTokenExpiresAt(value); }
         public static string SrForBitsKeyWord { get => GetSrForBitsKeyWord(); set => SetSrForBitsKeyWord(value); }
         public static int MinimumMessagesBetweenAnnounces { get => GetMinimumMessagesBetweenAnnounces(); set => SetMinimumMessagesBetweenAnnounces(value); }
@@ -107,12 +110,33 @@ namespace Songify_Slim.Util.Configuration
         private static void SetAccentColor(string value)
         {
             CurrentConfig.AppConfig.AccentColor = value ?? "";
+            RememberRecentAccentColor(value);
             ConfigHandler.WriteAllConfig(CurrentConfig);
         }
 
         private static string GetAccentColor()
         {
             return CurrentConfig.AppConfig.AccentColor ?? "";
+        }
+
+        private const int MaxRecentAccentColors = 7;
+
+        private static List<string> GetRecentAccentColors()
+        {
+            return CurrentConfig.AppConfig.RecentAccentColors ??= [];
+        }
+
+        private static void RememberRecentAccentColor(string hex)
+        {
+            if (!ThemeHandler.TryParseHex(hex, out Color color))
+                return;
+
+            string normalized = ThemeHandler.ToHex(color);
+            List<string> recents = GetRecentAccentColors();
+            recents.RemoveAll(c => string.Equals(c, normalized, StringComparison.OrdinalIgnoreCase));
+            recents.Insert(0, normalized);
+            if (recents.Count > MaxRecentAccentColors)
+                recents.RemoveRange(MaxRecentAccentColors, recents.Count - MaxRecentAccentColors);
         }
 
         private static void SetTwRewardSkipPoll(List<string> value)
@@ -1055,6 +1079,12 @@ namespace Songify_Slim.Util.Configuration
             set => SetSetupChecklistDismissed(value);
         }
 
+        public static bool WidgetPromoDismissed
+        {
+            get => GetWidgetPromoDismissed();
+            set => SetWidgetPromoDismissed(value);
+        }
+
         public static int SetupWizardVersion
         {
             get => GetSetupWizardVersion();
@@ -1529,6 +1559,7 @@ namespace Songify_Slim.Util.Configuration
                 UseOwnApp = GetUseOwnApp(),
                 SetupCompleted = GetSetupCompleted(),
                 SetupChecklistDismissed = GetSetupChecklistDismissed(),
+                WidgetPromoDismissed = GetWidgetPromoDismissed(),
                 SetupWizardVersion = GetSetupWizardVersion(),
                 UserBlacklist = GetUserBlacklist(),
                 UserLevelsCommand = GetUserLevelsCommand(),
@@ -1547,6 +1578,7 @@ namespace Songify_Slim.Util.Configuration
                 IgnoreBotMessages = GetIgnoreBotMessages(),
                 IgnoredChatUsers = GetIgnoredChatUsers(),
                 AccentColor = GetAccentColor(),
+                RecentAccentColors = [..GetRecentAccentColors()],
                 SrForBitsKeyWord = GetSrForBitsKeyWord(),
             };
 
@@ -2272,16 +2304,16 @@ namespace Songify_Slim.Util.Configuration
         /// </summary>
         private static string NormalizeNavigationPaneDisplayMode(string value)
         {
-            if (string.Equals(value, "Top", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(value?.Trim(), "Top", StringComparison.OrdinalIgnoreCase))
                 return "Top";
-            if (string.Equals(value, "Bottom", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(value?.Trim(), "Bottom", StringComparison.OrdinalIgnoreCase))
                 return "Bottom";
             return "Left";
         }
 
         private static string GetNavigationPaneDisplayMode()
         {
-            return NormalizeNavigationPaneDisplayMode(CurrentConfig.AppConfig.NavigationPaneDisplayMode);
+            return NormalizeNavigationPaneDisplayMode(CurrentConfig?.AppConfig?.NavigationPaneDisplayMode);
         }
 
         private static bool GetNavigationPaneOpen()
@@ -2462,6 +2494,11 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetSetupChecklistDismissed()
         {
             return CurrentConfig.AppConfig.SetupChecklistDismissed;
+        }
+
+        private static bool GetWidgetPromoDismissed()
+        {
+            return CurrentConfig.AppConfig.WidgetPromoDismissed;
         }
 
         private static int GetSetupWizardVersion()
@@ -3371,6 +3408,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetSetupChecklistDismissed(bool value)
         {
             CurrentConfig.AppConfig.SetupChecklistDismissed = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetWidgetPromoDismissed(bool value)
+        {
+            CurrentConfig.AppConfig.WidgetPromoDismissed = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

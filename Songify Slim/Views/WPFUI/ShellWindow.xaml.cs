@@ -40,6 +40,18 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private DispatcherTimer _spotifyIssueEtaTimer;
     private DispatcherTimer _nowPlayingTimer;
 
+    /// <summary>
+    /// Evaluated while XAML is parsed (after config load) so the first NavigationView template
+    /// is already Top/Bottom/Expanded. Hardcoding Left in XAML made every reboot start expanded
+    /// and the later template swap often never ran.
+    /// </summary>
+    public static NavigationViewPaneDisplayMode InitialPaneDisplayMode =>
+        ParsePaneDisplayMode(Settings.NavigationPaneDisplayMode);
+
+    /// <summary>True unless the saved style is Expanded and the user collapsed the pane.</summary>
+    public static bool InitialPaneOpen =>
+        InitialPaneDisplayMode is not NavigationViewPaneDisplayMode.Left || Settings.NavigationPaneOpen;
+
     public ShellWindow()
     {
         InitializeComponent();
@@ -47,7 +59,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         ThemeHandler.ApplyTheme();
         UiScaleHandler.ApplyToWindow(this, Settings.UiScale);
         ApplyMinSizeOverride();
-        // PaneDisplayMode is applied in Loaded — swapping templates before layout makes WPF-UI animate Width from NaN.
+        ApplyPaneOpenAndToggle(InitialPaneDisplayMode, InitialPaneOpen);
     }
 
     /// <summary>Designed minimum size when "overrule min size" is off.</summary>
@@ -133,18 +145,17 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     {
         int generation = ++_navChromeGeneration;
         _applyingNavigationChrome = true;
+        int previousTransition = RootNavigationView.TransitionDuration;
         try
         {
+            RootNavigationView.TransitionDuration = 0;
             EnsurePaneLengths();
-            // Close first so the pane has a measured width, then swap templates on the next layout pass.
-            RootNavigationView.IsPaneOpen = false;
-            RootNavigationView.UpdateLayout();
             await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Render);
             if (generation != _navChromeGeneration || RootNavigationView == null)
                 return;
 
             // Capture immediately before the template swap — startup may have navigated while we waited.
-            // The page lives in WPF-UI's inner Frame, not NavigationView.Content.
             Type pageType = GetCurrentNavigationPageType();
             UIElement currentPage = FindDisplayedNavigationPage()
                 ?? (pageType == typeof(Pages.SettingsPage) ? Pages.SettingsPage.Instance : null);
@@ -152,29 +163,77 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 ? Pages.SettingsPage.Instance?.GetSelectedTabTag() ?? "Appearance"
                 : null;
 
-            if (!SetPaneDisplayModeSafe(mode))
-            {
-                await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
-                if (generation != _navChromeGeneration || RootNavigationView == null)
-                    return;
-                EnsurePaneLengths();
-                if (!SetPaneDisplayModeSafe(mode))
-                    Logger.Warning(LogSource.Core,
-                        "Could not switch the side-menu style; WPF-UI pane animation used an unmeasured width.");
-            }
+            // Do not collapse the left pane before switching to Top/Bottom. That compact visual
+            // state pins PaneGrid.Width to ~40px; if the template swap fails (typical on reboot)
+            // you get a thin leftover sidebar with stacked hamburgers.
+            if (!await TrySetPaneDisplayModeAsync(mode, generation))
+                Logger.Warning(LogSource.Core,
+                    "Could not switch the side-menu style; WPF-UI pane animation used an unmeasured width.");
 
+            if (generation != _navChromeGeneration || RootNavigationView == null)
+                return;
+
+            RootNavigationView.UpdateLayout();
             await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Render);
             if (generation != _navChromeGeneration || RootNavigationView == null)
                 return;
 
+            ClearPaneGridWidthOverride();
             ApplyPaneOpenAndToggle(mode, wantOpen);
             await RestoreNavigationAfterPaneChangeAsync(currentPage, pageType, settingsTab);
         }
         finally
         {
+            if (RootNavigationView != null)
+                RootNavigationView.TransitionDuration = previousTransition;
             if (generation == _navChromeGeneration)
                 _applyingNavigationChrome = false;
         }
+    }
+
+    private async Task<bool> TrySetPaneDisplayModeAsync(NavigationViewPaneDisplayMode mode, int generation)
+    {
+        for (int attempt = 0; attempt < 4; attempt++)
+        {
+            if (SetPaneDisplayModeSafe(mode))
+                return true;
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            if (generation != _navChromeGeneration || RootNavigationView == null)
+                return false;
+            EnsurePaneLengths();
+        }
+
+        return RootNavigationView.PaneDisplayMode == mode;
+    }
+
+    /// <summary>
+    /// Left-mode compact storyboards set PaneGrid.Width. After a Top/Bottom template swap that
+    /// leftover local/animated width keeps the bar as a ~40px left strip.
+    /// </summary>
+    private void ClearPaneGridWidthOverride()
+    {
+        FrameworkElement pane = FindNamedDescendant(RootNavigationView, "PaneGrid");
+        if (pane == null)
+            return;
+        pane.BeginAnimation(FrameworkElement.WidthProperty, null);
+        pane.ClearValue(FrameworkElement.WidthProperty);
+    }
+
+    private static FrameworkElement FindNamedDescendant(DependencyObject root, string name)
+    {
+        if (root is FrameworkElement { Name: { } elementName } match &&
+            string.Equals(elementName, name, StringComparison.Ordinal))
+            return match;
+
+        int count = VisualTreeHelper.GetChildrenCount(root);
+        for (int i = 0; i < count; i++)
+        {
+            FrameworkElement found = FindNamedDescendant(VisualTreeHelper.GetChild(root, i), name);
+            if (found != null)
+                return found;
+        }
+
+        return null;
     }
 
     private Type GetCurrentNavigationPageType()
@@ -350,7 +409,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
     {
         ApplyMinSizeOverride();
-        ApplyNavigationChrome();
+        Dispatcher.BeginInvoke(ApplyNavigationChrome, DispatcherPriority.Render);
         AppShellBridge.Register(this);
         Title = "Songify";
 
@@ -815,7 +874,11 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     #region TitleBar menu
 
-    private void MenuWidget_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWidget();
+    private void MenuWidget_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWidgetGallery();
+
+    private void MenuWidgetGallery_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWidgetGallery();
+
+    private void MenuWidgetGenerator_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenWidgetGenerator();
 
     private void MenuQueueWindow_OnClick(object sender, RoutedEventArgs e) => QueueWindow.ShowOrActivate();
 
@@ -1484,7 +1547,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             return;
         }
 
-        RootNavigationView.Navigate(typeof(Pages.ConsolePage));
+        RootNavigationView.Navigate(typeof(Pages.HelpPage));
     }
 
     private void TitleBar_OnCloseClicked(TitleBar sender, RoutedEventArgs args)
@@ -1650,7 +1713,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     private async void BtnTourNext_OnClick(object sender, RoutedEventArgs e)
     {
-        if (_tourStep >= 3)
+        if (_tourStep >= 6)
         {
             EndSetupTour();
             return;
@@ -1677,7 +1740,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         if (BtnTourBack != null)
             BtnTourBack.Visibility = _tourStep > 0 ? Visibility.Visible : Visibility.Collapsed;
         if (BtnTourNext != null)
-            BtnTourNext.Content = _tourStep >= 3
+            BtnTourNext.Content = _tourStep >= 6
                 ? Loc("setup_finish", "Finish")
                 : Loc("setup_next", "Next");
 
@@ -1704,11 +1767,31 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 TxtTourBody.Text = Loc("setup_tour_twitch_body",
                     "Link your broadcaster account here for song requests, rewards, and chat commands. A bot account is optional.");
                 break;
-            default:
+            case 3:
+                await OpenSettingsTabAsync("TwitchSongRequest");
+                TxtTourTitle.Text = Loc("setup_tour_requests_title", "Song request rules");
+                TxtTourBody.Text = Loc("setup_tour_requests_body",
+                    "Settings → Song requests is where you choose who can redeem, queue limits per user level, and cooldowns. Command permissions live on each command under Settings → Commands.");
+                break;
+            case 4:
+                await OpenSettingsTabAsync("TwitchRewards");
+                TxtTourTitle.Text = Loc("setup_tour_rewards_title", "Rewards and refunds");
+                TxtTourBody.Text = Loc("setup_tour_rewards_body",
+                    "Pick which rewards add a song. Refunds only work for rewards Songify created (the Songify icon). Refund conditions are on the Refunds segment of this page.");
+                break;
+            case 5:
                 await OpenSettingsTabAsync("Output");
                 TxtTourTitle.Text = Loc("setup_tour_output_title", "Output and widget");
                 TxtTourBody.Text = Loc("setup_tour_output_body",
-                    "Point OBS at the Songify.txt file in Output settings. Tools → Widget opens the browser overlay. That's the tour — you're set.");
+                    "Point OBS at Songify.txt here, or use a Browser source with a widget URL from Tools → Widget gallery.");
+                break;
+            default:
+                RootNavigationView.Navigate(typeof(Pages.OverviewPage));
+                TxtTourTitle.Text = Loc("setup_tour_widget_title", "Widgets");
+                TxtTourBody.Text = Loc("setup_tour_widget_body",
+                    "Home has a widget card, and Tools → Widget gallery opens the full overlay list (including Premium). Hover the left icons when the menu is collapsed to see where each page is.");
+                await WaitForLayoutAsync();
+                highlight = Pages.OverviewPage.Instance?.WidgetCard;
                 break;
         }
 

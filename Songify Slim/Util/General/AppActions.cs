@@ -16,11 +16,18 @@ namespace Songify_Slim.Util.General;
 /// </summary>
 internal static class AppActions
 {
-    public static void OpenWidget()
+    public static void OpenWidget() => OpenWidgetGallery();
+
+    public static void OpenWidgetGallery()
     {
-        if (!Settings.Upload)
-            Settings.Upload = true;
-        ShellHelper.OpenUrl("https://widget.songify.rocks/" + Settings.Uuid);
+        GuidedSetup.EnableWidgetUpload();
+        ShellHelper.OpenUrl(GuidedSetup.WidgetGalleryUrl);
+    }
+
+    public static void OpenWidgetGenerator()
+    {
+        GuidedSetup.EnableWidgetUpload();
+        ShellHelper.OpenUrl(GuidedSetup.WidgetGeneratorUrl());
     }
 
     public static void OpenPatchNotes()

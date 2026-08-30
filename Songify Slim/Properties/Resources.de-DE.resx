@@ -1799,6 +1799,18 @@
     <value>Hintergrundeigenschaften der App.</value>
     <comment>Context: Hint under Window backdrop in Settings.</comment>
   </data>
+  <data name="window_settings_appearance_accent_system" xml:space="preserve">
+    <value>System</value>
+    <comment>Context: Accent option that uses the Windows accent color.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_system_hint" xml:space="preserve">
+    <value>Windows-Akzentfarbe verwenden</value>
+    <comment>Context: Subtitle under the System accent button in the color popup.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_recent" xml:space="preserve">
+    <value>Zuletzt verwendet</value>
+    <comment>Context: Label above the last-used accent color swatches.</comment>
+  </data>
   <data name="window_settings_appearance_scale" xml:space="preserve">
     <value>Oberflächengröße</value>
     <comment>Context: Settings appearance label for the UI zoom slider.</comment>

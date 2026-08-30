@@ -24,6 +24,7 @@ namespace Songify_Slim.Views.WPFUI.Pages;
 public partial class OverviewPage
 {
     internal ComboBox PlayerCombo => CbxPlayer;
+    internal FrameworkElement WidgetCard => CardWidget;
 
     internal static OverviewPage Instance { get; private set; }
 
@@ -589,6 +590,35 @@ public partial class OverviewPage
         UpdateChecklist();
     }
 
+    private void BtnDismissWidget_Click(object sender, RoutedEventArgs e)
+    {
+        Settings.WidgetPromoDismissed = true;
+        UpdateChecklist();
+    }
+
+    private async void BtnContinueSetup_Click(object sender, RoutedEventArgs e)
+    {
+        Window owner = Window.GetWindow(this);
+        if (owner == null)
+            return;
+        bool startTour = await GuidedSetup.ShowWizardAsync(owner);
+        UpdateChecklist();
+        if (startTour && owner is ShellWindow shell)
+            await shell.StartSetupTourAsync();
+    }
+
+    private void BtnWidgetGallery_Click(object sender, RoutedEventArgs e)
+        => AppActions.OpenWidgetGallery();
+
+    private void BtnWidgetGenerator_Click(object sender, RoutedEventArgs e)
+        => AppActions.OpenWidgetGenerator();
+
+    private void BtnWidgetLocal_Click(object sender, RoutedEventArgs e)
+    {
+        GuidedSetup.EnsureWebServerRunning();
+        AppActions.OpenWebServerUrl();
+    }
+
     private void UpdateChecklist()
     {
         if (CardGettingStarted == null || PnlChecklistItems == null)
@@ -596,10 +626,13 @@ public partial class OverviewPage
 
         bool showChecklist = GuidedSetup.ShouldShowChecklist();
         bool missingToken = !AccountLinking.HasSongifyApiToken();
+        bool showWidget = !Settings.WidgetPromoDismissed;
 
         CardGettingStarted.Visibility = showChecklist ? Visibility.Visible : Visibility.Collapsed;
         if (CardApiToken != null)
             CardApiToken.Visibility = missingToken && !showChecklist ? Visibility.Visible : Visibility.Collapsed;
+        if (CardWidget != null)
+            CardWidget.Visibility = showWidget ? Visibility.Visible : Visibility.Collapsed;
 
         if (!showChecklist)
             return;
@@ -652,6 +685,13 @@ public partial class OverviewPage
         if (sender is not System.Windows.Controls.Button { Tag: SetupChecklistItem item } ||
             Application.Current.MainWindow is not ShellWindow shell)
             return;
+
+        if (item.Id == "widget")
+        {
+            AppActions.OpenWidgetGallery();
+            return;
+        }
+
         await shell.OpenSettingsTabAsync(item.SettingsTab, item.FocusElement);
     }
 }

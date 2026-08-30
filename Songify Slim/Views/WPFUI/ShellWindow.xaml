@@ -5,6 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:pages="clr-namespace:Songify_Slim.Views.WPFUI.Pages"
+    xmlns:shell="clr-namespace:Songify_Slim.Views.WPFUI"
     xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:util="clr-namespace:Songify_Slim.Util"
@@ -88,10 +89,20 @@
                             Visibility="Visible">
                             <ui:DropDownButton.Flyout>
                                 <ContextMenu>
-                                    <MenuItem Click="MenuWidget_OnClick" Header="{DynamicResource menu_file_widget}">
+                                    <MenuItem Header="{DynamicResource menu_file_widget}">
                                         <MenuItem.Icon>
                                             <ui:SymbolIcon FontSize="16" Symbol="Window24" />
                                         </MenuItem.Icon>
+                                        <MenuItem Click="MenuWidgetGallery_OnClick" Header="{DynamicResource menu_widget_gallery}">
+                                            <MenuItem.Icon>
+                                                <ui:SymbolIcon FontSize="16" Symbol="Globe24" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Click="MenuWidgetGenerator_OnClick" Header="{DynamicResource menu_widget_generator}">
+                                            <MenuItem.Icon>
+                                                <ui:SymbolIcon FontSize="16" Symbol="Wrench24" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
                                     </MenuItem>
                                     <MenuItem Click="MenuQueueWindow_OnClick" Header="{DynamicResource window_queue_open_window}">
                                         <MenuItem.Icon>
@@ -344,14 +355,18 @@
             ClipToBounds="True"
             CompactPaneLength="48"
             IsBackButtonVisible="Collapsed"
-            IsPaneOpen="True"
+            IsPaneOpen="{x:Static shell:ShellWindow.InitialPaneOpen}"
             OpenPaneLength="150"
             PaneClosed="RootNavigationView_OnPaneClosed"
-            PaneDisplayMode="Left"
+            PaneDisplayMode="{x:Static shell:ShellWindow.InitialPaneDisplayMode}"
             PaneOpened="RootNavigationView_OnPaneOpened"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.PanningMode="None"
-            ScrollViewer.VerticalScrollBarVisibility="Disabled">
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            ToolTipService.BetweenShowDelay="0"
+            ToolTipService.InitialShowDelay="200"
+            ToolTipService.Placement="Right"
+            ToolTipService.ShowDuration="8000">
             <ui:NavigationView.Resources>
                 <Style x:Key="NavSymbolIconStyle" TargetType="ui:SymbolIcon">
                     <Setter Property="Filled" Value="False" />
@@ -367,18 +382,24 @@
                     Content="{DynamicResource nav_home}"
                     TargetPageTag="overview"
                     TargetPageType="{x:Type pages:OverviewPage}"
-                    ToolTip="Home">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Home48" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="Home48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_queue}"
                     TargetPageTag="queue"
                     TargetPageType="{x:Type pages:QueuePage}"
-                    ToolTip="Queue">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="List28" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="List28"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
 
@@ -386,27 +407,36 @@
                     Content="{DynamicResource window_blocklist_title}"
                     TargetPageTag="blacklist"
                     TargetPageType="{x:Type pages:BlacklistPage}"
-                    ToolTip="Blocklists">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="ShieldDismiss24" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="ShieldDismiss24"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_history}"
                     TargetPageTag="history"
                     TargetPageType="{x:Type pages:HistoryPage}"
-                    ToolTip="History">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="History48" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="History48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
                     Content="{DynamicResource window_userlist_title}"
                     TargetPageTag="userlist"
                     TargetPageType="{x:Type pages:UserListPage}"
-                    ToolTip="Userlist">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="People48" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="People48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.MenuItems>
@@ -415,36 +445,36 @@
                     Content="{DynamicResource menu_file_settings}"
                     TargetPageTag="settings"
                     TargetPageType="{x:Type pages:SettingsPage}"
-                    ToolTip="Settings">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Settings48" />
-                    </ui:NavigationViewItem.Icon>
-                </ui:NavigationViewItem>
-                <ui:NavigationViewItem
-                    Content="{DynamicResource menu_view_console}"
-                    TargetPageTag="console"
-                    TargetPageType="{x:Type pages:ConsolePage}"
-                    ToolTip="Console">
-                    <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="CodeBlock28" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="Settings48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_file_help}"
                     TargetPageTag="help"
                     TargetPageType="{x:Type pages:HelpPage}"
-                    ToolTip="Help">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="QuestionCircle24" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="QuestionCircle24"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_help_about}"
                     TargetPageTag="about"
                     TargetPageType="{x:Type pages:AboutPage}"
-                    ToolTip="About">
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
                     <ui:NavigationViewItem.Icon>
-                        <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Info24" />
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="Info24"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
                     </ui:NavigationViewItem.Icon>
                 </ui:NavigationViewItem>
             </ui:NavigationView.FooterMenuItems>

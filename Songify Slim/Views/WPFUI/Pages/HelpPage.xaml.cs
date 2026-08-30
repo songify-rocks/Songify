@@ -6,7 +6,68 @@ namespace Songify_Slim.Views.WPFUI.Pages;
 
 public partial class HelpPage : Page
 {
-    public HelpPage() => InitializeComponent();
+    public HelpPage()
+    {
+        InitializeComponent();
+        Loaded += HelpPage_Loaded;
+        Unloaded += HelpPage_Unloaded;
+        IsVisibleChanged += HelpPage_IsVisibleChanged;
+    }
+
+    private void HelpPage_Loaded(object sender, RoutedEventArgs e)
+    {
+        ConsoleWindow.DetachedChanged += OnDetachedChanged;
+        UpdateDetachedUi();
+    }
+
+    private void HelpPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+        ConsoleWindow.DetachedChanged -= OnDetachedChanged;
+        ConsoleHost?.ReleaseDocument();
+    }
+
+    private void HelpPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (IsVisible)
+            UpdateDetachedUi();
+        else
+            ConsoleHost?.ReleaseDocument();
+    }
+
+    private void OnDetachedChanged()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.Invoke(UpdateDetachedUi);
+            return;
+        }
+
+        UpdateDetachedUi();
+    }
+
+    private void UpdateDetachedUi()
+    {
+        bool detached = ConsoleWindow.IsOpen || GlobalObjects.DetachConsole;
+        if (ConsoleHost != null)
+        {
+            ConsoleHost.Visibility = detached ? Visibility.Collapsed : Visibility.Visible;
+            if (detached)
+                ConsoleHost.ReleaseDocument();
+            else if (IsVisible)
+                ConsoleHost.TryAttach();
+        }
+
+        if (CardDetached != null)
+            CardDetached.Visibility = detached ? Visibility.Visible : Visibility.Collapsed;
+        if (BtnDetachConsole != null)
+            BtnDetachConsole.Visibility = detached ? Visibility.Collapsed : Visibility.Visible;
+    }
+
+    private void BtnDetachConsole_Click(object sender, RoutedEventArgs e) =>
+        ConsoleWindow.ShowOrActivate();
+
+    private void BtnShowConsoleWindow_Click(object sender, RoutedEventArgs e) =>
+        ConsoleWindow.ShowOrActivate();
 
     private void BtnPatchNotes_Click(object sender, RoutedEventArgs e) => AppActions.OpenPatchNotes();
 

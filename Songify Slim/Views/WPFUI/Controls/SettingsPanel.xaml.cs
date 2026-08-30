@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -1177,18 +1178,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
             ThemeHandler.ApplyTheme();
         }
 
-        private static readonly (string Hex, string Label)[] AccentPresets =
-        [
-            ("", "System"),
-            ("#0078D4", "Blue"),
-            ("#8764B8", "Purple"),
-            ("#C239B3", "Pink"),
-            ("#E74856", "Red"),
-            ("#FF8C00", "Orange"),
-            ("#107C10", "Green"),
-            ("#00B7C3", "Teal")
-        ];
-
         private void BuildAccentSwatches()
         {
             if (PnlAccentSwatches == null)
@@ -1196,35 +1185,94 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
             PnlAccentSwatches.Children.Clear();
             string current = Settings.AccentColor ?? "";
-            string systemLabel = TryFindResource("window_settings_appearance_accent_system") as string ?? "System";
+            List<string> recents = Settings.RecentAccentColors;
+            bool hasRecents = recents is { Count: > 0 };
+            if (TbAccentRecent != null)
+                TbAccentRecent.Visibility = hasRecents ? Visibility.Visible : Visibility.Collapsed;
 
-            foreach ((string hex, string label) in AccentPresets)
+            if (hasRecents)
             {
-                Color fill = Colors.Gray;
-                if (!string.IsNullOrEmpty(hex) && ThemeHandler.TryParseHex(hex, out Color parsed))
-                    fill = parsed;
-
-                Button btn = new()
+                foreach (string hex in recents)
                 {
-                    Width = 32,
-                    Height = 32,
-                    Margin = new Thickness(0, 0, 8, 8),
-                    Tag = hex,
-                    Focusable = false,
-                    ToolTip = string.IsNullOrEmpty(hex) ? systemLabel : label,
-                    Background = new SolidColorBrush(fill),
-                    BorderThickness = IsCurrentAccent(hex, current)
-                        ? new Thickness(3)
-                        : new Thickness(1),
-                    BorderBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF))
-                };
-                btn.PreviewMouseLeftButtonDown += AccentSwatch_OnPreviewMouseDown;
-                PnlAccentSwatches.Children.Add(btn);
+                    if (!ThemeHandler.TryParseHex(hex, out Color parsed))
+                        continue;
+
+                    Button btn = new()
+                    {
+                        Width = 32,
+                        Height = 32,
+                        Margin = new Thickness(0, 0, 8, 8),
+                        Tag = hex,
+                        Focusable = false,
+                        ToolTip = hex,
+                        Background = new SolidColorBrush(parsed),
+                        BorderThickness = IsCurrentAccent(hex, current)
+                            ? new Thickness(3)
+                            : new Thickness(1),
+                        BorderBrush = new SolidColorBrush(Color.FromRgb(0xFF, 0xFF, 0xFF))
+                    };
+                    btn.PreviewMouseLeftButtonDown += AccentSwatch_OnPreviewMouseDown;
+                    PnlAccentSwatches.Children.Add(btn);
+                }
             }
 
             SyncAccentHexText(current);
             SyncAccentWheel(current);
+            UpdateAccentPreviewSwatch();
+            UpdateSystemAccentChrome();
         }
+
+        private void BtnAccentSystem_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            ApplyAccentChoice("");
+        }
+
+        private void UpdateAccentPreviewSwatch()
+        {
+            Color fill = ResolveAccentColor(Settings.AccentColor);
+            if (BdAccentPreview != null)
+                BdAccentPreview.Background = new SolidColorBrush(fill);
+            if (BdAccentSystem != null)
+                BdAccentSystem.Background = new SolidColorBrush(ResolveAccentColor(""));
+            if (IcoAccentSystem != null)
+                IcoAccentSystem.Visibility = string.IsNullOrEmpty(Settings.AccentColor)
+                    ? Visibility.Visible
+                    : Visibility.Collapsed;
+        }
+
+        private void UpdateSystemAccentChrome()
+        {
+            if (BdAccentSystemFrame == null)
+                return;
+            bool isSystem = string.IsNullOrEmpty(Settings.AccentColor);
+            BdAccentSystemFrame.BorderThickness = new Thickness(isSystem ? 2 : 1);
+            BdAccentSystemFrame.BorderBrush = new SolidColorBrush(
+                isSystem ? Color.FromRgb(0xFF, 0xFF, 0xFF) : Color.FromRgb(0x60, 0x60, 0x60));
+        }
+
+        private void BtnAccentPicker_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (PopAccentPicker == null)
+                return;
+            if (PopAccentPicker.IsOpen)
+            {
+                PopAccentPicker.IsOpen = false;
+                return;
+            }
+
+            SyncAccentWheel(Settings.AccentColor);
+            // Open after this click so StaysOpen=False does not close the popup on the same mouse up.
+            Dispatcher.BeginInvoke(() =>
+            {
+                if (PopAccentPicker != null)
+                    PopAccentPicker.IsOpen = true;
+            }, DispatcherPriority.Input);
+        }
+
+        private void PopAccentPicker_OnOpened(object sender, EventArgs e)
+            => SyncAccentWheel(Settings.AccentColor);
 
         private static bool IsCurrentAccent(string hex, string current)
             => string.Equals(hex ?? "", current ?? "", StringComparison.OrdinalIgnoreCase);
@@ -1264,31 +1312,16 @@ namespace Songify_Slim.Views.WPFUI.Controls
             return Color.FromRgb(0x00, 0x78, 0xD4);
         }
 
-        private void RefreshAccentSwatchSelection()
-        {
-            string current = Settings.AccentColor ?? "";
-            if (PnlAccentSwatches != null)
-            {
-                foreach (object child in PnlAccentSwatches.Children)
-                {
-                    if (child is not Button { Tag: string hex } btn)
-                        continue;
-                    btn.BorderThickness = IsCurrentAccent(hex, current)
-                        ? new Thickness(3)
-                        : new Thickness(1);
-                }
-            }
-
-            SyncAccentHexText(current);
-            SyncAccentWheel(current);
-        }
-
         private void AccentWheel_OnColorChanged(object sender, Color color)
         {
             if (IgnoreControlEvents || _accentWheelUpdating)
                 return;
 
             SyncAccentHexText(ThemeHandler.ToHex(color), force: true);
+            if (BdAccentPreview != null)
+                BdAccentPreview.Background = new SolidColorBrush(color);
+            if (IcoAccentSystem != null)
+                IcoAccentSystem.Visibility = Visibility.Collapsed;
             _pendingAccentPreview = color;
             _hasPendingAccentPreview = true;
             _accentPreviewTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(40) };
@@ -1331,7 +1364,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             // Always overwrite the hex box so LostFocus cannot write the previous custom value back.
             SyncAccentHexText(value, force: true);
             ThemeHandler.ApplyTheme(force: true);
-            RefreshAccentSwatchSelection();
+            BuildAccentSwatches();
         }
 
         private void TbAccentHex_OnLostFocus(object sender, RoutedEventArgs e)
@@ -1357,7 +1390,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     return;
                 Settings.AccentColor = "";
                 ThemeHandler.ApplyTheme(force: true);
-                RefreshAccentSwatchSelection();
+                BuildAccentSwatches();
                 return;
             }
 
@@ -1373,7 +1406,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
             Settings.AccentColor = normalized;
             ThemeHandler.ApplyTheme(force: true);
-            RefreshAccentSwatchSelection();
+            BuildAccentSwatches();
         }
 
         private void BindUiScaleSlider()
@@ -1696,6 +1729,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 _accentPreviewTimer.Stop();
                 _accentPreviewTimer.Tick -= AccentPreviewTimer_OnTick;
             }
+            if (PopAccentPicker != null)
+                PopAccentPicker.IsOpen = false;
         }
 
         private void Tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)

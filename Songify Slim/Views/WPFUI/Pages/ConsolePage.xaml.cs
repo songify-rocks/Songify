@@ -11,6 +11,7 @@ public partial class ConsolePage
         InitializeComponent();
         Loaded += ConsolePage_Loaded;
         Unloaded += ConsolePage_Unloaded;
+        IsVisibleChanged += ConsolePage_IsVisibleChanged;
     }
 
     private void ConsolePage_Loaded(object sender, RoutedEventArgs e)
@@ -22,6 +23,15 @@ public partial class ConsolePage
     private void ConsolePage_Unloaded(object sender, RoutedEventArgs e)
     {
         ConsoleWindow.DetachedChanged -= OnDetachedChanged;
+        ConsoleHost?.ReleaseDocument();
+    }
+
+    private void ConsolePage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+    {
+        if (IsVisible)
+            UpdateDetachedUi();
+        else
+            ConsoleHost?.ReleaseDocument();
     }
 
     private void OnDetachedChanged()
@@ -43,7 +53,7 @@ public partial class ConsolePage
             ConsoleHost.Visibility = detached ? Visibility.Collapsed : Visibility.Visible;
             if (detached)
                 ConsoleHost.ReleaseDocument();
-            else
+            else if (IsVisible)
                 ConsoleHost.TryAttach();
         }
 

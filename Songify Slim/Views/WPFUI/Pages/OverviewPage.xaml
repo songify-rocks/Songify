@@ -104,6 +104,14 @@
                             Text="{DynamicResource setup_checklist_body}"
                             TextWrapping="Wrap" />
                         <StackPanel x:Name="PnlChecklistItems" />
+                        <ui:Button
+                            x:Name="BtnContinueSetup"
+                            Margin="0,4,0,0"
+                            HorizontalAlignment="Left"
+                            Appearance="Secondary"
+                            Click="BtnContinueSetup_Click"
+                            Content="{DynamicResource window_overview_continue_setup}"
+                            Icon="{ui:SymbolIcon Clipboard24}" />
                     </StackPanel>
                 </ui:Card>
 
@@ -141,6 +149,60 @@
                                 Content="{DynamicResource menu_file_settings}"
                                 Icon="{ui:SymbolIcon Settings24}" />
                         </StackPanel>
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card
+                    x:Name="CardWidget"
+                    Margin="0,0,0,16"
+                    Padding="16"
+                    Visibility="Collapsed">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                            <ui:Button
+                                Padding="8,2"
+                                HorizontalAlignment="Right"
+                                Appearance="Transparent"
+                                Click="BtnDismissWidget_Click"
+                                Content="{DynamicResource setup_checklist_dismiss}"
+                                DockPanel.Dock="Right"
+                                FontSize="12"
+                                Icon="{ui:SymbolIcon Dismiss24}" />
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource window_overview_widget_title}" />
+                        </DockPanel>
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{DynamicResource window_overview_widget_body}"
+                            TextWrapping="Wrap" />
+                        <WrapPanel>
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,8,8"
+                                Appearance="Primary"
+                                Click="BtnWidgetGallery_Click"
+                                Content="{DynamicResource window_overview_widget_open_gallery}"
+                                Icon="{ui:SymbolIcon Window24}" />
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,8,8"
+                                Appearance="Secondary"
+                                Click="BtnWidgetGenerator_Click"
+                                Content="{DynamicResource window_overview_widget_open_generator}"
+                                Icon="{ui:SymbolIcon Wrench24}" />
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,0,8"
+                                Appearance="Secondary"
+                                Click="BtnWidgetLocal_Click"
+                                Content="{DynamicResource window_overview_widget_open_local}"
+                                Icon="{ui:SymbolIcon Server24}" />
+                        </WrapPanel>
                     </StackPanel>
                 </ui:Card>
             </StackPanel>

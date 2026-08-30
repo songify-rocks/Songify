@@ -1355,6 +1355,9 @@ namespace Songify_Slim.Util.Configuration
 
         /// <summary>Hex accent (e.g. #0078D4). Empty = Windows system accent.</summary>
         public string AccentColor { get; set; } = "";
+
+        /// <summary>Most recently used custom accent hex values, newest first. Max 7.</summary>
+        public List<string> RecentAccentColors { get; set; } = [];
         public string SrForBitsKeyWord { get; set; }
         public SpotifyPersistentIssue SpotifyPersistentIssue { get; set; }
         public List<SpotifyPersistentIssue> SpotifyPersistentIssues { get; set; } = new();
@@ -1373,6 +1376,9 @@ namespace Songify_Slim.Util.Configuration
 
         /// <summary>True when the Overview "Getting started" card was dismissed.</summary>
         public bool SetupChecklistDismissed { get; set; }
+
+        /// <summary>True when the Home widget promo card was dismissed.</summary>
+        public bool WidgetPromoDismissed { get; set; }
 
         /// <summary>Last completed guided-setup flow version. 0 = never shown.</summary>
         public int SetupWizardVersion { get; set; }

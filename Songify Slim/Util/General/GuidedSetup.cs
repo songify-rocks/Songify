@@ -1,7 +1,9 @@
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Views;
 using static Songify_Slim.Util.General.Enums;
@@ -14,7 +16,9 @@ internal sealed record SetupChecklistItem(
 /// <summary>First-launch wizard + Overview checklist state.</summary>
 internal static class GuidedSetup
 {
-    public const int CurrentWizardVersion = 1;
+    public const int CurrentWizardVersion = 3;
+    public const string WidgetGalleryUrl = "https://songify.rocks/widgets/";
+    public const string WidgetGeneratorBaseUrl = "https://widget.songify.rocks/";
 
     public static bool ShouldShowWizard()
     {
@@ -57,6 +61,96 @@ internal static class GuidedSetup
     public static bool IsOutputReady() =>
         !string.IsNullOrWhiteSpace(DefaultOutputFilePath());
 
+    public static bool IsSongRequestsConfigured() =>
+        Settings.TwSrReward || Settings.TwSrCommand;
+
+    public static bool IsSongRequestRewardSelected() =>
+        Settings.TwRewardId is { Count: > 0 };
+
+    public static void SetSongRequestReward(string rewardId, bool selected)
+    {
+        if (string.IsNullOrWhiteSpace(rewardId))
+            return;
+        List<string> ids = [.. Settings.TwRewardId ?? []];
+        if (selected)
+        {
+            if (!ids.Contains(rewardId))
+                ids.Add(rewardId);
+        }
+        else
+        {
+            ids.Remove(rewardId);
+        }
+
+        Settings.TwRewardId = ids;
+    }
+
+    public static void SetRewardUserLevel(int level, bool allowed)
+    {
+        List<int> levels = [.. Settings.UserLevelsReward ?? []];
+        if (allowed)
+        {
+            if (!levels.Contains(level))
+                levels.Add(level);
+        }
+        else
+        {
+            levels.Remove(level);
+        }
+
+        Settings.UserLevelsReward = levels;
+    }
+
+    public static void ApplyQueueLimitToAllLevels(int limit)
+    {
+        if (limit < 1)
+            limit = 1;
+        Settings.TwSrMaxReqEveryone = limit;
+        Settings.TwSrMaxReqFollower = limit;
+        Settings.TwSrMaxReqVip = limit;
+        Settings.TwSrMaxReqSubscriber = limit;
+        Settings.TwSrMaxReqSubscriberT2 = limit;
+        Settings.TwSrMaxReqSubscriberT3 = limit;
+        Settings.TwSrMaxReqModerator = limit;
+        Settings.TwSrMaxReqBroadcaster = limit;
+    }
+
+    public static bool IsWidgetConfigured() =>
+        Settings.Upload || Settings.WidgetPromoDismissed;
+
+    public static string WidgetGeneratorUrl() =>
+        WidgetGeneratorBaseUrl + Settings.Uuid;
+
+    public static string LocalWebServerUrl() =>
+        $"http://localhost:{Settings.WebServerPort}";
+
+    public static void ApplySongRequestChoices(bool channelPoints, bool commands)
+    {
+        Settings.TwSrReward = channelPoints;
+        Settings.TwSrCommand = commands;
+
+        TwitchCommand songRequestCmd = Settings.Commands?
+            .FirstOrDefault(c => c.CommandType == CommandType.SongRequest);
+        if (songRequestCmd == null)
+            return;
+
+        songRequestCmd.IsEnabled = commands;
+        Settings.UpdateCommand(songRequestCmd);
+    }
+
+    public static void EnableWidgetUpload()
+    {
+        if (!Settings.Upload)
+            Settings.Upload = true;
+    }
+
+    public static void EnsureWebServerRunning()
+    {
+        Settings.AutoStartWebServer = true;
+        if (!GlobalObjects.WebServer.Run)
+            GlobalObjects.WebServer.StartWebServer(Settings.WebServerPort);
+    }
+
     public static IReadOnlyList<SetupChecklistItem> GetChecklistItems()
     {
         bool spotifyPlayer = Settings.Player == PlayerType.Spotify;
@@ -90,9 +184,30 @@ internal static class GuidedSetup
             "CardSongifyApiToken"));
 
         items.Add(new SetupChecklistItem(
+            "requests",
+            Loc("setup_checklist_requests", "Choose channel points or chat commands"),
+            IsSongRequestsConfigured() || !AccountLinking.IsTwitchMainLinked(),
+            IsRequired: false,
+            Settings.TwSrReward ? "TwitchRewards" : "TwitchSongRequest"));
+
+        items.Add(new SetupChecklistItem(
+            "reward",
+            Loc("setup_checklist_reward", "Pick a song request reward"),
+            IsSongRequestRewardSelected() || !Settings.TwSrReward || !AccountLinking.IsTwitchMainLinked(),
+            IsRequired: false,
+            "TwitchRewards"));
+
+        items.Add(new SetupChecklistItem(
             "output",
             Loc("setup_checklist_output", "Song output file (OBS)"),
             IsOutputReady(),
+            IsRequired: false,
+            "Output"));
+
+        items.Add(new SetupChecklistItem(
+            "widget",
+            Loc("setup_checklist_widget", "Set up a stream widget"),
+            Settings.Upload,
             IsRequired: false,
             "Output"));
 
@@ -106,7 +221,7 @@ internal static class GuidedSetup
 
         foreach (SetupChecklistItem item in GetChecklistItems())
         {
-            if (!item.IsDone && (item.IsRequired || item.Id is "twitch" or "token"))
+            if (!item.IsDone && (item.IsRequired || item.Id is "twitch" or "token" or "requests" or "reward"))
                 return true;
         }
 
