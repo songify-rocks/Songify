@@ -35,6 +35,8 @@ namespace Songify_Slim.Views.WPFUI;
 public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 {
     private bool _forceClose;
+    private bool _applyingNavigationChrome;
+    private int _navChromeGeneration;
     private DispatcherTimer _spotifyIssueEtaTimer;
     private DispatcherTimer _nowPlayingTimer;
 
@@ -45,7 +47,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         ThemeHandler.ApplyTheme();
         UiScaleHandler.ApplyToWindow(this, Settings.UiScale);
         ApplyMinSizeOverride();
-        // Don't navigate here: NavigationView's frame may not be ready until Loaded
+        // PaneDisplayMode is applied in Loaded — swapping templates before layout makes WPF-UI animate Width from NaN.
     }
 
     /// <summary>Designed minimum size when "overrule min size" is off.</summary>
@@ -61,6 +63,239 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             overrule ? 0 : DefaultMinWidth,
             overrule ? 0 : DefaultMinHeight);
     }
+
+    /// <summary>Applies saved side-menu style and expanded/collapsed state.</summary>
+    public void ApplyNavigationChrome()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(ApplyNavigationChrome);
+            return;
+        }
+
+        if (RootNavigationView == null)
+            return;
+
+        // Template swap animates pane Width. Before the first layout pass that origin is NaN.
+        if (!IsLoaded)
+        {
+            Dispatcher.BeginInvoke(ApplyNavigationChrome, DispatcherPriority.Loaded);
+            return;
+        }
+
+        NavigationViewPaneDisplayMode mode = ParsePaneDisplayMode(Settings.NavigationPaneDisplayMode);
+        bool wantOpen = Settings.NavigationPaneOpen;
+
+        if (RootNavigationView.PaneDisplayMode == mode)
+        {
+            ApplyPaneOpenAndToggleSuppressed(mode, wantOpen);
+            return;
+        }
+
+        _ = ApplyPaneDisplayModeAsync(mode, wantOpen);
+    }
+
+    private void ApplyPaneOpenAndToggleSuppressed(NavigationViewPaneDisplayMode mode, bool wantOpen)
+    {
+        _applyingNavigationChrome = true;
+        try
+        {
+            ApplyPaneOpenAndToggle(mode, wantOpen);
+        }
+        finally
+        {
+            _applyingNavigationChrome = false;
+        }
+    }
+
+    /// <summary>
+    /// WPF-UI sets <see cref="NavigationView.IsPaneToggleVisible"/> false for LeftFluent and never
+    /// turns it back on. Expanded needs the hamburger; Top/Bottom do not.
+    /// </summary>
+    private void ApplyPaneOpenAndToggle(NavigationViewPaneDisplayMode mode, bool wantOpen)
+    {
+        bool canToggle = mode is NavigationViewPaneDisplayMode.Left;
+        RootNavigationView.IsPaneToggleVisible = canToggle;
+
+        bool open = canToggle ? wantOpen : true;
+        RootNavigationView.IsPaneOpen = open;
+
+        if (canToggle)
+        {
+            VisualStateManager.GoToState(
+                RootNavigationView,
+                open ? "PaneOpen" : "PaneCompact",
+                true);
+        }
+    }
+
+    private async Task ApplyPaneDisplayModeAsync(NavigationViewPaneDisplayMode mode, bool wantOpen)
+    {
+        int generation = ++_navChromeGeneration;
+        _applyingNavigationChrome = true;
+        try
+        {
+            EnsurePaneLengths();
+            // Close first so the pane has a measured width, then swap templates on the next layout pass.
+            RootNavigationView.IsPaneOpen = false;
+            RootNavigationView.UpdateLayout();
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+            if (generation != _navChromeGeneration || RootNavigationView == null)
+                return;
+
+            // Capture immediately before the template swap — startup may have navigated while we waited.
+            // The page lives in WPF-UI's inner Frame, not NavigationView.Content.
+            Type pageType = GetCurrentNavigationPageType();
+            UIElement currentPage = FindDisplayedNavigationPage()
+                ?? (pageType == typeof(Pages.SettingsPage) ? Pages.SettingsPage.Instance : null);
+            string settingsTab = pageType == typeof(Pages.SettingsPage)
+                ? Pages.SettingsPage.Instance?.GetSelectedTabTag() ?? "Appearance"
+                : null;
+
+            if (!SetPaneDisplayModeSafe(mode))
+            {
+                await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+                if (generation != _navChromeGeneration || RootNavigationView == null)
+                    return;
+                EnsurePaneLengths();
+                if (!SetPaneDisplayModeSafe(mode))
+                    Logger.Warning(LogSource.Core,
+                        "Could not switch the side-menu style; WPF-UI pane animation used an unmeasured width.");
+            }
+
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Render);
+            if (generation != _navChromeGeneration || RootNavigationView == null)
+                return;
+
+            ApplyPaneOpenAndToggle(mode, wantOpen);
+            await RestoreNavigationAfterPaneChangeAsync(currentPage, pageType, settingsTab);
+        }
+        finally
+        {
+            if (generation == _navChromeGeneration)
+                _applyingNavigationChrome = false;
+        }
+    }
+
+    private Type GetCurrentNavigationPageType()
+    {
+        if (RootNavigationView.SelectedItem is NavigationViewItem { TargetPageType: Type fromItem })
+            return fromItem;
+        return FindDisplayedNavigationPage()?.GetType();
+    }
+
+    private UIElement FindDisplayedNavigationPage()
+    {
+        return FindFrameContent(RootNavigationView);
+    }
+
+    private static UIElement FindFrameContent(DependencyObject root)
+    {
+        if (root is Frame { Content: UIElement page })
+            return page;
+
+        int count = VisualTreeHelper.GetChildrenCount(root);
+        for (int i = 0; i < count; i++)
+        {
+            UIElement found = FindFrameContent(VisualTreeHelper.GetChild(root, i));
+            if (found != null)
+                return found;
+        }
+
+        return null;
+    }
+
+    private async Task RestoreNavigationAfterPaneChangeAsync(UIElement currentPage, Type pageType, string settingsTab)
+    {
+        // Template swap recreates the content presenter. Navigate() is a no-op when the same
+        // item is already on WPF-UI's stack, so put the captured page back into the new frame.
+        bool restored = false;
+        if (currentPage != null)
+        {
+            try
+            {
+                restored = RootNavigationView.ReplaceContent(currentPage);
+            }
+            catch (Exception)
+            {
+                restored = false;
+            }
+        }
+
+        if (!restored && !RootNavigationView.Navigate(pageType ?? typeof(Pages.OverviewPage)))
+        {
+            Type bounce = pageType == typeof(Pages.OverviewPage)
+                ? typeof(Pages.QueuePage)
+                : typeof(Pages.OverviewPage);
+            RootNavigationView.Navigate(bounce);
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+            RootNavigationView.Navigate(pageType ?? typeof(Pages.OverviewPage));
+        }
+
+        if (pageType != typeof(Pages.SettingsPage) && currentPage is not Pages.SettingsPage)
+            return;
+
+        await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Loaded);
+        await Task.Delay(80);
+        Pages.SettingsPage page = Pages.SettingsPage.Instance;
+        if (page == null)
+        {
+            await Dispatcher.InvokeAsync(() => { }, DispatcherPriority.Background);
+            page = Pages.SettingsPage.Instance;
+        }
+
+        page?.SelectTab(settingsTab ?? "Appearance");
+    }
+
+    private void EnsurePaneLengths()
+    {
+        if (double.IsNaN(RootNavigationView.CompactPaneLength) || RootNavigationView.CompactPaneLength <= 0)
+            RootNavigationView.CompactPaneLength = 48;
+        if (double.IsNaN(RootNavigationView.OpenPaneLength) || RootNavigationView.OpenPaneLength <= 0)
+            RootNavigationView.OpenPaneLength = 150;
+    }
+
+    private bool SetPaneDisplayModeSafe(NavigationViewPaneDisplayMode mode)
+    {
+        if (RootNavigationView.PaneDisplayMode == mode)
+            return true;
+
+        try
+        {
+            RootNavigationView.PaneDisplayMode = mode;
+            return true;
+        }
+        catch (InvalidOperationException)
+        {
+            // WPF-UI animates pane Width on template swap; origin can still be NaN.
+            return false;
+        }
+    }
+
+    internal static NavigationViewPaneDisplayMode ParsePaneDisplayMode(string value)
+    {
+        if (Enum.TryParse(value, ignoreCase: true, out NavigationViewPaneDisplayMode mode) &&
+            mode is NavigationViewPaneDisplayMode.Left
+                or NavigationViewPaneDisplayMode.Top
+                or NavigationViewPaneDisplayMode.Bottom)
+            return mode;
+        return NavigationViewPaneDisplayMode.Left;
+    }
+
+    private void PersistPaneOpenState()
+    {
+        if (_applyingNavigationChrome || RootNavigationView == null)
+            return;
+        if (Settings.NavigationPaneOpen == RootNavigationView.IsPaneOpen)
+            return;
+        Settings.NavigationPaneOpen = RootNavigationView.IsPaneOpen;
+    }
+
+    private void RootNavigationView_OnPaneOpened(object sender, RoutedEventArgs args) =>
+        PersistPaneOpenState();
+
+    private void RootNavigationView_OnPaneClosed(object sender, RoutedEventArgs args) =>
+        PersistPaneOpenState();
 
     /// <summary>For status bar binding.</summary>
     public ApiMetricsVm ApiMetrics => GlobalObjects.ApiMetrics;
@@ -115,6 +350,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private async void ShellWindow_Loaded(object sender, RoutedEventArgs e)
     {
         ApplyMinSizeOverride();
+        ApplyNavigationChrome();
         AppShellBridge.Register(this);
         Title = "Songify";
 
@@ -224,6 +460,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         AppShellBridge.Unregister(this);
         Settings.PosX = Left;
         Settings.PosY = Top;
+        PersistPaneOpenState();
         QueueWindow.CloseIfOpen();
         Util.Songify.AppFetchService.Stop();
         try

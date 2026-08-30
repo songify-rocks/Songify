@@ -19,7 +19,7 @@ public partial class SettingsPage : Page
     /// <summary>Modern IA: General → Music → Twitch → Network.</summary>
     private static readonly NavGroup[] NavGroups =
     [
-        new("General", "window_settings_nav_general", SymbolRegular.Settings24, null, ["System", "Output", "Config"]),
+        new("General", "window_settings_nav_general", SymbolRegular.Settings24, null, ["System", "Appearance", "Output", "Config"]),
         new("Music", "window_settings_nav_music", SymbolRegular.MusicNote224, null, ["Spotify", "Youtube"]),
         new("Twitch", "menu_twitch", null, AppIcons.Twitch,
         [
@@ -102,6 +102,13 @@ public partial class SettingsPage : Page
         }
 
         Panel?.SelectTab(tabTag, elementName);
+    }
+
+    internal string GetSelectedTabTag()
+    {
+        if (NavList?.SelectedItem is ListBoxItem { Tag: TabItem tab })
+            return tab.Tag?.ToString();
+        return Panel?.TabCtrl?.SelectedItem is TabItem selected ? selected.Tag?.ToString() : null;
     }
 
     private void EnsureNavBuilt()
@@ -248,6 +255,7 @@ public partial class SettingsPage : Page
     private static FrameworkElement NavIconForTag(string tag) => tag switch
     {
         "System" => AppIcons.Fluent(SymbolRegular.Settings24, 14),
+        "Appearance" => AppIcons.Fluent(SymbolRegular.Color24, 14),
         "Output" => AppIcons.Fluent(SymbolRegular.Folder24, 14),
         "Config" => AppIcons.Fluent(SymbolRegular.Document24, 14),
         "Spotify" => AppIcons.Fluent(SymbolRegular.MusicNote224, 14),

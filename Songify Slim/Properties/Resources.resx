@@ -2085,7 +2085,7 @@
   </data>
   <data name="window_settings_nav_general" xml:space="preserve">
     <value>General</value>
-    <comment>Context: Settings left-nav group header for System/Output/Config.</comment>
+    <comment>Context: Settings left-nav group header for System/Appearance/Output/Config.</comment>
   </data>
   <data name="window_settings_nav_music" xml:space="preserve">
     <value>Music</value>
@@ -2126,6 +2126,34 @@
   <data name="window_settings_appearance_scale_value" xml:space="preserve">
     <value>{0}%</value>
     <comment>Context: Percentage label next to the UI scale slider. {0} is 100–200.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_style" xml:space="preserve">
+    <value>Side menu</value>
+    <comment>Context: Settings appearance label for shell NavigationView pane style.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_style_hint" xml:space="preserve">
+    <value>How the main navigation is shown: expanded side menu, top, or bottom. The expanded or collapsed state of the side menu is remembered.</value>
+    <comment>Context: Hint under Side menu in Settings appearance.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left" xml:space="preserve">
+    <value>Expanded</value>
+    <comment>Context: Navigation pane mode — always show labels (Left).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left_fluent" xml:space="preserve">
+    <value>Large icons</value>
+    <comment>Context: Navigation pane mode — large icons with titles (LeftFluent).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left_minimal" xml:space="preserve">
+    <value>Overlay</value>
+    <comment>Context: Navigation pane mode — hamburger overlay (LeftMinimal). Default.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_top" xml:space="preserve">
+    <value>Top</value>
+    <comment>Context: Navigation pane mode — tabs along the top (Top).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_bottom" xml:space="preserve">
+    <value>Bottom</value>
+    <comment>Context: Navigation pane mode — tabs along the bottom (Bottom).</comment>
   </data>
   <data name="window_settings_options" xml:space="preserve">
     <value>Options</value>

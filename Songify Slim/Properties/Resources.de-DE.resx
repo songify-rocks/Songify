@@ -1769,7 +1769,7 @@
   </data>
   <data name="window_settings_nav_general" xml:space="preserve">
     <value>Allgemein</value>
-    <comment>Context: Settings left-nav group header for System/Output/Config.</comment>
+    <comment>Context: Settings left-nav group header for System/Appearance/Output/Config.</comment>
   </data>
   <data name="window_settings_nav_music" xml:space="preserve">
     <value>Musik</value>
@@ -1810,6 +1810,34 @@
   <data name="window_settings_appearance_scale_value" xml:space="preserve">
     <value>{0} %</value>
     <comment>Context: Percentage label next to the UI scale slider. {0} is 100–200.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_style" xml:space="preserve">
+    <value>Seitenmenü</value>
+    <comment>Context: Settings appearance label for shell NavigationView pane style.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_style_hint" xml:space="preserve">
+    <value>Darstellung der Hauptnavigation: ausgeklapptes Seitenmenü, oben oder unten. Der geöffnete oder zugeklappte Zustand des Seitenmenüs wird gespeichert.</value>
+    <comment>Context: Hint under Side menu in Settings appearance.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left" xml:space="preserve">
+    <value>Ausgeklappt</value>
+    <comment>Context: Navigation pane mode — always show labels (Left).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left_fluent" xml:space="preserve">
+    <value>Große Icons</value>
+    <comment>Context: Navigation pane mode — large icons with titles (LeftFluent).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left_minimal" xml:space="preserve">
+    <value>Overlay</value>
+    <comment>Context: Navigation pane mode — hamburger overlay (LeftMinimal). Default.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_top" xml:space="preserve">
+    <value>Oben</value>
+    <comment>Context: Navigation pane mode — tabs along the top (Top).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_bottom" xml:space="preserve">
+    <value>Unten</value>
+    <comment>Context: Navigation pane mode — tabs along the bottom (Bottom).</comment>
   </data>
   <data name="window_settings_options" xml:space="preserve">
     <value>Optionen</value>

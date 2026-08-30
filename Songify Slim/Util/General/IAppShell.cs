@@ -25,6 +25,7 @@ public interface IAppShell
     void SetCanvas(string path);
     void StopCanvas();
     string GetCurrentSongDisplayString();
+    void ApplyNavigationChrome();
 }
 
 public enum ConnectionIndicatorState

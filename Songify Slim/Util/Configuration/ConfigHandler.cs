@@ -1279,6 +1279,15 @@ namespace Songify_Slim.Util.Configuration
         /// </summary>
         public bool OverruleShellMinWidth { get; set; }
 
+        /// <summary>
+        /// WPF-UI <c>NavigationView.PaneDisplayMode</c>: Left (Expanded), Top, Bottom.
+        /// Empty / unknown / legacy values (LeftMinimal, LeftFluent) fall back to Left.
+        /// </summary>
+        public string NavigationPaneDisplayMode { get; set; } = "Left";
+
+        /// <summary>Whether the left navigation pane is expanded. Default true for Expanded mode.</summary>
+        public bool NavigationPaneOpen { get; set; } = true;
+
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;

@@ -44,6 +44,7 @@ using Clipboard = System.Windows.Clipboard;
 using Color = System.Windows.Media.Color;
 using Colors = System.Windows.Media.Colors;
 using ComboBox = System.Windows.Controls.ComboBox;
+using ComboBoxItem = System.Windows.Controls.ComboBoxItem;
 using File = System.IO.File;
 using HorizontalAlignment = System.Windows.HorizontalAlignment;
 using MenuItem = System.Windows.Controls.MenuItem;
@@ -398,6 +399,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             UpdateOpenQueuePopOutVisibility();
             if (TglOverruleShellMinWidth != null)
                 TglOverruleShellMinWidth.IsChecked = Settings.OverruleShellMinWidth;
+            BindNavigationPaneCombo();
             ChbxSpaces.IsChecked = Settings.AppendSpaces;
             ChbxSpacesSplitFiles.IsChecked = Settings.AppendSpacesSplitFiles;
             ChbxSplit.IsChecked = Settings.SplitOutput;
@@ -1450,6 +1452,65 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (window is ShellWindow shell)
                     shell.ApplyMinSizeOverride();
             }
+        }
+
+        private void BindNavigationPaneCombo()
+        {
+            if (CbxNavigationPane == null)
+                return;
+
+            CbxNavigationPane.SelectionChanged -= CbxNavigationPane_OnSelectionChanged;
+            CbxNavigationPane.Items.Clear();
+            (string Mode, string Key, string Fallback)[] modes =
+            [
+                ("Left", "window_settings_appearance_nav_left", "Expanded"),
+                ("Top", "window_settings_appearance_nav_top", "Top"),
+                ("Bottom", "window_settings_appearance_nav_bottom", "Bottom")
+            ];
+            foreach ((string mode, string key, string fallback) in modes)
+            {
+                CbxNavigationPane.Items.Add(new ComboBoxItem
+                {
+                    Content = Loc(key, fallback),
+                    Tag = mode
+                });
+            }
+
+            string current = Settings.NavigationPaneDisplayMode;
+            foreach (ComboBoxItem item in CbxNavigationPane.Items)
+            {
+                if (!string.Equals(item.Tag as string, current, StringComparison.OrdinalIgnoreCase))
+                    continue;
+                CbxNavigationPane.SelectedItem = item;
+                break;
+            }
+
+            if (CbxNavigationPane.SelectedItem == null)
+            {
+                foreach (ComboBoxItem item in CbxNavigationPane.Items)
+                {
+                    if (!string.Equals(item.Tag as string, "Left", StringComparison.OrdinalIgnoreCase))
+                        continue;
+                    CbxNavigationPane.SelectedItem = item;
+                    break;
+                }
+            }
+
+            CbxNavigationPane.SelectionChanged += CbxNavigationPane_OnSelectionChanged;
+        }
+
+        private void CbxNavigationPane_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            if (CbxNavigationPane?.SelectedItem is not ComboBoxItem { Tag: string mode })
+                return;
+            if (string.Equals(Settings.NavigationPaneDisplayMode, mode, StringComparison.OrdinalIgnoreCase))
+                return;
+            Settings.NavigationPaneDisplayMode = mode;
+            if (string.Equals(mode, "Left", StringComparison.OrdinalIgnoreCase))
+                Settings.NavigationPaneOpen = true;
+            AppShellBridge.Current?.ApplyNavigationChrome();
         }
 
         private void UpdateUiScaleLabel(double scale)

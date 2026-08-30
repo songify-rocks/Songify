@@ -9,8 +9,18 @@ Settings are organized in tabs. Names may differ slightly when the UI is transla
 - **Language** — UI language. Help translate via [Weblate](https://translate.songify.rocks/projects/songify/songify/).
 - **Behavior** — Autostart, minimize to tray, open queue on startup, **Chrome / Browser Companion fetch rate** (lower = more CPU use; only relevant for Browser Companion).
 - **Privacy** — Show or hide account names and avatars in Songify.
-- **Appearance** — Accent color, light/dark theme.
 - **Songify token** — Used for [Songify Premium](Songify-Premium) and cloud sync (if enabled).
+
+---
+
+## Appearance
+
+- **Theme** — Light or dark.
+- **Window backdrop** — Mica, Acrylic, Tabbed, Auto, or None.
+- **Accent color** — App accent (wheel, swatches, or hex).
+- **Interface scale** — Extra zoom on top of Windows DPI.
+- **Overrule minimum size** — Allow resizing the main window below 900×500.
+- **Side menu** — Main navigation layout (expanded, top, or bottom). The expanded/collapsed state of the left menu is restored on launch.
 
 ---
 

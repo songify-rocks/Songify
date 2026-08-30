@@ -872,6 +872,18 @@ namespace Songify_Slim.Util.Configuration
             set => SetOverruleShellMinWidth(value);
         }
 
+        public static string NavigationPaneDisplayMode
+        {
+            get => GetNavigationPaneDisplayMode();
+            set => SetNavigationPaneDisplayMode(value);
+        }
+
+        public static bool NavigationPaneOpen
+        {
+            get => GetNavigationPaneOpen();
+            set => SetNavigationPaneOpen(value);
+        }
+
         public static string TwAcc
         {
             get => GetTwAcc();
@@ -1486,6 +1498,8 @@ namespace Songify_Slim.Util.Configuration
                 WindowBackdrop = GetWindowBackdrop(),
                 UiScale = GetUiScale(),
                 OverruleShellMinWidth = GetOverruleShellMinWidth(),
+                NavigationPaneDisplayMode = GetNavigationPaneDisplayMode(),
+                NavigationPaneOpen = GetNavigationPaneOpen(),
                 TwAutoConnect = GetTwAutoConnect(),
                 TwitchFetchPort = GetTwitchFetchPort(),
                 TwitchRedirectPort = GetTwitchRedirectPort(),
@@ -1622,6 +1636,7 @@ namespace Songify_Slim.Util.Configuration
                 ThemeHandler.ApplyTheme();
                 LocalizationHelper.Apply(Language);
                 UiScaleHandler.Apply(UiScale);
+                AppShellBridge.Current?.ApplyNavigationChrome();
                 await BlocklistUi.RefreshArtistsAsync();
                 await SettingsUi.RefreshAsync();
             });
@@ -1677,6 +1692,7 @@ namespace Songify_Slim.Util.Configuration
             {
                 await BlocklistUi.RefreshArtistsAsync();
                 await SettingsUi.RefreshAsync();
+                AppShellBridge.Current?.ApplyNavigationChrome();
             });
         }
 
@@ -2249,6 +2265,28 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetOverruleShellMinWidth()
         {
             return CurrentConfig.AppConfig.OverruleShellMinWidth;
+        }
+
+        /// <summary>
+        /// Allowed values: Left (Expanded), Top, Bottom. Overlay/Large-icons and anything else become Left.
+        /// </summary>
+        private static string NormalizeNavigationPaneDisplayMode(string value)
+        {
+            if (string.Equals(value, "Top", StringComparison.OrdinalIgnoreCase))
+                return "Top";
+            if (string.Equals(value, "Bottom", StringComparison.OrdinalIgnoreCase))
+                return "Bottom";
+            return "Left";
+        }
+
+        private static string GetNavigationPaneDisplayMode()
+        {
+            return NormalizeNavigationPaneDisplayMode(CurrentConfig.AppConfig.NavigationPaneDisplayMode);
+        }
+
+        private static bool GetNavigationPaneOpen()
+        {
+            return CurrentConfig.AppConfig.NavigationPaneOpen;
         }
 
         private static string GetTwAcc()
@@ -3115,6 +3153,18 @@ namespace Songify_Slim.Util.Configuration
         private static void SetOverruleShellMinWidth(bool value)
         {
             CurrentConfig.AppConfig.OverruleShellMinWidth = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetNavigationPaneDisplayMode(string value)
+        {
+            CurrentConfig.AppConfig.NavigationPaneDisplayMode = NormalizeNavigationPaneDisplayMode(value);
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetNavigationPaneOpen(bool value)
+        {
+            CurrentConfig.AppConfig.NavigationPaneOpen = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
