@@ -342,13 +342,13 @@
             x:Name="RootNavigationView"
             Grid.Row="2"
             ClipToBounds="True"
+            CompactPaneLength="48"
             IsBackButtonVisible="Collapsed"
             IsPaneOpen="True"
             OpenPaneLength="150"
-            CompactPaneLength="48"
+            PaneClosed="RootNavigationView_OnPaneClosed"
             PaneDisplayMode="Left"
             PaneOpened="RootNavigationView_OnPaneOpened"
-            PaneClosed="RootNavigationView_OnPaneClosed"
             ScrollViewer.HorizontalScrollBarVisibility="Disabled"
             ScrollViewer.PanningMode="None"
             ScrollViewer.VerticalScrollBarVisibility="Disabled">
@@ -366,7 +366,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource nav_home}"
                     TargetPageTag="overview"
-                    TargetPageType="{x:Type pages:OverviewPage}">
+                    TargetPageType="{x:Type pages:OverviewPage}"
+                    ToolTip="Home">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Home48" />
                     </ui:NavigationViewItem.Icon>
@@ -374,7 +375,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_queue}"
                     TargetPageTag="queue"
-                    TargetPageType="{x:Type pages:QueuePage}">
+                    TargetPageType="{x:Type pages:QueuePage}"
+                    ToolTip="Queue">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="List28" />
                     </ui:NavigationViewItem.Icon>
@@ -383,7 +385,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource window_blocklist_title}"
                     TargetPageTag="blacklist"
-                    TargetPageType="{x:Type pages:BlacklistPage}">
+                    TargetPageType="{x:Type pages:BlacklistPage}"
+                    ToolTip="Blocklists">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="ShieldDismiss24" />
                     </ui:NavigationViewItem.Icon>
@@ -391,7 +394,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_history}"
                     TargetPageTag="history"
-                    TargetPageType="{x:Type pages:HistoryPage}">
+                    TargetPageType="{x:Type pages:HistoryPage}"
+                    ToolTip="History">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="History48" />
                     </ui:NavigationViewItem.Icon>
@@ -399,7 +403,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource window_userlist_title}"
                     TargetPageTag="userlist"
-                    TargetPageType="{x:Type pages:UserListPage}">
+                    TargetPageType="{x:Type pages:UserListPage}"
+                    ToolTip="Userlist">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="People48" />
                     </ui:NavigationViewItem.Icon>
@@ -409,7 +414,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_file_settings}"
                     TargetPageTag="settings"
-                    TargetPageType="{x:Type pages:SettingsPage}">
+                    TargetPageType="{x:Type pages:SettingsPage}"
+                    ToolTip="Settings">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Settings48" />
                     </ui:NavigationViewItem.Icon>
@@ -417,7 +423,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_view_console}"
                     TargetPageTag="console"
-                    TargetPageType="{x:Type pages:ConsolePage}">
+                    TargetPageType="{x:Type pages:ConsolePage}"
+                    ToolTip="Console">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="CodeBlock28" />
                     </ui:NavigationViewItem.Icon>
@@ -425,7 +432,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_file_help}"
                     TargetPageTag="help"
-                    TargetPageType="{x:Type pages:HelpPage}">
+                    TargetPageType="{x:Type pages:HelpPage}"
+                    ToolTip="Help">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="QuestionCircle24" />
                     </ui:NavigationViewItem.Icon>
@@ -433,7 +441,8 @@
                 <ui:NavigationViewItem
                     Content="{DynamicResource menu_help_about}"
                     TargetPageTag="about"
-                    TargetPageType="{x:Type pages:AboutPage}">
+                    TargetPageType="{x:Type pages:AboutPage}"
+                    ToolTip="About">
                     <ui:NavigationViewItem.Icon>
                         <ui:SymbolIcon Style="{StaticResource NavSymbolIconStyle}" Symbol="Info24" />
                     </ui:NavigationViewItem.Icon>
