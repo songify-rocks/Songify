@@ -164,6 +164,20 @@ internal static class ThemeHandler
         StampAccentAfterLayout(accent, theme, useSystemAccent);
     }
 
+    /// <summary>Applies an accent for live picker preview without reading or writing settings.</summary>
+    public static void PreviewAccent(Color color)
+    {
+        bool dark = !(Settings.Theme ?? "").Contains("Light", StringComparison.OrdinalIgnoreCase);
+        ApplicationTheme theme = dark ? ApplicationTheme.Dark : ApplicationTheme.Light;
+        ApplicationAccentColorManager.Apply(color, theme);
+        PublishAccentResources();
+        ThemeBrushes.EnsureAppResources();
+        _appliedAccent = ToHex(color);
+    }
+
+    public static string ToHex(Color color)
+        => $"#{color.R:X2}{color.G:X2}{color.B:X2}";
+
     private static void StampAccentAfterLayout(string accent, ApplicationTheme theme, bool useSystemAccent)
     {
         Dispatcher dispatcher = Application.Current?.Dispatcher;

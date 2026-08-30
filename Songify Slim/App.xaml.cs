@@ -98,6 +98,16 @@ namespace Songify_Slim
 
         protected override void OnExit(ExitEventArgs e)
         {
+            try
+            {
+                if (GlobalObjects.WebServer.Run)
+                    GlobalObjects.WebServer.StopWebServer();
+            }
+            catch
+            {
+                RegisterFirewall.RemoveWebServerPortRule();
+            }
+
             _mutex?.Dispose();
             GlobalObjects.ApiMetrics.Dispose();
             base.OnExit(e);

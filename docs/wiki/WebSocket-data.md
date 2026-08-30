@@ -158,8 +158,8 @@ Each message contains the full current state:
 ## Notes
 
 - Replace `PORT` with your configured Songify WebServer port  
-- Use `ws://` for local connections   
-- No authentication is required unless configured otherwise  
+- Use `ws://` for local connections
+- When **Require WebSocket password** is on, connect with `?password=` (or the password header). Unauthenticated connections are rejected, including `/ws/data`.  
 
 ---
 

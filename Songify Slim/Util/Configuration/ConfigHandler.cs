@@ -1225,8 +1225,8 @@ namespace Songify_Slim.Util.Configuration
         public int WebServerPort { get; set; } = 65530;
 
         /// <summary>
-        /// When true, WebSocket control commands require <see cref="WebServerPassword"/>
-        /// (via auth action, per-command password field, or ?password= on the WS URL).
+        /// When true, WebSocket and HTTP API access require <see cref="WebServerPassword"/>
+        /// (via ?password= on the URL, X-Songify-Password, Authorization: Bearer, or auth/command password).
         /// Off by default — localhost is treated as trusted unless the user opts in.
         /// </summary>
         public bool WebServerPasswordEnabled { get; set; }

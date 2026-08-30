@@ -268,9 +268,16 @@
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                             Text="{DynamicResource window_settings_appearance_accent_hint}"
                                             TextWrapping="Wrap" />
+                                        <StackPanel Orientation="Horizontal" Margin="0,10,0,8">
+                                            <userControls:AccentColorWheel
+                                                x:Name="AccentWheel"
+                                                VerticalAlignment="Top"
+                                                ColorChanged="AccentWheel_OnColorChanged"
+                                                PickingCompleted="AccentWheel_OnPickingCompleted" />
+                                        </StackPanel>
                                         <WrapPanel
                                             x:Name="PnlAccentSwatches"
-                                            Margin="0,10,0,8" />
+                                            Margin="0,0,0,8" />
                                         <ui:TextBox
                                             x:Name="TbAccentHex"
                                             MinWidth="140"
@@ -1166,13 +1173,23 @@
                                         Content="{DynamicResource common_add}"
                                         Icon="{ui:SymbolIcon Add24}" />
                                 </Grid>
-                                <ui:Button
+                                <StackPanel
                                     Margin="0,8,0,0"
-                                    HorizontalAlignment="Left"
-                                    Appearance="Secondary"
-                                    Click="BtnAddKnownBots_Click"
-                                    Content="{DynamicResource window_settings_ignore_add_known_bots}"
-                                    Icon="{ui:SymbolIcon Bot24}" />
+                                    Orientation="Horizontal">
+                                    <ui:Button
+                                        Margin="0,0,8,0"
+                                        Appearance="Secondary"
+                                        Click="BtnAddKnownBots_Click"
+                                        Content="{DynamicResource window_settings_ignore_add_known_bots}"
+                                        Icon="{ui:SymbolIcon Bot24}" />
+                                    <ui:Button
+                                        x:Name="BtnRemoveAllIgnoredChatUsers"
+                                        Appearance="Secondary"
+                                        Click="BtnRemoveAllIgnoredChatUsers_Click"
+                                        Content="{DynamicResource window_settings_ignore_remove_all}"
+                                        Icon="{ui:SymbolIcon Delete24}"
+                                        IsEnabled="False" />
+                                </StackPanel>
                                 <ItemsControl
                                     x:Name="IcIgnoredChatUsers"
                                     Margin="0,8,0,0">

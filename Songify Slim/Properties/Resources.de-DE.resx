@@ -1908,7 +1908,7 @@
     <comment>Context: Hint under YouTube API key field.</comment>
   </data>
   <data name="window_settings_webserver_admin_lan_hint" xml:space="preserve">
-    <value>Songify läuft als Administrator. Der Webserver lauscht auch auf deiner LAN-IP, damit ein zweiter PC verbinden kann. Nur in vertrauenswürdigen Netzen nutzen und ggf. unten „WebSocket-Passwort erforderlich“ aktivieren.</value>
+    <value>Songify läuft als Administrator. Der Webserver lauscht auch auf deiner LAN-IP, damit ein zweiter PC verbinden kann, und fügt für die Laufzeit eine Windows-Firewall-Regel für den Port hinzu. Nur in vertrauenswürdigen Netzen nutzen und ggf. unten „WebSocket-Passwort erforderlich“ aktivieren.</value>
     <comment>Context: Warning when web server runs elevated and binds to LAN.</comment>
   </data>
   <data name="window_settings_server" xml:space="preserve">
@@ -1928,7 +1928,7 @@
     <comment>Context: Toggle to require password for WebSocket control commands.</comment>
   </data>
   <data name="window_settings_require_websocket_password_tooltip" xml:space="preserve">
-    <value>Wenn aktiv, brauchen WebSocket-Steuerbefehle das Passwort (Auth-Aktion, Passwortfeld oder ?password= in der URL). Standardmäßig aus. Betrifft nicht das Lesen von /ws/data-Broadcasts.</value>
+    <value>Wenn aktiv, brauchen Verbindungen zum Webserver und WebSocket (inkl. /ws/data) das Passwort als ?password= in der URL, Header X-Songify-Password oder eine Auth-Nachricht. /ws-docs bleibt offen, damit du es eingeben kannst. Standardmäßig aus.</value>
     <comment>Context: Tooltip explaining WebSocket password requirement.</comment>
   </data>
   <data name="window_settings_websocket_password" xml:space="preserve">
@@ -2649,5 +2649,9 @@ Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
   <data name="window_settings_ignore_add_known_bots" xml:space="preserve">
     <value>Bekannte Bots hinzufügen</value>
     <comment>Context: Settings → Twitch button that inserts Nightbot, StreamElements, SoundAlerts, etc. into the ignore list.</comment>
+  </data>
+  <data name="window_settings_ignore_remove_all" xml:space="preserve">
+    <value>Alle entfernen</value>
+    <comment>Context: Settings → Twitch button that clears the ignored chat users list.</comment>
   </data>
 </root>

@@ -11,7 +11,7 @@
     <Copyright>Copyright © 2026</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
     <!-- Single source of truth for AssemblyVersion, FileVersion, and InformationalVersion. -->
-    <Version>2.0.0.4</Version>
+    <Version>2.0.0.5</Version>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
@@ -26,6 +26,15 @@
     <ItemGroup>
       <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.xml'" />
     </ItemGroup>
+  </Target>
+  <!-- Zip publish output (excluding existing zips) and write checksums / updater XML. -->
+  <Target Name="Songify_PackagePublish" AfterTargets="Publish" Condition="'$(PublishDir)' != '' And '$(IsInnerPublish)' != 'true'">
+    <PropertyGroup>
+      <_SongifyPublishDir Condition="$([System.IO.Path]::IsPathRooted('$(PublishDir)'))">$(PublishDir)</_SongifyPublishDir>
+      <_SongifyPublishDir Condition="'$(_SongifyPublishDir)' == ''">$([System.IO.Path]::GetFullPath('$(MSBuildProjectDirectory)\$(PublishDir)'))</_SongifyPublishDir>
+      <_SongifyPublishDir>$(_SongifyPublishDir.TrimEnd('\'))</_SongifyPublishDir>
+    </PropertyGroup>
+    <Exec Command="powershell.exe -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\PostBuild.ps1&quot; -PublishDir &quot;$(_SongifyPublishDir)&quot;" />
   </Target>
   <PropertyGroup>
     <ApplicationIcon>Resources\songify.ico</ApplicationIcon>

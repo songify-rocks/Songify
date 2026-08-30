@@ -87,6 +87,10 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private bool _rewardsLoading;
         private BitmapImage? _defaultSongifyProfileImage;
         private bool _uiScalePointerActive;
+        private bool _accentWheelUpdating;
+        private DispatcherTimer _accentPreviewTimer;
+        private Color _pendingAccentPreview;
+        private bool _hasPendingAccentPreview;
 
         /// <summary>True while binding controls or before the window is ready - skip save/side-effect handlers.</summary>
         private bool IgnoreControlEvents => !IsLoaded || _isSettingControls || _externalUiMutationDepth > 0;
@@ -1217,6 +1221,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             }
 
             SyncAccentHexText(current);
+            SyncAccentWheel(current);
         }
 
         private static bool IsCurrentAccent(string hex, string current)
@@ -1233,22 +1238,79 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 TbAccentHex.Text = shown;
         }
 
+        private void SyncAccentWheel(string current)
+        {
+            if (AccentWheel == null)
+                return;
+            _accentWheelUpdating = true;
+            try
+            {
+                AccentWheel.SetColor(ResolveAccentColor(current));
+            }
+            finally
+            {
+                _accentWheelUpdating = false;
+            }
+        }
+
+        private Color ResolveAccentColor(string current)
+        {
+            if (ThemeHandler.TryParseHex(current, out Color parsed))
+                return parsed;
+            if (TryFindResource("SystemAccentColor") is Color system)
+                return system;
+            return Color.FromRgb(0x00, 0x78, 0xD4);
+        }
+
         private void RefreshAccentSwatchSelection()
         {
-            if (PnlAccentSwatches == null)
-                return;
-
             string current = Settings.AccentColor ?? "";
-            foreach (object child in PnlAccentSwatches.Children)
+            if (PnlAccentSwatches != null)
             {
-                if (child is not Button { Tag: string hex } btn)
-                    continue;
-                btn.BorderThickness = IsCurrentAccent(hex, current)
-                    ? new Thickness(3)
-                    : new Thickness(1);
+                foreach (object child in PnlAccentSwatches.Children)
+                {
+                    if (child is not Button { Tag: string hex } btn)
+                        continue;
+                    btn.BorderThickness = IsCurrentAccent(hex, current)
+                        ? new Thickness(3)
+                        : new Thickness(1);
+                }
             }
 
             SyncAccentHexText(current);
+            SyncAccentWheel(current);
+        }
+
+        private void AccentWheel_OnColorChanged(object sender, Color color)
+        {
+            if (IgnoreControlEvents || _accentWheelUpdating)
+                return;
+
+            SyncAccentHexText(ThemeHandler.ToHex(color), force: true);
+            _pendingAccentPreview = color;
+            _hasPendingAccentPreview = true;
+            _accentPreviewTimer ??= new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(40) };
+            _accentPreviewTimer.Tick -= AccentPreviewTimer_OnTick;
+            _accentPreviewTimer.Tick += AccentPreviewTimer_OnTick;
+            _accentPreviewTimer.Stop();
+            _accentPreviewTimer.Start();
+        }
+
+        private void AccentPreviewTimer_OnTick(object sender, EventArgs e)
+        {
+            _accentPreviewTimer?.Stop();
+            if (!_hasPendingAccentPreview)
+                return;
+            ThemeHandler.PreviewAccent(_pendingAccentPreview);
+        }
+
+        private void AccentWheel_OnPickingCompleted(object sender, EventArgs e)
+        {
+            if (IgnoreControlEvents || _accentWheelUpdating || AccentWheel == null)
+                return;
+            _accentPreviewTimer?.Stop();
+            _hasPendingAccentPreview = false;
+            ApplyAccentChoice(ThemeHandler.ToHex(AccentWheel.SelectedColor));
         }
 
         private void AccentSwatch_OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -1568,6 +1630,11 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             SongifyPremiumService.StatusChanged -= OnPremiumStatusChanged;
             _premiumRefreshCts?.Cancel();
+            if (_accentPreviewTimer != null)
+            {
+                _accentPreviewTimer.Stop();
+                _accentPreviewTimer.Tick -= AccentPreviewTimer_OnTick;
+            }
         }
 
         private void Tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
@@ -3331,12 +3398,25 @@ namespace Songify_Slim.Views.WPFUI.Controls
             RefreshIgnoredChatUsers();
         }
 
+        private void BtnRemoveAllIgnoredChatUsers_Click(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            if ((Settings.IgnoredChatUsers ?? []).Count == 0)
+                return;
+
+            Settings.IgnoredChatUsers = [];
+            RefreshIgnoredChatUsers();
+        }
+
         private void RefreshIgnoredChatUsers()
         {
             if (IcIgnoredChatUsers == null)
                 return;
             IcIgnoredChatUsers.ItemsSource = null;
             IcIgnoredChatUsers.ItemsSource = (Settings.IgnoredChatUsers ?? []).ToList();
+            if (BtnRemoveAllIgnoredChatUsers != null)
+                BtnRemoveAllIgnoredChatUsers.IsEnabled = (Settings.IgnoredChatUsers ?? []).Count > 0;
         }
 
         private void TbBitsKeyword_OnTextChanged(object sender, TextChangedEventArgs e)
