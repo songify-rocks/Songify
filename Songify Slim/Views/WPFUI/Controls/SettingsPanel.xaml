@@ -268,16 +268,14 @@
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                             Text="{DynamicResource window_settings_appearance_accent_hint}"
                                             TextWrapping="Wrap" />
-                                        <StackPanel Orientation="Horizontal" Margin="0,10,0,8">
+                                        <StackPanel Margin="0,10,0,8" Orientation="Horizontal">
                                             <userControls:AccentColorWheel
                                                 x:Name="AccentWheel"
                                                 VerticalAlignment="Top"
                                                 ColorChanged="AccentWheel_OnColorChanged"
                                                 PickingCompleted="AccentWheel_OnPickingCompleted" />
                                         </StackPanel>
-                                        <WrapPanel
-                                            x:Name="PnlAccentSwatches"
-                                            Margin="0,0,0,8" />
+                                        <WrapPanel x:Name="PnlAccentSwatches" Margin="0,0,0,8" />
                                         <ui:TextBox
                                             x:Name="TbAccentHex"
                                             MinWidth="140"
@@ -1173,9 +1171,7 @@
                                         Content="{DynamicResource common_add}"
                                         Icon="{ui:SymbolIcon Add24}" />
                                 </Grid>
-                                <StackPanel
-                                    Margin="0,8,0,0"
-                                    Orientation="Horizontal">
+                                <StackPanel Margin="0,8,0,0" Orientation="Horizontal">
                                     <ui:Button
                                         Margin="0,0,8,0"
                                         Appearance="Secondary"
@@ -1190,9 +1186,7 @@
                                         Icon="{ui:SymbolIcon Delete24}"
                                         IsEnabled="False" />
                                 </StackPanel>
-                                <ItemsControl
-                                    x:Name="IcIgnoredChatUsers"
-                                    Margin="0,8,0,0">
+                                <ItemsControl x:Name="IcIgnoredChatUsers" Margin="0,8,0,0">
                                     <ItemsControl.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <WrapPanel />
@@ -2836,7 +2830,8 @@
                                     <TextBlock VerticalAlignment="Center" Text="{DynamicResource window_settings_websocket_password}" />
                                     <PasswordBox
                                         x:Name="PasswordBox_WebServer"
-                                        Width="280"
+                                        Width="200"
+                                        MinWidth="200"
                                         HorizontalAlignment="Right"
                                         VerticalAlignment="Center"
                                         PasswordChanged="PasswordBox_WebServer_OnPasswordChanged" />
