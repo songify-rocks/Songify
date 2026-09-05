@@ -3076,6 +3076,12 @@ namespace Songify_Slim.Views.WPFUI.Controls
                                 "Cloud sync is included with Songify Premium.");
                             return;
 
+                        case HttpStatusCode.UnprocessableEntity:
+                            TblError.Text = Loc(
+                                "window_settings_cloud_unprocessable",
+                                "The server rejected the cloud save. Please try again.");
+                            return;
+
                         case HttpStatusCode.InternalServerError:
                             TblError.Text = Loc("window_settings_cloud_server_error", "Internal server error. Please try again later.");
                             return;
@@ -3116,7 +3122,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (result.Item1)
                 {
                     TblError.Foreground = new SolidColorBrush(Colors.LawnGreen);
-                    TblError.Text = "Successfully restored settings from the cloud";
+                    TblError.Text = Loc("window_settings_cloud_restored", "Successfully restored settings from the cloud");
                 }
                 else
                 {
@@ -3137,17 +3143,37 @@ namespace Songify_Slim.Views.WPFUI.Controls
                             TblError.Text = Loc("window_settings_cloud_server_error", "Internal server error. Please try again later.");
                             return;
 
+                        case HttpStatusCode.NoContent:
+                            TblError.Foreground = new SolidColorBrush(Colors.Orange);
+                            TblError.Text = Loc("window_settings_cloud_empty", "No cloud save yet.");
+                            return;
+
+                        case HttpStatusCode.UnprocessableEntity:
+                            TblError.Text = Loc(
+                                "window_settings_cloud_bad_response",
+                                "Cloud settings could not be read. Check the log for details.");
+                            return;
+
+                        case HttpStatusCode.UpgradeRequired:
+                            TblError.Foreground = new SolidColorBrush(Colors.Orange);
+                            TblError.Text = Loc(
+                                "window_settings_cloud_need_update",
+                                "This cloud save was created by a newer Songify version. Please update Songify.");
+                            return;
+
                         case HttpStatusCode.NotModified:
                             TblError.Foreground = new SolidColorBrush(Colors.LawnGreen);
-                            TblError.Text = "No changes have been detected, keeping local settings.";
+                            TblError.Text = Loc(
+                                "window_settings_cloud_no_changes",
+                                "No changes have been detected, keeping local settings.");
                             return;
 
                         case HttpStatusCode.NotAcceptable:
-                            TblError.Text = "Cancelled by user.";
+                            TblError.Text = Loc("window_settings_cloud_cancelled", "Cancelled by user.");
                             break;
 
                         case HttpStatusCode.ServiceUnavailable:
-                            TblError.Text = "Error connecting to Songify service.";
+                            TblError.Text = Loc("window_settings_cloud_unavailable", "Error connecting to Songify service.");
                             break;
                     }
                 }

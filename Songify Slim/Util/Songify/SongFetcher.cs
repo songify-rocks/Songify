@@ -45,17 +45,10 @@ namespace Songify_Slim.Util.Songify
         public string DisplayName { get; set; }
     }
 
-    /// <summary>
-    ///     This class is for retrieving data of currently playing songs
-    /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SongFetcher
     {
-        private const char WindowsMediaSessionRecordSeparator = '\u001e';
-        private const string WindowsMediaSessionNoAumidPrefix = "\u0001noaumid\u001e";
-
-        private YoutubeData currentYoutubeData = new();
-        private int fetchCounter = 0;
+        private YoutubeData _currentYoutubeData = new();
+        private int _fetchCounter = 0;
 
         private static readonly List<string> AudioFileTypes =
         [
@@ -70,7 +63,7 @@ namespace Songify_Slim.Util.Songify
         private static bool _isLocalTrack;
         private static Tuple<bool, string> _canvasResponse;
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
-        private PlaylistInfo playbackPlaylist = null;
+        private PlaylistInfo _playbackPlaylist = null;
 
         /// <summary>
         /// Consecutive Spotify pulls where playback is paused or absent.
@@ -112,7 +105,7 @@ namespace Songify_Slim.Util.Songify
 
         private int _windowsPlaybackComRetryCount = 0;
         private long _windowsPlaybackThumbnailBytesTotal = 0L;
-        private Stopwatch _windowsPlaybackLastMetricsReset = Stopwatch.StartNew();
+        private readonly Stopwatch _windowsPlaybackLastMetricsReset = Stopwatch.StartNew();
         private const int MetricsReportIntervalMs = 60000; // Report every 60 seconds
 
         // Signature of the last thumbnail used, for change detection on track transitions.
@@ -419,14 +412,14 @@ namespace Songify_Slim.Util.Songify
             if (ytData == null)
                 return;
 
-            if (ytData.Hash == currentYoutubeData.Hash)
+            if (ytData.Hash == _currentYoutubeData.Hash)
                 return;
 
-            Logger.Info(LogSource.Core, $"Previous Song {currentYoutubeData.Artist} - {currentYoutubeData.Title}");
+            Logger.Info(LogSource.Core, $"Previous Song {_currentYoutubeData.Artist} - {_currentYoutubeData.Title}");
 
             Logger.Info(LogSource.Core, $"Now Playing {ytData.Artist} - {ytData.Title}");
 
-            currentYoutubeData = ytData;
+            _currentYoutubeData = ytData;
 
             TrackInfo songInfo = new()
             {
@@ -591,7 +584,7 @@ namespace Songify_Slim.Util.Songify
             {
                 return;
             }
-            songInfo.Playlist = playbackPlaylist;
+            songInfo.Playlist = _playbackPlaylist;
             if (GlobalObjects.CurrentSong != null && songInfo.IsPlaying != GlobalObjects.CurrentSong.IsPlaying)
             {
                 GlobalObjects.ForceUpdate = true;
@@ -631,8 +624,8 @@ namespace Songify_Slim.Util.Songify
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
 
                     // Get Playlist info for current song if available
-                    playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
-                    songInfo.Playlist = playbackPlaylist;
+                    _playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
+                    songInfo.Playlist = _playbackPlaylist;
                     GlobalObjects.CurrentSong = songInfo;
                     _canvasResponse = await CanvasService.GetCanvasAsync(songInfo.SongId);
                     GlobalObjects.Canvas = songInfo.SongId != null ? _canvasResponse : new Tuple<bool, string>(false, "");
@@ -1488,11 +1481,11 @@ namespace Songify_Slim.Util.Songify
             if (!PearWebSocketClient.IsConnected)
                 return;
 
-            fetchCounter += 1;
-            if (fetchCounter >= 5)
+            _fetchCounter += 1;
+            if (_fetchCounter >= 5)
             {
                 await TwitchHandler.EnsureOrderAsync().ConfigureAwait(false);
-                fetchCounter = 0;
+                _fetchCounter = 0;
             }
 
             await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);

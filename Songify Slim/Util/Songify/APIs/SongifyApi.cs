@@ -47,8 +47,8 @@ namespace Songify_Slim.Util.Songify.APIs
 
         public static Task<string> GetCanvasRawAsync(string id) => ApiClient.GetCanvas(id);
 
-        public static Task<HttpResponseMessage> GetUserSettingsAsync(string userId) =>
-            ApiClient.GetAuthenticated("user_settings", $"user_id={Uri.EscapeDataString(userId ?? "")}");
+        public static Task<HttpResponseMessage> GetUserSettingsAsync() =>
+            ApiClient.GetAuthenticated("user_settings", null);
 
         public static Task<HttpResponseMessage> PostUserSettingsAsync(string body) =>
             ApiClient.PostAuthenticated("user_settings", body);

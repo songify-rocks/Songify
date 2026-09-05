@@ -152,7 +152,7 @@ internal static class SongifyPremiumService
             if (string.IsNullOrWhiteSpace(userId))
                 return SongifyPremiumState.Unknown;
 
-            using HttpResponseMessage response = await SongifyApi.GetUserSettingsAsync(userId)
+            using HttpResponseMessage response = await SongifyApi.GetUserSettingsAsync()
                 .ConfigureAwait(false);
 
             return response.StatusCode switch

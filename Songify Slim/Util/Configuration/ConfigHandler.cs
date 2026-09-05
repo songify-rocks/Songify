@@ -1,4 +1,6 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
@@ -36,6 +38,18 @@ namespace Songify_Slim.Util.Configuration
     /// </summary>
     internal class ConfigHandler
     {
+        /// <summary>
+        /// Envelope version for cloud YAML payloads. Bump only for breaking Configuration YAML shape
+        /// changes. Additive properties stay at 1 (deserializer uses IgnoreUnmatchedProperties).
+        /// </summary>
+        public const int CloudSettingsSchemaVersion = 1;
+
+        private static readonly JsonSerializerSettings CloudJsonSettings = new()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc
+        };
+
         public static List<TwitchCommand> DefaultCommands { get; set; } =
         [
             new()
@@ -761,41 +775,25 @@ namespace Songify_Slim.Util.Configuration
                 string yaml = serializer.Serialize(clonedConfig);
                 string base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(yaml));
 
-                // Prepare HTTP body
-                var body = new
+                CloudSettingsSaveRequest payload = new()
                 {
-                    userId = userId,
-                    settings = base64
+                    UserId = userId,
+                    Settings = base64,
+                    SchemaVersion = CloudSettingsSchemaVersion
                 };
+                string requestJson = JsonConvert.SerializeObject(payload, CloudJsonSettings);
 
-                using HttpResponseMessage response = await SongifyApi.PostUserSettingsAsync(
-                    JsonConvert.SerializeObject(body));
+                using HttpResponseMessage response = await SongifyApi.PostUserSettingsAsync(requestJson);
+                string responseBody = await response.Content.ReadAsStringAsync();
                 SongifyPremiumService.ApplyFromCloudStatus(response.StatusCode);
-                switch (response.StatusCode)
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    // Handle response codes 200 OK: User has premium access and operation succeeded
-                    // 401 Unauthorized: Invalid token
-                    // 403 Forbidden: User not found, no email, or no premium status
-                    // 500 Internal Server Error: Database error
-                    case HttpStatusCode.Unauthorized:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud save failed: Unauthorized access. Invalid API token or user ID.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.Unauthorized);
-
-                    case HttpStatusCode.Forbidden:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud save failed: Forbidden access. User not found or no premium status.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
-
-                    case HttpStatusCode.InternalServerError:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud save failed: Internal server error. Please try again later.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.InternalServerError);
+                    LogCloudHttpFailure("save", response.StatusCode, responseBody);
+                    return new Tuple<bool, HttpStatusCode>(false, response.StatusCode);
                 }
 
-                return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, response.StatusCode);
+                await RefreshOpenCloudImportPreviewAsync().ConfigureAwait(true);
+                return new Tuple<bool, HttpStatusCode>(true, HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
@@ -879,66 +877,42 @@ namespace Songify_Slim.Util.Configuration
 
         public static async Task<Tuple<bool, HttpStatusCode>> CloudRestoreSettings(string userId)
         {
+            List<CloudSettingsRevision> revisions = null;
+            Window_CloudImportPreview preview = null;
             try
             {
-                string base64;
-                HttpStatusCode statusCode;
-                bool success;
-                using (HttpResponseMessage response = await SongifyApi.GetUserSettingsAsync(userId))
+                (HttpStatusCode statusCode, List<CloudSettingsRevision> fetched) =
+                    await GetCloudSettingsRevisionsAsync().ConfigureAwait(true);
+                if (statusCode != HttpStatusCode.OK)
+                    return new Tuple<bool, HttpStatusCode>(false, statusCode);
+
+                revisions = fetched;
+                if (revisions == null || revisions.Count == 0)
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NoContent);
+
+                CloudSettingsRevision selectedRevision = revisions[0];
+                if (IsCloudRevisionTooNew(selectedRevision) && revisions.Count == 1)
                 {
-                    SongifyPremiumService.ApplyFromCloudStatus(response.StatusCode);
-                    switch (response.StatusCode)
-                    {
-                        // Handle response codes 200 OK: User has premium access and operation succeeded
-                        // 401 Unauthorized: Invalid token
-                        // 403 Forbidden: User not found, no email, or no premium status
-                        // 500 Internal Server Error: Database error
-                        case HttpStatusCode.Unauthorized:
-                            Logger.Warning(LogSource.Api,
-                                "Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
-                            return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                                HttpStatusCode.Unauthorized);
-
-                        case HttpStatusCode.Forbidden:
-                            Logger.Warning(LogSource.Api,
-                                "Cloud restore failed: Forbidden access. User not found or no premium status.");
-                            return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
-
-                        case HttpStatusCode.InternalServerError:
-                            Logger.Warning(LogSource.Api,
-                                "Cloud restore failed: Internal server error. Please try again later.");
-                            return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                                HttpStatusCode.InternalServerError);
-                    }
-
-                    // If the API returns the raw base64 blob directly:
-                    base64 = await response.Content.ReadAsStringAsync();
-                    statusCode = response.StatusCode;
-                    success = response.IsSuccessStatusCode;
+                    Logger.Warning(LogSource.Api,
+                        $"Cloud restore skipped: schema version {selectedRevision.SchemaVersion} is newer than {CloudSettingsSchemaVersion}. Update Songify.");
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.UpgradeRequired);
                 }
 
-                base64 = JsonConvert.DeserializeObject<string>(base64);
-                if (string.IsNullOrWhiteSpace(base64))
-                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NoContent);
-                //base64 = base64.Replace("\"", "");
-                // Decode base64 and parse YAML
-                string yaml = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+                Configuration restoredConfig = null;
+                if (!IsCloudRevisionTooNew(selectedRevision))
+                {
+                    restoredConfig = await Task.Run(() => DecodeCloudRevisionSettings(selectedRevision))
+                        .ConfigureAwait(true);
+                    if (restoredConfig == null)
+                    {
+                        Logger.Warning(LogSource.Api, "Cloud restore failed: could not decode the latest revision.");
+                        return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.ServiceUnavailable);
+                    }
+                }
 
-                IDeserializer deserializer = new DeserializerBuilder()
-                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                    .IgnoreUnmatchedProperties()
-                    .Build();
-
-                Configuration restoredConfig = deserializer.Deserialize<Configuration>(yaml);
-
-                // Local blocked artists are usually unloaded from CurrentConfig (disk is source of truth).
-                // Build a comparison snapshot the same way cloud save attaches artists for upload.
                 Configuration localForCompare = SnapshotLocalForCompare();
                 if (localForCompare.AppConfig != null)
                     localForCompare.AppConfig.ArtistBlacklist = [];
-
-                // Older cloud saves may still keep artists on AppConfig — normalize before diffing.
-                NormalizeBlockedArtistsForCompare(restoredConfig);
 
                 Window sW = new();
                 foreach (Window win in Application.Current.Windows)
@@ -947,13 +921,14 @@ namespace Songify_Slim.Util.Configuration
                         sW = win;
                 }
 
-                Window_CloudImportPreview preview = new(localForCompare, restoredConfig, ImportPreviewKind.Cloud)
+                preview = new Window_CloudImportPreview(
+                    localForCompare, restoredConfig, ImportPreviewKind.Cloud, revisions)
                 {
                     Owner = sW,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                if (preview.DiffCount == 0)
+                if (preview.DiffCount == 0 && revisions.Count == 1 && restoredConfig != null)
                 {
                     return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NotModified);
                 }
@@ -965,22 +940,214 @@ namespace Songify_Slim.Util.Configuration
                     return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NotAcceptable);
                 }
 
-                await Settings.ApplySelectedImport(restoredConfig, preview.SelectedPaths, preserveSecrets: true);
-                return new Tuple<bool, HttpStatusCode>(success, statusCode);
+                Configuration selectedConfig = preview.SelectedConfiguration;
+                IReadOnlyList<string> selectedPaths = preview.SelectedPaths;
+                if (selectedConfig == null)
+                {
+                    Logger.Warning(LogSource.Api,
+                        "Cloud restore cancelled: selected revision could not be imported.");
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.UpgradeRequired);
+                }
+
+                await Settings.ApplySelectedImport(selectedConfig, selectedPaths, preserveSecrets: true);
+                return new Tuple<bool, HttpStatusCode>(true, HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Core, "Error restoring cloud save.", ex);
                 return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.ServiceUnavailable);
             }
+            finally
+            {
+                revisions?.Clear();
+                preview?.ReleaseCloudRevisions();
+            }
         }
 
-        private class CloudSettingsResponse
+        private static async Task<(HttpStatusCode Status, List<CloudSettingsRevision> Revisions)>
+            GetCloudSettingsRevisionsAsync()
         {
-            [JsonProperty("settings")] public string Settings { get; set; }
+            using HttpResponseMessage response = await SongifyApi.GetUserSettingsAsync();
+            string body = await response.Content.ReadAsStringAsync();
+            SongifyPremiumService.ApplyFromCloudStatus(response.StatusCode);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                LogCloudHttpFailure("restore", response.StatusCode, body);
+                return (response.StatusCode, null);
+            }
 
-            [JsonProperty("updatedAt")] public DateTime? UpdatedAt { get; set; }
+            if (!TryParseCloudSettingsList(body, response.StatusCode, out List<CloudSettingsRevision> revisions))
+                return (HttpStatusCode.UnprocessableEntity, null);
+
+            return (HttpStatusCode.OK, revisions);
         }
+
+        private static async Task RefreshOpenCloudImportPreviewAsync()
+        {
+            Window_CloudImportPreview open = Application.Current?.Windows
+                .OfType<Window_CloudImportPreview>()
+                .FirstOrDefault(w => w.IsLoaded);
+            if (open == null)
+                return;
+
+            (HttpStatusCode status, List<CloudSettingsRevision> revisions) =
+                await GetCloudSettingsRevisionsAsync().ConfigureAwait(true);
+            if (status != HttpStatusCode.OK || revisions == null)
+                return;
+
+            if (open.Dispatcher.CheckAccess())
+            {
+                await open.ReloadCloudRevisionsAsync(revisions).ConfigureAwait(true);
+                return;
+            }
+
+            Task reload = await open.Dispatcher.InvokeAsync(() => open.ReloadCloudRevisionsAsync(revisions));
+            await reload.ConfigureAwait(true);
+        }
+
+        private static void LogCloudHttpFailure(string operation, HttpStatusCode statusCode, string body)
+        {
+            Logger.Warning(LogSource.Api,
+                $"Cloud {operation} failed: {(int)statusCode} {statusCode}. {TrimCloudBody(body)}");
+        }
+
+        private static string TrimCloudBody(string body)
+        {
+            if (string.IsNullOrWhiteSpace(body))
+                return "";
+            body = body.Trim();
+            return body.Length <= 400 ? body : body[..400];
+        }
+
+        /// <summary>
+        /// GET /v3/user_settings is either a revisions object (new) or a JSON string of the latest
+        /// base64 blob (current production). Detect with JToken before any preview UI.
+        /// </summary>
+        internal static bool TryParseCloudSettingsList(
+            string body,
+            HttpStatusCode statusCode,
+            out List<CloudSettingsRevision> revisions)
+        {
+            revisions = [];
+            if (string.IsNullOrWhiteSpace(body))
+                return true;
+
+            JToken token;
+            try
+            {
+                token = JToken.Parse(body);
+            }
+            catch (JsonException ex)
+            {
+                LogCloudHttpFailure("restore", statusCode, body);
+                Logger.Error(LogSource.Api, "Cloud restore failed: GET /user_settings was not valid JSON.", ex);
+                return false;
+            }
+
+            switch (token.Type)
+            {
+                case JTokenType.String:
+                {
+                    string base64 = token.Value<string>() ?? JsonConvert.DeserializeObject<string>(body);
+                    revisions =
+                    [
+                        new CloudSettingsRevision
+                        {
+                            Id = 0,
+                            SchemaVersion = 0,
+                            CreatedAt = DateTime.UtcNow,
+                            Settings = base64 ?? ""
+                        }
+                    ];
+                    return true;
+                }
+                case JTokenType.Object:
+                {
+                    try
+                    {
+                        CloudSettingsList parsed =
+                            token.ToObject<CloudSettingsList>(JsonSerializer.Create(CloudJsonSettings));
+                        revisions = parsed?.Revisions ?? [];
+                        return true;
+                    }
+                    catch (JsonException ex)
+                    {
+                        LogCloudHttpFailure("restore", statusCode, body);
+                        Logger.Error(LogSource.Api,
+                            "Cloud restore failed: GET /user_settings JSON object could not be read.", ex);
+                        return false;
+                    }
+                }
+                default:
+                    LogCloudHttpFailure("restore", statusCode, body);
+                    Logger.Warning(LogSource.Api,
+                        $"Cloud restore failed: GET /user_settings unexpected JSON type {token.Type}.");
+                    return false;
+            }
+        }
+
+        internal static bool IsCloudRevisionTooNew(CloudSettingsRevision revision)
+            => revision != null && revision.SchemaVersion > CloudSettingsSchemaVersion;
+
+        /// <summary>
+        /// Decodes one revision's base64 YAML. Call off the UI thread; does not decode other revisions.
+        /// </summary>
+        internal static Configuration DecodeCloudRevisionSettings(CloudSettingsRevision revision)
+        {
+            if (revision == null || string.IsNullOrWhiteSpace(revision.Settings))
+                return null;
+
+            try
+            {
+                string yaml = Encoding.UTF8.GetString(Convert.FromBase64String(revision.Settings));
+                IDeserializer deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .IgnoreUnmatchedProperties()
+                    .Build();
+
+                Configuration restoredConfig = deserializer.Deserialize<Configuration>(yaml);
+                NormalizeBlockedArtistsForCompare(restoredConfig);
+                return restoredConfig;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Core, "Error decoding cloud settings revision.", ex);
+                return null;
+            }
+        }
+    }
+
+    internal sealed class CloudSettingsSaveRequest
+    {
+        [JsonProperty("userId")]
+        public string UserId { get; set; }
+
+        [JsonProperty("settings")]
+        public string Settings { get; set; }
+
+        [JsonProperty("schemaVersion")]
+        public int SchemaVersion { get; set; }
+    }
+
+    internal sealed class CloudSettingsRevision
+    {
+        [JsonProperty("id")]
+        public long Id { get; set; }
+
+        [JsonProperty("schemaVersion")]
+        public int SchemaVersion { get; set; }
+
+        [JsonProperty("createdAt")]
+        public DateTime CreatedAt { get; set; }
+
+        [JsonProperty("settings")]
+        public string Settings { get; set; }
+    }
+
+    internal sealed class CloudSettingsList
+    {
+        [JsonProperty("revisions")]
+        public List<CloudSettingsRevision> Revisions { get; set; }
     }
 
     public class Configuration

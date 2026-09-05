@@ -2589,6 +2589,58 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <value>No differences detected.</value>
     <comment>Context: Shown in cloud import preview when local and cloud configs match.</comment>
   </data>
+  <data name="window_cloudimport_revision_label" xml:space="preserve">
+    <value>Saved version</value>
+    <comment>Context: Label for the cloud settings history ComboBox on the import preview.</comment>
+  </data>
+  <data name="window_cloudimport_schema_too_new" xml:space="preserve">
+    <value>This cloud save was created by a newer Songify version. Update Songify to restore it.</value>
+    <comment>Context: Banner when the selected cloud revision has a newer schemaVersion than this app.</comment>
+  </data>
+  <data name="window_cloudimport_revision_invalid" xml:space="preserve">
+    <value>This saved version could not be read.</value>
+    <comment>Context: Shown when a cloud revision blob cannot be decoded.</comment>
+  </data>
+  <data name="window_cloudimport_unknown_revision" xml:space="preserve">
+    <value>Unknown save</value>
+    <comment>Context: Fallback ComboBox label when a cloud revision has no createdAt.</comment>
+  </data>
+  <data name="window_cloudimport_latest_revision" xml:space="preserve">
+    <value>Latest save</value>
+    <comment>Context: ComboBox label for a v2 cloud blob that has no createdAt timestamp.</comment>
+  </data>
+  <data name="window_settings_cloud_restored" xml:space="preserve">
+    <value>Successfully restored settings from the cloud</value>
+    <comment>Context: Cloud restore success message.</comment>
+  </data>
+  <data name="window_settings_cloud_empty" xml:space="preserve">
+    <value>No cloud save yet.</value>
+    <comment>Context: Cloud restore when the user has no saved revisions.</comment>
+  </data>
+  <data name="window_settings_cloud_need_update" xml:space="preserve">
+    <value>This cloud save was created by a newer Songify version. Please update Songify.</value>
+    <comment>Context: Cloud restore when schemaVersion is newer than this app.</comment>
+  </data>
+  <data name="window_settings_cloud_no_changes" xml:space="preserve">
+    <value>No changes have been detected, keeping local settings.</value>
+    <comment>Context: Cloud restore when the latest revision matches local settings.</comment>
+  </data>
+  <data name="window_settings_cloud_cancelled" xml:space="preserve">
+    <value>Cancelled by user.</value>
+    <comment>Context: Cloud restore preview closed without importing.</comment>
+  </data>
+  <data name="window_settings_cloud_unavailable" xml:space="preserve">
+    <value>Error connecting to Songify service.</value>
+    <comment>Context: Cloud restore network or decode failure.</comment>
+  </data>
+  <data name="window_settings_cloud_unprocessable" xml:space="preserve">
+    <value>The server rejected the cloud save. Please try again.</value>
+    <comment>Context: Cloud save HTTP 422 — request JSON shape was rejected.</comment>
+  </data>
+  <data name="window_settings_cloud_bad_response" xml:space="preserve">
+    <value>Cloud settings could not be read. Check the log for details.</value>
+    <comment>Context: Cloud restore GET body was neither a revisions object nor a legacy JSON string.</comment>
+  </data>
   <data name="window_backupimport_title" xml:space="preserve">
     <value>Restore backup</value>
     <comment>Context: Title of the local config import picker.</comment>

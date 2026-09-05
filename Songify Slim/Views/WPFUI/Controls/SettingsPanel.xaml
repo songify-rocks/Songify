@@ -270,7 +270,7 @@
 
                         <ui:Card Margin="0,0,0,12" Padding="16">
                             <Grid>
-                                <StackPanel VerticalAlignment="Center" Margin="0,0,96,0">
+                                <StackPanel Margin="0,0,96,0" VerticalAlignment="Center">
                                     <TextBlock
                                         FontSize="14"
                                         FontWeight="SemiBold"
@@ -300,10 +300,10 @@
                                                 CornerRadius="4" />
                                             <ui:SymbolIcon
                                                 x:Name="IcoAccentSystem"
-                                                FontSize="11"
-                                                Foreground="White"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
+                                                FontSize="11"
+                                                Foreground="White"
                                                 Symbol="Desktop24"
                                                 Visibility="Collapsed" />
                                         </Grid>
@@ -317,11 +317,11 @@
                                     x:Name="PopAccentPicker"
                                     AllowsTransparency="True"
                                     HorizontalOffset="-8"
+                                    Opened="PopAccentPicker_OnOpened"
                                     Placement="Bottom"
                                     PlacementTarget="{Binding ElementName=BtnAccentPicker}"
                                     StaysOpen="False"
-                                    VerticalOffset="6"
-                                    Opened="PopAccentPicker_OnOpened">
+                                    VerticalOffset="6">
                                     <Border
                                         MinWidth="248"
                                         Padding="12"
@@ -350,14 +350,12 @@
                                                     Click="BtnAccentSystem_OnClick">
                                                     <StackPanel Orientation="Horizontal">
                                                         <Grid Width="28" Height="28">
-                                                            <Border
-                                                                x:Name="BdAccentSystem"
-                                                                CornerRadius="4" />
+                                                            <Border x:Name="BdAccentSystem" CornerRadius="4" />
                                                             <ui:SymbolIcon
-                                                                FontSize="14"
-                                                                Foreground="White"
                                                                 HorizontalAlignment="Center"
                                                                 VerticalAlignment="Center"
+                                                                FontSize="14"
+                                                                Foreground="White"
                                                                 Symbol="Desktop24" />
                                                         </Grid>
                                                         <StackPanel Margin="10,0,0,0" VerticalAlignment="Center">
@@ -380,9 +378,7 @@
                                                 Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                                 Text="{DynamicResource window_settings_appearance_accent_recent}"
                                                 Visibility="Collapsed" />
-                                            <WrapPanel
-                                                x:Name="PnlAccentSwatches"
-                                                Margin="0,0,0,8" />
+                                            <WrapPanel x:Name="PnlAccentSwatches" Margin="0,0,0,8" />
                                             <ui:TextBox
                                                 x:Name="TbAccentHex"
                                                 MinWidth="140"
@@ -465,10 +461,8 @@
                         <ui:Card Padding="16">
                             <StackPanel>
                                 <Grid>
-                                    <StackPanel VerticalAlignment="Center" Margin="0,0,180,0">
-                                        <TextBlock
-                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                            Text="{DynamicResource window_settings_appearance_nav_style}" />
+                                    <StackPanel Margin="0,0,180,0" VerticalAlignment="Center">
+                                        <TextBlock Foreground="{DynamicResource TextFillColorPrimaryBrush}" Text="{DynamicResource window_settings_appearance_nav_style}" />
                                         <TextBlock
                                             FontSize="12"
                                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
@@ -3138,11 +3132,15 @@
                                     <Grid Grid.Column="0" Margin="0,0,8,0">
                                         <PasswordBox
                                             x:Name="PasswordBox"
+                                            Height="32"
+                                            MinHeight="32"
                                             Padding="0,0,30,0"
                                             VerticalContentAlignment="Center"
                                             PasswordChanged="PasswordBox_OnPasswordChanged" />
                                         <TextBox
                                             x:Name="TextBox"
+                                            Height="32"
+                                            MinHeight="32"
                                             Padding="0,0,30,0"
                                             VerticalAlignment="Center"
                                             VerticalContentAlignment="Center"
@@ -3193,6 +3191,10 @@
                                         x:Name="btnApiToken"
                                         Grid.Column="3"
                                         Width="32"
+                                        Height="32"
+                                        MinWidth="32"
+                                        Margin="0,0,8,0"
+                                        Padding="0"
                                         d:ToolTip="{x:Static local:Resources.common_help}"
                                         Click="BtnApiToken_OnClick"
                                         ToolTip="{DynamicResource common_help}">

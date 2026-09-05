@@ -33,6 +33,8 @@
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
@@ -44,9 +46,46 @@
                 Text="{DynamicResource window_cloudimport_intro}"
                 TextWrapping="Wrap" />
 
+            <DockPanel
+                x:Name="RevisionPickerPanel"
+                Grid.Row="1"
+                Margin="0,0,0,12"
+                Visibility="Collapsed">
+                <TextBlock
+                    x:Name="TbRevisionLabel"
+                    Margin="0,0,12,0"
+                    VerticalAlignment="Center"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource window_cloudimport_revision_label}" />
+                <ComboBox
+                    x:Name="CbxRevisions"
+                    MinWidth="220"
+                    VerticalAlignment="Center"
+                    DisplayMemberPath="Label"
+                    SelectionChanged="CbxRevisions_OnSelectionChanged" />
+            </DockPanel>
+
+            <Border
+                x:Name="SchemaWarningBanner"
+                Grid.Row="2"
+                Margin="0,0,0,12"
+                Padding="12"
+                Background="#33FF9800"
+                BorderBrush="#FFFF9800"
+                BorderThickness="1"
+                CornerRadius="6"
+                Visibility="Collapsed">
+                <TextBlock
+                    x:Name="TbSchemaWarning"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource window_cloudimport_schema_too_new}"
+                    TextWrapping="Wrap" />
+            </Border>
+
             <Border
                 x:Name="PermissionWarningBanner"
-                Grid.Row="1"
+                Grid.Row="3"
                 Margin="0,0,0,12"
                 Padding="12"
                 Background="#33FF9800"
@@ -69,7 +108,7 @@
                 </StackPanel>
             </Border>
 
-            <DockPanel Grid.Row="2" Margin="0,0,0,8">
+            <DockPanel Grid.Row="4" Margin="0,0,0,8">
                 <ui:Button
                     Margin="0,0,8,0"
                     Appearance="Secondary"
@@ -88,7 +127,7 @@
             </DockPanel>
 
             <ui:Card
-                Grid.Row="3"
+                Grid.Row="5"
                 Padding="0"
                 VerticalAlignment="Stretch">
                 <ScrollViewer Padding="12" VerticalScrollBarVisibility="Auto">
