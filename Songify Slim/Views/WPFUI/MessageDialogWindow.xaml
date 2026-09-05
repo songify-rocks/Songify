@@ -1,0 +1,68 @@
+<ui:FluentWindow
+    x:Class="Songify_Slim.Views.WPFUI.MessageDialogWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="Songify"
+    Width="420"
+    MinWidth="360"
+    SizeToContent="Height"
+    ExtendsContentIntoTitleBar="True"
+    ResizeMode="NoResize"
+    ShowInTaskbar="False"
+    WindowBackdropType="Mica"
+    WindowStartupLocation="CenterOwner">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar
+            x:Name="DlgTitleBar"
+            ShowMaximize="False"
+            ShowMinimize="False" />
+
+        <StackPanel Grid.Row="1" Margin="24,8,24,8">
+            <TextBlock
+                x:Name="TxtTitle"
+                Margin="0,0,0,10"
+                FontSize="18"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                TextWrapping="Wrap" />
+            <TextBlock
+                x:Name="TxtMessage"
+                FontSize="13"
+                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                TextWrapping="Wrap" />
+            <ui:TextBox
+                x:Name="TxtInput"
+                Margin="0,14,0,0"
+                Visibility="Collapsed" />
+        </StackPanel>
+
+        <StackPanel
+            Grid.Row="2"
+            Margin="24,8,24,20"
+            HorizontalAlignment="Right"
+            Orientation="Horizontal">
+            <ui:Button
+                x:Name="BtnSecondary"
+                MinWidth="88"
+                Margin="0,0,8,0"
+                Appearance="Secondary"
+                Click="BtnSecondary_OnClick"
+                Content="{DynamicResource common_cancel}"
+                IsCancel="True" />
+            <ui:Button
+                x:Name="BtnPrimary"
+                MinWidth="88"
+                Appearance="Primary"
+                Click="BtnPrimary_OnClick"
+                Content="{DynamicResource common_ok}"
+                IsDefault="True" />
+        </StackPanel>
+    </Grid>
+</ui:FluentWindow>

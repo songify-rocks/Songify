@@ -1,0 +1,908 @@
+<ui:FluentWindow
+    x:Class="Songify_Slim.Views.WPFUI.ShellWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="clr-namespace:Songify_Slim.Views.WPFUI.Pages"
+    xmlns:shell="clr-namespace:Songify_Slim.Views.WPFUI"
+    xmlns:tray="http://schemas.lepo.co/wpfui/2022/xaml/tray"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:util="clr-namespace:Songify_Slim.Util"
+    Width="900"
+    Height="500"
+    MinWidth="900"
+    MinHeight="500"
+    Closing="ShellWindow_Closing"
+    DataContext="{Binding RelativeSource={RelativeSource Self}}"
+    ExtendsContentIntoTitleBar="True"
+    Icon="pack://application:,,,/Resources/songify.ico"
+    Loaded="ShellWindow_Loaded"
+    WindowBackdropType="Mica"
+    mc:Ignorable="d">
+    <ui:FluentWindow.Resources>
+        <ResourceDictionary>
+            <util:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <ContextMenu x:Key="TwitchStatusContextMenu" x:Shared="false">
+                <MenuItem Click="MenuTwitchLogin_OnClick" Header="{DynamicResource menu_twitch_login}">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon FontSize="16" Symbol="Person24" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Click="MenuTwitchConnect_OnClick" Header="{DynamicResource menu_twitch_connect}">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon FontSize="16" Symbol="PlugConnected24" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Click="MenuTwitchOnline_OnClick"
+                    Header="{DynamicResource menu_twitch_check_online_status}"
+                    Tag="TwitchLiveCheck">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon FontSize="16" Symbol="Live24" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </ContextMenu>
+        </ResourceDictionary>
+    </ui:FluentWindow.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <Grid>
+            <ui:TitleBar x:Name="ShellTitleBar" CloseClicked="TitleBar_OnCloseClicked">
+                <!--  Custom header: TitleBar.Icon/ImageIcon often clips .ico assets  -->
+                <ui:TitleBar.Header>
+                    <StackPanel
+                        Margin="8,0,0,0"
+                        VerticalAlignment="Center"
+                        Orientation="Horizontal">
+                        <Image
+                            x:Name="TitleBarLogo"
+                            Width="16"
+                            Height="16"
+                            Margin="0,0,8,0"
+                            VerticalAlignment="Center"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Source="pack://application:,,,/Resources/songify.ico"
+                            Stretch="Uniform" />
+                        <TextBlock
+                            x:Name="TxtTitleBarAppName"
+                            VerticalAlignment="Center"
+                            FontSize="13"
+                            Text="Songify" />
+                    </StackPanel>
+                </ui:TitleBar.Header>
+                <ui:TitleBar.TrailingContent>
+                    <StackPanel Margin="0,0,4,0" Orientation="Horizontal">
+
+                        <ui:DropDownButton
+                            MinWidth="72"
+                            Margin="0,0,4,0"
+                            Padding="12,6"
+                            Appearance="Transparent"
+                            Content="{DynamicResource menu_tools}"
+                            FontSize="13"
+                            Visibility="Visible">
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu>
+                                    <MenuItem Header="{DynamicResource menu_file_widget}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Window24" />
+                                        </MenuItem.Icon>
+                                        <MenuItem Click="MenuWidgetGallery_OnClick" Header="{DynamicResource menu_widget_gallery}">
+                                            <MenuItem.Icon>
+                                                <ui:SymbolIcon FontSize="16" Symbol="Globe24" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                        <MenuItem Click="MenuWidgetGenerator_OnClick" Header="{DynamicResource menu_widget_generator}">
+                                            <MenuItem.Icon>
+                                                <ui:SymbolIcon FontSize="16" Symbol="Wrench24" />
+                                            </MenuItem.Icon>
+                                        </MenuItem>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuQueueWindow_OnClick" Header="{DynamicResource window_queue_open_window}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Open24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuConsoleWindow_OnClick" Header="{DynamicResource window_console_open_window}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="CodeBlock28" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuWebServerUrl_OnClick" Header="{DynamicResource menu_view_webserver_url}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Server24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuQueueBrowser_OnClick" Header="{DynamicResource menu_song_requests_queue_browser}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Globe24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+
+                        <ui:DropDownButton
+                            MinWidth="72"
+                            Margin="0,0,4,0"
+                            Padding="12,6"
+                            Appearance="Transparent"
+                            Content="{DynamicResource menu_twitch}"
+                            FontSize="13"
+                            Visibility="Collapsed">
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu>
+                                    <MenuItem Click="MenuTwitchLogin_OnClick" Header="{DynamicResource menu_twitch_login}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Person24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        x:Name="MiTwitchConnect"
+                                        Click="MenuTwitchConnect_OnClick"
+                                        Header="{DynamicResource menu_twitch_connect}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="PlugConnected24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem
+                                        x:Name="MiTwitchCheckOnlineStatus"
+                                        Click="MenuTwitchOnline_OnClick"
+                                        Header="{DynamicResource menu_twitch_check_online_status}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Live24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+
+                        <ui:DropDownButton
+                            MinWidth="72"
+                            Padding="12,6"
+                            Appearance="Transparent"
+                            Content="{DynamicResource menu_file_help}"
+                            FontSize="13"
+                            Visibility="Collapsed">
+                            <ui:DropDownButton.Flyout>
+                                <ContextMenu x:Name="HelpContextMenu">
+                                    <MenuItem Click="MenuPatchNotes_OnClick" Header="{DynamicResource menu_file_patchnotes}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="MailRead24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuSetupWizard_OnClick" Header="{DynamicResource menu_setup_wizard}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Clipboard24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuFaq_OnClick" Header="{DynamicResource menu_faq}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="QuestionCircle24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuGitHub_OnClick" Header="{DynamicResource menu_github}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="CodeBlock28" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuDiscord_OnClick" Header="{DynamicResource menu_discord}">
+                                        <MenuItem.Icon>
+                                            <Viewbox Width="14" Height="14">
+                                                <Path
+                                                    Data="{StaticResource IconDiscordGeometry}"
+                                                    Fill="{StaticResource BrandDiscordBrush}"
+                                                    Stretch="Uniform" />
+                                            </Viewbox>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator />
+                                    <MenuItem Click="MenuLogFolder_OnClick" Header="{DynamicResource menu_help_log_folder}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="Folder24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuAppFolder_OnClick" Header="{DynamicResource menu_help_app_folder}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="FolderOpen24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Click="MenuCheckUpdates_OnClick" Header="{DynamicResource menu_check_for_updates}">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon FontSize="16" Symbol="ArrowSync24" />
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                </ContextMenu>
+                            </ui:DropDownButton.Flyout>
+                        </ui:DropDownButton>
+
+                        <Grid
+                            Width="36"
+                            Height="32"
+                            Margin="8,0,0,0"
+                            VerticalAlignment="Center">
+                            <ui:Button
+                                x:Name="BtnPsa"
+                                Padding="6"
+                                Appearance="Transparent"
+                                Click="BtnPsa_OnClick"
+                                ToolTip="{DynamicResource menu_notifications}">
+                                <ui:SymbolIcon
+                                    x:Name="PsaBadgeIcon"
+                                    Width="16"
+                                    Height="16"
+                                    Symbol="Alert24" />
+                            </ui:Button>
+                            <Border
+                                x:Name="PsaBadgePill"
+                                Height="16"
+                                MinWidth="16"
+                                Margin="0,-2,-2,0"
+                                Padding="4,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Top"
+                                Background="IndianRed"
+                                CornerRadius="8"
+                                Visibility="Collapsed">
+                                <TextBlock
+                                    x:Name="PsaBadgeText"
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="10"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"
+                                    Text="0" />
+                            </Border>
+                        </Grid>
+                    </StackPanel>
+                </ui:TitleBar.TrailingContent>
+            </ui:TitleBar>
+            <StackPanel
+                x:Name="TitleBarNowPlaying"
+                MaxWidth="380"
+                Margin="200,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Cursor="Hand"
+                MouseLeftButtonUp="TitleBarNowPlaying_OnMouseLeftButtonUp">
+                <TextBlock
+                    x:Name="TxtTitleBarNowPlaying"
+                    HorizontalAlignment="Center"
+                    FontSize="12"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    TextTrimming="CharacterEllipsis" />
+                <TextBlock
+                    x:Name="TxtTitleBarUpNext"
+                    HorizontalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Opacity="0.8"
+                    TextTrimming="CharacterEllipsis" />
+            </StackPanel>
+        </Grid>
+
+        <!--  Persistent Spotify API / rate-limit banner  -->
+        <Border
+            x:Name="BrdSpotifyPersistentIssue"
+            Grid.Row="1"
+            Margin="12,0,12,8"
+            Padding="12,10"
+            Background="{DynamicResource ControlFillColorSecondaryBrush}"
+            BorderBrush="#CD5C5C"
+            BorderThickness="1"
+            CornerRadius="8"
+            Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueTitle"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueBody"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TbSpotifyPersistentIssueEta"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        TextWrapping="Wrap" />
+                    <Expander
+                        x:Name="ExpSpotifyPersistentIssues"
+                        Margin="0,8,0,0"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Header="{DynamicResource menu_more}"
+                        IsExpanded="False"
+                        Visibility="Collapsed">
+                        <ScrollViewer MaxHeight="140">
+                            <StackPanel x:Name="PnlSpotifyPersistentIssues" />
+                        </ScrollViewer>
+                    </Expander>
+                </StackPanel>
+                <ui:Button
+                    Grid.Column="1"
+                    Width="32"
+                    Height="32"
+                    Margin="8,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Top"
+                    Appearance="Transparent"
+                    Click="BtnSpotifyPersistentIssueDismiss_Click"
+                    Content="×"
+                    FontSize="16"
+                    ToolTip="{DynamicResource common_dismiss}" />
+            </Grid>
+        </Border>
+
+        <ui:NavigationView
+            x:Name="RootNavigationView"
+            Grid.Row="2"
+            ClipToBounds="True"
+            CompactPaneLength="48"
+            IsBackButtonVisible="Collapsed"
+            IsPaneOpen="{x:Static shell:ShellWindow.InitialPaneOpen}"
+            OpenPaneLength="150"
+            PaneClosed="RootNavigationView_OnPaneClosed"
+            PaneDisplayMode="{x:Static shell:ShellWindow.InitialPaneDisplayMode}"
+            PaneOpened="RootNavigationView_OnPaneOpened"
+            ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+            ScrollViewer.PanningMode="None"
+            ScrollViewer.VerticalScrollBarVisibility="Disabled"
+            ToolTipService.BetweenShowDelay="0"
+            ToolTipService.InitialShowDelay="200"
+            ToolTipService.Placement="Right"
+            ToolTipService.ShowDuration="8000">
+            <ui:NavigationView.Resources>
+                <Style x:Key="NavSymbolIconStyle" TargetType="ui:SymbolIcon">
+                    <Setter Property="Filled" Value="False" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" Value="True">
+                            <Setter Property="Filled" Value="True" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </ui:NavigationView.Resources>
+            <ui:NavigationView.MenuItems>
+                <ui:NavigationViewItem
+                    Content="{DynamicResource nav_home}"
+                    TargetPageTag="overview"
+                    TargetPageType="{x:Type pages:OverviewPage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="Home48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="{DynamicResource menu_queue}"
+                    TargetPageTag="queue"
+                    TargetPageType="{x:Type pages:QueuePage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="List28"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+
+                <ui:NavigationViewItem
+                    Content="{DynamicResource window_blocklist_title}"
+                    TargetPageTag="blacklist"
+                    TargetPageType="{x:Type pages:BlacklistPage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="ShieldDismiss24"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="{DynamicResource menu_history}"
+                    TargetPageTag="history"
+                    TargetPageType="{x:Type pages:HistoryPage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="History48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="{DynamicResource window_userlist_title}"
+                    TargetPageTag="userlist"
+                    TargetPageType="{x:Type pages:UserListPage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="People48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.MenuItems>
+            <ui:NavigationView.FooterMenuItems>
+                <ui:NavigationViewItem
+                    Content="{DynamicResource menu_file_settings}"
+                    TargetPageTag="settings"
+                    TargetPageType="{x:Type pages:SettingsPage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="Settings48"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="{DynamicResource menu_file_help}"
+                    TargetPageTag="help"
+                    TargetPageType="{x:Type pages:HelpPage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="QuestionCircle24"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+                <ui:NavigationViewItem
+                    Content="{DynamicResource menu_help_about}"
+                    TargetPageTag="about"
+                    TargetPageType="{x:Type pages:AboutPage}"
+                    ToolTip="{Binding Content, RelativeSource={RelativeSource Self}}">
+                    <ui:NavigationViewItem.Icon>
+                        <ui:SymbolIcon
+                            Style="{StaticResource NavSymbolIconStyle}"
+                            Symbol="Info24"
+                            ToolTip="{Binding Content, RelativeSource={RelativeSource AncestorType=ui:NavigationViewItem}}" />
+                    </ui:NavigationViewItem.Icon>
+                </ui:NavigationViewItem>
+            </ui:NavigationView.FooterMenuItems>
+        </ui:NavigationView>
+
+        <!--  PSA / notifications panel (overlays content, below title bar)  -->
+        <Border
+            x:Name="FlyPsa"
+            Grid.Row="1"
+            Grid.RowSpan="2"
+            Width="380"
+            HorizontalAlignment="Right"
+            Panel.ZIndex="100"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+            BorderThickness="1,0,0,0"
+            Visibility="Collapsed">
+            <DockPanel>
+                <Border
+                    Padding="14,12"
+                    BorderBrush="{DynamicResource ControlStrokeColorDefaultBrush}"
+                    BorderThickness="0,0,0,1"
+                    DockPanel.Dock="Top">
+                    <DockPanel LastChildFill="True">
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <ui:Button
+                                x:Name="BtnPsaMarkAllRead"
+                                Height="28"
+                                MinWidth="40"
+                                Margin="0,0,4,0"
+                                Appearance="Transparent"
+                                Click="BtnPsaMarkAllRead_OnClick"
+                                Content="All"
+                                Icon="{ui:SymbolIcon Checkmark24}"
+                                ToolTip="{DynamicResource common_mark_all_read}"
+                                Visibility="Collapsed" />
+                            <ui:Button
+                                Width="28"
+                                Height="28"
+                                Padding="0"
+                                Appearance="Transparent"
+                                Click="BtnPsaClose_OnClick"
+                                ToolTip="{DynamicResource common_close}">
+                                <ui:SymbolIcon
+                                    Width="12"
+                                    Height="12"
+                                    Symbol="Dismiss24" />
+                            </ui:Button>
+                        </StackPanel>
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="15"
+                            FontWeight="SemiBold"
+                            Text="{DynamicResource menu_notifications}" />
+                    </DockPanel>
+                </Border>
+                <ScrollViewer
+                    Padding="12,10,12,12"
+                    HorizontalScrollBarVisibility="Disabled"
+                    VerticalScrollBarVisibility="Auto">
+                    <StackPanel x:Name="PnlPsas" />
+                </ScrollViewer>
+            </DockPanel>
+        </Border>
+
+        <!--  Status bar: always visible at bottom  -->
+        <Border
+            Grid.Row="3"
+            MinHeight="28"
+            Padding="12,0,16,0"
+            VerticalAlignment="Stretch"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal">
+                    <TextBlock
+                        x:Name="TxtStatusApi"
+                        Margin="0,0,16,0"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{Binding ApiMetrics.TotalRequestsPerMinute, StringFormat=API: {0} rpm}"
+                        Visibility="{Binding ApiMetrics.ShowTotalInStatusbar, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                    <Button
+                        x:Name="BtnStatusTwitchApi"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center"
+                        Click="ServiceIcon_Click"
+                        ContextMenu="{StaticResource TwitchStatusContextMenu}"
+                        ContextMenuService.Placement="Top"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="TwitchAPI"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding TwitchApiBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_twitch_api}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        x:Name="BtnStatusTwitchBot"
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center"
+                        Click="ServiceIcon_Click"
+                        ContextMenu="{StaticResource TwitchStatusContextMenu}"
+                        ContextMenuService.Placement="Top"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="TwitchBot"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding TwitchBotBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_twitch_bot}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center"
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="Spotify"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding SpotifyBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_spotify}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        Margin="0,0,12,0"
+                        VerticalAlignment="Center"
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="PearDesktop"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding PearBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_pear}" />
+                        </StackPanel>
+                    </Button>
+                    <Button
+                        VerticalAlignment="Center"
+                        Click="ServiceIcon_Click"
+                        Style="{StaticResource IconOnlyButton}"
+                        Tag="WebServer"
+                        ToolTip=""
+                        ToolTipOpening="ServiceToolTipOpening"
+                        ToolTipService.BetweenShowDelay="100"
+                        ToolTipService.InitialShowDelay="0"
+                        ToolTipService.ShowDuration="20000">
+                        <StackPanel Orientation="Horizontal">
+                            <Ellipse
+                                Width="8"
+                                Height="8"
+                                VerticalAlignment="Center"
+                                Fill="{Binding WebServerBrush}" />
+                            <TextBlock
+                                Margin="6,0,0,0"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_main_status_webserver}" />
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+                <ui:Button
+                    x:Name="BtnSpotifyIdleBackoff"
+                    Grid.Column="1"
+                    MinHeight="22"
+                    Margin="12,0"
+                    Padding="8,0"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Appearance="Transparent"
+                    Click="BtnSpotifyIdleBackoff_Click"
+                    Cursor="Hand"
+                    ToolTip="{DynamicResource window_settings_spotify_idle_backoff_tooltip}"
+                    Visibility="Collapsed">
+                    <StackPanel Orientation="Horizontal">
+                        <ui:SymbolIcon
+                            Width="12"
+                            Height="12"
+                            Margin="0,0,6,0"
+                            VerticalAlignment="Center"
+                            Foreground="IndianRed"
+                            Symbol="Gauge24" />
+                        <TextBlock
+                            x:Name="TbSpotifyIdleBackoff"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            FontWeight="SemiBold"
+                            Foreground="IndianRed"
+                            Text="Polling 20s (idle)" />
+                    </StackPanel>
+                </ui:Button>
+                <TextBlock
+                    x:Name="LblCopyright"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    FontSize="11"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{Binding StatusBarVersion}" />
+            </Grid>
+        </Border>
+
+        <!--  Premium reminder (shown when reminders are on and Premium is not active)  -->
+        <Grid
+            x:Name="GrdPremiumReminder"
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Panel.ZIndex="240"
+            Visibility="Collapsed">
+            <Border Background="#99000000" />
+            <ui:Button
+                x:Name="BtnPremiumReminderClose"
+                Width="36"
+                Height="36"
+                Margin="8"
+                Padding="0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Appearance="Transparent"
+                Click="BtnPremiumReminderClose_OnClick"
+                ToolTip="{DynamicResource common_close}">
+                <ui:SymbolIcon
+                    Width="14"
+                    Height="14"
+                    Symbol="Dismiss24" />
+            </ui:Button>
+            <ui:Card
+                MaxWidth="460"
+                Padding="28,24"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Background="{DynamicResource ControlSolidFillColorDefaultBrush}">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,8"
+                        FontSize="18"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{DynamicResource window_main_premium_reminder_title}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        Margin="0,0,0,18"
+                        FontSize="13"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{DynamicResource window_main_premium_reminder_body}"
+                        TextAlignment="Center"
+                        TextWrapping="Wrap" />
+                    <ui:Button
+                        MinWidth="220"
+                        HorizontalAlignment="Center"
+                        Appearance="Primary"
+                        Click="BtnPremiumReminderCta_OnClick"
+                        Content="{DynamicResource cta_premium}"
+                        Icon="{ui:SymbolIcon Heart24,
+                                             Filled=True}" />
+                    <TextBlock
+                        x:Name="TbPremiumReminderDismiss"
+                        Margin="0,16,0,0"
+                        HorizontalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        TextAlignment="Center" />
+                </StackPanel>
+            </ui:Card>
+        </Grid>
+
+        <!--  First-launch orientation overlay  -->
+        <Grid
+            x:Name="TourOverlay"
+            Grid.Row="1"
+            Grid.RowSpan="3"
+            Panel.ZIndex="250"
+            Visibility="Collapsed">
+            <Border Background="#99000000" />
+            <Border
+                x:Name="TourHighlight"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                BorderBrush="{DynamicResource AccentFillColorDefaultBrush}"
+                BorderThickness="2"
+                CornerRadius="8"
+                IsHitTestVisible="False"
+                Visibility="Collapsed" />
+            <ui:Card
+                MaxWidth="380"
+                Margin="24"
+                Padding="18"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Background="{DynamicResource ControlSolidFillColorDefaultBrush}">
+                <StackPanel>
+                    <TextBlock
+                        x:Name="TxtTourTitle"
+                        Margin="0,0,0,6"
+                        FontSize="16"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TxtTourBody"
+                        Margin="0,0,0,14"
+                        FontSize="13"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextWrapping="Wrap" />
+                    <DockPanel LastChildFill="False">
+                        <ui:Button
+                            Appearance="Transparent"
+                            Click="TourOverlay_OnSkip"
+                            Content="{DynamicResource setup_skip}"
+                            DockPanel.Dock="Left"
+                            Icon="{ui:SymbolIcon Dismiss24}" />
+                        <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                            <ui:Button
+                                x:Name="BtnTourBack"
+                                MinWidth="80"
+                                Margin="0,0,8,0"
+                                Appearance="Secondary"
+                                Click="BtnTourBack_OnClick"
+                                Content="{DynamicResource setup_back}"
+                                Icon="{ui:SymbolIcon ArrowLeft24}" />
+                            <ui:Button
+                                x:Name="BtnTourNext"
+                                MinWidth="80"
+                                Appearance="Primary"
+                                Click="BtnTourNext_OnClick"
+                                Content="{DynamicResource setup_next}"
+                                Icon="{ui:SymbolIcon ArrowRight24}" />
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </ui:Card>
+        </Grid>
+
+        <tray:NotifyIcon
+            x:Name="TrayIcon"
+            FocusOnLeftClick="True"
+            Icon="pack://application:,,,/Resources/songify.ico"
+            LeftDoubleClick="TrayIcon_OnLeftDoubleClick"
+            MenuOnRightClick="True"
+            TooltipText="Songify">
+            <tray:NotifyIcon.Menu>
+                <ContextMenu>
+                    <MenuItem Header="{DynamicResource menu_twitch}">
+                        <MenuItem Click="TrayConnect_OnClick" Header="{DynamicResource menu_twitch_connect}">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon FontSize="16" Symbol="PlugConnected24" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Click="TrayDisconnect_OnClick" Header="{DynamicResource menu_disconnect}">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon FontSize="16" Symbol="PlugDisconnected24" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </MenuItem>
+                    <MenuItem Click="TrayShow_OnClick" Header="{DynamicResource common_show}">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon FontSize="16" Symbol="Window24" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Click="TrayExit_OnClick" Header="{DynamicResource menu_file_exit}">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon FontSize="16" Symbol="SignOut24" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </tray:NotifyIcon.Menu>
+        </tray:NotifyIcon>
+    </Grid>
+</ui:FluentWindow>

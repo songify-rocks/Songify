@@ -5,41 +5,15 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:Songify_Slim.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:wpf="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
     d:DesignHeight="450"
     d:DesignWidth="800"
     mc:Ignorable="d">
     <Grid>
-        <wpf:CartesianChart
-            DisableAnimations="True"
-            Hoverable="True"
-            LegendLocation="Right"
-            Series="{Binding SeriesCollection}">
-            <wpf:CartesianChart.AxisX>
-                <wpf:Axis
-                    Title="{DynamicResource window_apichart_seconds_rolling}"
-                    MaxValue="59"
-                    MinValue="0" />
-            </wpf:CartesianChart.AxisX>
-
-            <wpf:CartesianChart.AxisY>
-                <wpf:Axis Title="{DynamicResource window_apichart_requests_per_min}" MinValue="0">
-                    <wpf:Axis.Sections>
-                        <wpf:AxisSection
-                            Stroke="Orange"
-                            StrokeDashArray="4"
-                            StrokeThickness="2"
-                            Value="60" />
-                    </wpf:Axis.Sections>
-                </wpf:Axis>
-            </wpf:CartesianChart.AxisY>
-            <wpf:CartesianChart.DataTooltip>
-                <wpf:DefaultTooltip
-                    Background="{DynamicResource MahApps.Brushes.Control.Background}"
-                    BorderBrush="{DynamicResource MahApps.Brushes.Control.Border}"
-                    BorderThickness="2"
-                    SelectionMode="OnlySender" />
-            </wpf:CartesianChart.DataTooltip>
-        </wpf:CartesianChart>
+        <lvc:CartesianChart
+            Series="{Binding SeriesCollection}"
+            XAxes="{Binding XAxes}"
+            YAxes="{Binding YAxes}"
+            TooltipPosition="Hidden" />
     </Grid>
 </UserControl>

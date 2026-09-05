@@ -1,0 +1,3821 @@
+{
+  "packageGovernance": {
+    "totalDistinctPackages": 73,
+    "totalVersionDriftInstances": 0,
+    "targetFramework": "net10.0",
+    "packages": [
+      {
+        "name": "Autoupdater.NET.Official",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "1.9.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Common.Logging",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "3.4.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "ControlzEx",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "5.0.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Costura.Fody",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "6.1.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "EmbedIO",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "3.5.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Fody",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "6.9.3",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "FuzzySharp",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "2.0.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "HtmlAgilityPack",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "1.12.4",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "LiveCharts",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": false,
+        "description": "NuGet package is incompatible",
+        "versions": [
+          {
+            "version": "0.9.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "LiveCharts.Wpf",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": false,
+        "description": "NuGet package is incompatible",
+        "versions": [
+          {
+            "version": "0.9.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "MahApps.Metro",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "2.4.11",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "MahApps.Metro.IconPacks",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "4.11.0",
+        "isCompatible": false,
+        "description": "NuGet package is incompatible",
+        "versions": [
+          {
+            "version": "6.2.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "4.11.0"
+        }
+      },
+      {
+        "name": "Microsoft.CSharp",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "4.7.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Microsoft.Extensions.Hosting",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "10.0.10",
+        "isCompatible": true,
+        "description": "NuGet package upgrade is recommended",
+        "versions": [
+          {
+            "version": "10.0.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "10.0.10"
+        }
+      },
+      {
+        "name": "Microsoft.Extensions.Hosting.Abstractions",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "10.0.10",
+        "isCompatible": true,
+        "description": "NuGet package upgrade is recommended",
+        "versions": [
+          {
+            "version": "10.0.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "10.0.10"
+        }
+      },
+      {
+        "name": "Microsoft.Extensions.Logging",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "10.0.10",
+        "isCompatible": true,
+        "description": "NuGet package upgrade is recommended",
+        "versions": [
+          {
+            "version": "10.0.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "10.0.10"
+        }
+      },
+      {
+        "name": "Microsoft.Extensions.Options",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "10.0.10",
+        "isCompatible": true,
+        "description": "NuGet package upgrade is recommended",
+        "versions": [
+          {
+            "version": "10.0.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "10.0.10"
+        }
+      },
+      {
+        "name": "Microsoft.NETCore.Platforms",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "7.0.4",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Microsoft.Toolkit.Uwp.Notifications",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "7.1.3",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Microsoft.Web.WebView2",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "1.0.3912.50",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Microsoft.Win32.Primitives",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Microsoft.Xaml.Behaviors.Wpf",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "1.1.39",
+        "isCompatible": false,
+        "description": "NuGet package is incompatible",
+        "versions": [
+          {
+            "version": "1.1.142",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "1.1.39"
+        }
+      },
+      {
+        "name": "NETStandard.Library",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "2.0.3",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "NHttp",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": false,
+        "description": "NuGet package is incompatible",
+        "versions": [
+          {
+            "version": "0.1.9",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "Resource.Embedder",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "2.2.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "SpotifyAPI.Web",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "7.4.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "SpotifyAPI.Web.Auth",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "7.4.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.AppContext",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Collections",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Collections.Concurrent",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Console",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Diagnostics.Debug",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Diagnostics.Tools",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Diagnostics.Tracing",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Globalization",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Globalization.Calendars",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.IO.Compression",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.IO.Compression.ZipFile",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.IO.FileSystem",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Linq",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Linq.Expressions",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Net.Primitives",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Net.Sockets",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.ObjectModel",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Reflection",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Reflection.Extensions",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Reflection.Primitives",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Resources.Extensions",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "10.0.10",
+        "isCompatible": true,
+        "description": "NuGet package upgrade is recommended",
+        "versions": [
+          {
+            "version": "10.0.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "10.0.10"
+        }
+      },
+      {
+        "name": "System.Resources.ResourceManager",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Runtime",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Runtime.Extensions",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Runtime.Handles",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Runtime.InteropServices",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Runtime.InteropServices.RuntimeInformation",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Runtime.Numerics",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Security.Cryptography.Algorithms",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Security.Cryptography.X509Certificates",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.ServiceModel.Http",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "Needs to be replaced with Replace with new package CoreWCF.Primitives=1.9.1;CoreWCF.ConfigurationManager=1.9.1;CoreWCF.Http=1.9.1;CoreWCF.WebHttp=1.9.1;CoreWCF.NetTcp=1.9.1",
+        "versions": [
+          {
+            "version": "10.0.652802",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.ServiceModel.NetTcp",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "Needs to be replaced with Replace with new package CoreWCF.Primitives=1.9.1;CoreWCF.ConfigurationManager=1.9.1;CoreWCF.Http=1.9.1;CoreWCF.WebHttp=1.9.1;CoreWCF.NetTcp=1.9.1",
+        "versions": [
+          {
+            "version": "10.0.652802",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Text.Encoding",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Text.Encoding.Extensions",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Text.Json",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "10.0.10",
+        "isCompatible": true,
+        "description": "NuGet package upgrade is recommended",
+        "versions": [
+          {
+            "version": "10.0.7",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "10.0.10"
+        }
+      },
+      {
+        "name": "System.Text.RegularExpressions",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Threading",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Threading.Tasks",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Threading.Timer",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Xml.ReaderWriter",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "System.Xml.XDocument",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "NuGet package functionality is included with framework reference",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "TwitchLib.Api",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "3.10.2",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "TwitchLib.Client",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "4.0.1",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "TwitchLib.EventSub.Websockets",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "0.8.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      },
+      {
+        "name": "WPF-UI",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "2.0.3",
+        "isCompatible": false,
+        "description": "NuGet package is incompatible",
+        "versions": [
+          {
+            "version": "4.3.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": "2.0.3"
+        }
+      },
+      {
+        "name": "YamlDotNet",
+        "totalProjectCount": 1,
+        "distinctVersionCount": 1,
+        "recommendedVersion": "",
+        "isCompatible": true,
+        "description": "",
+        "versions": [
+          {
+            "version": "17.1.0",
+            "projects": [
+              "Songify Slim"
+            ],
+            "isRecommended": false
+          }
+        ],
+        "upgrade": {
+          "newVersion": ""
+        }
+      }
+    ]
+  },
+  "projects": [
+    {
+      "name": "Songify Slim",
+      "path": "Songify Slim\\Songify Slim.csproj",
+      "isSdk": false,
+      "currentFrameworks": [
+        "net48"
+      ],
+      "targetFramework": "net10.0",
+      "dependencies": {
+        "packages": [
+          {
+            "name": "Autoupdater.NET.Official",
+            "version": "1.9.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Common.Logging",
+            "version": "3.4.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "ControlzEx",
+            "version": "5.0.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Costura.Fody",
+            "version": "6.1.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "EmbedIO",
+            "version": "3.5.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Fody",
+            "version": "6.9.3",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "FuzzySharp",
+            "version": "2.0.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "HtmlAgilityPack",
+            "version": "1.12.4",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "LiveCharts",
+            "version": "0.9.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package is incompatible",
+            "compatibility": "newVersionNeeded",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "LiveCharts.Wpf",
+            "version": "0.9.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package is incompatible",
+            "compatibility": "newVersionNeeded",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "MahApps.Metro",
+            "version": "2.4.11",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "MahApps.Metro.IconPacks",
+            "version": "6.2.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package is incompatible",
+            "compatibility": "newVersionNeeded",
+            "recommendedVersion": "4.11.0",
+            "upgrade": {
+              "newVersion": "4.11.0"
+            }
+          },
+          {
+            "name": "Microsoft.CSharp",
+            "version": "4.7.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Microsoft.Extensions.Hosting",
+            "version": "10.0.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package upgrade is recommended",
+            "compatibility": "valid",
+            "recommendedVersion": "10.0.10",
+            "upgrade": {
+              "newVersion": "10.0.10"
+            }
+          },
+          {
+            "name": "Microsoft.Extensions.Hosting.Abstractions",
+            "version": "10.0.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package upgrade is recommended",
+            "compatibility": "valid",
+            "recommendedVersion": "10.0.10",
+            "upgrade": {
+              "newVersion": "10.0.10"
+            }
+          },
+          {
+            "name": "Microsoft.Extensions.Logging",
+            "version": "10.0.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package upgrade is recommended",
+            "compatibility": "valid",
+            "recommendedVersion": "10.0.10",
+            "upgrade": {
+              "newVersion": "10.0.10"
+            }
+          },
+          {
+            "name": "Microsoft.Extensions.Options",
+            "version": "10.0.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package upgrade is recommended",
+            "compatibility": "valid",
+            "recommendedVersion": "10.0.10",
+            "upgrade": {
+              "newVersion": "10.0.10"
+            }
+          },
+          {
+            "name": "Microsoft.NETCore.Platforms",
+            "version": "7.0.4",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Microsoft.Toolkit.Uwp.Notifications",
+            "version": "7.1.3",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Microsoft.Web.WebView2",
+            "version": "1.0.3912.50",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Microsoft.Win32.Primitives",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Microsoft.Xaml.Behaviors.Wpf",
+            "version": "1.1.142",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package is incompatible",
+            "compatibility": "newVersionNeeded",
+            "recommendedVersion": "1.1.39",
+            "upgrade": {
+              "newVersion": "1.1.39"
+            }
+          },
+          {
+            "name": "NETStandard.Library",
+            "version": "2.0.3",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "NHttp",
+            "version": "0.1.9",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package is incompatible",
+            "compatibility": "newVersionNeeded",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "Resource.Embedder",
+            "version": "2.2.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "SpotifyAPI.Web",
+            "version": "7.4.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "SpotifyAPI.Web.Auth",
+            "version": "7.4.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.AppContext",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Collections",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Collections.Concurrent",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Console",
+            "version": "4.3.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Diagnostics.Debug",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Diagnostics.Tools",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Diagnostics.Tracing",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Globalization",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Globalization.Calendars",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.IO.Compression",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.IO.Compression.ZipFile",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.IO.FileSystem",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Linq",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Linq.Expressions",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Net.Primitives",
+            "version": "4.3.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Net.Sockets",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.ObjectModel",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Reflection",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Reflection.Extensions",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Reflection.Primitives",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Resources.Extensions",
+            "version": "10.0.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package upgrade is recommended",
+            "compatibility": "valid",
+            "recommendedVersion": "10.0.10",
+            "upgrade": {
+              "newVersion": "10.0.10"
+            }
+          },
+          {
+            "name": "System.Resources.ResourceManager",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Runtime",
+            "version": "4.3.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Runtime.Extensions",
+            "version": "4.3.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Runtime.Handles",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Runtime.InteropServices",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Runtime.InteropServices.RuntimeInformation",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Runtime.Numerics",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Security.Cryptography.Algorithms",
+            "version": "4.3.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Security.Cryptography.X509Certificates",
+            "version": "4.3.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.ServiceModel.Http",
+            "version": "10.0.652802",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "Needs to be replaced with Replace with new package CoreWCF.Primitives=1.9.1;CoreWCF.ConfigurationManager=1.9.1;CoreWCF.Http=1.9.1;CoreWCF.WebHttp=1.9.1;CoreWCF.NetTcp=1.9.1",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.ServiceModel.NetTcp",
+            "version": "10.0.652802",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "Needs to be replaced with Replace with new package CoreWCF.Primitives=1.9.1;CoreWCF.ConfigurationManager=1.9.1;CoreWCF.Http=1.9.1;CoreWCF.WebHttp=1.9.1;CoreWCF.NetTcp=1.9.1",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Text.Encoding",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Text.Encoding.Extensions",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Text.Json",
+            "version": "10.0.7",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package upgrade is recommended",
+            "compatibility": "valid",
+            "recommendedVersion": "10.0.10",
+            "upgrade": {
+              "newVersion": "10.0.10"
+            }
+          },
+          {
+            "name": "System.Text.RegularExpressions",
+            "version": "4.3.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Threading",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Threading.Tasks",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Threading.Timer",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Xml.ReaderWriter",
+            "version": "4.3.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "System.Xml.XDocument",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package functionality is included with framework reference",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "TwitchLib.Api",
+            "version": "3.10.2",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "TwitchLib.Client",
+            "version": "4.0.1",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "TwitchLib.EventSub.Websockets",
+            "version": "0.8.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          },
+          {
+            "name": "WPF-UI",
+            "version": "4.3.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "NuGet package is incompatible",
+            "compatibility": "newVersionNeeded",
+            "recommendedVersion": "2.0.3",
+            "upgrade": {
+              "newVersion": "2.0.3"
+            }
+          },
+          {
+            "name": "YamlDotNet",
+            "version": "17.1.0",
+            "isTransitive": false,
+            "isGlobal": false,
+            "isImplicit": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "description": "",
+            "compatibility": "valid",
+            "recommendedVersion": ""
+          }
+        ],
+        "assemblies": [
+          {
+            "name": "Microsoft.Build.Framework",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\Microsoft.Build.Framework.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Build.Utilities.v4.0",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\Microsoft.Build.Utilities.v4.0.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.ComponentModel.Composition",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.ComponentModel.Composition.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.ComponentModel.DataAnnotations",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.ComponentModel.DataAnnotations.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Configuration",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Configuration.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Data",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Data.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Drawing",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Drawing.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.IdentityModel",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.IdentityModel.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.IO.Compression.FileSystem",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.IO.Compression.FileSystem.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Numerics",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Numerics.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Runtime.Serialization",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Runtime.Serialization.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Security",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Security.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.ServiceModel",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.ServiceModel.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Web",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Web.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Web.Extensions",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Web.Extensions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Windows.Forms",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Windows.Forms.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Xml",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Xml.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.CSharp",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\Microsoft.CSharp.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Core",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Core.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Xml.Linq",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Xml.Linq.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Data.DataSetExtensions",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Data.DataSetExtensions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Xaml",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\System.Xaml.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "UIAutomationClient",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\UIAutomationClient.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "UIAutomationTypes",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\UIAutomationTypes.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "WindowsBase",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\WindowsBase.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "PresentationCore",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\PresentationCore.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "PresentationFramework",
+            "version": "4.0.0.0",
+            "isTransitive": false,
+            "definedIn": [
+              {
+                "path": "Songify Slim\\Songify Slim.csproj"
+              }
+            ],
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\PresentationFramework.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "mscorlib",
+            "version": "4.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Program Files (x86)\\Reference Assemblies\\Microsoft\\Framework\\.NETFramework\\v4.8\\mscorlib.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "AutoUpdater.NET",
+            "version": "1.9.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\autoupdater.net.official\\1.9.2\\lib\\net462\\AutoUpdater.NET.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Common.Logging.Core",
+            "version": "3.4.1.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\common.logging.core\\3.4.1\\lib\\net40\\Common.Logging.Core.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Common.Logging",
+            "version": "3.4.1.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\common.logging\\3.4.1\\lib\\net40\\Common.Logging.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "ControlzEx",
+            "version": "5.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\controlzex\\5.0.2\\lib\\net462\\ControlzEx.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "EmbedIO",
+            "version": "3.5.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\embedio\\3.5.2\\lib\\netstandard2.0\\EmbedIO.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "FuzzySharp",
+            "version": "1.0.4.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\fuzzysharp\\2.0.2\\lib\\net461\\FuzzySharp.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "HtmlAgilityPack",
+            "version": "1.12.4.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\htmlagilitypack\\1.12.4\\lib\\Net45\\HtmlAgilityPack.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "LiveCharts",
+            "version": "0.9.7.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\livecharts\\0.9.7\\lib\\net45\\LiveCharts.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "LiveCharts.Wpf",
+            "version": "0.9.7.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\livecharts.wpf\\0.9.7\\lib\\net45\\LiveCharts.Wpf.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro",
+            "version": "2.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro\\2.4.11\\lib\\net47\\MahApps.Metro.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.BootstrapIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.bootstrapicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.BootstrapIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.BoxIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.boxicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.BoxIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.BoxIcons2",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.boxicons2\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.BoxIcons2.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.CircumIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.circumicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.CircumIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Codicons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.codicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Codicons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Coolicons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.coolicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Coolicons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Core",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.core\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Core.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Entypo",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.entypo\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Entypo.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.EvaIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.evaicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.EvaIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.FeatherIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.feathericons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.FeatherIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.FileIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.fileicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.FileIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Fontaudio",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.fontaudio\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Fontaudio.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.FontAwesome",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.fontawesome\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.FontAwesome.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.FontAwesome5",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.fontawesome5\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.FontAwesome5.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.FontAwesome6",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.fontawesome6\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.FontAwesome6.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Fontisto",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.fontisto\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Fontisto.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.ForkAwesome",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.forkawesome\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.ForkAwesome.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.GameIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.gameicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.GameIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Ionicons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.ionicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Ionicons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.JamIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.jamicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.JamIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.KeyruneIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.keyruneicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.KeyruneIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Lucide",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.lucide\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Lucide.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Material",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.material\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Material.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.MaterialDesign",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.materialdesign\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.MaterialDesign.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.MaterialLight",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.materiallight\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.MaterialLight.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.MemoryIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.memoryicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.MemoryIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Microns",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.microns\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Microns.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.MingCuteIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.mingcuteicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.MingCuteIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Modern",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.modern\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Modern.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.MynaUIIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.mynauiicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.MynaUIIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Octicons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.octicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Octicons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.PhosphorIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.phosphoricons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.PhosphorIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.PicolIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.picolicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.PicolIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.PixelartIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.pixelarticons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.PixelartIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.RadixIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.radixicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.RadixIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.RemixIcon",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.remixicon\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.RemixIcon.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.RPGAwesome",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.rpgawesome\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.RPGAwesome.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.SimpleIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.simpleicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.SimpleIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Typicons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.typicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Typicons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Unicons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.unicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Unicons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.VaadinIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.vaadinicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.VaadinIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.WeatherIcons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.weathericons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.WeatherIcons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "MahApps.Metro.IconPacks.Zondicons",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\mahapps.metro.iconpacks.zondicons\\6.2.1\\lib\\net47\\MahApps.Metro.IconPacks.Zondicons.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Bcl.AsyncInterfaces",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\10.0.5\\lib\\net462\\Microsoft.Bcl.AsyncInterfaces.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Bcl.HashCode",
+            "version": "6.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.bcl.hashcode\\6.0.0\\lib\\net462\\Microsoft.Bcl.HashCode.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration.Abstractions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration.abstractions\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.Abstractions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration.Binder",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration.binder\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.Binder.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration.CommandLine",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration.commandline\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.CommandLine.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration.EnvironmentVariables",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration.environmentvariables\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.EnvironmentVariables.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration.FileExtensions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration.fileextensions\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.FileExtensions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration.Json",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration.json\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.Json.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Configuration.UserSecrets",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.configuration.usersecrets\\10.0.5\\lib\\net462\\Microsoft.Extensions.Configuration.UserSecrets.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.DependencyInjection.Abstractions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\10.0.5\\lib\\net462\\Microsoft.Extensions.DependencyInjection.Abstractions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.DependencyInjection",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\10.0.5\\lib\\net462\\Microsoft.Extensions.DependencyInjection.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Diagnostics.Abstractions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.diagnostics.abstractions\\10.0.5\\lib\\net462\\Microsoft.Extensions.Diagnostics.Abstractions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Diagnostics",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.diagnostics\\10.0.5\\lib\\net462\\Microsoft.Extensions.Diagnostics.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.FileProviders.Abstractions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\10.0.5\\lib\\net462\\Microsoft.Extensions.FileProviders.Abstractions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.FileProviders.Physical",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.fileproviders.physical\\10.0.5\\lib\\net462\\Microsoft.Extensions.FileProviders.Physical.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.FileSystemGlobbing",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.filesystemglobbing\\10.0.5\\lib\\net462\\Microsoft.Extensions.FileSystemGlobbing.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Hosting.Abstractions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.hosting.abstractions\\10.0.5\\lib\\net462\\Microsoft.Extensions.Hosting.Abstractions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Hosting",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.hosting\\10.0.5\\lib\\net462\\Microsoft.Extensions.Hosting.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Logging.Abstractions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\10.0.5\\lib\\net462\\Microsoft.Extensions.Logging.Abstractions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Logging.Configuration",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.logging.configuration\\10.0.5\\lib\\net462\\Microsoft.Extensions.Logging.Configuration.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Logging.Console",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.logging.console\\10.0.5\\lib\\net462\\Microsoft.Extensions.Logging.Console.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Logging.Debug",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.logging.debug\\10.0.5\\lib\\net462\\Microsoft.Extensions.Logging.Debug.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Logging",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.logging\\10.0.5\\lib\\net462\\Microsoft.Extensions.Logging.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Logging.EventLog",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.logging.eventlog\\10.0.5\\lib\\net462\\Microsoft.Extensions.Logging.EventLog.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Logging.EventSource",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.logging.eventsource\\10.0.5\\lib\\net462\\Microsoft.Extensions.Logging.EventSource.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Options.ConfigurationExtensions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.options.configurationextensions\\10.0.5\\lib\\net462\\Microsoft.Extensions.Options.ConfigurationExtensions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Options",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.options\\10.0.5\\lib\\net462\\Microsoft.Extensions.Options.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Extensions.Primitives",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.extensions.primitives\\10.0.5\\lib\\net462\\Microsoft.Extensions.Primitives.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Toolkit.Uwp.Notifications",
+            "version": "7.1.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.toolkit.uwp.notifications\\7.1.3\\lib\\net461\\Microsoft.Toolkit.Uwp.Notifications.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Web.WebView2.Core",
+            "version": "1.0.3800.47",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.web.webview2\\1.0.3800.47\\lib\\net462\\Microsoft.Web.WebView2.Core.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Web.WebView2.WinForms",
+            "version": "1.0.3800.47",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.web.webview2\\1.0.3800.47\\lib\\net462\\Microsoft.Web.WebView2.WinForms.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Web.WebView2.Wpf",
+            "version": "1.0.3800.47",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.web.webview2\\1.0.3800.47\\lib\\net462\\Microsoft.Web.WebView2.Wpf.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Microsoft.Xaml.Behaviors",
+            "version": "1.1.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\microsoft.xaml.behaviors.wpf\\1.1.142\\lib\\net462\\Microsoft.Xaml.Behaviors.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Newtonsoft.Json",
+            "version": "13.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\newtonsoft.json\\13.0.4\\lib\\net45\\Newtonsoft.Json.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "NHttp",
+            "version": "0.1.9.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\nhttp\\0.1.9\\lib\\net20\\NHttp.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "SpotifyAPI.Web.Auth",
+            "version": "1.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\spotifyapi.web.auth\\7.4.2\\lib\\netstandard2.0\\SpotifyAPI.Web.Auth.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "SpotifyAPI.Web",
+            "version": "1.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\spotifyapi.web\\7.4.2\\lib\\netstandard2.0\\SpotifyAPI.Web.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Swan.Lite",
+            "version": "3.1.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\unosquare.swan.lite\\3.1.0\\lib\\net461\\Swan.Lite.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Buffers",
+            "version": "4.0.5.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.buffers\\4.6.1\\lib\\net462\\System.Buffers.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Collections.Immutable",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.collections.immutable\\10.0.5\\lib\\net462\\System.Collections.Immutable.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Diagnostics.DiagnosticSource",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.diagnostics.diagnosticsource\\10.0.5\\lib\\net462\\System.Diagnostics.DiagnosticSource.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Formats.Nrbf",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.formats.nrbf\\10.0.5\\lib\\net462\\System.Formats.Nrbf.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.IO.Pipelines",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.io.pipelines\\10.0.5\\lib\\net462\\System.IO.Pipelines.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Memory",
+            "version": "4.0.5.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.memory\\4.6.3\\lib\\net462\\System.Memory.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Numerics.Vectors",
+            "version": "4.1.6.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.numerics.vectors\\4.6.1\\lib\\net462\\System.Numerics.Vectors.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Reflection.Metadata",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.reflection.metadata\\10.0.5\\lib\\net462\\System.Reflection.Metadata.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Resources.Extensions",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.resources.extensions\\10.0.5\\lib\\net462\\System.Resources.Extensions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Runtime.CompilerServices.Unsafe",
+            "version": "6.0.3.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.runtime.compilerservices.unsafe\\6.1.2\\lib\\net462\\System.Runtime.CompilerServices.Unsafe.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.ServiceModel.Http",
+            "version": "10.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.servicemodel.http\\10.0.652802\\ref\\net462\\System.ServiceModel.Http.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.ServiceModel.NetTcp",
+            "version": "10.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.servicemodel.nettcp\\10.0.652802\\ref\\net462\\System.ServiceModel.NetTcp.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Text.Encodings.Web",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.text.encodings.web\\10.0.5\\lib\\net462\\System.Text.Encodings.Web.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Text.Json",
+            "version": "10.0.0.5",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.text.json\\10.0.5\\lib\\net462\\System.Text.Json.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "System.Threading.Tasks.Extensions",
+            "version": "4.2.4.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\system.threading.tasks.extensions\\4.6.3\\lib\\net462\\System.Threading.Tasks.Extensions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Api.Core",
+            "version": "3.10.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.api.core\\3.10.2\\lib\\netstandard2.0\\TwitchLib.Api.Core.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Api.Core.Enums",
+            "version": "3.10.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.api.core.enums\\3.10.2\\lib\\netstandard2.0\\TwitchLib.Api.Core.Enums.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Api.Core.Interfaces",
+            "version": "3.10.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.api.core.interfaces\\3.10.2\\lib\\netstandard2.0\\TwitchLib.Api.Core.Interfaces.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Api.Core.Models",
+            "version": "3.10.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.api.core.models\\3.10.2\\lib\\netstandard2.0\\TwitchLib.Api.Core.Models.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Api",
+            "version": "3.10.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.api\\3.10.2\\lib\\netstandard2.0\\TwitchLib.Api.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Api.Helix",
+            "version": "3.10.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.api.helix\\3.10.2\\lib\\netstandard2.0\\TwitchLib.Api.Helix.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Api.Helix.Models",
+            "version": "3.10.2.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.api.helix.models\\3.10.2\\lib\\netstandard2.0\\TwitchLib.Api.Helix.Models.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Client",
+            "version": "4.0.1.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.client\\4.0.1\\lib\\netstandard2.0\\TwitchLib.Client.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Client.Enums",
+            "version": "4.0.1.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.client.enums\\4.0.1\\lib\\netstandard2.0\\TwitchLib.Client.Enums.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Client.Models",
+            "version": "4.0.1.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.client.models\\4.0.1\\lib\\netstandard2.0\\TwitchLib.Client.Models.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.Communication",
+            "version": "2.0.1.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.communication\\2.0.1\\lib\\netstandard2.0\\TwitchLib.Communication.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.EventSub.Core",
+            "version": "3.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.eventsub.core\\3.0.0\\lib\\netstandard2.0\\TwitchLib.EventSub.Core.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "TwitchLib.EventSub.Websockets",
+            "version": "0.8.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\twitchlib.eventsub.websockets\\0.8.0\\lib\\netstandard2.0\\TwitchLib.EventSub.Websockets.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Wpf.Ui.Abstractions",
+            "version": "4.2.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\wpf-ui.abstractions\\4.2.0\\lib\\net462\\Wpf.Ui.Abstractions.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "Wpf.Ui",
+            "version": "4.2.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\wpf-ui\\4.2.0\\lib\\net472\\Wpf.Ui.dll",
+            "compatibility": "valid"
+          },
+          {
+            "name": "YamlDotNet",
+            "version": "16.0.0.0",
+            "isTransitive": true,
+            "physicalPath": "C:\\Users\\Jan\\.nuget\\packages\\yamldotnet\\16.3.0\\lib\\net47\\YamlDotNet.dll",
+            "compatibility": "valid"
+          }
+        ],
+        "projectReferences": [],
+        "frameworkReferences": []
+      }
+    }
+  ]
+}

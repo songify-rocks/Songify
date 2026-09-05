@@ -4,6 +4,8 @@ Connect to the local WebSocket URL (see [Web server and API](Web-server-and-API)
 
 `ws://127.0.0.1:<port>/`
 
+If **Require WebSocket password** is on, use `ws://127.0.0.1:<port>/?password=...` (the handshake is rejected without it).
+
 Send **raw JSON** with an `"action"` key and optional `"data"` object.
 
 ---

@@ -20,6 +20,7 @@ public static class SpotifyUserNotifier
 {
     private static readonly object Gate = new();
     private static readonly Dictionary<string, DateTimeOffset> LastShownByKey = new(StringComparer.Ordinal);
+    private static readonly HashSet<string> SessionDismissedDedupKeys = new(StringComparer.Ordinal);
 
     /// <summary>
     /// After any operational error toast (unauthorized / API / unexpected), suppress further
@@ -97,6 +98,9 @@ public static class SpotifyUserNotifier
         DateTime nowUtc = DateTime.UtcNow;
         UpsertOperationalIssue(title, body, issueKind, dedupKind, nowUtc, expiresAtUtc);
 
+        if (IsDismissedThisSession(dedupKind, issueKind))
+            return;
+
         if (TryClaimToastSlot(throttleKey, perCategoryInterval ?? TimeSpan.FromMinutes(3), operational: true))
             ShowToastOnUiThread(title, body);
     }
@@ -169,8 +173,10 @@ public static class SpotifyUserNotifier
         List<SpotifyPersistentIssue> list = new(Settings.SpotifyPersistentIssues ?? new List<SpotifyPersistentIssue>());
 
         DateTime nowUtc = DateTime.UtcNow;
-        list = list.Where(x => x != null && !x.IsStale(nowUtc)).ToList();
+        // Keep dismissed-this-session rows so the next API error does not recreate the banner.
+        list = list.Where(x => x != null && !x.IsExpired(nowUtc)).ToList();
 
+        bool sessionDismissed = IsDismissedThisSession(dedup, issue.Kind);
         int existingIndex = list.FindIndex(x => string.Equals(x.DedupKey, dedup, StringComparison.Ordinal));
         if (existingIndex >= 0)
         {
@@ -178,16 +184,18 @@ public static class SpotifyUserNotifier
             existing.Title = issue.Title ?? existing.Title;
             existing.Body = ComposeBodyWithCount(issue.Body ?? existing.Body, existing.OccurrenceCount + 1);
             existing.Kind = issue.Kind ?? existing.Kind;
-            existing.OccurrenceCount = existing.OccurrenceCount + 1;
+            existing.OccurrenceCount += 1;
             existing.LastSeenAtUtc = issue.LastSeenAtUtc != default ? issue.LastSeenAtUtc : nowUtc;
             existing.RetryUntilUtc = issue.RetryUntilUtc ?? existing.RetryUntilUtc;
             existing.ExpiresAtUtc = issue.ExpiresAtUtc ?? existing.ExpiresAtUtc;
-            existing.Dismissed = false;
+            // New process: empty session set, so a recurring error may show once more after restart.
+            existing.Dismissed = sessionDismissed;
             list[existingIndex] = existing;
         }
         else
         {
             issue.Body = ComposeBodyWithCount(issue.Body, issue.OccurrenceCount);
+            issue.Dismissed = sessionDismissed;
             list.Insert(0, issue);
         }
 
@@ -196,7 +204,8 @@ public static class SpotifyUserNotifier
             list = list.Take(max).ToList();
 
         Settings.SpotifyPersistentIssues = list;
-        PersistentIssuesChanged?.Invoke(list);
+        if (!sessionDismissed)
+            PersistentIssuesChanged?.Invoke(list);
     }
 
     public static void DismissPersistentIssue(string issueId)
@@ -210,6 +219,7 @@ public static class SpotifyUserNotifier
             return;
 
         item.Dismissed = true;
+        RememberSessionDismiss(item);
         Settings.SpotifyPersistentIssues = list;
         PersistentIssuesChanged?.Invoke(list);
     }
@@ -225,7 +235,7 @@ public static class SpotifyUserNotifier
 
         List<SpotifyPersistentIssue> list = new(Settings.SpotifyPersistentIssues ?? new List<SpotifyPersistentIssue>());
         DateTime nowUtc = DateTime.UtcNow;
-        list = list.Where(x => x != null && !x.IsStale(nowUtc) && !set.Contains(x.Kind ?? "")).ToList();
+        list = list.Where(x => x != null && !x.IsExpired(nowUtc) && !set.Contains(x.Kind ?? "")).ToList();
         Settings.SpotifyPersistentIssues = list;
         PersistentIssuesChanged?.Invoke(list);
     }
@@ -257,6 +267,33 @@ public static class SpotifyUserNotifier
         catch
         {
             // ignored
+        }
+    }
+
+    private static bool IsDismissedThisSession(string dedupKey, string issueKind)
+    {
+        lock (Gate)
+        {
+            if (!string.IsNullOrWhiteSpace(dedupKey) && SessionDismissedDedupKeys.Contains(dedupKey.Trim()))
+                return true;
+            if (!string.IsNullOrWhiteSpace(issueKind) && SessionDismissedDedupKeys.Contains(issueKind.Trim()))
+                return true;
+            return false;
+        }
+    }
+
+    private static void RememberSessionDismiss(SpotifyPersistentIssue item)
+    {
+        if (item == null)
+            return;
+
+        lock (Gate)
+        {
+            string dedup = !string.IsNullOrWhiteSpace(item.DedupKey)
+                ? item.DedupKey.Trim()
+                : ComputeDedupKey(item);
+            if (!string.IsNullOrWhiteSpace(dedup))
+                SessionDismissedDedupKeys.Add(dedup);
         }
     }
 
@@ -387,22 +424,42 @@ public static class SpotifyUserNotifier
         }
     }
 
+    internal static string GetResponseBodyText(APIException ex)
+    {
+        if (ex?.Response?.Body == null)
+            return "";
+
+        return ex.Response.Body is string s
+            ? s
+            : ex.Response.Body.ToString() ?? "";
+    }
+
+    internal static bool IsAppOwnerPremiumRequired(APIException ex)
+    {
+        if (ex?.Response?.StatusCode != HttpStatusCode.Forbidden)
+            return false;
+
+        string blob = $"{ex.Message}\n{GetResponseBodyText(ex)}";
+        return blob.Contains("owner of the app", StringComparison.OrdinalIgnoreCase)
+               || blob.Contains("Active premium subscription required", StringComparison.OrdinalIgnoreCase);
+    }
+
     internal static string FormatApiErrorBody(APIException ex)
     {
-        if (ex?.Response == null)
-            return ex?.Message ?? "";
+        string bodyText = GetResponseBodyText(ex).Trim();
+        bool genericMessage = string.IsNullOrWhiteSpace(ex?.Message)
+            || ex.Message.Contains("APIException", StringComparison.Ordinal);
 
-        try
-        {
-            if (ex.Response.StatusCode != 0)
-                return $"{(int)ex.Response.StatusCode} {ex.Response.StatusCode}: {ex.Message}";
-        }
-        catch
-        {
-            // ignored
-        }
+        string detail = !string.IsNullOrWhiteSpace(bodyText) && (genericMessage || bodyText.Length > (ex.Message?.Length ?? 0))
+            ? bodyText
+            : (ex?.Message ?? "");
 
-        return ex.Message;
+        if (ex?.Response != null && ex.Response.StatusCode != 0)
+            return string.IsNullOrWhiteSpace(detail)
+                ? $"{(int)ex.Response.StatusCode} {ex.Response.StatusCode}"
+                : $"{(int)ex.Response.StatusCode} {ex.Response.StatusCode}: {detail}";
+
+        return detail;
     }
 
     internal static bool ShouldThrottleApiException(string requestKey, APIException ex, out int? statusCode)
@@ -468,6 +525,26 @@ public static class SpotifyUserNotifier
             perCategoryInterval: TimeSpan.FromMinutes(3),
             expiresAtUtc: DateTime.UtcNow.AddHours(2));
     }
+
+    internal static void NotifyAppOwnerPremiumRequired()
+    {
+        string title = Loc("window_main_spotify_app_owner_premium_title",
+            "Spotify API app needs Premium");
+        string body = Loc("window_main_spotify_app_owner_premium_body",
+            "Spotify requires the owner of your API app (the account on developer.spotify.com that created the Client ID) to have an active Spotify Premium subscription.\n\nThis is not Songify Premium, and not the Spotify account linked in Songify for playback. Subscribe that dashboard account to Premium, then wait a few hours — Spotify says access can lag after the subscription changes.");
+
+        NotifyOperational(
+            title,
+            body,
+            throttleKey: "spotify:app-owner-premium",
+            issueKind: "app_owner_premium",
+            dedupKind: "app_owner_premium",
+            perCategoryInterval: TimeSpan.FromMinutes(10),
+            expiresAtUtc: DateTime.UtcNow.AddDays(1));
+    }
+
+    private static string Loc(string key, string fallback)
+        => Application.Current?.TryFindResource(key) as string ?? fallback;
 
     internal static void NotifyUnauthorized(string requestKey)
     {

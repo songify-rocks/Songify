@@ -1,5 +1,6 @@
-﻿using LiveCharts;
-using LiveCharts.Wpf;
+﻿using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Configuration;
 using System;
@@ -10,7 +11,9 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
 using System.Windows.Threading;
+using SkiaSharp;
 using static Songify_Slim.Util.General.Enums;
+using LiveChartsCore.SkiaSharpView.WPF;
 
 namespace Songify_Slim.Views
 {
@@ -44,13 +47,15 @@ namespace Songify_Slim.Views
         // DataGrid
         public ObservableCollection<ApiMetricsRow> Rows { get; } = new ObservableCollection<ApiMetricsRow>();
 
-        // Chart
-        public SeriesCollection SeriesCollection { get; } = new SeriesCollection();
+        // Chart - LiveChartsCore v2 API
+        public ObservableCollection<ISeries> SeriesCollection { get; } = new ObservableCollection<ISeries>();
+        public Axis[] XAxes { get; }
+        public Axis[] YAxes { get; }
 
         private readonly DispatcherTimer _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
 
-        private readonly Dictionary<string, ChartValues<int>> _valuesByKey = new Dictionary<string, ChartValues<int>>();
-        private readonly Dictionary<string, LineSeries> _seriesByKey = new Dictionary<string, LineSeries>();
+        private readonly Dictionary<string, ObservableCollection<int>> _valuesByKey = new Dictionary<string, ObservableCollection<int>>();
+        private readonly Dictionary<string, LineSeries<int>> _seriesByKey = new Dictionary<string, LineSeries<int>>();
 
         private int _totalRequestsPerMinute;
 
@@ -69,28 +74,46 @@ namespace Songify_Slim.Views
         }
 
         // Color palette similar to your OxyPlot palette
-        private static readonly Color[] Palette =
+        private static readonly SKColor[] Palette =
         {
-            Color.FromRgb(156, 220, 254),
-            Color.FromRgb(86, 156, 214),
-            Color.FromRgb(181, 206, 168),
-            Color.FromRgb(197, 134, 192),
-            Color.FromRgb(224, 108, 117),
-            Color.FromRgb(229, 192, 123)
+            new SKColor(156, 220, 254),
+            new SKColor(86, 156, 214),
+            new SKColor(181, 206, 168),
+            new SKColor(197, 134, 192),
+            new SKColor(224, 108, 117),
+            new SKColor(229, 192, 123)
         };
 
         private int _colorIndex = 0;
 
-        private Brush NextStroke()
+        private SolidColorPaint NextStroke()
         {
             var c = Palette[_colorIndex++ % Palette.Length];
-            var b = new SolidColorBrush(c);
-            b.Freeze();
-            return b;
+            return new SolidColorPaint(c) { StrokeThickness = 2 };
         }
 
         public ApiMetricsVm()
         {
+            // Configure axes
+            XAxes = new[]
+            {
+                new Axis
+                {
+                    MinLimit = 0,
+                    MaxLimit = 59,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray)
+                }
+            };
+
+            YAxes = new[]
+            {
+                new Axis
+                {
+                    MinLimit = 0,
+                    LabelsPaint = new SolidColorPaint(SKColors.Gray)
+                }
+            };
+
             _timer.Tick += (_, __) => Refresh();
             _timer.Start();
 
@@ -144,28 +167,25 @@ namespace Songify_Slim.Views
             if (totalRow == null) Rows.Add(new ApiMetricsRow { Key = "TOTAL", RequestsPerMinute = total });
             else totalRow.RequestsPerMinute = total;
 
-            // ----- Chart series -----
+            // ----- Chart series (LiveChartsCore v2) -----
             foreach (var kv in snapshot.Where(k => k.Key != "TOTAL"))
             {
                 if (!_valuesByKey.TryGetValue(kv.Key, out var values))
                 {
-                    values = new ChartValues<int>();
+                    values = new ObservableCollection<int>();
                     _valuesByKey[kv.Key] = values;
 
                     // Prefill so the series starts flat and the chart looks stable immediately
                     for (int i = 0; i < Capacity; i++) values.Add(0);
 
-                    var series = new LineSeries
+                    var series = new LineSeries<int>
                     {
-                        Title = kv.Key,
+                        Name = kv.Key,
                         Values = values,
-                        PointGeometry = null,
+                        GeometrySize = 0, // No points
                         LineSmoothness = 0,
-                        StrokeThickness = 2,
                         Stroke = NextStroke(),
-                        Fill = Brushes.Transparent,
-                        DataLabels = false,
-                        IsHitTestVisible = true
+                        Fill = null
                     };
 
                     _seriesByKey[kv.Key] = series;
@@ -197,4 +217,5 @@ namespace Songify_Slim.Views
         private void OnPropertyChanged([CallerMemberName] string p = null)
             => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(p));
     }
+
 }

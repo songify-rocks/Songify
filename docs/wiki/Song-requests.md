@@ -2,6 +2,12 @@
 
 Viewers can request songs via **Twitch channel points** and/or **chat commands** (depending on your settings). Playback and queue rules use **Spotify** when Songify is in Spotify mode.
 
+**Getting started** (first launch, Home, or Help) asks whether you want channel points, commands, or both, lets you **create or select** song-request rewards, and sets who can redeem plus a queue limit.
+
+Refunds for failed requests only work when the channel-point reward was **created in Songify**. Rewards created in the Twitch dashboard cannot be cancelled by Songify. Tune refund conditions later under **Settings → Rewards**.
+
+User levels, per-badge queue limits, and cooldowns live under **Settings → Song requests**. Chat command triggers and who may use `!ssr` live under **Settings → Commands**.
+
 ---
 
 ## Requirements

@@ -62,7 +62,7 @@ See [Spotify setup](Spotify-setup).
 ### Web server won’t start
 
 - Pick a different **port** (another app may be using it).
-- On Windows, check that **Songify** is allowed through the firewall if you access it from another device.
+- For another device on the LAN: run Songify as administrator (it binds the LAN IP and adds a TCP firewall rule for the port). Localhost does not need a firewall rule.
 
 ---
 

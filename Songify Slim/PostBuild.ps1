@@ -1,56 +1,74 @@
-# Define paths
-$releaseDir = "$PSScriptRoot\bin\Release\app.publish"
-$runtimeDir = "$PSScriptRoot\bin\Release\runtimes"
-$zipFilePath = "$releaseDir\Songify.zip"
-$exeFilePath = "$releaseDir\Songify.exe"
+param(
+    [string]$PublishDir = ""
+)
 
-# Only run post-build tasks when Release publish output exists
-if (-not (Test-Path -Path $releaseDir)) {
+$ErrorActionPreference = "Stop"
+
+if ([string]::IsNullOrWhiteSpace($PublishDir)) {
+    $candidates = @(
+        "$PSScriptRoot\bin\Release\net10.0-windows10.0.19041.0\publish\win-x86",
+        "$PSScriptRoot\bin\Release\net10.0-windows10.0.19041.0\publish\win-x64",
+        "$PSScriptRoot\bin\Release\app.publish"
+    )
+    $PublishDir = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+}
+
+if (-not [System.IO.Path]::IsPathRooted($PublishDir)) {
+    $PublishDir = Join-Path $PSScriptRoot $PublishDir
+}
+
+$PublishDir = [System.IO.Path]::GetFullPath($PublishDir)
+$zipFilePath = Join-Path $PublishDir "Songify.zip"
+$exeFilePath = Join-Path $PublishDir "Songify.exe"
+
+if (-not (Test-Path -Path $PublishDir)) {
+    Write-Host "Publish directory not found, skipping package: $PublishDir"
     exit 0
 }
 
-# Copy runtimes folder to the release directory (if it exists)
-if (Test-Path -Path $runtimeDir) {
-    Copy-Item -Path "$runtimeDir" -Destination "$releaseDir" -Recurse -ErrorAction SilentlyContinue
+if (-not (Test-Path -Path $exeFilePath)) {
+    Write-Error "Executable not found: $exeFilePath"
+    exit 1
 }
 
-# Step 1: Zip the app.publish folder
+$itemsToZip = Get-ChildItem -Path $PublishDir -Force | Where-Object {
+    $_.Name -ne "Songify.zip" -and
+    $_.Extension -ne ".zip" -and
+    $_.Name -ne "checksums.txt" -and
+    $_.Name -notlike "update*.xml"
+}
+
+if (-not $itemsToZip) {
+    Write-Error "Nothing to zip in $PublishDir"
+    exit 1
+}
+
 if (Test-Path -Path $zipFilePath) {
     Remove-Item -Path $zipFilePath -Force
 }
 
 try {
-    Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipFilePath -ErrorAction Stop
+    Compress-Archive -Path $itemsToZip.FullName -DestinationPath $zipFilePath -Force -ErrorAction Stop
 }
 catch {
     Write-Error "Failed to create zip archive: $zipFilePath. $($_.Exception.Message)"
     exit 1
 }
 
-# Verify zip file was created before proceeding
 if (-not (Test-Path -Path $zipFilePath)) {
     Write-Error "Zip file was not created: $zipFilePath"
     exit 1
 }
 
-# Step 2: Calculate checksums for the zip file
 $zipMD5 = (Get-FileHash -Algorithm MD5 -Path $zipFilePath).Hash
 $zipSHA1 = (Get-FileHash -Algorithm SHA1 -Path $zipFilePath).Hash
 $zipSHA256 = (Get-FileHash -Algorithm SHA256 -Path $zipFilePath).Hash
-
-# Step 3: Calculate checksums for the exe file (if it exists)
-if (-not (Test-Path -Path $exeFilePath)) {
-    Write-Error "Executable not found: $exeFilePath"
-    exit 1
-}
 
 $exeMD5 = (Get-FileHash -Algorithm MD5 -Path $exeFilePath).Hash
 $exeSHA1 = (Get-FileHash -Algorithm SHA1 -Path $exeFilePath).Hash
 $exeSHA256 = (Get-FileHash -Algorithm SHA256 -Path $exeFilePath).Hash
 
-# Step 4: Output the checksums to a text file
-$checksumFilePath = "$releaseDir\checksums.txt"
-
+$checksumFilePath = Join-Path $PublishDir "checksums.txt"
 @"
 Songify.zip:
 MD5:    $zipMD5
@@ -61,14 +79,10 @@ Songify.exe:
 MD5:    $exeMD5
 SHA1:   $exeSHA1
 SHA256: $exeSHA256
-"@ | Set-Content -Path $checksumFilePath
+"@ | Set-Content -Path $checksumFilePath -Encoding utf8
 
-# Step 5: Extract version from exe
 $exeVersion = (Get-Item $exeFilePath).VersionInfo.ProductVersion
-
-# Step 6: Create the update-beta.xml file
-$updateXmlPath = "$releaseDir\update-beta.xml"
-
+$updateXmlPath = Join-Path $PublishDir "update-beta.xml"
 @"
 <?xml version="1.0" encoding="UTF-8"?>
 <item>
@@ -77,4 +91,8 @@ $updateXmlPath = "$releaseDir\update-beta.xml"
     <checksum algorithm="MD5">$zipMD5</checksum>
     <mandatory>true</mandatory>
 </item>
-"@ | Set-Content -Path $updateXmlPath
+"@ | Set-Content -Path $updateXmlPath -Encoding utf8
+
+Write-Host "Packaged $zipFilePath"
+Write-Host "Wrote $checksumFilePath"
+Write-Host "Wrote $updateXmlPath"

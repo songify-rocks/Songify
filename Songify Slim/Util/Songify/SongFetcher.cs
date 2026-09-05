@@ -11,7 +11,6 @@ using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.Pear;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Http;
 using Swan.Formatters;
@@ -29,11 +28,9 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows;
 using System.Windows.Automation;
 using System.Windows.Threading;
-using System.Xml.Linq;
 using Windows.Media.Control;
 using Windows.Storage.Streams;
 using Image = SpotifyAPI.Web.Image;
@@ -48,17 +45,10 @@ namespace Songify_Slim.Util.Songify
         public string DisplayName { get; set; }
     }
 
-    /// <summary>
-    ///     This class is for retrieving data of currently playing songs
-    /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public class SongFetcher
     {
-        private const char WindowsMediaSessionRecordSeparator = '\u001e';
-        private const string WindowsMediaSessionNoAumidPrefix = "\u0001noaumid\u001e";
-
-        private YoutubeData currentYoutubeData = new();
-        private int fetchCounter = 0;
+        private YoutubeData _currentYoutubeData = new();
+        private int _fetchCounter = 0;
 
         private static readonly List<string> AudioFileTypes =
         [
@@ -73,7 +63,7 @@ namespace Songify_Slim.Util.Songify
         private static bool _isLocalTrack;
         private static Tuple<bool, string> _canvasResponse;
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
-        private PlaylistInfo playbackPlaylist = null;
+        private PlaylistInfo _playbackPlaylist = null;
 
         /// <summary>
         /// Consecutive Spotify pulls where playback is paused or absent.
@@ -115,7 +105,7 @@ namespace Songify_Slim.Util.Songify
 
         private int _windowsPlaybackComRetryCount = 0;
         private long _windowsPlaybackThumbnailBytesTotal = 0L;
-        private Stopwatch _windowsPlaybackLastMetricsReset = Stopwatch.StartNew();
+        private readonly Stopwatch _windowsPlaybackLastMetricsReset = Stopwatch.StartNew();
         private const int MetricsReportIntervalMs = 60000; // Report every 60 seconds
 
         // Signature of the last thumbnail used, for change detection on track transitions.
@@ -345,17 +335,13 @@ namespace Songify_Slim.Util.Songify
                 // if error occurs write text to the status asynchronous
                 Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading Song information";
+                    AppShellBridge.Current?.SetStatusText("Error uploading Song information");
                 }));
             }
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.ImgCover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    main.SetTextPreview(output);
-                }));
+                AppShellBridge.Current?.SetTextPreview(output);
             });
         }
 
@@ -370,8 +356,7 @@ namespace Songify_Slim.Util.Songify
                     // read the text file
                     if (!File.Exists(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"))) File.Create(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt")).Close();
                     IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.CustomPauseText);
-                    if (Settings.DownloadCover &&
-                        (Settings.PauseOption == Enums.PauseOptions.PauseText))
+                    if (Settings.PauseOption == Enums.PauseOptions.PauseText)
                         await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     if (Settings.SplitOutput) IoManager.WriteSplitOutput(Settings.CustomPauseText, "", "");
                     await SongifyService.UploadSong(BuildSongUploadPayload(
@@ -386,16 +371,15 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MainWindow main = Application.Current.MainWindow as MainWindow;
-                        main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
-                            main.SetTextPreview(Settings.CustomPauseText);
-                        }));
+                            AppShellBridge.Current?.SetTextPreview(Settings.CustomPauseText);
+                        });
                     });
                     break;
 
                 case Enums.PauseOptions.ClearAll:
-                    if (Settings.DownloadCover && (Settings.PauseOption == Enums.PauseOptions.ClearAll)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                    await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                     IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), "");
                     if (Settings.SplitOutput) IoManager.WriteSplitOutput("", "", "");
                     await SongifyService.UploadSong(BuildSongUploadPayload(
@@ -410,11 +394,10 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.CurrentSong = new TrackInfo();
                     Application.Current.Dispatcher.Invoke(() =>
                     {
-                        MainWindow main = Application.Current.MainWindow as MainWindow;
-                        main?.TxtblockLiveoutput.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                        Application.Current.Dispatcher.Invoke(() =>
                         {
-                            main.SetTextPreview("");
-                        }));
+                            AppShellBridge.Current?.SetTextPreview("");
+                        });
                     });
                     break;
 
@@ -429,14 +412,14 @@ namespace Songify_Slim.Util.Songify
             if (ytData == null)
                 return;
 
-            if (ytData.Hash == currentYoutubeData.Hash)
+            if (ytData.Hash == _currentYoutubeData.Hash)
                 return;
 
-            Logger.Info(LogSource.Core, $"Previous Song {currentYoutubeData.Artist} - {currentYoutubeData.Title}");
+            Logger.Info(LogSource.Core, $"Previous Song {_currentYoutubeData.Artist} - {_currentYoutubeData.Title}");
 
             Logger.Info(LogSource.Core, $"Now Playing {ytData.Artist} - {ytData.Title}");
 
-            currentYoutubeData = ytData;
+            _currentYoutubeData = ytData;
 
             TrackInfo songInfo = new()
             {
@@ -601,7 +584,7 @@ namespace Songify_Slim.Util.Songify
             {
                 return;
             }
-            songInfo.Playlist = playbackPlaylist;
+            songInfo.Playlist = _playbackPlaylist;
             if (GlobalObjects.CurrentSong != null && songInfo.IsPlaying != GlobalObjects.CurrentSong.IsPlaying)
             {
                 GlobalObjects.ForceUpdate = true;
@@ -641,8 +624,8 @@ namespace Songify_Slim.Util.Songify
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
 
                     // Get Playlist info for current song if available
-                    playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
-                    songInfo.Playlist = playbackPlaylist;
+                    _playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
+                    songInfo.Playlist = _playbackPlaylist;
                     GlobalObjects.CurrentSong = songInfo;
                     _canvasResponse = await CanvasService.GetCanvasAsync(songInfo.SongId);
                     GlobalObjects.Canvas = songInfo.SongId != null ? _canvasResponse : new Tuple<bool, string>(false, "");
@@ -663,7 +646,6 @@ namespace Songify_Slim.Util.Songify
                         dynamic payload = new
                         {
                             uuid = Settings.Uuid,
-                            key = Settings.AccessKey,
                             queueid = current.Queueid,
                         };
                         await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
@@ -683,17 +665,6 @@ namespace Songify_Slim.Util.Songify
                         } while (GlobalObjects.ReqList.Contains(previous));
 
                         Logger.Info(LogSource.Core, $"Removed {previous.Artist} - {previous.Title} requested by {previous.Requester} from the queue.");
-
-                        Application.Current.Dispatcher.Invoke(() =>
-                                        {
-                                            foreach (Window window in Application.Current.Windows)
-                                            {
-                                                if (window.GetType() != typeof(WindowQueue))
-                                                    continue;
-                                                //(qw as Window_Queue).dgv_Queue.ItemsSource.
-                                                (window as WindowQueue)?.dgv_Queue.Items.Refresh();
-                                            }
-                                        });
                     }
                 }
 
@@ -702,22 +673,25 @@ namespace Songify_Slim.Util.Songify
                     GlobalObjects.ForceUpdate = true;
                 }
 
+                // Always keep playback clock in sync (same track pause/resume/seek).
+                // Overview and overlays interpolate between polls from these fields.
                 GlobalObjects.CurrentSong.IsPlaying = songInfo.IsPlaying;
+                GlobalObjects.CurrentSong.Progress = songInfo.Progress;
+                GlobalObjects.CurrentSong.DurationMs = songInfo.DurationMs;
+                GlobalObjects.CurrentSong.DurationTotal = songInfo.DurationTotal;
+                GlobalObjects.CurrentSong.DurationPercentage = songInfo.DurationPercentage;
 
                 if (_trackChanged || GlobalObjects.ForceUpdate)
                 {
                     _trackChanged = false;
                     GlobalObjects.ForceUpdate = false;
-                    if (songInfo.SongId != null && !string.IsNullOrEmpty(Settings.SpotifyPlaylistId.PlaylistId))
+                    if (songInfo.SongId != null)
                     {
-                        //GlobalObjects.IsInPlaylist = await CheckInLikedPlaylist(GlobalObjects.CurrentSong);
                         await QueueService.CleanupServerQueueAsync();
                     }
 
-                    await GlobalObjects.QueueUpdateQueueWindow();
-
-                    // Insert the Logic from mainwindow's WriteSong method here since it's easier to handel the song info here
                     await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify);
+                    await GlobalObjects.QueueUpdateQueueWindow();
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
                 }
 
@@ -832,8 +806,8 @@ namespace Songify_Slim.Util.Songify
         }
 
         private static GlobalSystemMediaTransportControlsSession PickWindowsMediaSession(
-            GlobalSystemMediaTransportControlsSessionManager mgr,
-            string targetAumid)
+                    GlobalSystemMediaTransportControlsSessionManager mgr,
+                    string targetAumid)
         {
             if (string.IsNullOrWhiteSpace(targetAumid))
                 return mgr.GetCurrentSession();
@@ -1081,7 +1055,6 @@ namespace Songify_Slim.Util.Songify
             return new SongUploadPayload
             {
                 uuid = Settings.Uuid,
-                key = Settings.AccessKey,
                 song = song,
                 cover = cover,
                 song_id = songId,
@@ -1128,7 +1101,7 @@ namespace Songify_Slim.Util.Songify
                         IoManager.WriteOutput(Path.Combine(GlobalObjects.RootDirectory, "Songify.txt"), Settings.CustomPauseText);
                         if (!Settings.KeepAlbumCover)
                         {
-                            if (Settings.DownloadCover && (Settings.PauseOption == Enums.PauseOptions.PauseText)) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                            await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                             if (Settings.DownloadCanvas && Settings.PauseOption == Enums.PauseOptions.PauseText)
                             {
                                 IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
@@ -1149,18 +1122,17 @@ namespace Songify_Slim.Util.Songify
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            MainWindow main = Application.Current.MainWindow as MainWindow;
-                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                main.SetTextPreview(Settings.CustomPauseText);
-                            }));
+                                AppShellBridge.Current?.SetTextPreview(Settings.CustomPauseText);
+                            });
                         });
                         return;
 
                     case Enums.PauseOptions.ClearAll:
                         if (!Settings.KeepAlbumCover)
                         {
-                            if (Settings.DownloadCover && Settings.PauseOption == Enums.PauseOptions.ClearAll) await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
+                            await IoManager.DownloadCover(null, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
                             if (Settings.DownloadCanvas && Settings.PauseOption == Enums.PauseOptions.ClearAll)
                             {
                                 IoManager.DownloadCanvas(null, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
@@ -1181,11 +1153,10 @@ namespace Songify_Slim.Util.Songify
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            MainWindow main = Application.Current.MainWindow as MainWindow;
-                            main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                            Application.Current.Dispatcher.Invoke(() =>
                             {
-                                main.SetTextPreview("");
-                            }));
+                                AppShellBridge.Current?.SetTextPreview("");
+                            });
                         });
                         return;
 
@@ -1336,69 +1307,17 @@ namespace Songify_Slim.Util.Songify
                 // if error occurs write text to the status asynchronous
                 Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
                 {
-                    ((MainWindow)Application.Current.MainWindow).LblStatus.Content = "Error uploading Song information";
+                    AppShellBridge.Current?.SetStatusText("Error uploading Song information");
                 }));
             }
 
-            //Write History
+            // Write local history (YAML, date-grouped)
             string historySongOutput = $"{songInfo.Artists} - {songInfo.Title}";
             if (Settings.SaveHistory && !string.IsNullOrEmpty(historySongOutput) &&
                 historySongOutput.Trim() != Settings.CustomPauseText)
             {
                 int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-
-                //save the history file
-                string historyPath = Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location) + "/" +
-                                     "history.shr";
-                XDocument doc;
-                if (!File.Exists(historyPath))
-                {
-                    doc = new XDocument(new XElement("History",
-                        new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy"))));
-                    doc.Save(historyPath);
-                }
-
-                doc = XDocument.Load(historyPath);
-                if (!doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).Any())
-                    doc.Descendants("History").FirstOrDefault()
-                        ?.Add(new XElement("d_" + DateTime.Now.ToString("dd.MM.yyyy")));
-
-                XElement elem = new("Song", historySongOutput);
-                elem.Add(new XAttribute("Time", unixTimestamp));
-                XElement x = doc.Descendants("d_" + DateTime.Now.ToString("dd.MM.yyyy")).FirstOrDefault();
-                XNode lastNode = x?.LastNode;
-                if (lastNode != null)
-                {
-                    if (historySongOutput != ((XElement)lastNode).Value)
-                        x.Add(elem);
-                }
-                else
-                {
-                    x?.Add(elem);
-                }
-                doc.Save(historyPath);
-            }
-
-            //Upload History
-            if (Settings.UploadHistory && !string.IsNullOrEmpty(currentSongOutput.Trim()) &&
-                currentSongOutput.Trim() != Settings.CustomPauseText)
-            {
-                int unixTimestamp = (int)DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
-
-                // Upload Song
-                try
-                {
-                    await SongifyService.UploadHistory(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "), unixTimestamp);
-                }
-                catch (Exception ex)
-                {
-                    Logger.LogExc(ex);
-                    // Writing to the statusstrip label
-                    Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        (((MainWindow)Application.Current.MainWindow)!).LblStatus.Content = "Error uploading history";
-                    }));
-                }
+                HistoryStore.AppendSong(historySongOutput.Trim(), unixTimestamp);
             }
 
             // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
@@ -1407,35 +1326,31 @@ namespace Songify_Slim.Util.Songify
             // Send Message to Twitch if checked
             if (Settings.AnnounceInChat)
             {
-                TwitchHandler.SendCurrSong();
+                if (GlobalObjects.messagesSinceLastAnnounce >= Settings.MinimumMessagesBetweenAnnounces)
+                {
+                    GlobalObjects.messagesSinceLastAnnounce = 0;
+                    TwitchHandler.SendCurrSong();
+                }
             }
 
-            //Save Album Cover
-            // Check if there is a canvas available for the song id using https://api.songify.rocks/v2/canvas/{ID}, if there is us that instead
+            // Always save the album cover. Optionally download canvas when enabled and available.
             if (Settings.DownloadCanvas && _canvasResponse is { Item1: true })
             {
                 Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover (canvas mode): {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
                 IoManager.DownloadCanvas(_canvasResponse.Item2, Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
-                await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
             }
-            else if (Settings.DownloadCover)
-            {
-                Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover: {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
-                await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
-            }
+
+            Logger.Debug(LogSource.Core, $"[WriteSongInfo] Downloading cover: {albumUrl?.Substring(0, Math.Min(100, albumUrl?.Length ?? 0))}...");
+            await IoManager.DownloadCover(albumUrl, Path.Combine(GlobalObjects.RootDirectory, "cover.png"));
 
             Application.Current.Dispatcher.Invoke(() =>
             {
-                MainWindow main = Application.Current.MainWindow as MainWindow;
-                main?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                if (currentSongOutput.Trim().StartsWith("-"))
                 {
-                    if (currentSongOutput.Trim().StartsWith("-"))
-                    {
-                        currentSongOutput = currentSongOutput.Remove(0, 1).Trim();
-                    }
+                    currentSongOutput = currentSongOutput.Remove(0, 1).Trim();
+                }
 
-                    main.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
-                }));
+                AppShellBridge.Current?.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
             });
         }
 
@@ -1566,11 +1481,11 @@ namespace Songify_Slim.Util.Songify
             if (!PearWebSocketClient.IsConnected)
                 return;
 
-            fetchCounter += 1;
-            if (fetchCounter >= 5)
+            _fetchCounter += 1;
+            if (_fetchCounter >= 5)
             {
                 await TwitchHandler.EnsureOrderAsync().ConfigureAwait(false);
-                fetchCounter = 0;
+                _fetchCounter = 0;
             }
 
             await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
@@ -1856,7 +1771,7 @@ namespace Songify_Slim.Util.Songify
 
         /// <summary>
         /// Refresh MainWindow now-playing text without executing full WriteSongInfo side effects
-        /// (history upload/chat announce/files). Used for Pear same-song state updates.
+        /// (local history/chat announce/files). Used for Pear same-song state updates.
         /// </summary>
         private static void UpdatePearNowPlayingPreviewOnly(TrackInfo track)
         {
@@ -1886,8 +1801,7 @@ namespace Songify_Slim.Util.Songify
 
             Application.Current?.Dispatcher.Invoke(() =>
             {
-                if (Application.Current.MainWindow is MainWindow main)
-                    main.SetTextPreview(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                AppShellBridge.Current?.SetTextPreview(output.Trim().Replace(@"\n", " - ").Replace("  ", " "));
             });
         }
 

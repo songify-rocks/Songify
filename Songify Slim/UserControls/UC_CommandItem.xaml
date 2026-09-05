@@ -5,9 +5,9 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:general="clr-namespace:Songify_Slim.Util.General"
     xmlns:local="clr-namespace:Songify_Slim.UserControls"
-    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:properties="clr-namespace:Songify_Slim.Properties"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     x:Name="UserlevelItem"
     VerticalAlignment="Center"
     d:DesignWidth="500"
@@ -21,6 +21,7 @@
             BasedOn="{StaticResource {x:Type TextBox}}"
             TargetType="TextBox">
             <Style.Setters>
+                <Setter Property="Foreground" Value="Black" />
                 <Setter Property="Background" Value="Transparent" />
                 <Setter Property="BorderThickness" Value="0" />
                 <Setter Property="Margin" Value="0,0,0,0" />
@@ -30,7 +31,7 @@
             </Style.Setters>
             <Style.Triggers>
                 <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Background" Value="{DynamicResource MahApps.Brushes.Accent2}" />
+                    <Setter Property="Background" Value="{DynamicResource AccentFillColorSecondaryBrush}" />
                 </Trigger>
             </Style.Triggers>
         </Style>
@@ -201,7 +202,7 @@
             HorizontalAlignment="Stretch"
             VerticalAlignment="Top"
             BorderThickness="4"
-            CornerRadius="2">
+            CornerRadius="6">
             <Border.BorderBrush>
                 <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
                     <GradientStop Offset="0" Color="Transparent" />
@@ -228,11 +229,11 @@
                     Grid.Row="0"
                     Grid.Column="0"
                     MinWidth="70"
-                    MaxWidth="70"
+                    MaxWidth="200"
                     Margin="0,0,6,0"
                     Padding="6,3"
                     VerticalAlignment="Center"
-                    Background="{DynamicResource MahApps.Brushes.Accent}"
+                    Background="{DynamicResource AccentFillColorDefaultBrush}"
                     CornerRadius="8">
                     <DockPanel LastChildFill="True">
                         <TextBlock
@@ -240,6 +241,7 @@
                             HorizontalAlignment="Left"
                             VerticalAlignment="Center"
                             FontWeight="Bold"
+                            Foreground="Black"
                             Text="!" />
                         <TextBox
                             x:Name="TbTrigger"
@@ -258,7 +260,7 @@
                     VerticalAlignment="Center"
                     Text=""
                     TextWrapping="Wrap" />
-                <mah:ToggleSwitch
+                <ui:ToggleSwitch
                     x:Name="TglEnabled"
                     Grid.Row="0"
                     Grid.Column="3"
@@ -266,9 +268,8 @@
                     MinWidth="0"
                     HorizontalAlignment="Left"
                     VerticalAlignment="Top"
-                    OffContent=""
-                    OnContent=""
-                    Toggled="TglEnabled_OnToggled" />
+                    Checked="TglEnabled_OnToggled"
+                    Unchecked="TglEnabled_OnToggled" />
 
                 <TextBox
                     x:Name="TbResponse"
@@ -289,14 +290,12 @@
                     Orientation="Horizontal"
                     Visibility="Collapsed">
                     <Label HorizontalAlignment="Right" Content="{DynamicResource window_botresponses_cmd_skipvotecount}" />
-                    <mah:NumericUpDown
+                    <ui:NumberBox
                         x:Name="NudSkipVoteCount"
-                        Width="98"
-                        Height="26"
+                        Margin="8,0,0,0"
                         HorizontalAlignment="Left"
+                        ClearButtonEnabled="False"
                         Minimum="1"
-                        NumericInputMode="Numbers"
-                        ParsingNumberStyle="Integer"
                         ValueChanged="NudSkipVoteCount_ValueChanged" />
                 </StackPanel>
 
@@ -307,7 +306,7 @@
                     Grid.ColumnSpan="2"
                     Margin="0,6,0,0"
                     Visibility="Collapsed">
-                    <TextBlock Text="Volume Set response" />
+                    <TextBlock Text="{DynamicResource uc_command_volume_set_response}" />
                     <TextBox
                         x:Name="TbVolSetResponse"
                         Margin="0,6,0,0"
@@ -319,7 +318,6 @@
                     Grid.Row="4"
                     Grid.Column="0"
                     Grid.ColumnSpan="3"
-                    MaxWidth="600"
                     Margin="0,6,0,0"
                     HorizontalAlignment="Left"
                     Visibility="Visible" />
@@ -337,7 +335,7 @@
         </Border>
         <Border
             Margin="0,8"
-            BorderBrush="{DynamicResource MahApps.Brushes.Accent3}"
+            BorderBrush="{DynamicResource AccentFillColorTertiaryBrush}"
             BorderThickness="2">
             <Border.Style>
                 <Style TargetType="Border">

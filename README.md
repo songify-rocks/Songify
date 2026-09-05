@@ -53,6 +53,13 @@ Supported sources:
 - **Widgets** - build an overlay with the [widget generator](https://widget.songify.rocks) or grab pre-built widgets [here](https://songify.rocks/widgets/)
 - **Local API** - JSON and WebSocket on a port you choose, for custom visuals and automation
 
+- **🎵 Real-Time Song Info**: Display the current song with support for text files, a hosted widget, or your own custom visuals using Songify's web server.
+- **🔊 Spotify Song Requests**: Let viewers request songs via channel points or chat commands.
+- **💬 Chat Integration**: Built-in commands to manage playback, queues, and retrieve song information.
+- **🎧 Playlist Control**: Add all song requests to a dedicated playlist or restrict requests to specific playlists.
+- **🖼️ Album Covers**: Automatically download album covers to enhance your stream's visuals.
+- **💿 Custom Widgets**: Use the [widget gallery](https://songify.rocks/widgets/) (including Premium styles) or the [widget generator](https://widget.songify.rocks) for a simpler now-playing bar.
+- **🎉 And More!** Discover additional features to elevate your streaming experience.
 The core app is free. [Songify Premium](https://github.com/songify-rocks/Songify/wiki/Songify-Premium) is optional (cloud sync and extra widget styles) and does not remove free features.
 
 ---

@@ -24,8 +24,10 @@ The in-app version is shown in the main window. Release history: [GitHub Release
 10. [Web server and API](Web-server-and-API)
 11. [Twitch commands](Twitch-commands)
 12. [WebSocket commands](WebSocket-commands)
-13. [Songify Premium](Songify-Premium)
-14. [Troubleshooting](Troubleshooting)
+13. [WebSocket data stream](WebSocket-data)
+14. [Songify Premium](Songify-Premium)
+15. [YouTube Data API key](YouTube-Data-API-Key)
+16. [Troubleshooting](Troubleshooting)
 
 ---
 

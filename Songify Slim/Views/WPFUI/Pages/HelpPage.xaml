@@ -1,0 +1,440 @@
+<Page
+    x:Class="Songify_Slim.Views.WPFUI.Pages.HelpPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Songify_Slim.Views.WPFUI.Controls"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{DynamicResource menu_file_help}"
+    ScrollViewer.CanContentScroll="False"
+    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+    ScrollViewer.PanningMode="None"
+    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+    <Page.Resources>
+        <Style
+            x:Key="HelpActionButton"
+            BasedOn="{StaticResource {x:Type ui:Button}}"
+            TargetType="ui:Button">
+            <Setter Property="Appearance" Value="Transparent" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="10,8" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+        </Style>
+        <Style x:Key="HelpIconBadge" TargetType="Border">
+            <Setter Property="Width" Value="36" />
+            <Setter Property="Height" Value="36" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Background" Value="{DynamicResource ControlFillColorSecondaryBrush}" />
+        </Style>
+        <Style x:Key="HelpCard" TargetType="ui:Card">
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Margin" Value="0,0,0,12" />
+        </Style>
+    </Page.Resources>
+    <Grid Margin="24">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="0" />
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="1" MinHeight="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="150" MinWidth="280" />
+                <ColumnDefinition Width="16" />
+                <ColumnDefinition Width="*" MinWidth="280" />
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Column="0" Margin="0,0,0,16">
+                <TextBlock
+                    FontSize="28"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource menu_file_help}" />
+                <TextBlock
+                    Margin="0,2,0,0"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{DynamicResource window_help_subtitle}"
+                    TextWrapping="Wrap" />
+            </StackPanel>
+
+            <ScrollViewer
+                Grid.Row="1"
+                Grid.Column="0"
+                HorizontalScrollBarVisibility="Disabled"
+                PanningMode="VerticalOnly"
+                VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,0,16,0">
+                    <ui:Card Style="{StaticResource HelpCard}">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="10,6,10,4"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_help_section_start}" />
+                            <ui:Button Click="BtnSetupWizard_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <ui:SymbolIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="Clipboard24" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_setup_wizard}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_setup_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                            <ui:Button Click="BtnPatchNotes_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <ui:SymbolIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="MailRead24" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_file_patchnotes}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_patchnotes_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                        </StackPanel>
+                    </ui:Card>
+
+                    <ui:Card Style="{StaticResource HelpCard}">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="10,6,10,4"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_help_section_community}" />
+                            <ui:Button Click="BtnFaq_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <ui:SymbolIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="QuestionCircle24" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_faq}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_faq_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                            <ui:Button Click="BtnGitHub_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <ui:SymbolIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="CodeBlock28" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_github}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_github_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                            <ui:Button Click="BtnDiscord_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <Viewbox
+                                            Width="16"
+                                            Height="16"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center">
+                                            <Path
+                                                Data="{StaticResource IconDiscordGeometry}"
+                                                Fill="{StaticResource BrandDiscordBrush}"
+                                                Stretch="Uniform" />
+                                        </Viewbox>
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_discord}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_discord_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                        </StackPanel>
+                    </ui:Card>
+
+                    <ui:Card Style="{StaticResource HelpCard}">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="10,6,10,4"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_help_section_files}" />
+                            <ui:Button Click="BtnLogFolder_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <ui:SymbolIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="Folder24" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_help_log_folder}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_log_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                            <ui:Button Click="BtnAppFolder_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <ui:SymbolIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="FolderOpen24" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_help_app_folder}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_app_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                        </StackPanel>
+                    </ui:Card>
+
+                    <ui:Card Style="{StaticResource HelpCard}">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="10,6,10,4"
+                                FontSize="13"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_help_section_updates}" />
+                            <ui:Button Click="BtnCheckUpdates_Click" Style="{StaticResource HelpActionButton}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Border Style="{StaticResource HelpIconBadge}">
+                                        <ui:SymbolIcon
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"
+                                            Symbol="ArrowSync24" />
+                                    </Border>
+                                    <StackPanel
+                                        Grid.Column="1"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center">
+                                        <TextBlock
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource menu_check_for_updates}" />
+                                        <TextBlock
+                                            Margin="0,2,0,0"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{DynamicResource window_help_updates_desc}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                            </ui:Button>
+                        </StackPanel>
+                    </ui:Card>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.Column="2"
+                Padding="16"
+                VerticalAlignment="Stretch"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8">
+                <Grid MinHeight="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" MinHeight="0" />
+                    </Grid.RowDefinitions>
+                    <Grid Margin="0,0,0,12" Visibility="Collapsed">
+                        <StackPanel Margin="0,0,120,0">
+                            <TextBlock
+                                FontSize="16"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource menu_view_console}" />
+                            <TextBlock
+                                Margin="0,2,0,0"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="{DynamicResource window_help_console_subtitle}"
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+                    <ui:Button
+                        x:Name="BtnDetachConsole"
+                        Grid.Row="0"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Top"
+                        Appearance="Secondary"
+                        Click="BtnDetachConsole_Click"
+                        Content="{DynamicResource window_console_detach}"
+                        ToolTip="{DynamicResource window_console_detach_attach}" />
+                    <controls:ConsoleView
+                        x:Name="ConsoleHost"
+                        Grid.Row="1"
+                        Margin="0,-32,0,0" />
+
+                    <ui:Card
+                        x:Name="CardDetached"
+                        Grid.Row="1"
+                        Padding="16"
+                        VerticalAlignment="Top"
+                        Visibility="Collapsed">
+                        <StackPanel>
+                            <TextBlock
+                                Margin="0,0,0,8"
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource window_console_detached_title}"
+                                TextWrapping="Wrap" />
+                            <TextBlock
+                                Margin="0,0,0,12"
+                                FontSize="13"
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{DynamicResource window_console_detached_body}"
+                                TextWrapping="Wrap" />
+                            <ui:Button
+                                HorizontalAlignment="Left"
+                                Appearance="Primary"
+                                Click="BtnShowConsoleWindow_Click"
+                                Content="{DynamicResource window_console_show_window}" />
+                        </StackPanel>
+                    </ui:Card>
+                </Grid>
+            </Border>
+        </Grid>
+    </Grid>
+</Page>

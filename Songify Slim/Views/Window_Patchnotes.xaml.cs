@@ -1,4 +1,4 @@
-﻿using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.Core;
 using Songify_Slim.Util.General;
 using System;
 using System.Collections.Generic;
@@ -19,6 +19,12 @@ namespace Songify_Slim.Views
 
     public partial class WindowPatchnotes
     {
+        private const string BetaNotesRawUrl =
+            "https://raw.githubusercontent.com/songify-rocks/Songify/refs/heads/feature/wpfui-shell/docs/releases/beta_update.md";
+
+        private const string BetaNotesPageUrl =
+            "https://github.com/songify-rocks/Songify/blob/feature/wpfui-shell/docs/releases/beta_update.md";
+
         // One template for both GitHub HTML and beta markdown
         private readonly string htmlTemplate = """
                                                <!DOCTYPE html>
@@ -73,25 +79,38 @@ namespace Songify_Slim.Views
         public WindowPatchnotes()
         {
             InitializeComponent();
+            ThemeHandler.ApplyTheme();
             // Set webview2 background color to #0d1117
             WebBrowser.DefaultBackgroundColor = Color.FromArgb(13, 17, 23);
         }
 
-        private async void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private async void Window_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Optional: clear in case window is reused
                 CbxVersions.Items.Clear();
 
-                // Fetch releases with body_html
-                List<GitHubReleaseDto> releases = await FetchGitHubReleasesHtmlAsync("songify-rocks", "Songify");
+                Task<List<GitHubReleaseDto>> releasesTask = FetchGitHubReleasesHtmlAsync("songify-rocks", "Songify");
+                Task<string> betaNotesTask = App.IsBeta
+                    ? FetchBetaMarkdownAsync()
+                    : Task.FromResult<string>(null);
 
-                // if App.IsBeta is false, filter out pre-releases
-                if (!App.IsBeta)
+                await Task.WhenAll(releasesTask, betaNotesTask);
+
+                if (App.IsBeta && !string.IsNullOrWhiteSpace(betaNotesTask.Result))
                 {
-                    releases.RemoveAll(r => r.IsPrelease);
+                    CbxVersions.Items.Add(new ReleaseObject
+                    {
+                        Version = "2.0.0 Beta",
+                        Content = betaNotesTask.Result,
+                        IsMarkdown = true,
+                        Url = BetaNotesPageUrl
+                    });
                 }
+
+                List<GitHubReleaseDto> releases = releasesTask.Result;
+                if (!App.IsBeta)
+                    releases.RemoveAll(r => r.IsPrelease);
 
                 foreach (GitHubReleaseDto r in releases)
                 {
@@ -104,7 +123,6 @@ namespace Songify_Slim.Views
                     });
                 }
 
-                // Select first
                 if (CbxVersions.Items.Count > 0)
                     CbxVersions.SelectedIndex = 0;
             }
@@ -136,11 +154,9 @@ namespace Songify_Slim.Views
                 }
                 catch (WebView2RuntimeNotFoundException)
                 {
-                    MessageBox.Show(
-                        "WebView2 Runtime is not installed. Opening patch notes in your browser instead.",
+                    await AppDialog.ShowAsync(
                         "Missing WebView2",
-                        MessageBoxButton.OK,
-                        MessageBoxImage.Warning);
+                        "WebView2 Runtime is not installed. Opening patch notes in your browser instead.");
 
                     // Fallback: prefer the actual GitHub release page if we have it
                     string url = string.IsNullOrWhiteSpace(ro.Url)
@@ -201,9 +217,26 @@ namespace Songify_Slim.Views
             return releases;
         }
 
+        private static async Task<string> FetchBetaMarkdownAsync()
+        {
+            try
+            {
+                using HttpClient client = new();
+                client.Timeout = TimeSpan.FromSeconds(15);
+                client.DefaultRequestHeaders.UserAgent.ParseAdd("SongifyInfo");
+                string markdown = await client.GetStringAsync(BetaNotesRawUrl);
+                return string.IsNullOrWhiteSpace(markdown) ? null : markdown;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Core, "Patch notes: Error loading beta markdown", ex);
+                return null;
+            }
+        }
+
         private void Hyperlink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/songify-rocks/songify/releases");
+            ShellHelper.OpenUrl("https://github.com/songify-rocks/songify/releases");
         }
     }
 }

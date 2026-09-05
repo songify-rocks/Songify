@@ -24,7 +24,7 @@ Sync settings across PCs: upload, compare, and restore configuration from the cl
 
 ## Widgets
 
-Premium widget styles are listed on [songify.rocks/widgets](https://songify.rocks/widgets/).
+Premium widget styles are listed on [songify.rocks/widgets](https://songify.rocks/widgets/). In the app, **Tools → Widget → Widget gallery** or **Browse widgets** on Home opens that page.
 
 Free widgets remain available, including:
 

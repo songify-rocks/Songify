@@ -5,31 +5,6 @@
     "url": "https://github.com/ravibpatel/AutoUpdater.NET"
   },
   {
-    "name": "AvalonEdit",
-    "license": "MIT",
-    "url": "https://github.com/icsharpcode/AvalonEdit"
-  },
-  {
-    "name": "Common.Logging",
-    "license": "Apache-2.0",
-    "url": "https://github.com/net-commons/common-logging"
-  },
-  {
-    "name": "ControlzEx",
-    "license": "MIT",
-    "url": "https://github.com/ControlzEx/ControlzEx"
-  },
-  {
-    "name": "Costura.Fody",
-    "license": "MIT",
-    "url": "https://github.com/Fody/Costura"
-  },
-  {
-    "name": "Fody",
-    "license": "MIT",
-    "url": "https://github.com/Fody/Fody"
-  },
-  {
     "name": "EmbedIO",
     "license": "MIT",
     "url": "https://github.com/unosquare/embedio"
@@ -44,75 +19,49 @@
     "license": "MIT",
     "url": "https://github.com/zzzprojects/html-agility-pack"
   },
-
   {
-    "name": "MahApps.Metro",
+    "name": "LiveChartsCore",
     "license": "MIT",
-    "url": "https://github.com/MahApps/MahApps.Metro"
+    "url": "https://github.com/beto-rodriguez/LiveCharts2"
   },
   {
-    "name": "MahApps.Metro.IconPacks",
+    "name": "Newtonsoft.Json",
     "license": "MIT",
-    "url": "https://github.com/MahApps/MahApps.Metro.IconPacks"
+    "url": "https://github.com/JamesNK/Newtonsoft.Json"
   },
   {
-    "name": "Microsoft.Xaml.Behaviors.Wpf",
+    "name": "Resource.Embedder",
     "license": "MIT",
-    "url": "https://github.com/microsoft/XamlBehaviorsWpf"
+    "url": "https://github.com/MarcStan/Resource.Embedder"
   },
   {
-    "name": "OxyPlot.Wpf",
+    "name": "SkiaSharp",
     "license": "MIT",
-    "url": "https://github.com/oxyplot/oxyplot"
+    "url": "https://github.com/mono/SkiaSharp"
   },
-
-  {
-    "name": "Markdig",
-    "license": "BSD-2-Clause",
-    "url": "https://github.com/xoofx/markdig"
-  },
-  {
-    "name": "Markdig.Wpf",
-    "license": "BSD-2-Clause",
-    "url": "https://github.com/Kryptos-FR/markdig.wpf"
-  },
-  {
-    "name": "YamlDotNet",
-    "license": "MIT",
-    "url": "https://github.com/aaubry/YamlDotNet"
-  },
-
-  {
-    "name": "Octokit.NET",
-    "license": "MIT",
-    "url": "https://github.com/octokit/octokit.net"
-  },
-  {
-    "name": "SocketIOClient",
-    "license": "MIT",
-    "url": "https://github.com/doghappy/socket.io-client-csharp"
-  },
-  {
-    "name": "NHttp",
-    "license": "MIT",
-    "url": "https://github.com/keremk/NHttp"
-  },
-
   {
     "name": "SpotifyAPI-NET",
     "license": "MIT",
     "url": "https://github.com/JohnnyCrazy/SpotifyAPI-NET"
   },
-
   {
     "name": "TwitchLib",
     "license": "MIT",
     "url": "https://github.com/TwitchLib/TwitchLib"
   },
-
   {
-    "name": "System.Data.SQLite.Core",
-    "license": "Public Domain",
-    "url": "https://www.sqlite.org"
+    "name": "Unosquare.Swan",
+    "license": "MIT",
+    "url": "https://github.com/unosquare/swan"
+  },
+  {
+    "name": "WPF-UI",
+    "license": "MIT",
+    "url": "https://github.com/lepoco/wpfui"
+  },
+  {
+    "name": "YamlDotNet",
+    "license": "MIT",
+    "url": "https://github.com/aaubry/YamlDotNet"
   }
 ]

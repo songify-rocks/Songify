@@ -1,3 +1,5 @@
+using NumberBox = Wpf.Ui.Controls.NumberBox;
+using NumberBoxValueChangedEventArgs = Wpf.Ui.Controls.NumberBoxValueChangedEventArgs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,8 +7,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
 using Songify_Slim.Models;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.Configuration;
@@ -106,6 +106,14 @@ namespace Songify_Slim.UserControls
                 {
                     Enums.CommandType.ToggleSr,
                     Application.Current.TryFindResource("window_botresponses_cmd_togglesr") as string ?? "Fallback BanSong"
+                },
+                {
+                    Enums.CommandType.SkipPoll,
+                    Application.Current.TryFindResource("window_botresponses_cmd_skippoll") as string ?? "Starts a skip poll"
+                },
+                {
+                    Enums.CommandType.Playlist,
+                    Application.Current.TryFindResource("window_botresponses_cmd_playlist") as string ?? "Displays the current playlist"
                 }
             };
 
@@ -125,7 +133,7 @@ namespace Songify_Slim.UserControls
                 ? new SolidColorBrush(Colors.Coral)
                 : new SolidColorBrush((Color)ColorConverter.ConvertFromString(Settings.TwitchUserColor)!);
             TbTrigger.Text = Command.Trigger;
-            TglEnabled.IsOn = Command.IsEnabled;
+            TglEnabled.IsChecked = Command.IsEnabled;
             TbResponse.Text = Command.Response;
             TbDescription.Text = Map.TryGetValue(Command.CommandType, out string description)
                 ? description
@@ -149,6 +157,8 @@ namespace Songify_Slim.UserControls
                 case Enums.CommandType.Commands:
                 case Enums.CommandType.BanSong:
                 case Enums.CommandType.ToggleSr:
+                case Enums.CommandType.SkipPoll:
+                case Enums.CommandType.Playlist:
                     break;
 
                 case Enums.CommandType.Voteskip:
@@ -272,6 +282,10 @@ namespace Songify_Slim.UserControls
                     // Optionally, update StartPoint and EndPoint if needed:
                     brush.StartPoint = new Point(0, 0);
                     brush.EndPoint = new Point(0, 1);
+
+                    var bgBrush = brush;
+                    bgBrush.Opacity = 0.1;
+                    CmdBorder.Background = bgBrush;
                 }
             }
             else if (CmdBorder.BorderBrush is LinearGradientBrush brush)
@@ -338,10 +352,11 @@ namespace Songify_Slim.UserControls
                 return;
             if (!IsLoaded)
                 return;
-            if (Command.IsEnabled == TglEnabled.IsOn)
+            bool enabled = TglEnabled.IsChecked == true;
+            if (Command.IsEnabled == enabled)
                 return;
 
-            Command.IsEnabled = TglEnabled.IsOn;
+            Command.IsEnabled = enabled;
             Settings.UpdateCommand(Command);
         }
 
@@ -521,13 +536,13 @@ namespace Songify_Slim.UserControls
             }
         }
 
-        private void NudSkipVoteCount_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
+        private void NudSkipVoteCount_ValueChanged(object sender, NumberBoxValueChangedEventArgs e)
         {
             if (_isUpdating)
                 return;
             if (!IsLoaded)
                 return;
-            double? d = ((NumericUpDown)sender).Value;
+            double? d = ((NumberBox)sender).Value;
             if (d == null) return;
             int value = (int)d;
             if (Command.CustomProperties.TryGetValue("SkipCount", out object skipCountObj) &&
@@ -572,12 +587,12 @@ namespace Songify_Slim.UserControls
                 if (_isUpdating)
                     return;
 
-                MetroWindow window = (MetroWindow)Window.GetWindow(this);
-                if (window == null) return;
-                string result = await window.ShowInputAsync($"Explicit user for !{Command.Trigger}",
-                    "Enter the usernames (comma separated)");
+                string result = await AppDialog.PromptAsync(
+                    $"Explicit user for !{Command.Trigger}",
+                    "Enter the usernames (comma separated)",
+                    Window.GetWindow(this));
 
-                if (result == null) return;
+                if (string.IsNullOrWhiteSpace(result)) return;
 
                 List<string> usersToAdd = result.Split(',')
                     .Select(user => user.Trim())
@@ -602,12 +617,12 @@ namespace Songify_Slim.UserControls
                     }
                     else
                     {
-                        await window.ShowMessageAsync("Info", "All selected users are already added.");
+                        await AppDialog.ShowAsync("Info", "All selected users are already added.");
                     }
                 }
                 else
                 {
-                    await window.ShowMessageAsync("Error", "No users found. Please check the usernames and try again.");
+                    await AppDialog.ShowAsync("Error", "No users found. Please check the usernames and try again.");
                 }
             }
             catch (Exception ex)
@@ -624,10 +639,10 @@ namespace Songify_Slim.UserControls
                     return;
                 if (_isUpdating)
                     return;
-                MetroWindow window = (MetroWindow)Window.GetWindow(this);
-                if (window == null) return;
-                string result = await window.ShowInputAsync($"Aliases for !{Command.Trigger}",
-                    "Enter aliases (comma separated)");
+                string result = await AppDialog.PromptAsync(
+                    $"Aliases for !{Command.Trigger}",
+                    "Enter aliases (comma separated)",
+                    Window.GetWindow(this));
 
                 List<string> aliases = result?.Split(',')
                     .Select(alias => alias.Trim().Replace("!", ""))
@@ -650,7 +665,7 @@ namespace Songify_Slim.UserControls
                 }
                 else
                 {
-                    await window.ShowMessageAsync("Info", "All aliases are already added.");
+                    await AppDialog.ShowAsync("Info", "All aliases are already added.");
                 }
             }
             catch (Exception ex)
@@ -658,5 +673,6 @@ namespace Songify_Slim.UserControls
                 Logger.Error(LogSource.Core, "Error adding command alias.", ex);
             }
         }
+
     }
 }

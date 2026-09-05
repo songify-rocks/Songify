@@ -1,4 +1,3 @@
-﻿using MahApps.Metro.IconPacks;
 using Newtonsoft.Json;
 using Songify_Slim.Models;
 using Songify_Slim.Models.WebSocket;
@@ -28,7 +27,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using Windows.ApplicationModel.Resources.Core;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Pear;
 using Songify_Slim.Util.Configuration;
@@ -358,19 +356,23 @@ namespace Songify_Slim.Util.General
                 Application.Current.Dispatcher.Invoke(() =>
                 {
                     if (Application.Current.MainWindow == null) return;
-                    // Assuming these UI elements and methods exist in your MainWindow
-                    ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.GreenYellow;
-                    //((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBoxIconsKind.SolidServer;
+                    AppShellBridge.Current?.SetWebServerRunning(true);
                 });
 
                 Logger.Info(LogSource.Core, $"WebServer: Started on port {port}");
                 Logger.Info(LogSource.Core, $"WebSocket: Started on ws://127.0.0.1:{port}");
+                if (Settings.WebServerPasswordEnabled && string.IsNullOrEmpty(Settings.WebServerPassword))
+                    Logger.Warning(LogSource.Core,
+                        "WebServer: Password protection is enabled but no password is set; connections are not authenticated.");
                 if (IsRunningAsAdministrator())
                 {
                     string localIp = GetLocalIpAddress();
                     if (!string.IsNullOrWhiteSpace(localIp))
+                    {
                         Logger.Info(LogSource.Core,
                             $"WebServer: Also listening on LAN http://{localIp}:{port}/ (running as Administrator). Use a WebSocket password if this network is not fully trusted.");
+                        RegisterFirewall.EnsureWebServerPortRule(port);
+                    }
                 }
 
                 while (Run)
@@ -399,14 +401,16 @@ namespace Songify_Slim.Util.General
 
         private async void ProcessWebSocketRequest(HttpListenerContext context)
         {
+            if (IsWebSocketAuthRequired() && !RequestPasswordMatches(context.Request))
+            {
+                WriteUnauthorized(context);
+                return;
+            }
+
             WebSocketContext webSocketContext = null;
             Guid clientId = Guid.NewGuid();
             string path = context.Request.Url.AbsolutePath;
-            WsClientAuthState authState = new()
-            {
-                Authenticated = !IsWebSocketAuthRequired() ||
-                                PasswordMatches(context.Request.QueryString["password"])
-            };
+            WsClientAuthState authState = new() { Authenticated = true };
 
             try
             {
@@ -543,7 +547,8 @@ namespace Songify_Slim.Util.General
             public bool Authenticated;
         }
 
-        private static bool IsWebSocketAuthRequired() => Settings.WebServerPasswordEnabled;
+        private static bool IsWebSocketAuthRequired() =>
+            Settings.WebServerPasswordEnabled && !string.IsNullOrEmpty(Settings.WebServerPassword);
 
         private static bool PasswordMatches(string provided)
         {
@@ -561,6 +566,30 @@ namespace Songify_Slim.Util.General
                 diff |= a[i] ^ b[i];
             return diff == 0;
         }
+
+        private static string ExtractRequestPassword(HttpListenerRequest request)
+        {
+            if (request == null)
+                return null;
+
+            string query = request.QueryString["password"];
+            if (!string.IsNullOrEmpty(query))
+                return query;
+
+            string header = request.Headers["X-Songify-Password"];
+            if (!string.IsNullOrEmpty(header))
+                return header;
+
+            string authorization = request.Headers["Authorization"];
+            if (!string.IsNullOrEmpty(authorization) &&
+                authorization.StartsWith("Bearer ", StringComparison.OrdinalIgnoreCase))
+                return authorization.Substring("Bearer ".Length).Trim();
+
+            return null;
+        }
+
+        private static bool RequestPasswordMatches(HttpListenerRequest request) =>
+            PasswordMatches(ExtractRequestPassword(request));
 
         private static string ExtractAuthPassword(WebSocketCommand command)
         {
@@ -742,14 +771,7 @@ namespace Songify_Slim.Util.General
                 });
             Settings.SongBlacklist = Settings.SongBlacklist;
             await SpotifyApiHandler.SkipSong();
-            // If Window_Blacklist is open, call LoadBlacklists();
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                //foreach (Window window in Application.Current.Windows)
-                //    if (window.GetType() == typeof(Window_Blacklist))
-                //        ((Window_Blacklist)window).LoadBlacklists();
-            });
+            await BlocklistUi.RefreshArtistsAsync();
         }
 
         private static void BlockAllArtists()
@@ -804,13 +826,29 @@ namespace Songify_Slim.Util.General
         {
             Run = false;
             Logger.Info(LogSource.Core, "WebServer: Stopped");
-            Application.Current.Dispatcher.Invoke(() =>
+            try
             {
-                if (Application.Current.MainWindow == null) return;
-                ((MainWindow)Application.Current.MainWindow).IconWebServer.Foreground = Brushes.DarkGray;
-                //((MainWindow)Application.Current.MainWindow).IconWebServer.Kind = PackIconBoxIconsKind.SolidServer;
-            });
-            _listener.Stop();
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    if (Application.Current.MainWindow == null) return;
+                    AppShellBridge.Current?.SetWebServerRunning(false);
+                });
+            }
+            catch
+            {
+                // Shutdown may already be tearing down the dispatcher.
+            }
+
+            try
+            {
+                _listener.Stop();
+            }
+            catch
+            {
+                // Listener may already be stopped.
+            }
+
+            RegisterFirewall.RemoveWebServerPortRule();
         }
 
         private static bool PortIsFree(int port)
@@ -850,6 +888,12 @@ namespace Songify_Slim.Util.General
                 return;
             }
 
+            if (IsWebSocketAuthRequired() && !RequestPasswordMatches(context.Request))
+            {
+                WriteUnauthorized(context);
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(GlobalObjects.ApiResponse))
             {
                 byte[] err = Encoding.UTF8.GetBytes("{\"error\":\"Payload not available yet.\"}");
@@ -859,6 +903,13 @@ namespace Songify_Slim.Util.General
 
             byte[] responseBytes = Encoding.UTF8.GetBytes(GlobalObjects.ApiResponse);
             WriteHttpResponse(context, responseBytes, "application/json; charset=utf-8", 200);
+        }
+
+        private static void WriteUnauthorized(HttpListenerContext context)
+        {
+            byte[] body = Encoding.UTF8.GetBytes(
+                "{\"error\":\"Unauthorized. Pass ?password= on the URL or send header X-Songify-Password.\"}");
+            WriteHttpResponse(context, body, "application/json; charset=utf-8", 401);
         }
 
         private static void WriteHttpResponse(HttpListenerContext context, byte[] body, string contentType, int statusCode)

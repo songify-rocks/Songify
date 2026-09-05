@@ -1,5 +1,7 @@
-using MahApps.Metro.Controls.Dialogs;
-using MahApps.Metro.IconPacks;
+using Songify_Slim.Util.General;
+using MessageDialogResult = Songify_Slim.Util.General.AppDialogResult;
+using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
+using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Songify_Slim.Models;
@@ -10,14 +12,11 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.Configuration;
-using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
-using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Spotify;
 using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using Swan;
 using Swan.Formatters;
@@ -36,13 +35,11 @@ using System.Threading.Tasks;
 using System.Timers;
 using System.Web;
 using System.Windows;
-using System.Windows.Media;
 using System.Windows.Threading;
 using Songify_Slim.Util.Youtube.Youtube;
 using TwitchLib.Api;
 using TwitchLib.Api.Auth;
 using TwitchLib.Api.Core.Enums;
-using TwitchLib.Api.Helix.Models.ChannelPoints;
 using TwitchLib.Api.Helix.Models.ChannelPoints.GetCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomRewardRedemptionStatus;
@@ -56,13 +53,11 @@ using TwitchLib.Api.Helix.Models.Chat.GetUserChatColor;
 using TwitchLib.Api.Helix.Models.Moderation.GetModerators;
 using TwitchLib.Api.Helix.Models.Polls.CreatePoll;
 using TwitchLib.Api.Helix.Models.Polls.EndPoll;
-using TwitchLib.Api.Helix.Models.Search;
 using TwitchLib.Api.Helix.Models.Streams.GetStreams;
 using TwitchLib.Api.Helix.Models.Subscriptions;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets.Extensions;
-using Image = SpotifyAPI.Web.Image;
 using Scopes = Songify_Slim.Util.Songify.TwitchOAuth.Scopes;
 using Song = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 using Timer = System.Timers.Timer;
@@ -116,8 +111,7 @@ public static class TwitchHandler
 
         void Apply()
         {
-            if (app.MainWindow is MainWindow mw)
-                mw.NotifySpotifyRelatedActivity();
+            AppFetchService.NotifySpotifyRelatedActivity();
         }
 
         if (app.Dispatcher.CheckAccess())
@@ -209,13 +203,21 @@ public static class TwitchHandler
                 return;
             }
 
-            if (IsTrackExplicit(track, e, out response))
+            if (IsTrackExplicit(track, e, user?.UserLevels, out response))
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.TrackIsExplicit, e);
                 return;
             }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Explicit Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
+
+            if (IsTrackUnavailable(track, e, out response))
+            {
+                await SendChatMessage(response);
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
+                return;
+            }
+            Logger.Log(LogLevel.Debug, LogSource.Debug, $"Region lock Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
             if (IsArtistBlacklisted(track, e, out response))
             {
@@ -280,8 +282,10 @@ public static class TwitchHandler
 
             if (!Settings.AddSrtoPlaylistOnly)
             {
-                if (!await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId))
+                if (!await SpotifyApiHandler.AddToQueue("spotify:track:" + track.Id))
                 {
+                    await SendChatMessage("Could not add the song to the Spotify queue.");
+                    await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
                     return;
                 }
                 Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Queue after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
@@ -384,7 +388,7 @@ public static class TwitchHandler
                     if (!valid)
                         return message;
 
-                    await SpotifyApiHandler.AddToQueue("spotify:track:" + trackId);
+                    await SpotifyApiHandler.AddToQueue("spotify:track:" + track.Id);
 
                     if (Settings.AddSrToPlaylist)
                         await SpotifyApiHandler.AddToPlaylist(track.Id);
@@ -540,19 +544,13 @@ public static class TwitchHandler
 
         await Application.Current.Dispatcher.Invoke(async () =>
         {
-            foreach (Window window in Application.Current.Windows)
+            if (account == Enums.TwitchAccount.Main)
+                AppShellBridge.Current?.SetTwitchApiState(ConnectionIndicatorState.Error);
+
+            IAppShell shell = AppShellBridge.Current;
+            if (shell != null)
             {
-                if (window is not MainWindow mainWindow)
-                    continue;
-
-                if (account == Enums.TwitchAccount.Main)
-                {
-                    mainWindow.IconTwitchApi.Foreground = Brushes.IndianRed;
-                    mainWindow.IconTwitchApi.Kind = PackIconBoxIconsKind.SolidCircle;
-                    mainWindow.MiTwitchApi.IsEnabled = false;
-                }
-
-                MessageDialogResult msgResult = await mainWindow.ShowMessageAsync(
+                MessageDialogResult msgResult = await shell.ShowMessageAsync(
                     "Twitch Account Issues",
                     GetExpiredTokenMessage(account),
                     MessageDialogStyle.AffirmativeAndNegative,
@@ -567,8 +565,6 @@ public static class TwitchHandler
                     reconnectRequested = true;
                     ApiConnect(account);
                 }
-
-                break;
             }
         });
 
@@ -580,11 +576,7 @@ public static class TwitchHandler
         if (missingItems == null || !missingItems.Any())
             return false;
 
-        MainWindow mainWindow = Application.Current?.MainWindow as MainWindow;
-        if (mainWindow == null)
-            return false;
-
-        MessageDialogResult msgResult = await mainWindow.ShowMessageAsync(
+        MessageDialogResult msgResult = await AppDialog.ShowAsync(
             "Missing Twitch Scopes",
             $"You are missing the following scopes: {string.Join(", ", missingItems)}.\nThis can be resolved by logging out of Twitch and re-login.\n\nWould you like to logout now?",
             MessageDialogStyle.AffirmativeAndNegative,
@@ -615,20 +607,12 @@ public static class TwitchHandler
         return true;
     }
 
-    private static async Task UpdateMainWindowTwitchApiStateAsync(User user)
+    private static async Task UpdateShellTwitchApiStateAsync(User user)
     {
         await Application.Current.Dispatcher.InvokeAsync(() =>
         {
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is not MainWindow mainWindow)
-                    continue;
-
-                mainWindow.IconTwitchApi.Foreground = Brushes.GreenYellow;
-                mainWindow.MiTwitchApi.IsEnabled = false;
-
-                Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
-            }
+            AppShellBridge.Current?.SetTwitchApiState(ConnectionIndicatorState.Connected);
+            Logger.Info(LogSource.Twitch, $"Logged into Twitch API ({user.DisplayName})");
         });
     }
 
@@ -729,6 +713,8 @@ public static class TwitchHandler
             Random random = new Random();
             int salt = random.Next(1, 1000);
 
+            // Release any previous listeners so retries don't hit "prefix already registered".
+            _activeOAuth?.Dispose();
             _activeOAuth = new ImplicitOAuth(salt);
             _pendingOAuthAccount = account;
 
@@ -775,7 +761,6 @@ public static class TwitchHandler
                     dynamic telemetryPayload = new
                     {
                         uuid = Settings.Uuid,
-                        key = Settings.AccessKey,
                         tst = DateTime.UtcNow.ToUnixEpochDate(),
                         twitch_id = Settings.TwitchUser?.Id ?? "",
                         twitch_name = Settings.TwitchUser?.DisplayName ?? "",
@@ -792,6 +777,7 @@ public static class TwitchHandler
                 }
                 finally
                 {
+                    _activeOAuth?.Dispose();
                     _activeOAuth = null;
                     _pendingOAuthState = null;
                     _pendingOAuthAccount = null;
@@ -812,23 +798,8 @@ public static class TwitchHandler
         }
     }
 
-    private static async Task RefreshSettingsWindowAsync()
-    {
-        if (Application.Current == null)
-            return;
-
-        await Application.Current.Dispatcher.Invoke(async () =>
-        {
-            foreach (Window window in Application.Current.Windows)
-            {
-                if (window is Window_Settings settingsWindow)
-                {
-                    await settingsWindow.SetControls();
-                    break;
-                }
-            }
-        });
-    }
+    private static Task RefreshSettingsWindowAsync() =>
+        SettingsUi.RefreshAsync(resetTwitch: true);
 
     public static async Task InitializeApi(Enums.TwitchAccount twitchAccount)
     {
@@ -905,7 +876,7 @@ public static class TwitchHandler
             Settings.TwitchChannelId = user.Id;
             Settings.TwChannel = user.Login;
 
-            await UpdateMainWindowTwitchApiStateAsync(user);
+            await UpdateShellTwitchApiStateAsync(user);
 
             GetUserChatColorResponse chatColorResponse =
                 await api.Helix.Chat.GetUserChatColorAsync(
@@ -950,11 +921,7 @@ public static class TwitchHandler
             {
                 Application.Current?.Dispatcher?.Invoke(() =>
                 {
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        if (window is MainWindow mw)
-                            mw.LblStatus.Content = "Please fill in Twitch credentials.";
-                    }
+                    AppShellBridge.Current?.SetStatusText("Please fill in Twitch credentials.");
                 });
                 return;
             }
@@ -1174,7 +1141,7 @@ public static class TwitchHandler
             return "";
         }
 
-        if (input.StartsWith("https://spotify.link/"))
+        if (input.StartsWith("https://spotify.link/") || input.StartsWith("https://open.spotify.com/s/"))
         {
             input = await GetFullSpotifyUrl(input);
             //return "shortened";
@@ -1238,9 +1205,13 @@ public static class TwitchHandler
             return "";
         }
 
-        if (searchItem.Restrictions is not { Count: > 0 }) return searchItem.Id;
-        await SendChatMessage(string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}: {kv.Value}")));
-        return "";
+        if (searchItem.Restrictions is { Count: > 0 })
+        {
+            Logger.Info(LogSource.Songrequest,
+                $"Search result has restrictions: {string.Join(", ", searchItem.Restrictions.Select(kv => $"{kv.Key}={kv.Value}"))}");
+        }
+
+        return searchItem.Id;
 
         // if a track was found convert the object to FullTrack (easier use than searchItem)
     }
@@ -1460,9 +1431,9 @@ public static class TwitchHandler
                 if (SpotifyApiHandler.Client == null)
                 {
                     await SendChatMessage("It seems that Spotify is not connected right now.");
-                    if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.NoSongFound))
+                    if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.SpotifyNotConnected))
                     {
-                        await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.NoSongFound);
+                        await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.SpotifyNotConnected);
                     }
                     return;
                 }
@@ -1493,9 +1464,9 @@ public static class TwitchHandler
             case Enums.PlayerType.BrowserCompanion:
             default:
                 await SendChatMessage("No player selected. Please select a player on the main window.");
-                if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.NoSongFound))
+                if (Settings.RefundConditons.Any(c => c == Enums.RefundCondition.SpotifyNotConnected))
                 {
-                    await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.NoSongFound);
+                    await RefundChannelPoints(rewardId, redemptionId, user, Enums.RefundCondition.SpotifyNotConnected);
                 }
                 return;
         }
@@ -1616,6 +1587,7 @@ public static class TwitchHandler
             if (cmd == null)
             {
                 Logger.Log(LogLevel.Error, LogSource.Pear, "Command 'Song Request' not found.");
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
                 return;
             }
 
@@ -1624,6 +1596,7 @@ public static class TwitchHandler
             {
                 Logger.Log(LogLevel.Error, LogSource.Pear, "Error adding the song to the Pear queue.");
                 SendOrAnnounceMessage("Error adding the song to the Pear queue.", cmd);
+                await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
                 return;
             }
 
@@ -1811,6 +1784,8 @@ public static class TwitchHandler
                 Enums.CommandType.Commands => HandleCommandsCommand,
                 Enums.CommandType.BanSong => HandleBanSongCommand,
                 Enums.CommandType.ToggleSr => HandleToggleSrCommand,
+                Enums.CommandType.SkipPoll => HandleSkipPollCommand,
+                Enums.CommandType.Playlist => HandlePlaylistCommand,
                 _ => null
             };
 
@@ -1833,6 +1808,8 @@ public static class TwitchHandler
                 case Enums.CommandType.Commands:
                 case Enums.CommandType.BanSong:
                 case Enums.CommandType.ToggleSr:
+                case Enums.CommandType.SkipPoll:
+                case Enums.CommandType.Playlist:
                     break;
 
                 case Enums.CommandType.Voteskip:
@@ -2117,17 +2094,38 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                // Get Index of the request in the pear queue
-                int index = await PearApi.GetIndexAsync(reqObj.Trackid);
-                if (index != -1)
                 {
+                    bool isCurrent = GlobalObjects.CurrentSong != null
+                        && string.Equals(reqObj.Trackid, GlobalObjects.CurrentSong.SongId, StringComparison.Ordinal);
+
+                    if (isCurrent)
+                    {
+                        if (!await PearApi.SkipAsync())
+                        {
+                            Logger.Warning(LogSource.Pear,
+                                $"!remove: failed to skip currently playing Pear track {reqObj.Trackid}");
+                            return;
+                        }
+
+                        break;
+                    }
+
+                    int index = await PearApi.GetIndexAsync(reqObj.Trackid);
+                    if (index < 0)
+                    {
+                        Logger.Warning(LogSource.Pear,
+                            $"!remove: Pear queue index not found for {reqObj.Trackid} ({reqObj.Artist} - {reqObj.Title}); dropping Songify queue entry.");
+                        break;
+                    }
+
                     ApiOk result = await PearApi.RemoveQueueItem(index);
                     if (!result.Ok)
                     {
                         return;
                     }
+
+                    break;
                 }
-                break;
 
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
@@ -2142,7 +2140,7 @@ public static class TwitchHandler
 
         string tmp = $"{reqObj.Artist} - {reqObj.Title}";
 
-        dynamic payload = new { uuid = Settings.Uuid, key = Settings.AccessKey, queueid = reqObj.Queueid, };
+        dynamic payload = new { uuid = Settings.Uuid, queueid = reqObj.Queueid, };
 
         await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
 
@@ -2277,6 +2275,107 @@ public static class TwitchHandler
         SendOrAnnounceMessage(response, cmd);
 
         StartSkipCooldown();
+    }
+
+    private static async Task HandleSkipPollCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+    {
+        if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+            return;
+
+        try
+        {
+            if (GlobalObjects.CurrentSkipPoll is { IsActive: true })
+            {
+                await SendChatMessage($"@{message.ChatterUserName} a skip poll is already running.");
+                return;
+            }
+
+            bool started = await StartSkipPoll();
+            if (!started)
+            {
+                await SendChatMessage($"@{message.ChatterUserName} could not start a skip poll.");
+                return;
+            }
+
+            string response = cmd.Response.Replace("{user}", message.ChatterUserName);
+            SendOrAnnounceMessage(response, cmd);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Twitch, "Error while starting skip poll from command", ex);
+        }
+    }
+
+    private static async Task HandlePlaylistCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
+    {
+        try
+        {
+            if (!await PreCheckCommandAsync(cmd, cmdParams, message))
+                return;
+
+            PlaylistInfo playlist = GlobalObjects.CurrentSong?.Playlist;
+            if (Settings.Player == Enums.PlayerType.Spotify)
+            {
+                PlaylistInfo livePlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
+                if (livePlaylist != null)
+                    playlist = livePlaylist;
+            }
+
+            if (!HasPlaylistInfo(playlist))
+            {
+                SendOrAnnounceMessage("No playlist information available", cmd);
+                return;
+            }
+
+            string response = CreateResponse(new PlaceholderContext
+            {
+                User = message.ChatterUserName,
+                PlaylistName = playlist.Name,
+                PlaylistUrl = ResolvePlaylistUrl(playlist)
+            }, cmd.Response);
+
+            SendOrAnnounceMessage(response, cmd);
+        }
+        catch (Exception e)
+        {
+            Logger.Error(LogSource.Twitch, "Error in Playlist command.", e);
+        }
+    }
+
+    private static bool HasPlaylistInfo(PlaylistInfo playlist)
+    {
+        if (playlist == null)
+            return false;
+
+        bool hasName = !string.IsNullOrWhiteSpace(playlist.Name) &&
+                       !string.Equals(playlist.Name, "unknown", StringComparison.OrdinalIgnoreCase);
+        return hasName ||
+               !string.IsNullOrWhiteSpace(playlist.Url) ||
+               !string.IsNullOrWhiteSpace(playlist.Id);
+    }
+
+    private static string ResolvePlaylistUrl(PlaylistInfo playlist)
+    {
+        if (playlist == null)
+            return "";
+
+        if (!string.IsNullOrWhiteSpace(playlist.Url) &&
+            (playlist.Url.StartsWith("http://", StringComparison.OrdinalIgnoreCase) ||
+             playlist.Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase)))
+        {
+            return playlist.Url;
+        }
+
+        string id = !string.IsNullOrWhiteSpace(playlist.Id) ? playlist.Id : playlist.Url;
+        if (string.IsNullOrWhiteSpace(id))
+            return playlist.Url ?? "";
+
+        return Settings.Player switch
+        {
+            Enums.PlayerType.Spotify => $"https://open.spotify.com/playlist/{id}",
+            Enums.PlayerType.Pear => $"https://music.youtube.com/playlist?list={id}",
+            _ => id
+        };
     }
 
     private static async Task HandleSongCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -2715,11 +2814,7 @@ public static class TwitchHandler
 
             await Application.Current.Dispatcher.Invoke(async () =>
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is not Window_Settings settingsWindow) continue;
-                    await settingsWindow.LoadCommands();
-                }
+                await SettingsUi.RefreshAsync(fullReload: false, loadCommands: true);
             });
         }
         catch (Exception e)
@@ -2886,25 +2981,11 @@ public static class TwitchHandler
             // Update UI hints
             Application.Current?.Dispatcher?.Invoke(() =>
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    if (window is not MainWindow mw) continue;
-
-                    // API icon to red when main reset; bot icon to red when bot reset
-                    if (account == Enums.TwitchAccount.Main)
-                    {
-                        mw.IconTwitchApi.Foreground = Brushes.IndianRed;
-                        mw.MiTwitchApi.IsEnabled = false;
-                    }
-                    else
-                    {
-                        mw.IconTwitchBot.Foreground = Brushes.IndianRed;
-                    }
-
-                    // Reflect chat disconnect availability
-                    mw.MiTwitchConnect.IsEnabled = true;
-                    mw.LblStatus.Content = "Twitch credentials cleared.";
-                }
+                if (account == Enums.TwitchAccount.Main)
+                    AppShellBridge.Current?.SetTwitchApiState(ConnectionIndicatorState.Error);
+                else
+                    AppShellBridge.Current?.SetTwitchBotState(ConnectionIndicatorState.Error);
+                AppShellBridge.Current?.SetStatusText("Twitch credentials cleared.");
             });
 
             Logger.Info(LogSource.Twitch, $"Cleared {(account == Enums.TwitchAccount.Main ? "main" : "bot")} account credentials.");
@@ -3442,6 +3523,10 @@ public static class TwitchHandler
 
             if (placeholder == "{singleartist}")
                 placeholder = "{single_artist}";
+            else if (placeholder == "{playlistname}")
+                placeholder = "{playlist_name}";
+            else if (placeholder == "{playlisturl}")
+                placeholder = "{playlist_url}";
 
             string value = property.GetValue(context)?.ToString() ?? string.Empty; // Get property value or empty string if null
             template = template.Replace(placeholder, value); // Replace placeholder in the template with value
@@ -3670,14 +3755,13 @@ public static class TwitchHandler
         string song = "";
         Application.Current.Dispatcher.Invoke(() =>
         {
-            MainWindow mainWindow = Application.Current.Windows
-                .OfType<MainWindow>()
-                .FirstOrDefault();
+            song = AppShellBridge.Current?.GetCurrentSongDisplayString() ?? "";
+            if (!string.IsNullOrWhiteSpace(song))
+                return;
 
-            if (mainWindow != null)
-            {
-                song = $"{mainWindow.SongArtist} - {mainWindow.SongTitle}";
-            }
+            var s = GlobalObjects.CurrentSong;
+            if (s != null)
+                song = $"{s.Artists} - {s.Title}";
         });
         return song;
     }
@@ -3856,6 +3940,11 @@ public static class TwitchHandler
         if (request == null)
         {
             return false;
+        }
+
+        if (string.IsNullOrWhiteSpace(request.PlayerType))
+        {
+            return GetActiveRequestPlayerType().HasValue;
         }
 
         return TryParseRequestPlayerType(request.PlayerType, out Enums.RequestPlayerType parsed)
@@ -4055,7 +4144,7 @@ public static class TwitchHandler
         {
             if (req.Queueid > 0)
             {
-                dynamic payload = new { uuid = Settings.Uuid, key = Settings.AccessKey, queueid = req.Queueid };
+                dynamic payload = new { uuid = Settings.Uuid, queueid = req.Queueid };
                 await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
             }
 
@@ -4217,21 +4306,22 @@ public static class TwitchHandler
 
         try
         {
-            foreach (BlockedArtist artist in Settings.ArtistBlacklist.Where(a => Array.IndexOf(track.Artists.Select(x => x.Id).ToArray(), a.Id) != -1))
+            // Compact HashSet lookup — does not load the full ~thousands of BlockedArtist objects.
+            if (!Settings.IsArtistBlocked(
+                    track.Artists.Select(a => (a.Id, a.Name)),
+                    out string artistName))
             {
-                string artistName = track.Artists.FirstOrDefault(a => a.Id == artist.Id)?.Name
-                                    ?? artist.Name
-                                    ?? "";
-
-                response = Settings.BotRespBlacklist;
-                response = response.Replace("{user}", e.DisplayName);
-                response = response.Replace("{artist}", artistName);
-                response = response.Replace("{title}", "");
-                response = response.Replace("{maxreq}", "");
-                response = response.Replace("{errormsg}", "");
-                response = CleanFormatString(response);
-                return true;
+                return false;
             }
+
+            response = Settings.BotRespBlacklist;
+            response = response.Replace("{user}", e?.DisplayName ?? "");
+            response = response.Replace("{artist}", artistName ?? "");
+            response = response.Replace("{title}", "");
+            response = response.Replace("{maxreq}", "");
+            response = response.Replace("{errormsg}", "");
+            response = CleanFormatString(response);
+            return true;
         }
         catch (Exception ex)
         {
@@ -4344,7 +4434,55 @@ public static class TwitchHandler
         return false;
     }
 
-    private static bool IsTrackExplicit(FullTrack track, TwitchRequestUser e, out string response)
+    private static bool IsTrackUnavailable(FullTrack track, TwitchRequestUser e, out string response)
+    {
+        response = string.Empty;
+        if (track == null)
+            return false;
+
+        try
+        {
+            // Spotify dropped available_markets / profile.country. GetTrack uses market=from_token
+            // so is_playable and restrictions.reason=market are the region-lock signals.
+            string restrictionReason = null;
+            bool marketRestricted = track.Restrictions != null &&
+                track.Restrictions.TryGetValue("reason", out restrictionReason) &&
+                string.Equals(restrictionReason, "market", StringComparison.OrdinalIgnoreCase);
+
+            if (track.IsPlayable && !marketRestricted)
+                return false;
+
+            Logger.Info(LogSource.Songrequest,
+                $"Track unavailable in streamer market: {track.Name} ({track.Id}). " +
+                $"IsPlayable={track.IsPlayable}, Restrictions={restrictionReason ?? "none"}");
+
+            string song = track.Artists is { Count: > 0 }
+                ? $"{string.Join(", ", track.Artists.Select(a => a.Name))} - {track.Name}"
+                : track.Name ?? "";
+
+            Dictionary<string, string> parameters = new()
+            {
+                { "user", e?.DisplayName ?? "" },
+                { "song", song },
+                { "artist", track.Artists != null ? string.Join(", ", track.Artists.Select(a => a.Name)) : "" },
+                { "single_artist", track.Artists?.FirstOrDefault()?.Name ?? "" },
+                { "title", track.Name ?? "" },
+                { "errormsg", "" },
+                { "maxreq", "" }
+            };
+
+            response = ReplaceParameters(Settings.BotRespUnavailable, parameters);
+            response = CleanFormatString(response);
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Songrequest, "ERROR: Issue checking Track Unavailable", ex);
+            return false;
+        }
+    }
+
+    private static bool IsTrackExplicit(FullTrack track, TwitchRequestUser e, IReadOnlyCollection<int> userLevels, out string response)
     {
         response = string.Empty;
         if (!Settings.BlockAllExplicitSongs)
@@ -4356,8 +4494,16 @@ public static class TwitchHandler
                 return false;
             }
 
+            // Broadcaster can always request explicit songs, matching other SR allowlists.
+            if (userLevels != null && userLevels.Contains((int)Enums.TwitchUserLevels.Broadcaster))
+                return false;
+
+            List<int> allowed = Settings.UserLevelsExplicitSongs;
+            if (allowed is { Count: > 0 } && userLevels is { Count: > 0 } && allowed.Intersect(userLevels).Any())
+                return false;
+
             response = Settings.BotRespTrackExplicit;
-            response = response.Replace("{user}", e.DisplayName);
+            response = response.Replace("{user}", e?.DisplayName ?? "");
             response = response.Replace("{artist}", "");
             response = response.Replace("{title}", "");
             response = response.Replace("{maxreq}", "");
@@ -4517,7 +4663,8 @@ public static class TwitchHandler
 
                 if (resp.Data == null || !resp.Data.Any())
                 {
-                    Logger.Warning(LogSource.Twitch, "TWITCH API: Cannot refund because the reward is not created through Songify.");
+                    Logger.Warning(LogSource.Twitch,
+                        $"TWITCH API: Cannot refund reward {rewardId} because it was not created through Songify. Create the song-request reward in Songify (Settings → Rewards) so failed requests can be refunded.");
                     return;
                 }
 
@@ -4742,8 +4889,8 @@ public static class TwitchHandler
         if (track == null)
             return (false, null, "No song found.");
 
-        if (IsTrackExplicit(track, null, out string msg)) return (false, null, msg);
-        //if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
+        if (IsTrackExplicit(track, null, null, out string msg)) return (false, null, msg);
+        if (IsTrackUnavailable(track, null, out msg)) return (false, null, msg);
         if (IsArtistBlacklisted(track, null, out msg)) return (false, null, msg);
         if (IsTrackTooLong(track, null, out msg)) return (false, null, msg);
         if (IsTrackAlreadyInQueue(track, null, out msg)) return (false, null, msg);
@@ -4787,7 +4934,6 @@ public static class TwitchHandler
             dynamic payload = new
             {
                 uuid = Settings.Uuid,
-                key = Settings.AccessKey,
                 queueItem = track
             };
 
@@ -4839,9 +4985,13 @@ public static class TwitchHandler
             Logger.Info(LogSource.Twitch, $"Terminated poll with ID: {poll.Id}");
         }
 
-        GlobalObjects.CurrentSkipPoll.IsActive = false;
+        if (GlobalObjects.CurrentSkipPoll != null)
+            GlobalObjects.CurrentSkipPoll.IsActive = false;
 
-        // Refund the user who did the Chnnaleoint Redemption
+        if (string.IsNullOrWhiteSpace(poll.RewardId) || string.IsNullOrWhiteSpace(poll.RedemptionId))
+            return;
+
+        // Refund the user who did the Channel Point redemption (reward-started polls only).
         UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
             Settings.TwitchUser.Id, poll.RewardId,
             [poll.RedemptionId],
@@ -4857,38 +5007,56 @@ public static class TwitchHandler
         }
     }
 
-    public static async Task StartSkipPoll(string redemptionId, string rewardId)
+    public static async Task<bool> StartSkipPoll(string redemptionId = null, string rewardId = null)
     {
-        CreatePollResponse response = await TwitchApi.Helix.Polls.CreatePollAsync(new CreatePollRequest
+        try
         {
-            BroadcasterId = Settings.TwitchUser.Id,
-            Title = Settings.TwitchPollSettings.Title,
-            Choices =
-            [
-                new Choice()
-                {
-                    Title = Settings.TwitchPollSettings.Choices.First()
-                },
-                new Choice()
-                {
-                    Title = Settings.TwitchPollSettings.Choices.Last()
-                }
-            ],
-            ChannelPointsVotingEnabled = Settings.TwitchPollSettings.AdditionalVotesEnabled,
-            ChannelPointsPerVote = Settings.TwitchPollSettings.ChannelPointsPerVote,
-            DurationSeconds = Settings.TwitchPollSettings.Duration
-        });
-
-        if (response.Data != null && response.Data.Any())
-        {
-            GlobalObjects.CurrentSkipPoll = new PollItem()
+            if (GlobalObjects.CurrentSkipPoll is { IsActive: true })
             {
-                Id = response.Data[0].Id,
-                IsActive = true,
-                RedemptionId = redemptionId,
-                RewardId = rewardId
-            };
-            Logger.Info(LogSource.Twitch, $"Started skip poll with ID: {GlobalObjects.CurrentSkipPoll.Id}");
+                Logger.Info(LogSource.Twitch, "Skip poll not started: a skip poll is already active.");
+                return false;
+            }
+
+            CreatePollResponse response = await TwitchApi.Helix.Polls.CreatePollAsync(new CreatePollRequest
+            {
+                BroadcasterId = Settings.TwitchUser.Id,
+                Title = Settings.TwitchPollSettings.Title,
+                Choices =
+                [
+                    new Choice()
+                    {
+                        Title = Settings.TwitchPollSettings.Choices.First()
+                    },
+                    new Choice()
+                    {
+                        Title = Settings.TwitchPollSettings.Choices.Last()
+                    }
+                ],
+                ChannelPointsVotingEnabled = Settings.TwitchPollSettings.AdditionalVotesEnabled,
+                ChannelPointsPerVote = Settings.TwitchPollSettings.ChannelPointsPerVote,
+                DurationSeconds = Settings.TwitchPollSettings.Duration
+            });
+
+            if (response.Data != null && response.Data.Any())
+            {
+                GlobalObjects.CurrentSkipPoll = new PollItem()
+                {
+                    Id = response.Data[0].Id,
+                    IsActive = true,
+                    RedemptionId = redemptionId,
+                    RewardId = rewardId
+                };
+                Logger.Info(LogSource.Twitch, $"Started skip poll with ID: {GlobalObjects.CurrentSkipPoll.Id}");
+                return true;
+            }
+
+            Logger.Warning(LogSource.Twitch, "Skip poll not started: empty API response.");
+            return false;
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Twitch, "Failed to start skip poll", ex);
+            return false;
         }
     }
 

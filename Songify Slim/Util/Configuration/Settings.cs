@@ -5,12 +5,12 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.Twitch;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using static Songify_Slim.Util.General.Enums;
@@ -29,8 +29,28 @@ namespace Songify_Slim.Util.Configuration
         }
 
         public static bool SharedChatEnabled { get => GetSharedChatEnabled(); set => SetSharedChatEnabled(value); }
+
+        public static bool IgnoreBotMessages { get => GetIgnoreBotMessages(); set => SetIgnoreBotMessages(value); }
+
+        public static List<string> IgnoredChatUsers { get => GetIgnoredChatUsers(); set => SetIgnoredChatUsers(value); }
+
+        public static string AccentColor { get => GetAccentColor(); set => SetAccentColor(value); }
+
+        public static List<string> RecentAccentColors => GetRecentAccentColors();
         public static long SpotifyTokenExpiresAt { get => GetSpotifyTokenExpiresAt(); set => SetSpotifyTokenExpiresAt(value); }
         public static string SrForBitsKeyWord { get => GetSrForBitsKeyWord(); set => SetSrForBitsKeyWord(value); }
+        public static int MinimumMessagesBetweenAnnounces { get => GetMinimumMessagesBetweenAnnounces(); set => SetMinimumMessagesBetweenAnnounces(value); }
+
+        private static void SetMinimumMessagesBetweenAnnounces(int value)
+        {
+            CurrentConfig.AppConfig.MinimumMessagesBetweenAnnounces = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static int GetMinimumMessagesBetweenAnnounces()
+        {
+            return CurrentConfig.AppConfig.MinimumMessagesBetweenAnnounces;
+        }
 
         private static void SetSrForBitsKeyWord(string value)
         {
@@ -63,6 +83,60 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetSharedChatEnabled()
         {
             return CurrentConfig.AppConfig.SharedChatEnabled;
+        }
+
+        private static void SetIgnoreBotMessages(bool value)
+        {
+            CurrentConfig.AppConfig.IgnoreBotMessages = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetIgnoreBotMessages()
+        {
+            return CurrentConfig.AppConfig.IgnoreBotMessages;
+        }
+
+        private static void SetIgnoredChatUsers(List<string> value)
+        {
+            CurrentConfig.AppConfig.IgnoredChatUsers = value ?? [];
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static List<string> GetIgnoredChatUsers()
+        {
+            return CurrentConfig.AppConfig.IgnoredChatUsers ??= [];
+        }
+
+        private static void SetAccentColor(string value)
+        {
+            CurrentConfig.AppConfig.AccentColor = value ?? "";
+            RememberRecentAccentColor(value);
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static string GetAccentColor()
+        {
+            return CurrentConfig.AppConfig.AccentColor ?? "";
+        }
+
+        private const int MaxRecentAccentColors = 7;
+
+        private static List<string> GetRecentAccentColors()
+        {
+            return CurrentConfig.AppConfig.RecentAccentColors ??= [];
+        }
+
+        private static void RememberRecentAccentColor(string hex)
+        {
+            if (!ThemeHandler.TryParseHex(hex, out Color color))
+                return;
+
+            string normalized = ThemeHandler.ToHex(color);
+            List<string> recents = GetRecentAccentColors();
+            recents.RemoveAll(c => string.Equals(c, normalized, StringComparison.OrdinalIgnoreCase));
+            recents.Insert(0, normalized);
+            if (recents.Count > MaxRecentAccentColors)
+                recents.RemoveRange(MaxRecentAccentColors, recents.Count - MaxRecentAccentColors);
         }
 
         private static void SetTwRewardSkipPoll(List<string> value)
@@ -344,12 +418,6 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteAllConfig(CurrentConfig);
         }
 
-        public static string AccessKey
-        {
-            get => GetAccessKey();
-            set => SetAccessKey(value);
-        }
-
         public static bool AddSrToPlaylist { get => GetAddSrToPlaylist(); set => SetAddSrToPlaylist(value); }
 
         public static bool AnnounceInChat
@@ -394,8 +462,25 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool BetaUpdates
         {
-            get => GetBetaUpdates();
-            set => SetBetaUpdates(value);
+            get => GetReleaseChannel() == ReleaseChannel.Beta;
+            set => SetReleaseChannel(value ? ReleaseChannel.Beta : ReleaseChannel.Stable);
+        }
+
+        public static ReleaseChannel ReleaseChannel
+        {
+            get => GetReleaseChannel();
+            set => SetReleaseChannel(value);
+        }
+
+        public static string GetUpdateFeedUrl()
+        {
+            string manifest = GetReleaseChannel() switch
+            {
+                ReleaseChannel.Beta => "update-beta.xml",
+                ReleaseChannel.Dev => "update-dev.xml",
+                _ => "update.xml"
+            };
+            return $"{GlobalObjects.BaseUrl}/{manifest}";
         }
 
         public static bool BlockAllExplicitSongs { get => GetBlockAllExplicitSongs(); set => SetBlockAllExplicitSongs(value); }
@@ -615,10 +700,11 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool DownloadCanvas { get => GetDownloadCanvas(); set => SetDownloadCanvas(value); }
 
+        /// <summary>Album covers are always downloaded. The setting is kept for config compatibility.</summary>
         public static bool DownloadCover
         {
-            get => GetDownloadCover();
-            set => SetDownloadCover(value);
+            get => true;
+            set => SetDownloadCover(true);
         }
 
         public static int Fontsize { get => GetFontSize(); set => SetFontSize(value); }
@@ -660,6 +746,12 @@ namespace Songify_Slim.Util.Configuration
         {
             get => GetOpenQueueOnStartup();
             set => SetOpenQueueOnStartup(value);
+        }
+
+        public static bool OpenQueuePopOutOnStartup
+        {
+            get => GetOpenQueuePopOutOnStartup();
+            set => SetOpenQueuePopOutOnStartup(value);
         }
 
         public static string OutputString
@@ -784,6 +876,36 @@ namespace Songify_Slim.Util.Configuration
         {
             get => GetTheme();
             set => SetTheme(value);
+        }
+
+        public static string WindowBackdrop
+        {
+            get => GetWindowBackdrop();
+            set => SetWindowBackdrop(value);
+        }
+
+        public static double UiScale
+        {
+            get => GetUiScale();
+            set => SetUiScale(value);
+        }
+
+        public static bool OverruleShellMinWidth
+        {
+            get => GetOverruleShellMinWidth();
+            set => SetOverruleShellMinWidth(value);
+        }
+
+        public static string NavigationPaneDisplayMode
+        {
+            get => GetNavigationPaneDisplayMode();
+            set => SetNavigationPaneDisplayMode(value);
+        }
+
+        public static bool NavigationPaneOpen
+        {
+            get => GetNavigationPaneOpen();
+            set => SetNavigationPaneOpen(value);
         }
 
         public static string TwAcc
@@ -937,18 +1059,36 @@ namespace Songify_Slim.Util.Configuration
             set => SetUpload(value);
         }
 
-        public static bool UploadHistory
-        {
-            get => GetUploadHistory();
-            set => SetUploadHistory(value);
-        }
-
         public static bool UseDefaultBrowser { get => GetUseDefaultBrowser(); set => SetUseDefaultBrowser(value); }
 
         public static bool UseOwnApp
         {
             get => GetUseOwnApp();
             set => SetUseOwnApp(value);
+        }
+
+        public static bool SetupCompleted
+        {
+            get => GetSetupCompleted();
+            set => SetSetupCompleted(value);
+        }
+
+        public static bool SetupChecklistDismissed
+        {
+            get => GetSetupChecklistDismissed();
+            set => SetSetupChecklistDismissed(value);
+        }
+
+        public static bool WidgetPromoDismissed
+        {
+            get => GetWidgetPromoDismissed();
+            set => SetWidgetPromoDismissed(value);
+        }
+
+        public static int SetupWizardVersion
+        {
+            get => GetSetupWizardVersion();
+            set => SetSetupWizardVersion(value);
         }
 
         public static List<BlockedUser> UserBlacklist
@@ -967,6 +1107,12 @@ namespace Songify_Slim.Util.Configuration
         {
             get => GetUserLevelsReward();
             set => SetUserLevelsReward(value);
+        }
+
+        public static List<int> UserLevelsExplicitSongs
+        {
+            get => GetUserLevelsExplicitSongs();
+            set => SetUserLevelsExplicitSongs(value);
         }
 
         public static string Uuid
@@ -1304,7 +1450,6 @@ namespace Songify_Slim.Util.Configuration
 
             AppConfig appConfig = new()
             {
-                AccessKey = GetAccessKey(),
                 AddSrToPlaylist = GetAddSrToPlaylist(),
                 AddSrtoPlaylistOnly = GetAddSrtoPlaylistOnly(),
                 AnnounceInChat = GetAnnounceInChat(),
@@ -1314,9 +1459,11 @@ namespace Songify_Slim.Util.Configuration
                 ArtistBlacklist = [],
                 AutoClearQueue = GetAutoClearQueue(),
                 Autostart = GetAutostart(),
+                MinimumMessagesBetweenAnnounces = GetMinimumMessagesBetweenAnnounces(),
                 AutoStartWebServer = GetAutoStartWebServer(),
                 BaseUrl = GetBaseUrl(),
-                BetaUpdates = GetBetaUpdates(),
+                BetaUpdates = GetReleaseChannel() == ReleaseChannel.Beta,
+                ReleaseChannel = GetReleaseChannel(),
                 BlockAllExplicitSongs = GetBlockAllExplicitSongs(),
                 BotOnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
                 ChromeFetchRate = GetChromeFetchRate(),
@@ -1339,6 +1486,7 @@ namespace Songify_Slim.Util.Configuration
                 MinimumBitsForSR = GetMinimumBitsForSr(),
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
+                OpenQueuePopOutOnStartup = GetOpenQueuePopOutOnStartup(),
                 OutputString = GetOutputString(),
                 OutputString2 = GetOutputString2(),
                 PauseOption = GetPauseOption(),
@@ -1348,6 +1496,7 @@ namespace Songify_Slim.Util.Configuration
                 QueueWindowColumns = GetQueueWindowColumns(),
                 ReadNotificationIds = GetReadNotificationIds(),
                 RefundConditons = GetRefundConditons(),
+                RefundConditionsMigrated = CurrentConfig.AppConfig.RefundConditionsMigrated,
                 RequesterPrefix = GetRequesterPrefix(),
                 RewardGoalAmount = GetRewardGoalAmount(),
                 RewardGoalEnabled = GetRewardGoalEnabled(),
@@ -1376,6 +1525,11 @@ namespace Songify_Slim.Util.Configuration
                 Systray = GetSystray(),
                 Telemetry = GetTelemetry(),
                 Theme = GetTheme(),
+                WindowBackdrop = GetWindowBackdrop(),
+                UiScale = GetUiScale(),
+                OverruleShellMinWidth = GetOverruleShellMinWidth(),
+                NavigationPaneDisplayMode = GetNavigationPaneDisplayMode(),
+                NavigationPaneOpen = GetNavigationPaneOpen(),
                 TwAutoConnect = GetTwAutoConnect(),
                 TwitchFetchPort = GetTwitchFetchPort(),
                 TwitchRedirectPort = GetTwitchRedirectPort(),
@@ -1401,12 +1555,16 @@ namespace Songify_Slim.Util.Configuration
                 UnlimitedSrUserlevelsReward = GetUnlimitedSrUserlevelsReward(),
                 UpdateRequired = GetUpdateRequired(),
                 Upload = GetUpload(),
-                UploadHistory = GetUploadHistory(),
                 UseDefaultBrowser = GetUseDefaultBrowser(),
                 UseOwnApp = GetUseOwnApp(),
+                SetupCompleted = GetSetupCompleted(),
+                SetupChecklistDismissed = GetSetupChecklistDismissed(),
+                WidgetPromoDismissed = GetWidgetPromoDismissed(),
+                SetupWizardVersion = GetSetupWizardVersion(),
                 UserBlacklist = GetUserBlacklist(),
                 UserLevelsCommand = GetUserLevelsCommand(),
                 UserLevelsReward = GetUserLevelsReward(),
+                UserLevelsExplicitSongs = GetUserLevelsExplicitSongs(),
                 Uuid = GetUuid(),
                 WebServerPort = GetWebServerPort(),
                 WebServerPasswordEnabled = GetWebServerPasswordEnabled(),
@@ -1417,6 +1575,10 @@ namespace Songify_Slim.Util.Configuration
                 TwitchPollSettings = GetTwitchPollSettings(),
                 TwRewardSkipPoll = GetTwRewardSkipPoll(),
                 SharedChatEnabled = GetSharedChatEnabled(),
+                IgnoreBotMessages = GetIgnoreBotMessages(),
+                IgnoredChatUsers = GetIgnoredChatUsers(),
+                AccentColor = GetAccentColor(),
+                RecentAccentColors = [..GetRecentAccentColors()],
                 SrForBitsKeyWord = GetSrForBitsKeyWord(),
             };
 
@@ -1425,9 +1587,10 @@ namespace Songify_Slim.Util.Configuration
                 Commands = CurrentConfig.TwitchCommands.Commands
             };
 
+            // Full list may be unloaded from CurrentConfig — always snapshot from disk/indexes for export.
             BlockedSpotifyArtists blockedSpotifyArtists = new()
             {
-                Artists = CurrentConfig.BlockedSpotifyArtists?.Artists ?? []
+                Artists = ArtistBlocklistStore.LoadCopy()
             };
 
             // Keep the in-memory legacy list empty so it cannot be re-persisted elsewhere.
@@ -1447,15 +1610,76 @@ namespace Songify_Slim.Util.Configuration
 
         public static void Import(Configuration config)
         {
+            if (config.AppConfig != null)
+            {
+                ConfigHandler.MigrateReleaseChannel(config.AppConfig);
+                ConfigHandler.MigrateRefundConditions(config.AppConfig);
+                ConfigHandler.MigrateIgnoreBotMessages(config.AppConfig);
+            }
+
             CurrentConfig = config;
 
             ConfigHandler.WriteAllConfig(config);
+            RebindTwitchCommands();
+        }
+
+        public static async Task ApplySelectedImport(Configuration incoming, IReadOnlyList<string> paths, bool preserveSecrets)
+        {
+            if (incoming == null || paths == null || paths.Count == 0)
+                return;
+
+            string existingApiKey = SongifyApiKey;
+            string existingWebServerPassword = WebServerPassword;
+            string existingYoutubeApiKey = YoutubeApiKey;
+
+            CurrentConfig ??= new Configuration();
+            CurrentConfig.AppConfig ??= new AppConfig();
+            CurrentConfig.BotConfig ??= new BotConfig();
+            CurrentConfig.TwitchCommands ??= new TwitchCommands { Commands = [] };
+
+            ConfigComparer.CopySelected(CurrentConfig, incoming, paths);
+
+            if (CurrentConfig.AppConfig != null)
+            {
+                ConfigHandler.MigrateReleaseChannel(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateRefundConditions(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateIgnoreBotMessages(CurrentConfig.AppConfig);
+            }
+
+            if (paths.Any(p => p.StartsWith("BlockedSpotifyArtists", StringComparison.OrdinalIgnoreCase)))
+            {
+                CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
+                CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
+                ArtistBlocklistStore.ReplaceAndUnload(CurrentConfig.BlockedSpotifyArtists.Artists);
+            }
+
+            if (preserveSecrets)
+            {
+                SongifyApiKey = existingApiKey;
+                WebServerPassword = existingWebServerPassword;
+                YoutubeApiKey = existingYoutubeApiKey;
+            }
+
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+            RebindTwitchCommands();
+
+            await Application.Current.Dispatcher.Invoke(async () =>
+            {
+                ThemeHandler.ApplyTheme();
+                LocalizationHelper.Apply(Language);
+                UiScaleHandler.Apply(UiScale);
+                AppShellBridge.Current?.ApplyNavigationChrome();
+                await BlocklistUi.RefreshArtistsAsync();
+                await SettingsUi.RefreshAsync();
+            });
         }
 
         public static async Task ImportCloudSave(Configuration config)
-        {    // Cache the existing decrypted token
+        {
+            // Secrets are never uploaded — keep the local copies before AppConfig is replaced.
             string existingApiKey = SongifyApiKey;
             string existingWebServerPassword = WebServerPassword;
+            string existingYoutubeApiKey = YoutubeApiKey;
 
             // Overwrite the config
             CurrentConfig.AppConfig = config.AppConfig;
@@ -1463,6 +1687,12 @@ namespace Songify_Slim.Util.Configuration
             CurrentConfig.TwitchCommands = config.TwitchCommands;
             CurrentConfig.BlockedSpotifyArtists = config.BlockedSpotifyArtists ?? new BlockedSpotifyArtists();
             CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
+
+            if (CurrentConfig.AppConfig != null)
+            {
+                ConfigHandler.MigrateReleaseChannel(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateIgnoreBotMessages(CurrentConfig.AppConfig);
+            }
 
             // Older cloud saves may still keep artists on AppConfig; migrate into BlockedSpotifyArtists.
             List<BlockedArtist> legacyArtists = CurrentConfig.AppConfig?.ArtistBlacklist;
@@ -1479,36 +1709,38 @@ namespace Songify_Slim.Util.Configuration
                 CurrentConfig.AppConfig.ArtistBlacklist.Clear();
             }
 
-            // Restore secrets that are never uploaded
+            // Persist artists + rebuild compact indexes, then drop full objects from RAM.
+            ArtistBlocklistStore.ReplaceAndUnload(CurrentConfig.BlockedSpotifyArtists.Artists);
+
+            // Restore secrets that are never uploaded (cloud payloads null these out on save).
             SongifyApiKey = existingApiKey;
             WebServerPassword = existingWebServerPassword;
+            YoutubeApiKey = existingYoutubeApiKey;
 
-            // Re-apply UI settings
+            RebindTwitchCommands();
+
+            // Re-apply UI settings and refresh blocklist pages
             await Application.Current.Dispatcher.Invoke(async () =>
             {
-                foreach (Window window in Application.Current.Windows)
-                {
-                    switch (window)
-                    {
-                        case Window_Settings settingsWindow:
-                            await settingsWindow.SetControls();
-                            break;
-                        case Window_Blacklist blockListWindow:
-                            blockListWindow.RefreshArtists();
-                            break;
-                    }
-                }
+                await BlocklistUi.RefreshArtistsAsync();
+                await SettingsUi.RefreshAsync();
+                AppShellBridge.Current?.ApplyNavigationChrome();
             });
         }
 
         public static void ResetConfig()
         {
             CurrentConfig = new Configuration();
+            ArtistBlocklistStore.InitializeFromConfigAndUnload();
         }
 
-        private static string GetAccessKey()
+        /// <summary>Chat uses the registered command objects, not the settings list. Re-bind after import.</summary>
+        private static void RebindTwitchCommands()
         {
-            return CurrentConfig.AppConfig.AccessKey;
+            List<TwitchCommand> commands = CurrentConfig?.TwitchCommands?.Commands;
+            if (commands == null)
+                return;
+            TwitchHandler.InitializeCommands(commands);
         }
 
         private static bool GetAddSrToPlaylist()
@@ -1533,10 +1765,21 @@ namespace Songify_Slim.Util.Configuration
 
         private static List<BlockedArtist> GetArtistBlacklist()
         {
-            CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
-            CurrentConfig.BlockedSpotifyArtists.Artists ??= [];
-            return CurrentConfig.BlockedSpotifyArtists.Artists;
+            // Loads from disk into CurrentConfig when the full list was previously unloaded.
+            return ArtistBlocklistStore.EnsureLoaded();
         }
+
+        /// <summary>Number of blocked artists (from compact index; does not load the full list).</summary>
+        public static int ArtistBlacklistCount => ArtistBlocklistStore.Count;
+
+        /// <summary>
+        /// Song-request check against compact ID/name indexes — does not load the full artist list into memory.
+        /// </summary>
+        public static bool IsArtistBlocked(IEnumerable<(string Id, string Name)> trackArtists, out string matchedArtistName)
+            => ArtistBlocklistStore.IsArtistBlocked(trackArtists, out matchedArtistName);
+
+        /// <summary>Drop full blocked-artist objects from memory after UI/export work. Lookups keep working.</summary>
+        public static void UnloadArtistBlacklist() => ArtistBlocklistStore.Unload();
 
         private static bool GetAutoClearQueue()
         {
@@ -1558,9 +1801,10 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.BaseUrl;
         }
 
-        private static bool GetBetaUpdates()
+        private static ReleaseChannel GetReleaseChannel()
         {
-            return CurrentConfig.AppConfig.BetaUpdates;
+            return CurrentConfig.AppConfig.ReleaseChannel
+                   ?? (CurrentConfig.AppConfig.BetaUpdates ? ReleaseChannel.Beta : ReleaseChannel.Stable);
         }
 
         private static bool GetBlockAllExplicitSongs()
@@ -1840,7 +2084,7 @@ namespace Songify_Slim.Util.Configuration
 
         private static bool GetDownloadCover()
         {
-            return CurrentConfig.AppConfig.DownloadCover;
+            return true;
         }
 
         private static int GetFontSize()
@@ -1888,6 +2132,11 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.OpenQueueOnStartup;
         }
 
+        private static bool GetOpenQueuePopOutOnStartup()
+        {
+            return CurrentConfig.AppConfig.OpenQueuePopOutOnStartup;
+        }
+
         private static string GetOutputString()
         {
             return CurrentConfig.AppConfig.OutputString;
@@ -1925,7 +2174,7 @@ namespace Songify_Slim.Util.Configuration
 
         private static List<RefundCondition> GetRefundConditons()
         {
-            return CurrentConfig.AppConfig.RefundConditons;
+            return CurrentConfig.AppConfig.RefundConditons ??= [];
         }
 
         private static string GetRequesterPrefix()
@@ -2031,6 +2280,45 @@ namespace Songify_Slim.Util.Configuration
         private static string GetTheme()
         {
             return CurrentConfig.AppConfig.Theme;
+        }
+
+        private static string GetWindowBackdrop()
+        {
+            return string.IsNullOrWhiteSpace(CurrentConfig.AppConfig.WindowBackdrop)
+                ? "Mica"
+                : CurrentConfig.AppConfig.WindowBackdrop;
+        }
+
+        private static double GetUiScale()
+        {
+            return UiScaleHandler.Clamp(CurrentConfig.AppConfig.UiScale);
+        }
+
+        private static bool GetOverruleShellMinWidth()
+        {
+            return CurrentConfig.AppConfig.OverruleShellMinWidth;
+        }
+
+        /// <summary>
+        /// Allowed values: Left (Expanded), Top, Bottom. Overlay/Large-icons and anything else become Left.
+        /// </summary>
+        private static string NormalizeNavigationPaneDisplayMode(string value)
+        {
+            if (string.Equals(value?.Trim(), "Top", StringComparison.OrdinalIgnoreCase))
+                return "Top";
+            if (string.Equals(value?.Trim(), "Bottom", StringComparison.OrdinalIgnoreCase))
+                return "Bottom";
+            return "Left";
+        }
+
+        private static string GetNavigationPaneDisplayMode()
+        {
+            return NormalizeNavigationPaneDisplayMode(CurrentConfig?.AppConfig?.NavigationPaneDisplayMode);
+        }
+
+        private static bool GetNavigationPaneOpen()
+        {
+            return CurrentConfig.AppConfig.NavigationPaneOpen;
         }
 
         private static string GetTwAcc()
@@ -2188,11 +2476,6 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.Upload;
         }
 
-        private static bool GetUploadHistory()
-        {
-            return CurrentConfig.AppConfig.UploadHistory;
-        }
-
         private static bool GetUseDefaultBrowser()
         {
             return CurrentConfig.AppConfig.UseDefaultBrowser;
@@ -2201,6 +2484,26 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetUseOwnApp()
         {
             return CurrentConfig.AppConfig.UseOwnApp;
+        }
+
+        private static bool GetSetupCompleted()
+        {
+            return CurrentConfig.AppConfig.SetupCompleted;
+        }
+
+        private static bool GetSetupChecklistDismissed()
+        {
+            return CurrentConfig.AppConfig.SetupChecklistDismissed;
+        }
+
+        private static bool GetWidgetPromoDismissed()
+        {
+            return CurrentConfig.AppConfig.WidgetPromoDismissed;
+        }
+
+        private static int GetSetupWizardVersion()
+        {
+            return CurrentConfig.AppConfig.SetupWizardVersion;
         }
 
         private static List<BlockedUser> GetUserBlacklist()
@@ -2216,6 +2519,11 @@ namespace Songify_Slim.Util.Configuration
         private static List<int> GetUserLevelsReward()
         {
             return CurrentConfig.AppConfig.UserLevelsReward;
+        }
+
+        private static List<int> GetUserLevelsExplicitSongs()
+        {
+            return CurrentConfig.AppConfig.UserLevelsExplicitSongs ??= [];
         }
 
         private static string GetUuid()
@@ -2248,12 +2556,6 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.YtmdToken;
         }
 
-        private static void SetAccessKey(string value)
-        {
-            CurrentConfig.AppConfig.AccessKey = value;
-            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
-        }
-
         private static void SetAddSrToPlaylist(bool value)
         {
             CurrentConfig.AppConfig.AddSrToPlaylist = value;
@@ -2280,9 +2582,8 @@ namespace Songify_Slim.Util.Configuration
 
         private static void SetArtistBlacklist(List<BlockedArtist> value)
         {
-            CurrentConfig.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
-            CurrentConfig.BlockedSpotifyArtists.Artists = value ?? [];
-            ConfigHandler.WriteConfig(ConfigTypes.BlockedSpotifyArtists, CurrentConfig.BlockedSpotifyArtists);
+            // Persist to disk, refresh lookup indexes, then unload full objects from RAM.
+            ArtistBlocklistStore.ReplaceAndUnload(value);
         }
 
         private static void SetAutoClearQueue(bool value)
@@ -2309,9 +2610,10 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetBetaUpdates(bool value)
+        private static void SetReleaseChannel(ReleaseChannel value)
         {
-            CurrentConfig.AppConfig.BetaUpdates = value;
+            CurrentConfig.AppConfig.ReleaseChannel = value;
+            CurrentConfig.AppConfig.BetaUpdates = value == ReleaseChannel.Beta;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
@@ -2647,7 +2949,7 @@ namespace Songify_Slim.Util.Configuration
 
         private static void SetDownloadCover(bool value)
         {
-            CurrentConfig.AppConfig.DownloadCover = value;
+            CurrentConfig.AppConfig.DownloadCover = true;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
@@ -2702,6 +3004,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetOpenQueueOnStartup(bool value)
         {
             CurrentConfig.AppConfig.OpenQueueOnStartup = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetOpenQueuePopOutOnStartup(bool value)
+        {
+            CurrentConfig.AppConfig.OpenQueuePopOutOnStartup = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
@@ -2864,6 +3172,36 @@ namespace Songify_Slim.Util.Configuration
         private static void SetTheme(string value)
         {
             CurrentConfig.AppConfig.Theme = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetWindowBackdrop(string value)
+        {
+            CurrentConfig.AppConfig.WindowBackdrop = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetUiScale(double value)
+        {
+            CurrentConfig.AppConfig.UiScale = UiScaleHandler.Clamp(value);
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetOverruleShellMinWidth(bool value)
+        {
+            CurrentConfig.AppConfig.OverruleShellMinWidth = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetNavigationPaneDisplayMode(string value)
+        {
+            CurrentConfig.AppConfig.NavigationPaneDisplayMode = NormalizeNavigationPaneDisplayMode(value);
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetNavigationPaneOpen(bool value)
+        {
+            CurrentConfig.AppConfig.NavigationPaneOpen = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
@@ -3049,12 +3387,6 @@ namespace Songify_Slim.Util.Configuration
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
-        private static void SetUploadHistory(bool value)
-        {
-            CurrentConfig.AppConfig.UploadHistory = value;
-            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
-        }
-
         private static void SetUseDefaultBrowser(bool value)
         {
             CurrentConfig.AppConfig.UseDefaultBrowser = value;
@@ -3064,6 +3396,30 @@ namespace Songify_Slim.Util.Configuration
         private static void SetUseOwnApp(bool value)
         {
             CurrentConfig.AppConfig.UseOwnApp = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetSetupCompleted(bool value)
+        {
+            CurrentConfig.AppConfig.SetupCompleted = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetSetupChecklistDismissed(bool value)
+        {
+            CurrentConfig.AppConfig.SetupChecklistDismissed = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetWidgetPromoDismissed(bool value)
+        {
+            CurrentConfig.AppConfig.WidgetPromoDismissed = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetSetupWizardVersion(int value)
+        {
+            CurrentConfig.AppConfig.SetupWizardVersion = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 
@@ -3082,6 +3438,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetUserLevelsReward(List<int> value)
         {
             CurrentConfig.AppConfig.UserLevelsReward = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetUserLevelsExplicitSongs(List<int> value)
+        {
+            CurrentConfig.AppConfig.UserLevelsExplicitSongs = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

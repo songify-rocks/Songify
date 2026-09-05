@@ -1,32 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
-using Songify_Slim.Models;
+﻿using System.Windows;
 using Songify_Slim.Models.Responses;
 using Songify_Slim.UserControls;
+using Songify_Slim.Util.General;
 
-namespace Songify_Slim.Views
+namespace Songify_Slim.Views;
+
+/// <summary>Fluent dialog hosting a full PSA / notification message.</summary>
+public partial class WindowUniversalDialog
 {
-    /// <summary>
-    /// Interaction logic for Window_UniversalDialog.xaml
-    /// </summary>
-    public partial class WindowUniversalDialog
+    public WindowUniversalDialog(Psa psa, string title)
     {
-        public WindowUniversalDialog(Psa psa, string title)
-        {
-            InitializeComponent();
-            Title = title;
-            ContentControl.Content = new PsaControl(psa, true);
-        }
+        InitializeComponent();
+        ThemeHandler.ApplyTheme();
+        Title = string.IsNullOrWhiteSpace(title)
+            ? TryFindResource("window_universaldialog_title") as string ?? "Notification"
+            : title;
+        if (DlgTitleBar != null)
+            DlgTitleBar.Title = Title;
+        ContentControl.Content = new PsaControl(psa, byPassLimit: true);
     }
+
+    private void BtnClose_OnClick(object sender, RoutedEventArgs e) => Close();
 }

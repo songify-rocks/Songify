@@ -265,21 +265,53 @@ namespace Songify_Slim.Util.Songify.Pear
             await _httpClient.PostAsync("previous", null);
         }
 
+        /// <summary>
+        /// Pear queue API index for <paramref name="reqObjTrackid"/>.
+        /// Uses <see cref="Song.Pos"/> (original GET /queue items index), not the parsed-list index —
+        /// QueueParser skips non-song rows, so FindIndex would DELETE the wrong item.
+        /// Prefers the occurrence after the current track because YTM keeps played history
+        /// (and radio/playlist copies) that can share a videoId with a later request.
+        /// </summary>
         public static async Task<int> GetIndexAsync(string reqObjTrackid)
         {
             List<Song> queue = await GetQueueAsync();
-            int index = queue.FindIndex(s => s.Id == reqObjTrackid);
-            return index;
+            if (queue == null || string.IsNullOrWhiteSpace(reqObjTrackid))
+                return -1;
+
+            int currentPos = queue.FirstOrDefault(s => s.IsCurrent)?.Pos ?? -1;
+
+            Song pending = queue.FirstOrDefault(s =>
+                s.Pos > currentPos &&
+                string.Equals(s.Id, reqObjTrackid, StringComparison.Ordinal));
+            if (pending != null)
+                return pending.Pos;
+
+            Song any = queue.FirstOrDefault(s =>
+                string.Equals(s.Id, reqObjTrackid, StringComparison.Ordinal));
+            return any?.Pos ?? -1;
         }
 
         public static async Task<ApiOk> RemoveQueueItem(int index)
         {
-            HttpResponseMessage result = await _httpClient.DeleteAsync($"queue/{index}");
-
-            return new ApiOk
+            try
             {
-                Ok = result.IsSuccessStatusCode
-            };
+                HttpResponseMessage result = await _httpClient.DeleteAsync($"queue/{index}");
+                if (!result.IsSuccessStatusCode)
+                    Logger.Error(LogSource.Pear, $"remove queue item {index} failed with status code: {result.StatusCode}");
+
+                return new ApiOk
+                {
+                    Ok = result.IsSuccessStatusCode
+                };
+            }
+            catch (Exception e)
+            {
+                Logger.Error(LogSource.Pear, $"remove queue item {index} failed", e);
+                return new ApiOk
+                {
+                    Ok = false
+                };
+            }
         }
     }
 }

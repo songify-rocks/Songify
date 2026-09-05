@@ -6,7 +6,6 @@ namespace Songify_Slim.Models
     public sealed class SongUploadPayload
     {
         public string uuid { get; set; }
-        public string key { get; set; }
         public string song { get; set; }
         public string cover { get; set; }
         public string song_id { get; set; }

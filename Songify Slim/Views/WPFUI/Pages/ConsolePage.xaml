@@ -1,0 +1,66 @@
+<Page
+    x:Class="Songify_Slim.Views.WPFUI.Pages.ConsolePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:controls="clr-namespace:Songify_Slim.Views.WPFUI.Controls"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="{DynamicResource menu_view_console}"
+    VerticalAlignment="Stretch"
+    ScrollViewer.CanContentScroll="False"
+    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+    ScrollViewer.PanningMode="None"
+    ScrollViewer.VerticalScrollBarVisibility="Disabled">
+    <Grid Margin="24" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" MinHeight="0" />
+        </Grid.RowDefinitions>
+
+        <Grid Margin="0,0,0,16">
+            <TextBlock
+                FontSize="28"
+                FontWeight="SemiBold"
+                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                Text="{DynamicResource menu_view_console}" />
+            <ui:Button
+                x:Name="BtnDetachConsole"
+                HorizontalAlignment="Right"
+                Appearance="Secondary"
+                Click="BtnDetachConsole_Click"
+                Content="{DynamicResource window_console_detach}"
+                ToolTip="{DynamicResource window_console_detach_attach}" />
+        </Grid>
+
+        <controls:ConsoleView
+            x:Name="ConsoleHost"
+            Grid.Row="1" />
+
+        <ui:Card
+            x:Name="CardDetached"
+            Grid.Row="1"
+            Padding="16"
+            VerticalAlignment="Top"
+            Visibility="Collapsed">
+            <StackPanel>
+                <TextBlock
+                    Margin="0,0,0,8"
+                    FontSize="14"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource window_console_detached_title}"
+                    TextWrapping="Wrap" />
+                <TextBlock
+                    Margin="0,0,0,12"
+                    FontSize="13"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{DynamicResource window_console_detached_body}"
+                    TextWrapping="Wrap" />
+                <ui:Button
+                    HorizontalAlignment="Left"
+                    Appearance="Primary"
+                    Click="BtnShowConsoleWindow_Click"
+                    Content="{DynamicResource window_console_show_window}" />
+            </StackPanel>
+        </ui:Card>
+    </Grid>
+</Page>

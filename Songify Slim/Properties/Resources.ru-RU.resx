@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -369,9 +369,6 @@
   <data name="window_createreward_create" xml:space="preserve">
     <value>Создать награду</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Заголовок</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Стоимость</value>
   </data>
@@ -515,6 +512,21 @@
   </data>
   <data name="window_settings_config_beta_updates" xml:space="preserve">
     <value>Получать бета-обновления</value>
+  </data>
+  <data name="window_settings_system_release_channel" xml:space="preserve">
+    <value>Канал обновлений</value>
+  </data>
+  <data name="window_settings_system_release_channel_hint" xml:space="preserve">
+    <value>Выберите, какие обновления получать.</value>
+  </data>
+  <data name="window_settings_release_channel_stable" xml:space="preserve">
+    <value>Стабильный</value>
+  </data>
+  <data name="window_settings_release_channel_beta" xml:space="preserve">
+    <value>Бета</value>
+  </data>
+  <data name="window_settings_release_channel_dev" xml:space="preserve">
+    <value>Dev (Нестабильный)</value>
   </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Пожалуйста, привяжите свою учетную запись Spotify. Настройки -&gt; Spotify</value>
@@ -1478,5 +1490,1040 @@
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Всплывающие уведомления Windows о лимитах запросов Spotify, проблемах со входом в систему и ошибках API. Баннер в приложении по-прежнему отображается, даже если эта функция отключена.</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Создать награду для канала</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Общий</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Пределы</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Фильтры</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Биты</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Больше вариантов</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Ничего не выбрано</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Передовой</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Резервная копия</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Облако</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Порты аутентификации Twitch</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Обновить страницу входа в Twitch</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Щелкните правой кнопкой мыши, чтобы вставить токены форматирования (исполнитель, название, заказчик и т. д.).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Синхронизация со всеми уровнями пользователей</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Опрос {0} секунд (простой)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Опрос 1 мин (простой)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>Скорость загрузки данных в Spotify снижена в режиме ожидания для экономии квоты API. Нажмите, чтобы восстановить нормальную скорость в настройках.</value>
+  </data>
+  <data name="menu_tools" xml:space="preserve">
+    <value>Инструменты</value>
+    <comment>Context: Top shell menu for Widget, web server URL, queue/history in browser.</comment>
+  </data>
+  <data name="menu_more" xml:space="preserve">
+    <value>Ещё…</value>
+    <comment>Context: Overflow menu in shell title bar.</comment>
+  </data>
+  <data name="nav_home" xml:space="preserve">
+    <value>Главная</value>
+    <comment>Context: Shell navigation item for the overview/home page.</comment>
+  </data>
+  <data name="common_loading" xml:space="preserve">
+    <value>Загрузка…</value>
+    <comment>Context: Generic loading indicator on pages (e.g. block list).</comment>
+  </data>
+  <data name="common_import" xml:space="preserve">
+    <value>Импорт</value>
+    <comment>Context: Generic Import button.</comment>
+  </data>
+  <data name="common_refresh" xml:space="preserve">
+    <value>Обновить</value>
+    <comment>Context: Generic Refresh button.</comment>
+  </data>
+  <data name="common_remove_selected" xml:space="preserve">
+    <value>Удалить выбранное</value>
+    <comment>Context: Button to remove the currently selected list item(s).</comment>
+  </data>
+  <data name="common_show" xml:space="preserve">
+    <value>Показать</value>
+    <comment>Context: Tray menu item to show the main window.</comment>
+  </data>
+  <data name="common_website" xml:space="preserve">
+    <value>Сайт</value>
+    <comment>Context: Button/link to open the product website.</comment>
+  </data>
+  <data name="common_dismiss" xml:space="preserve">
+    <value>Скрыть</value>
+    <comment>Context: Tooltip or action to dismiss a banner/notification.</comment>
+  </data>
+  <data name="window_blocklist_subtitle" xml:space="preserve">
+    <value>Заблокированные исполнители, пользователи и треки</value>
+    <comment>Context: Subtitle under Block list page title.</comment>
+  </data>
+  <data name="window_blocklist_categories" xml:space="preserve">
+    <value>КАТЕГОРИИ</value>
+    <comment>Context: Section label above block-list category rail (Artists/Users/Songs).</comment>
+  </data>
+  <data name="window_blocklist_search_artist_placeholder" xml:space="preserve">
+    <value>Поиск исполнителя Spotify…</value>
+    <comment>Context: Placeholder in artist search box (Spotify lookup).</comment>
+  </data>
+  <data name="window_blocklist_filter_artists" xml:space="preserve">
+    <value>Фильтр исполнителей…</value>
+    <comment>Context: Placeholder for filtering the artists list.</comment>
+  </data>
+  <data name="window_blocklist_filter_users" xml:space="preserve">
+    <value>Фильтр пользователей…</value>
+    <comment>Context: Placeholder for filtering the users list.</comment>
+  </data>
+  <data name="window_blocklist_filter_songs" xml:space="preserve">
+    <value>Фильтр треков…</value>
+    <comment>Context: Placeholder for filtering the songs list.</comment>
+  </data>
+  <data name="window_blocklist_add_username" xml:space="preserve">
+    <value>Добавить имя пользователя</value>
+    <comment>Context: Placeholder for adding a Twitch username to the block list.</comment>
+  </data>
+  <data name="window_blocklist_clear_artists" xml:space="preserve">
+    <value>Очистить исполнителей</value>
+    <comment>Context: Button to clear all blocked artists.</comment>
+  </data>
+  <data name="window_blocklist_clear_users" xml:space="preserve">
+    <value>Очистить пользователей</value>
+    <comment>Context: Button to clear all blocked users.</comment>
+  </data>
+  <data name="window_blocklist_clear_songs" xml:space="preserve">
+    <value>Очистить треки</value>
+    <comment>Context: Button to clear all blocked songs.</comment>
+  </data>
+  <data name="window_blocklist_item_singular" xml:space="preserve">
+    <value>1 запись</value>
+    <comment>Context: Count label on category rail when exactly one entry.</comment>
+  </data>
+  <data name="window_blocklist_item_plural" xml:space="preserve">
+    <value>{0} записей</value>
+    <comment>Context: Count label on category rail; {0} = number of entries.</comment>
+  </data>
+  <data name="window_history_subtitle" xml:space="preserve">
+    <value>Треки за последние дни</value>
+    <comment>Context: Subtitle under History page title.</comment>
+  </data>
+  <data name="window_history_days" xml:space="preserve">
+    <value>ДНИ</value>
+    <comment>Context: Section label above history date list.</comment>
+  </data>
+  <data name="window_history_copy_url" xml:space="preserve">
+    <value>Копировать URL</value>
+    <comment>Context: Button to copy the public history URL.</comment>
+  </data>
+  <data name="window_history_save_locally" xml:space="preserve">
+    <value>Сохранять локально</value>
+    <comment>Context: Toggle to save history to disk.</comment>
+  </data>
+  <data name="window_history_delete_day" xml:space="preserve">
+    <value>Удалить день</value>
+    <comment>Context: Context menu to delete a history day.</comment>
+  </data>
+  <data name="window_history_delete_song" xml:space="preserve">
+    <value>Удалить трек</value>
+    <comment>Context: Context menu to delete a song from history.</comment>
+  </data>
+  <data name="window_history_empty" xml:space="preserve">
+    <value>Истории пока нет</value>
+    <comment>Context: Empty state when no history days exist.</comment>
+  </data>
+  <data name="window_history_no_songs" xml:space="preserve">
+    <value>Нет треков за этот день</value>
+    <comment>Context: Empty state when selected day has no songs.</comment>
+  </data>
+  <data name="window_history_refresh_tooltip" xml:space="preserve">
+    <value>Перезагрузить файл истории</value>
+    <comment>Context: Tooltip on History Refresh button.</comment>
+  </data>
+  <data name="window_history_save_tooltip" xml:space="preserve">
+    <value>Сохранять историю на диск</value>
+    <comment>Context: Tooltip on Save locally toggle.</comment>
+  </data>
+  <data name="window_history_upload_tooltip" xml:space="preserve">
+    <value>Загружать историю в Songify</value>
+    <comment>Context: Tooltip on Upload history toggle.</comment>
+  </data>
+  <data name="window_settings_page_subtitle" xml:space="preserve">
+    <value>Настройки приложения, музыки, Twitch и сети</value>
+    <comment>Context: Subtitle under Settings page title.</comment>
+  </data>
+  <data name="window_overview_nothing_playing" xml:space="preserve">
+    <value>Ничего не играет</value>
+    <comment>Context: Empty state on Home/Overview when no track is playing.</comment>
+  </data>
+  <data name="window_overview_up_next" xml:space="preserve">
+    <value>Далее</value>
+    <comment>Context: Label for the next queued track on Home.</comment>
+  </data>
+  <data name="window_overview_open_queue" xml:space="preserve">
+    <value>Открыть очередь</value>
+    <comment>Context: Link/button on Home to open the queue page.</comment>
+  </data>
+  <data name="window_overview_nothing_queued" xml:space="preserve">
+    <value>Очередь пуста</value>
+    <comment>Context: Empty state when the request queue has no upcoming tracks.</comment>
+  </data>
+  <data name="window_queue_no_art" xml:space="preserve">
+    <value>Нет обложки</value>
+    <comment>Context: Placeholder when album art is missing in queue/home cards.</comment>
+  </data>
+  <data name="window_console_refresh_metrics" xml:space="preserve">
+    <value>Обновить метрики</value>
+    <comment>Context: Button on Console page to refresh API metrics.</comment>
+  </data>
+  <data name="window_createreward_fields_required" xml:space="preserve">
+    <value>Укажите название, описание и стоимость.</value>
+    <comment>Context: Validation message when create-reward form is incomplete.</comment>
+  </data>
+  <data name="window_createreward_unable" xml:space="preserve">
+    <value>Не удалось создать награду.</value>
+    <comment>Context: Error when Twitch reward creation fails without exception detail.</comment>
+  </data>
+  <data name="window_main_status_twitch_api" xml:space="preserve">
+    <value>Twitch API</value>
+    <comment>Context: Status bar label for Twitch API connection.</comment>
+  </data>
+  <data name="window_main_status_twitch_bot" xml:space="preserve">
+    <value>Twitch-бот</value>
+    <comment>Context: Status bar label for Twitch chat bot connection.</comment>
+  </data>
+  <data name="window_main_status_spotify" xml:space="preserve">
+    <value>Spotify</value>
+    <comment>Context: Status bar label for Spotify connection.</comment>
+  </data>
+  <data name="window_main_status_pear" xml:space="preserve">
+    <value>Pear</value>
+    <comment>Context: Status bar label for Pear desktop player.</comment>
+  </data>
+  <data name="window_main_status_webserver" xml:space="preserve">
+    <value>Веб-сервер</value>
+    <comment>Context: Status bar label for local web server.</comment>
+  </data>
+  <data name="window_settings_spotify_idle_backoff_tooltip" xml:space="preserve">
+    <value>Опрос Spotify замедлен в простое ради квоты API. Нажмите, чтобы вернуть обычный интервал в настройках.</value>
+    <comment>Context: Tooltip on status-bar chip when Spotify polling is in idle backoff.</comment>
+  </data>
+  <data name="window_settings_nav_general" xml:space="preserve">
+    <value>Общие</value>
+    <comment>Context: Settings left-nav group header for System/Output/Config.</comment>
+  </data>
+  <data name="window_settings_nav_music" xml:space="preserve">
+    <value>Музыка</value>
+    <comment>Context: Settings left-nav group header for Spotify/YouTube.</comment>
+  </data>
+  <data name="window_settings_nav_network" xml:space="preserve">
+    <value>Сеть</value>
+    <comment>Context: Settings left-nav group header for Web server.</comment>
+  </data>
+  <data name="window_settings_nav_other" xml:space="preserve">
+    <value>Прочее</value>
+    <comment>Context: Settings left-nav group header for uncategorized tabs.</comment>
+  </data>
+  <data name="window_settings_appearance_theme" xml:space="preserve">
+    <value>Тема</value>
+    <comment>Context: Settings appearance label for light/dark theme.</comment>
+  </data>
+  <data name="window_settings_appearance_theme_hint" xml:space="preserve">
+    <value>Светлая или тёмная тема приложения</value>
+    <comment>Context: Hint under Theme in Settings appearance.</comment>
+  </data>
+  <data name="window_settings_appearance_backdrop" xml:space="preserve">
+    <value>Фон окна</value>
+    <comment>Context: Settings appearance label for Mica/Acrylic backdrop.</comment>
+  </data>
+  <data name="window_settings_appearance_backdrop_hint" xml:space="preserve">
+    <value>Эффекты фона приложения.</value>
+    <comment>Context: Hint under Window backdrop in Settings.</comment>
+  </data>
+  <data name="window_settings_options" xml:space="preserve">
+    <value>Параметры</value>
+    <comment>Context: Section header for misc options in Settings.</comment>
+  </data>
+  <data name="window_settings_accounts_hint" xml:space="preserve">
+    <value>Привяжите аккаунт стримера и при желании бота для чата.</value>
+    <comment>Context: Hint under Accounts section in Twitch settings.</comment>
+  </data>
+  <data name="window_settings_broadcaster" xml:space="preserve">
+    <value>СТРИМЕР</value>
+    <comment>Context: Uppercase label for broadcaster Twitch account card.</comment>
+  </data>
+  <data name="window_settings_bot" xml:space="preserve">
+    <value>БОТ</value>
+    <comment>Context: Uppercase label for Twitch bot account card.</comment>
+  </data>
+  <data name="window_settings_chat_account_hint" xml:space="preserve">
+    <value>Выберите, какой привязанный аккаунт пишет в чат.</value>
+    <comment>Context: Hint for chat account picker in Twitch settings.</comment>
+  </data>
+  <data name="window_settings_manual_oauth_hint" xml:space="preserve">
+    <value>Дополнительно: вставьте имя, OAuth-токен и канал вручную.</value>
+    <comment>Context: Hint for manual Twitch OAuth fields.</comment>
+  </data>
+  <data name="window_settings_connection_chat" xml:space="preserve">
+    <value>Подключение и чат</value>
+    <comment>Context: Section header for Twitch connection and chat options.</comment>
+  </data>
+  <data name="window_settings_poll_content" xml:space="preserve">
+    <value>Содержимое опроса</value>
+    <comment>Context: Section header for skip-vote poll title/options text.</comment>
+  </data>
+  <data name="window_settings_voting_options" xml:space="preserve">
+    <value>Варианты голосования</value>
+    <comment>Context: Section header for poll answer buttons / choices.</comment>
+  </data>
+  <data name="window_settings_poll_skip_on_win_hint" xml:space="preserve">
+    <value>Если этот ответ победит в опросе, Songify пропустит текущий трек.</value>
+    <comment>Context: Hint for poll answer that triggers a song skip.</comment>
+  </data>
+  <data name="window_settings_who_can_request" xml:space="preserve">
+    <value>Кто может заказывать</value>
+    <comment>Context: Section header for song-request user-level permissions.</comment>
+  </data>
+  <data name="window_settings_spotify_account" xml:space="preserve">
+    <value>Аккаунт Spotify</value>
+    <comment>Context: Section header for linked Spotify account.</comment>
+  </data>
+  <data name="window_settings_poll_interval_seconds" xml:space="preserve">
+    <value>Интервал опроса (секунды)</value>
+    <comment>Context: Label for numeric poll/fetch interval in seconds.</comment>
+  </data>
+  <data name="window_settings_artist_blocklist_sync" xml:space="preserve">
+    <value>Синхронизация блоклиста исполнителей</value>
+    <comment>Context: Section header for hourly CSV artist blocklist sync.</comment>
+  </data>
+  <data name="window_settings_artist_blocklist_sync_hint" xml:space="preserve">
+    <value>Каждый час скачивайте HTTPS CSV (например raw GitHub) и добавляйте исполнителей в блоклист Spotify. Настройте столбцы один раз после «Определить».</value>
+    <comment>Context: Description of artist blocklist CSV sync feature.</comment>
+  </data>
+  <data name="window_settings_csv_url" xml:space="preserve">
+    <value>URL CSV</value>
+    <comment>Context: Label for CSV download URL field.</comment>
+  </data>
+  <data name="window_settings_name_column" xml:space="preserve">
+    <value>Столбец имени</value>
+    <comment>Context: CSV column mapping for artist name.</comment>
+  </data>
+  <data name="window_settings_id_column" xml:space="preserve">
+    <value>Столбец id</value>
+    <comment>Context: CSV column mapping for artist id.</comment>
+  </data>
+  <data name="window_settings_detect" xml:space="preserve">
+    <value>Определить</value>
+    <comment>Context: Button to detect CSV columns for blocklist sync.</comment>
+  </data>
+  <data name="window_settings_sync_now" xml:space="preserve">
+    <value>Синхронизировать сейчас</value>
+    <comment>Context: Button to run artist blocklist CSV sync immediately.</comment>
+  </data>
+  <data name="window_settings_hourly_auto_sync" xml:space="preserve">
+    <value>Автосинхронизация каждый час</value>
+    <comment>Context: Toggle for hourly artist blocklist sync.</comment>
+  </data>
+  <data name="window_settings_last_sync_never" xml:space="preserve">
+    <value>Последняя синхронизация: никогда</value>
+    <comment>Context: Status when artist blocklist has never synced.</comment>
+  </data>
+  <data name="window_settings_last_sync" xml:space="preserve">
+    <value>Последняя синхронизация: {0}</value>
+    <comment>Context: Status showing last artist blocklist sync time; {0} = timestamp.</comment>
+  </data>
+  <data name="window_settings_youtube_api_key_hint" xml:space="preserve">
+    <value>Нужен для поиска треков на YouTube. Не публикуйте ключ.</value>
+    <comment>Context: Hint under YouTube API key field.</comment>
+  </data>
+  <data name="window_settings_webserver_admin_lan_hint" xml:space="preserve">
+    <value>Songify запущено от имени администратора. Веб-сервер также слушает LAN IP, чтобы подключился второй ПК. Делайте это только в доверенной сети и при необходимости включите пароль WebSocket ниже.</value>
+    <comment>Context: Warning when web server runs elevated and binds to LAN.</comment>
+  </data>
+  <data name="window_settings_server" xml:space="preserve">
+    <value>Сервер</value>
+    <comment>Context: Section header for web server controls.</comment>
+  </data>
+  <data name="window_settings_webserver_urls_tooltip" xml:space="preserve">
+    <value>JSON трека: корневой URL — тестер WebSocket: /ws-docs</value>
+    <comment>Context: Tooltip describing web server URL endpoints.</comment>
+  </data>
+  <data name="window_settings_security" xml:space="preserve">
+    <value>Безопасность</value>
+    <comment>Context: Section header for web server security options.</comment>
+  </data>
+  <data name="window_settings_require_websocket_password" xml:space="preserve">
+    <value>Требовать пароль WebSocket</value>
+    <comment>Context: Toggle to require password for WebSocket control commands.</comment>
+  </data>
+  <data name="window_settings_require_websocket_password_tooltip" xml:space="preserve">
+    <value>Если включено, управляющие команды WebSocket требуют пароль (auth, поле или ?password= в URL). По умолчанию выкл. Не влияет на чтение /ws/data.</value>
+    <comment>Context: Tooltip explaining WebSocket password requirement.</comment>
+  </data>
+  <data name="window_settings_websocket_password" xml:space="preserve">
+    <value>Пароль WebSocket</value>
+    <comment>Context: Label for WebSocket password field.</comment>
+  </data>
+  <data name="window_settings_keep_last_log_files" xml:space="preserve">
+    <value>Хранить последние файлы логов</value>
+    <comment>Context: Label for how many daily log files to retain.</comment>
+  </data>
+  <data name="window_settings_keep_last_log_files_tooltip" xml:space="preserve">
+    <value>Сколько дневных логов хранить (обычные и DEBUG отдельно). Старые удаляются. 0 = хранить все.</value>
+    <comment>Context: Tooltip for log retention count.</comment>
+  </data>
+  <data name="window_about_credits" xml:space="preserve">
+    <value>Lead Developer
+Jan aka Inzaniity
+
+Contributors
+gwyden - Hertz - karimawii
+</value>
+    <comment>Context: Credits section body on About page (names may stay as-is).</comment>
+  </data>
+  <data name="window_queue_requested_by" xml:space="preserve">
+    <value>Запросил: {0}</value>
+    <comment>Context: Queue row subtitle; {0} = requester name.</comment>
+  </data>
+  <data name="window_queue_decrease_font" xml:space="preserve">
+    <value>Уменьшить шрифт</value>
+    <comment>Context: Tooltip for decrease font size in queue window.</comment>
+  </data>
+  <data name="window_queue_increase_font" xml:space="preserve">
+    <value>Увеличить шрифт</value>
+    <comment>Context: Tooltip for increase font size in queue window.</comment>
+  </data>
+  <data name="window_queue_remove_from_queue" xml:space="preserve">
+    <value>Убрать из очереди</value>
+    <comment>Context: Context menu item to remove a track from the queue.</comment>
+  </data>
+  <data name="window_queue_previous_restart" xml:space="preserve">
+    <value>Предыдущий / Сначала</value>
+    <comment>Context: Tooltip for previous/restart player control.</comment>
+  </data>
+  <data name="window_queue_play_pause" xml:space="preserve">
+    <value>Играть / Пауза</value>
+    <comment>Context: Tooltip for play/pause player control.</comment>
+  </data>
+  <data name="window_queue_next" xml:space="preserve">
+    <value>Следующий</value>
+    <comment>Context: Tooltip for next track player control.</comment>
+  </data>
+  <data name="common_skip" xml:space="preserve">
+    <value>Пропуск</value>
+    <comment>Context: Short button label to skip a song.</comment>
+  </data>
+  <data name="common_remove" xml:space="preserve">
+    <value>Удалить</value>
+    <comment>Context: Short button/tooltip to remove an item.</comment>
+  </data>
+  <data name="common_notification" xml:space="preserve">
+    <value>Уведомление</value>
+    <comment>Context: Dialog title for informational notifications.</comment>
+  </data>
+  <data name="common_error" xml:space="preserve">
+    <value>Ошибка</value>
+    <comment>Context: Dialog title for error messages.</comment>
+  </data>
+  <data name="common_success" xml:space="preserve">
+    <value>Успех</value>
+    <comment>Context: Dialog title for success messages.</comment>
+  </data>
+  <data name="common_inactive" xml:space="preserve">
+    <value>Неактивно</value>
+    <comment>Context: Status label when a service is inactive.</comment>
+  </data>
+  <data name="window_main_more_count" xml:space="preserve">
+    <value>Ещё… ({0})</value>
+    <comment>Context: Shell overflow header when more Spotify issues exist; {0} = count.</comment>
+  </data>
+  <data name="window_main_status_pear_inactive_unselected" xml:space="preserve">
+    <value>Неактивно (не выбран)</value>
+    <comment>Context: Pear status when Pear is not the selected player.</comment>
+  </data>
+  <data name="window_main_spotify_issue_fallback" xml:space="preserve">
+    <value>Проблема Spotify</value>
+    <comment>Context: Fallback title when a Spotify persistent issue has no title.</comment>
+  </data>
+  <data name="window_main_spotify_issue_eta" xml:space="preserve">
+    <value>Оценка: снова заработает примерно через {0} (около {1}).</value>
+    <comment>Context: Spotify issue ETA; {0} = human duration, {1} = local time.</comment>
+  </data>
+  <data name="window_main_spotify_issue_eta_ready" xml:space="preserve">
+    <value>Ожидаемое ожидание закончилось (около {0}). Если всё ещё не работает — может занять дольше.</value>
+    <comment>Context: Spotify issue when cooldown ended; {0} = local time.</comment>
+  </data>
+  <data name="window_main_spotify_issue_seen_at" xml:space="preserve">
+    <value>Замечено в {0}.</value>
+    <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
+    <value>Приложению Spotify API нужен Premium</value>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
+    <value>Spotify требует, чтобы у владельца вашего API-приложения (аккаунт на developer.spotify.com, создавший Client ID) была активная подписка Spotify Premium.
+
+Это не Songify Premium и не аккаунт Spotify, привязанный в Songify для воспроизведения. Оформите Premium на этом аккаунте в кабинете разработчика и подождите несколько часов — Spotify пишет, что доступ может задержаться после смены подписки.</value>
+  </data>
+  <data name="common_duration_hours" xml:space="preserve">
+    <value>{0} ч</value>
+    <comment>Context: Relative duration; {0} = hours.</comment>
+  </data>
+  <data name="common_duration_minutes" xml:space="preserve">
+    <value>{0} мин</value>
+    <comment>Context: Relative duration; {0} = minutes.</comment>
+  </data>
+  <data name="common_duration_seconds" xml:space="preserve">
+    <value>{0} сек</value>
+    <comment>Context: Relative duration; {0} = seconds.</comment>
+  </data>
+  <data name="window_history_select_day" xml:space="preserve">
+    <value>Выберите день</value>
+    <comment>Context: History detail header when no day is selected.</comment>
+  </data>
+  <data name="window_history_saving_on" xml:space="preserve">
+    <value>Локальное сохранение истории</value>
+    <comment>Context: Status when local history saving is enabled.</comment>
+  </data>
+  <data name="window_history_saving_off" xml:space="preserve">
+    <value>Локальное сохранение истории выключено</value>
+    <comment>Context: Status when local history saving is disabled.</comment>
+  </data>
+  <data name="window_history_upload_on" xml:space="preserve">
+    <value>Загрузка истории</value>
+    <comment>Context: Status when history upload is enabled.</comment>
+  </data>
+  <data name="window_history_upload_off" xml:space="preserve">
+    <value>Загрузка истории выключена</value>
+    <comment>Context: Status when history upload is disabled.</comment>
+  </data>
+  <data name="window_history_url_copied" xml:space="preserve">
+    <value>URL истории скопирован</value>
+    <comment>Context: Status after copying history URL to clipboard.</comment>
+  </data>
+  <data name="window_blocklist_total" xml:space="preserve">
+    <value>Всего: {0}</value>
+    <comment>Context: Blocklist status; {0} = total count.</comment>
+  </data>
+  <data name="window_blocklist_filter_showing" xml:space="preserve">
+    <value>Показано {0} из {1} — введите фильтр</value>
+    <comment>Context: Blocklist status when list is truncated; {0}=visible {1}=total.</comment>
+  </data>
+  <data name="window_blocklist_filter_showing_capped" xml:space="preserve">
+    <value>Первые {0} из {1} совпадений</value>
+    <comment>Context: Blocklist status with filter and cap; {0}=visible {1}=total.</comment>
+  </data>
+  <data name="window_blocklist_filter_matches" xml:space="preserve">
+    <value>{0} совпадений из {1}</value>
+    <comment>Context: Blocklist filtered status; {0}=matches {1}=total.</comment>
+  </data>
+  <data name="window_blocklist_spotify_not_connected" xml:space="preserve">
+    <value>Spotify не подключён. Подключите Spotify, чтобы заполнить блоклист.</value>
+    <comment>Context: Dialog when Spotify is required for blocklist actions.</comment>
+  </data>
+  <data name="window_blocklist_artist_not_found" xml:space="preserve">
+    <value>Не найден исполнитель с таким именем в Spotify.</value>
+    <comment>Context: Dialog when Spotify artist search finds no match.</comment>
+  </data>
+  <data name="window_blocklist_search_failed" xml:space="preserve">
+    <value>Не удалось найти исполнителя в Spotify.</value>
+    <comment>Context: Dialog when Spotify artist search fails.</comment>
+  </data>
+  <data name="window_blocklist_spotify_refresh_hint" xml:space="preserve">
+    <value>Spotify не подключён. Подключите Spotify, чтобы обновить ID исполнителей.</value>
+    <comment>Context: Dialog when Spotify is needed to refresh artist IDs.</comment>
+  </data>
+  <data name="window_blocklist_refresh_complete" xml:space="preserve">
+    <value>Обновление завершено</value>
+    <comment>Context: Dialog title after refreshing artist IDs.</comment>
+  </data>
+  <data name="window_blocklist_refresh_none" xml:space="preserve">
+    <value>Нет устаревших записей исполнителей для разрешения.</value>
+    <comment>Context: Message when no legacy artist entries needed resolving.</comment>
+  </data>
+  <data name="window_blocklist_refresh_resolved" xml:space="preserve">
+    <value>Разрешено ID исполнителей: {0} (первое совпадение Spotify).</value>
+    <comment>Context: Message after resolving artist IDs; {0} = count.</comment>
+  </data>
+  <data name="window_blocklist_refresh_failed" xml:space="preserve">
+    <value>Не удалось обновить ID исполнителей. См. логи.</value>
+    <comment>Context: Dialog when refreshing artist IDs fails.</comment>
+  </data>
+  <data name="window_settings_main_account" xml:space="preserve">
+    <value>Основной аккаунт:</value>
+    <comment>Context: Label for linked Twitch broadcaster account.</comment>
+  </data>
+  <data name="window_settings_bot_account" xml:space="preserve">
+    <value>Аккаунт бота:</value>
+    <comment>Context: Label for linked Twitch bot account.</comment>
+  </data>
+  <data name="window_settings_detecting_columns" xml:space="preserve">
+    <value>Определение столбцов…</value>
+    <comment>Context: Status while detecting CSV columns.</comment>
+  </data>
+  <data name="window_settings_detect_columns_title" xml:space="preserve">
+    <value>Определить столбцы</value>
+    <comment>Context: Dialog title for CSV column detection.</comment>
+  </data>
+  <data name="window_settings_detected_columns" xml:space="preserve">
+    <value>Определено столбцов: {0}. Сопоставление сохранено.</value>
+    <comment>Context: Status after CSV column detection; {0} = column count.</comment>
+  </data>
+  <data name="window_settings_detect_failed" xml:space="preserve">
+    <value>Определение не удалось.</value>
+    <comment>Context: Status when CSV column detection fails.</comment>
+  </data>
+  <data name="window_settings_detect_csv_error" xml:space="preserve">
+    <value>Не удалось загрузить CSV. Проверьте URL и повторите.</value>
+    <comment>Context: Dialog body when CSV cannot be loaded for column detect.</comment>
+  </data>
+  <data name="window_settings_artist_sync_title" xml:space="preserve">
+    <value>Синхронизация блоклиста</value>
+    <comment>Context: Dialog title for artist blocklist sync results.</comment>
+  </data>
+  <data name="window_settings_artist_sync_failed" xml:space="preserve">
+    <value>Синхронизация не удалась. См. логи.</value>
+    <comment>Context: Dialog when manual artist blocklist sync fails.</comment>
+  </data>
+  <data name="window_settings_cloud_need_api_key" xml:space="preserve">
+    <value>Введите ключ API Songify.</value>
+    <comment>Context: Cloud sync validation error.</comment>
+  </data>
+  <data name="window_settings_cloud_need_twitch" xml:space="preserve">
+    <value>Войдите в аккаунт Twitch.</value>
+    <comment>Context: Cloud sync validation error when Twitch is not linked.</comment>
+  </data>
+  <data name="window_settings_cloud_saved" xml:space="preserve">
+    <value>Настройки успешно сохранены в облаке</value>
+    <comment>Context: Cloud sync success message.</comment>
+  </data>
+  <data name="window_settings_cloud_unauthorized" xml:space="preserve">
+    <value>Нет доступа. Проверьте API-токен.</value>
+    <comment>Context: Cloud sync HTTP 401 message.</comment>
+  </data>
+  <data name="window_settings_cloud_forbidden" xml:space="preserve">
+    <value>Доступ запрещён. Только для участников Ko-Fi.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+  </data>
+  <data name="window_settings_cloud_server_error" xml:space="preserve">
+    <value>Внутренняя ошибка сервера. Попробуйте позже.</value>
+    <comment>Context: Cloud sync HTTP 500 message.</comment>
+  </data>
+  <data name="window_settings_reset_confirm" xml:space="preserve">
+    <value>Сбросить все настройки?</value>
+    <comment>Context: Confirm dialog before resetting all settings.</comment>
+  </data>
+  <data name="window_settings_folder_save_config" xml:space="preserve">
+    <value>Выберите папку для сохранения файла конфигурации</value>
+    <comment>Context: Folder browser description when exporting config.</comment>
+  </data>
+  <data name="window_settings_folder_import_config" xml:space="preserve">
+    <value>Выберите папку с файлами конфигурации</value>
+    <comment>Context: Folder browser description when importing config.</comment>
+  </data>
+  <data name="window_settings_config_saved" xml:space="preserve">
+    <value>Файл конфигурации успешно сохранён</value>
+    <comment>Context: Success dialog after exporting config.</comment>
+  </data>
+  <data name="window_settings_folder_song_output" xml:space="preserve">
+    <value>Путь к текстовому файлу.</value>
+    <comment>Context: Folder browser for song output text file path.</comment>
+  </data>
+  <data name="uc_psa_issued" xml:space="preserve">
+    <value>Опубликовано:</value>
+    <comment>Context: Label prefix for PSA issue date.</comment>
+  </data>
+  <data name="uc_psa_severity" xml:space="preserve">
+    <value>Важность:</value>
+    <comment>Context: Label prefix for PSA severity.</comment>
+  </data>
+  <data name="uc_psa_author" xml:space="preserve">
+    <value>Автор:</value>
+    <comment>Context: Label prefix for PSA author.</comment>
+  </data>
+  <data name="uc_command_volume_set_response" xml:space="preserve">
+    <value>Ответ Volume Set</value>
+    <comment>Context: Label for volume-set bot response field in command editor.</comment>
+  </data>
+  <data name="window_manualtwitch_title_main" xml:space="preserve">
+    <value>Привязка Twitch: Основной аккаунт</value>
+    <comment>Context: Manual Twitch login window title for broadcaster/main account.</comment>
+  </data>
+  <data name="window_manualtwitch_title_bot" xml:space="preserve">
+    <value>Привязка Twitch: Аккаунт бота</value>
+    <comment>Context: Manual Twitch login window title for bot account.</comment>
+  </data>
+  <data name="window_cloudimport_permission_warning" xml:space="preserve">
+    <value>Предупреждение о правах</value>
+    <comment>Context: Banner title when cloud import widens Twitch command permissions.</comment>
+  </data>
+  <data name="window_cloudimport_permission_body" xml:space="preserve">
+    <value>Этот импорт расширяет круг пользователей некоторых команд Twitch или заказов треков:</value>
+    <comment>Context: Intro line before bullet list of widened permissions on cloud import.</comment>
+  </data>
+  <data name="window_cloudimport_no_differences" xml:space="preserve">
+    <value>Различий не найдено.</value>
+    <comment>Context: Shown in cloud import preview when local and cloud configs match.</comment>
+  </data>
+  <data name="window_artistimport_title" xml:space="preserve">
+    <value>Импорт исполнителей</value>
+    <comment>Context: Title of artist CSV import dialog from blocklist.</comment>
+  </data>
+  <data name="window_artistimport_hint" xml:space="preserve">
+    <value>Загрузите CSV из файла или HTTPS URL, сопоставьте столбцы Имя/Id и импортируйте в блоклист исполнителей.</value>
+    <comment>Context: Intro hint on artist CSV import dialog.</comment>
+  </data>
+  <data name="window_artistimport_source" xml:space="preserve">
+    <value>ИСТОЧНИК</value>
+    <comment>Context: Section header for CSV source on artist import dialog.</comment>
+  </data>
+  <data name="window_artistimport_file" xml:space="preserve">
+    <value>Файл</value>
+    <comment>Context: Radio option to import artists from a local CSV file.</comment>
+  </data>
+  <data name="window_artistimport_url" xml:space="preserve">
+    <value>URL</value>
+    <comment>Context: Radio option to import artists from a CSV URL.</comment>
+  </data>
+  <data name="window_artistimport_no_file" xml:space="preserve">
+    <value>Файл не выбран</value>
+    <comment>Context: Placeholder when no CSV file is chosen for artist import.</comment>
+  </data>
+  <data name="window_artistimport_load_csv" xml:space="preserve">
+    <value>Загрузить CSV</value>
+    <comment>Context: Button to load CSV for artist import preview.</comment>
+  </data>
+  <data name="window_artistimport_id_column_optional" xml:space="preserve">
+    <value>Столбец id (необязательно)</value>
+    <comment>Context: Optional Spotify id column mapping on artist import.</comment>
+  </data>
+  <data name="window_artistimport_preview" xml:space="preserve">
+    <value>ПРЕДПРОСМОТР</value>
+    <comment>Context: Section header for artist import CSV preview list.</comment>
+  </data>
+  <data name="window_artistimport_no_csv" xml:space="preserve">
+    <value>CSV не загружен.</value>
+    <comment>Context: Status when artist import has no CSV loaded yet.</comment>
+  </data>
+  <data name="window_history_migrate_title" xml:space="preserve">
+    <value>Updating history</value>
+    <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
+  </data>
+  <data name="window_history_migrate_body" xml:space="preserve">
+    <value>Converting your song history to the new format...</value>
+    <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
+  </data>
+  <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
+    <value>Разрешены уровни доступа пользователей для запроса песен с нецензурным содержанием.</value>
+  </data>
+  <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
+    <value>Уровни пользователей (явно указанные)</value>
+  </data>
+  <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
+    <value>Запускает опрос на Twitch о пропуске текущей песни.</value>
+  </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Показывает текущий плейлист</value>
+  </data>
+  <data name="setup_wizard_title" xml:space="preserve">
+    <value>Настройте Songify</value>
+  </data>
+  <data name="setup_welcome_title" xml:space="preserve">
+    <value>Добро пожаловать в Songify!</value>
+  </data>
+  <data name="setup_welcome_body" xml:space="preserve">
+    <value>Songify отображает текущую песню на трансляции и может принимать запросы на песни от Twitch. Эта короткая настройка подготавливает Spotify, Twitch и текстовый файл OBS. Вы можете пропустить некоторые шаги и изменить их позже в настройках.</value>
+  </data>
+  <data name="setup_player_title" xml:space="preserve">
+    <value>Какого игрока вы используете?</value>
+  </data>
+  <data name="setup_player_body" xml:space="preserve">
+    <value>Большинство людей пользуются Spotify. Вы можете изменить это позже на главном экране.</value>
+  </data>
+  <data name="setup_spotify_title" xml:space="preserve">
+    <value>Подключить Spotify</value>
+  </data>
+  <data name="setup_spotify_body" xml:space="preserve">
+    <value>Создайте приложение Spotify для разработчиков, вставьте сюда идентификатор клиента, а затем свяжите свою учетную запись. Кнопка «Справка» откроет руководство по настройке.</value>
+  </data>
+  <data name="setup_spotify_help_tooltip" xml:space="preserve">
+    <value>Откройте руководство по настройке Spotify.</value>
+  </data>
+  <data name="setup_spotify_open_guide" xml:space="preserve">
+    <value>Как получить идентификатор клиента</value>
+  </data>
+  <data name="setup_spotify_linked" xml:space="preserve">
+    <value>Связано как {0}</value>
+  </data>
+  <data name="setup_spotify_linked_unknown" xml:space="preserve">
+    <value>Связанный</value>
+  </data>
+  <data name="setup_spotify_not_linked" xml:space="preserve">
+    <value>Пока не подключено. Вы сможете сделать это позже в настройках.</value>
+  </data>
+  <data name="setup_twitch_title" xml:space="preserve">
+    <value>Подключиться к Twitch</value>
+  </data>
+  <data name="setup_twitch_body" xml:space="preserve">
+    <value>Привяжите свой аккаунт стримера, если хотите получать запросы на песни в чате. Пропустите этот шаг, если вам нужно только отображение текущей воспроизводимой песни. Аккаунт бота можно добавить позже в настройках.</value>
+  </data>
+  <data name="setup_twitch_linked" xml:space="preserve">
+    <value>Связано как {0}</value>
+  </data>
+  <data name="setup_twitch_linked_unknown" xml:space="preserve">
+    <value>Аккаунт Twitch привязан.</value>
+  </data>
+  <data name="setup_twitch_not_linked" xml:space="preserve">
+    <value>Дополнительно, если вам нужно только отображение текущего воспроизводимого контента.</value>
+  </data>
+  <data name="setup_output_title" xml:space="preserve">
+    <value>выходной файл песни</value>
+  </data>
+  <data name="setup_output_body" xml:space="preserve">
+    <value>Songify записывает текущую песню в этот текстовый файл. В OBS добавьте источник текста и укажите в качестве пути файл Songify.txt.</value>
+  </data>
+  <data name="setup_done_title" xml:space="preserve">
+    <value>Вы готовы</value>
+  </data>
+  <data name="setup_done_body" xml:space="preserve">
+    <value>Все незавершенные задачи можно завершить с главного экрана или из настроек. Краткий обзор покажет вам, где что находится.</value>
+  </data>
+  <data name="setup_skip" xml:space="preserve">
+    <value>Пропустить</value>
+  </data>
+  <data name="setup_back" xml:space="preserve">
+    <value>Назад</value>
+  </data>
+  <data name="setup_next" xml:space="preserve">
+    <value>Следующий</value>
+  </data>
+  <data name="setup_finish" xml:space="preserve">
+    <value>Заканчивать</value>
+  </data>
+  <data name="setup_show_me_around" xml:space="preserve">
+    <value>Покажите мне окрестности</value>
+  </data>
+  <data name="setup_step_label" xml:space="preserve">
+    <value>Шаг {0} из {1}</value>
+  </data>
+  <data name="setup_checklist_title" xml:space="preserve">
+    <value>Начиная</value>
+  </data>
+  <data name="setup_checklist_body" xml:space="preserve">
+    <value>Завершите эти действия, чтобы Songify мог отображать текущую песню и принимать запросы.</value>
+  </data>
+  <data name="setup_checklist_dismiss" xml:space="preserve">
+    <value>Скрыть</value>
+  </data>
+  <data name="setup_checklist_go" xml:space="preserve">
+    <value>Идти</value>
+  </data>
+  <data name="setup_checklist_spotify" xml:space="preserve">
+    <value>Ссылка на Spotify</value>
+  </data>
+  <data name="setup_checklist_twitch" xml:space="preserve">
+    <value>Ссылка на Twitch (для запросов на песни)</value>
+  </data>
+  <data name="setup_checklist_output" xml:space="preserve">
+    <value>Выходной файл песни (OBS)</value>
+  </data>
+  <data name="menu_setup_wizard" xml:space="preserve">
+    <value>Мастер настройки</value>
+  </data>
+  <data name="setup_tour_home_title" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="setup_tour_home_body" xml:space="preserve">
+    <value>Это общий обзор. Используйте выпадающее меню проигрывателя, чтобы выбрать Spotify или другой источник. Здесь отображаются песни, которые воспроизводятся сейчас, и следующие запрошенные композиции.</value>
+  </data>
+  <data name="setup_tour_spotify_title" xml:space="preserve">
+    <value>Настройки Spotify</value>
+  </data>
+  <data name="setup_tour_spotify_body" xml:space="preserve">
+    <value>В разделе «Настройки» → «Музыка» → «Spotify» вы вводите свой идентификатор клиента и привязываете свою учетную запись. Вы можете изменить его в любое время.</value>
+  </data>
+  <data name="setup_tour_twitch_title" xml:space="preserve">
+    <value>Аккаунты Twitch</value>
+  </data>
+  <data name="setup_tour_twitch_body" xml:space="preserve">
+    <value>Привяжите здесь свой аккаунт стримера для запросов песен, получения наград и команд в чате. Аккаунт бота необязателен.</value>
+  </data>
+  <data name="setup_tour_output_title" xml:space="preserve">
+    <value>Вывод и виджет</value>
+  </data>
+  <data name="setup_tour_output_body" xml:space="preserve">
+    <value>В настройках вывода укажите OBS на файл Songify.txt. Инструменты → Виджеты откроют всплывающее окно в браузере. Вот и весь тур — готово.</value>
+  </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Отсоединить</value>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Окно консоли</value>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>Консоль находится в другом окне.</value>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>Журнал событий открыт в отдельном окне, так что вы можете просматривать его, пока используете остальные приложения Songify. Закройте это окно, чтобы вернуться в консоль.</value>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Витрина магазина</value>
+  </data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Добавить токен API Songify</value>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>API-токен Songify</value>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Для работы веб-сервисов, таких как загрузка текущей песни и добавление в очередь запросов, необходим токен API Songify. Войдите в songify.rocks, используя свою учетную запись Twitch, сгенерируйте токен на странице своей учетной записи, а затем вставьте его сюда. Если на сайте есть функция «Импорт в Songify», токен будет автоматически отправлен в это приложение.</value>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Получить токен</value>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>Токен пока отсутствует. Загрузка данных о песнях и в очередь воспроизведения не будет работать, пока вы его не добавите.</value>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Токен сохранен. При необходимости сгенерируйте новый токен на странице своего аккаунта.</value>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Необходим для веб-данных о песнях и очереди запросов. Войдите в songify.rocks через Twitch, сгенерируйте токен на странице своей учетной записи, а затем вставьте его сюда или используйте функцию «Импорт в Songify» на веб-сайте.</value>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Требуется токен API Songify.</value>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Данные о песнях и очередь запросов не будут обновляться на веб-сайте, пока вы не добавите токен API Songify. Войдите в songify.rocks через Twitch, сгенерируйте токен на странице своей учетной записи, а затем импортируйте его в Настройки → Конфигурация.</value>
+  </data>
+  <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
+    <value>Минимальное количество сообщений между объявлениями песен</value>
+  </data>
+  <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="cta_premium_tooltip" xml:space="preserve">
+    <value>Итоги стрима, топ треков, облачная синхронизация и дополнительные виджеты. Songify по-прежнему бесплатный.</value>
+  </data>
+  <data name="window_main_title_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Премиум</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Подписка Songify Premium активна. Нажмите, чтобы открыть сводку трансляции.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Подписка Songify Premium неактивна. Нажмите, чтобы разблокировать сводку, статистику и облачную синхронизацию.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Добавьте токен Songify, затем разблокируйте Premium на странице своего аккаунта.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Этот токен Songify недействителен. Сгенерируйте новый на songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Проверка статуса Songify Premium…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Подписка Songify Premium активна.</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>Премиум-подписка неактивна — разблокируйте обзор, статистику и облачную синхронизацию.</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Токен Songify недействителен.</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Добавьте токен Songify, чтобы активировать Premium.</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Краткий обзор трансляции</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Откройте ежедневный обзор запросов на songify.rocks. Полный список песен доступен для подписчиков Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>В Songify Premium включена облачная синхронизация.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>В Songify Premium включена облачная синхронизация.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Токен сохранен. Songify Premium активен.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Токен сохранен. Привяжите Ko-fi на странице своего аккаунта, чтобы разблокировать сводку, статистику и облачную синхронизацию.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Этот токен недействителен. Сгенерируйте новый на странице своего аккаунта.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Скрыть напоминания о премиум-подписке</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Премиум-напоминания отключены</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify остаётся бесплатным. Премиум-версия добавляет обзор прослушиваний, список самых популярных песен и запросов, облачную синхронизацию и дополнительные виджеты.
+
+Вы по-прежнему можете открыть Songify Premium в любое время с главного экрана или из раздела «О программе».</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Обновить статус Premium</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Проверка статуса Songify Premium…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify остаётся бесплатным</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>В премиум-версию входят краткий обзор трансляции, самые популярные песни и запросы, облачная синхронизация и дополнительные виджеты. Разблокировать её можно в любое время на главном экране или в разделе «О программе».</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Это сообщение исчезнет через {0} секунд</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Это сообщение исчезнет через {0} секунд.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Это сообщение исчезнет :)</value>
+  </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Масштаб интерфейса</value>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Увеличьте изображение приложения в разрешении 1440p и 4K.</value>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
   </data>
 </root>

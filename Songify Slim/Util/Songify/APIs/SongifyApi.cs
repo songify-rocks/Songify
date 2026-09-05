@@ -31,7 +31,6 @@ namespace Songify_Slim.Util.Songify.APIs
             var payload = new
             {
                 uuid = Settings.Uuid,
-                key = Settings.AccessKey,
                 queueid = queueId
             };
 
@@ -44,11 +43,15 @@ namespace Songify_Slim.Util.Songify.APIs
 
         public static Task PostSongAsync(string body) => ApiClient.Post("song", body);
 
-        public static Task PostHistoryAsync(string body) => ApiClient.Post("history", body);
-
         public static Task<string> GetMotdAsync() => ApiClient.Get("motd", "");
 
         public static Task<string> GetCanvasRawAsync(string id) => ApiClient.GetCanvas(id);
+
+        public static Task<HttpResponseMessage> GetUserSettingsAsync() =>
+            ApiClient.GetAuthenticated("user_settings", null);
+
+        public static Task<HttpResponseMessage> PostUserSettingsAsync(string body) =>
+            ApiClient.PostAuthenticated("user_settings", body);
 
         public static async Task<PearSearch> GetYoutubeData(string videoId)
         {

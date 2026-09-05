@@ -13,6 +13,8 @@ Examples:
 - `http://127.0.0.1:<port>/`
 - If Songify runs as administrator, it may also bind to your LAN IP—see the in-app / log output for the exact base URL.
 
+When **Require WebSocket password** is on, HTTP JSON also needs `?password=` (or header `X-Songify-Password`). `/ws-docs` stays open without a password.
+
 **CORS** headers are set for browser use on simple setups.
 
 ---
@@ -23,9 +25,17 @@ Connect to:
 
 `ws://127.0.0.1:<port>/`
 
+If password protection is enabled, the handshake is rejected unless you pass the password:
+
+`ws://127.0.0.1:<port>/?password=...`
+
+(or header `X-Songify-Password` / `Authorization: Bearer …`).
+
 Send **JSON** messages with an `"action"` field (and optional `"data"`). Supported actions include queue, volume, skip, play/pause, blocklist actions, and more.
 
-Full reference: [WebSocket commands](WebSocket-commands).
+Full control-command reference: [WebSocket commands](WebSocket-commands).
+
+To **subscribe** to live track/queue updates (instead of polling HTTP), see [WebSocket data stream](WebSocket-data).
 
 ---
 
@@ -38,4 +48,4 @@ Volume and queue actions apply to **Spotify** or **Pear** according to the activ
 ## Troubleshooting
 
 - **Port in use** — Choose another port in settings.
-- **Firewall** — Allow **Songify** on private networks if another PC must reach the server (most setups only need localhost).
+- **Firewall** — Localhost needs no extra rule. LAN access (second PC) requires Songify running as administrator; Songify then adds an inbound TCP rule for the web server port (HTTP.sys). A program allow-rule for Songify.exe is not enough.

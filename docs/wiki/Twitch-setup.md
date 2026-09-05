@@ -39,7 +39,7 @@ If you use **“Limit activity to when stream is live”**, the bot may only rea
 
 ## Song requests and rewards
 
-After API login:
+After API login (Getting started can do this, or **Settings → Twitch**):
 
 1. Configure **Rewards** — Select or create channel point rewards (creating through Songify enables refund behavior where supported).
 2. Configure **Song requests** — Enable channel points and/or commands, cooldowns, limits. See [Song requests](Song-requests).

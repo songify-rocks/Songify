@@ -1,14 +1,19 @@
-﻿using MahApps.Metro.Controls.Dialogs;
+using Songify_Slim.Util.General;
+using MessageDialogResult = Songify_Slim.Util.General.AppDialogResult;
+using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
+using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Microsoft.Win32;
 using Songify_Slim.Models;
+
 using Songify_Slim.Util.General;
+
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -37,13 +42,24 @@ namespace Songify_Slim
     public partial class App
     {
         private static Mutex _mutex;
-        public static bool IsBeta = false;
+        public static bool IsBeta = true;
         private const string PipeName = "SongifyPipe";
         private const string FolderName = "Songify.Rocks";
 
         private void Application_DispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            Logger.Error(LogSource.Core, "Unhandled exception occurred", e.Exception);
+            try
+            {
+                Logger.Error(LogSource.Core, "Unhandled dispatcher exception occurred", e.Exception);
+            }
+            catch
+            {
+                // ignore logging failures during crash
+            }
+
+            // Prevent a second fatal path / nested crash while we show UI.
+            e.Handled = true;
+            ShowCrashPromptAndMaybeRestart(e.Exception);
         }
 
         private App()
@@ -61,6 +77,17 @@ namespace Songify_Slim
                 Thread.CurrentThread.CurrentUICulture = new CultureInfo("en");
             }
 
+            // Set before ShellWindow binds StatusBarVersion.
+            try
+            {
+                if (string.IsNullOrEmpty(GlobalObjects.AppVersion))
+                    GlobalObjects.AppVersion = AppPaths.GetFileVersionThreePart() ?? "?";
+            }
+            catch
+            {
+                // leave empty; UI shows blank instead of crashing
+            }
+
             if (string.IsNullOrEmpty(Settings.Uuid))
             {
                 Settings.Uuid = Guid.NewGuid().ToString();
@@ -71,6 +98,16 @@ namespace Songify_Slim
 
         protected override void OnExit(ExitEventArgs e)
         {
+            try
+            {
+                if (GlobalObjects.WebServer.Run)
+                    GlobalObjects.WebServer.StopWebServer();
+            }
+            catch
+            {
+                RegisterFirewall.RemoveWebServerPortRule();
+            }
+
             _mutex?.Dispose();
             GlobalObjects.ApiMetrics.Dispose();
             base.OnExit(e);
@@ -97,7 +134,7 @@ namespace Songify_Slim
                 // Force Z-order bump
                 window.Activate();         // gives it input focus if possible
                 window.Topmost = true;     // push above others
-                window.Topmost = false;    // but don’t *stay* always-on-top
+                window.Topmost = false;    // but don?t *stay* always-on-top
             }
         }
 
@@ -209,7 +246,7 @@ namespace Songify_Slim
         {
             try
             {
-                MessageDialogResult result = await ((MainWindow)Current.MainWindow).ShowMessageAsync(
+                MessageDialogResult result = await AppShellBridge.Current.ShowMessageAsync(
                     "Notification",
                     "Received Twitch Token. Do you want to use this account as Main or Bot?",
                     MessageDialogStyle.AffirmativeAndNegative, new MetroDialogSettings()
@@ -234,18 +271,10 @@ namespace Songify_Slim
                 foreach (Window currentWindow in Current.Windows)
                 {
                     if (currentWindow is WindowManualTwitchLogin login)
-                    {
                         login.Close();
-                    }
                 }
 
-                foreach (Window currentWindow in Current.Windows)
-                {
-                    if (currentWindow is Window_Settings settings)
-                    {
-                        await settings.SetControls();
-                    }
-                }
+                await SettingsUi.RefreshAsync(resetTwitch: true);
             }
             catch (Exception e)
             {
@@ -257,13 +286,13 @@ namespace Songify_Slim
         {
             try
             {
-                if (Current.MainWindow is not MainWindow mainWindow)
+                if (AppShellBridge.Current == null)
                 {
-                    Logger.Warning(LogSource.Core, "DeepLink: cannot confirm Songify API token import — main window not ready.");
+                    Logger.Warning(LogSource.Core, "DeepLink: cannot confirm Songify API token import ? shell not ready.");
                     return;
                 }
 
-                MessageDialogResult confirm = await mainWindow.ShowMessageAsync(
+                MessageDialogResult confirm = await AppShellBridge.Current.ShowMessageAsync(
                     "Import Songify API Token",
                     "A Songify API token was received via deep link. Do you want to replace your current Songify API token?",
                     MessageDialogStyle.AffirmativeAndNegative,
@@ -280,8 +309,11 @@ namespace Songify_Slim
                 }
 
                 Settings.SongifyApiKey = token;
+                SongifyAuthService.Invalidate();
+                _ = SongifyAuthService.EnsureAuthenticatedAsync();
+                _ = SongifyPremiumService.RefreshAsync();
 
-                await mainWindow.ShowMessageAsync(
+                await AppShellBridge.Current.ShowMessageAsync(
                     "Notification",
                     "Your Songify API Token has been imported successfully",
                     MessageDialogStyle.Affirmative,
@@ -290,12 +322,7 @@ namespace Songify_Slim
                         AffirmativeButtonText = "OK",
                     });
 
-                foreach (Window currentWindow in Current.Windows)
-                {
-                    if (currentWindow is not Window_Settings settings)
-                        continue;
-                    await settings.SetControls();
-                }
+                await SettingsUi.RefreshAsync();
             }
             catch (Exception e)
             {
@@ -342,7 +369,7 @@ namespace Songify_Slim
             currentDomain.UnhandledException += MyHandler;
             base.OnStartup(e);
 
-            string exePath = Assembly.GetEntryAssembly()?.Location;
+            string exePath = AppPaths.GetExecutablePath();
 
             // Determine the default culture. You can use CultureInfo.CurrentUICulture or a fixed one like "en".
             CultureInfo defaultCulture = CultureInfo.CurrentUICulture;
@@ -354,6 +381,8 @@ namespace Songify_Slim
 
             // Add it to the merged dictionaries so that your UI has access to the keys from the start.
             Current.Resources.MergedDictionaries.Add(defaultLocalizationDict);
+
+            UiScaleHandler.Initialize();
 
             StartPipeServer();
         }
@@ -374,13 +403,13 @@ namespace Songify_Slim
 
                 using (RegistryKey defaultIcon = newKey?.CreateSubKey("DefaultIcon"))
                 {
-                    string iconPath = Assembly.GetExecutingAssembly().Location;
+                    string iconPath = AppPaths.GetExecutablePath();
                     defaultIcon?.SetValue("", $"\"{iconPath}\",1", RegistryValueKind.String);
                 }
 
                 using (RegistryKey commandKey = newKey?.CreateSubKey(@"shell\open\command"))
                 {
-                    string exePath = Assembly.GetExecutingAssembly().Location;
+                    string exePath = AppPaths.GetExecutablePath();
                     commandKey?.SetValue("", $"\"{exePath}\" \"%1\"", RegistryValueKind.String);
                 }
             }
@@ -409,70 +438,112 @@ namespace Songify_Slim
 
         private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            var ex = args.ExceptionObject as Exception;
+            Exception ex = args.ExceptionObject as Exception;
 
-            if (ex != null)
+            try
             {
-                // Single, structured fatal log entry
-                Logger.Fatal(
-                    LogSource.Core,
-                    $"Unhandled exception caught in MyHandler. IsTerminating={args.IsTerminating}.",
-                    ex
-                );
-
-                if (ex.InnerException != null)
+                if (ex != null)
                 {
-                    Logger.Error(
+                    Logger.Fatal(
                         LogSource.Core,
-                        "Unhandled exception has inner exception.",
-                        ex.InnerException
-                    );
+                        $"Unhandled exception caught in MyHandler. IsTerminating={args.IsTerminating}.",
+                        ex);
+
+                    if (ex.InnerException != null)
+                    {
+                        Logger.Error(
+                            LogSource.Core,
+                            "Unhandled exception has inner exception.",
+                            ex.InnerException);
+                    }
+                }
+                else
+                {
+                    Logger.Fatal(
+                        LogSource.Core,
+                        $"Unhandled non-Exception object in MyHandler: {args.ExceptionObject} (IsTerminating={args.IsTerminating}).");
                 }
             }
-            else
+            catch
             {
-                // In case someone throws a non-Exception object
-                Logger.Fatal(
-                    LogSource.Core,
-                    $"Unhandled non-Exception object in MyHandler: {args.ExceptionObject} (IsTerminating={args.IsTerminating})."
-                );
+                // ignore logging failures during crash
             }
 
-            // If the runtime is not actually terminating, just log and bail out.
-            if (!args.IsTerminating) return;
+            if (!args.IsTerminating)
+                return;
 
-            // From here on it’s user interaction / restart logic
-            if (MessageBox.Show(
-                    "Would you like to open the log file directory?\n\n" +
+            ShowCrashPromptAndMaybeRestart(ex);
+        }
+
+        /// <summary>
+        /// Crash UI must not use WPF MessageBox — with WPF-UI theme dictionaries loaded it can throw
+        /// while the app is already failing. WinForms MessageBox is native and more reliable here.
+        /// </summary>
+        private static void ShowCrashPromptAndMaybeRestart(Exception ex)
+        {
+            try
+            {
+                string detail = ex?.GetType().Name ?? "Unknown error";
+                if (!string.IsNullOrWhiteSpace(ex?.Message))
+                    detail += ": " + ex.Message;
+
+                System.Windows.Forms.DialogResult openLogs = System.Windows.Forms.MessageBox.Show(
+                    "Songify ran into a problem and needs to close.\n\n" +
+                    detail + "\n\n" +
+                    "Would you like to open the log file directory?\n" +
                     "Feel free to submit the log file in our Discord.",
                     "Songify just crashed :(",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Error) == MessageBoxResult.Yes)
-            {
-                Process.Start(Logger.LogDirectoryPath);
-            }
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
+                    System.Windows.Forms.MessageBoxIcon.Error);
 
-            if (MessageBox.Show(
+                if (openLogs == System.Windows.Forms.DialogResult.Yes)
+                {
+                    try
+                    {
+                        ShellHelper.OpenPath(Logger.LogDirectoryPath);
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                }
+
+                System.Windows.Forms.DialogResult restart = System.Windows.Forms.MessageBox.Show(
                     "Restart Songify?",
                     "Songify",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question) != MessageBoxResult.Yes)
+                    System.Windows.Forms.MessageBoxButtons.YesNo,
+                    System.Windows.Forms.MessageBoxIcon.Question);
+
+                if (restart == System.Windows.Forms.DialogResult.Yes)
+                {
+                    try
+                    {
+                        Process.Start(new ProcessStartInfo
+                        {
+                            FileName = AppPaths.GetExecutablePath(),
+                            Arguments = "--restart",
+                            UseShellExecute = true
+                        });
+                    }
+                    catch
+                    {
+                        // ignore
+                    }
+                }
+            }
+            catch
             {
-                return;
+                // Last resort: never let the crash handler itself take down the process messily.
             }
 
-            // Pass an argument to indicate this is a restart
-            var startInfo = new ProcessStartInfo
+            try
             {
-                FileName = Assembly.GetExecutingAssembly().Location,
-                Arguments = "--restart",
-                UseShellExecute = false
-            };
-
-            Process.Start(startInfo);
-
-            // Shutdown the current instance
-            Current.Shutdown();
+                Current?.Shutdown();
+            }
+            catch
+            {
+                try { Environment.Exit(1); } catch { /* ignore */ }
+            }
         }
 
         private void Application_Startup(object sender, StartupEventArgs e)
@@ -487,29 +558,21 @@ namespace Songify_Slim
                 Console.WriteLine("Restarting Songify...");
             }
 
-            // Initialize and show the main window
-            MainWindow main = new()
+            // WPF-UI shell (FluentWindow + NavigationView).
+            Views.WPFUI.ShellWindow main = new()
             {
                 Icon = IsBeta
                     ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
                     : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
             };
 
-            //Win_Main main2 = new()
-            //{
-            //    Icon = IsBeta
-            //        ? new BitmapImage(new Uri("pack://application:,,,/Resources/songifyBeta.ico"))
-            //        : new BitmapImage(new Uri("pack://application:,,,/Resources/songify.ico"))
-            //};
-
             try
             {
                 main.Show();
             }
-            catch (ConfigurationErrorsException)
+            catch (Exception ex)
             {
-                AskDeleteAndRelaunch();
-                // throw; // only reached if user said "No"
+                throw;
             }
         }
 
@@ -560,9 +623,8 @@ namespace Songify_Slim
             // Your logic to restore the window from the tray.
             Window win = Current.MainWindow;
 
-            if (win is MainWindow)
+            if (win is Views.WPFUI.ShellWindow)
             {
-                // For example:
                 win.Show();
                 win.WindowState = WindowState.Normal;
                 Thread.Sleep(1000);
@@ -612,7 +674,7 @@ namespace Songify_Slim
             // --- Relaunch (Framework-safe) ---
             try
             {
-                string exe = Assembly.GetExecutingAssembly().Location;
+                string exe = AppPaths.GetExecutablePath();
                 string args = string.Join(" ", Environment.GetCommandLineArgs().Skip(1).Select(QuoteIfNeeded));
 
                 Process.Start(new ProcessStartInfo

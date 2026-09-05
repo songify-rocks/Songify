@@ -1,8 +1,13 @@
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify.APIs;
+using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using System;
@@ -16,6 +21,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using Songify_Slim.Views.WPFUI;
 using TwitchLib.Api.Helix.Models.Users.GetUsers;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
@@ -32,6 +38,18 @@ namespace Songify_Slim.Util.Configuration
     /// </summary>
     internal class ConfigHandler
     {
+        /// <summary>
+        /// Envelope version for cloud YAML payloads. Bump only for breaking Configuration YAML shape
+        /// changes. Additive properties stay at 1 (deserializer uses IgnoreUnmatchedProperties).
+        /// </summary>
+        public const int CloudSettingsSchemaVersion = 1;
+
+        private static readonly JsonSerializerSettings CloudJsonSettings = new()
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            DateTimeZoneHandling = DateTimeZoneHandling.Utc
+        };
+
         public static List<TwitchCommand> DefaultCommands { get; set; } =
         [
             new()
@@ -219,12 +237,36 @@ namespace Songify_Slim.Util.Configuration
                 IsAnnouncement = false,
                 AnnouncementColor = AnnouncementColor.Blue,
                 CustomProperties = new Dictionary<string, object>()
+            },
+
+            new()
+            {
+                CommandType = CommandType.SkipPoll,
+                Trigger = "skippoll",
+                Response = "@{user} started a skip poll.",
+                IsEnabled = false,
+                AllowedUserLevels = [6],
+                IsAnnouncement = false,
+                AnnouncementColor = AnnouncementColor.Blue,
+                CustomProperties = new Dictionary<string, object>()
+            },
+
+            new()
+            {
+                CommandType = CommandType.Playlist,
+                Trigger = "playlist",
+                Response = "@{user} {playlist_name} {playlist_url}",
+                IsEnabled = false,
+                AllowedUserLevels = [0, 1, 2, 3, 4, 5, 6,],
+                IsAnnouncement = false,
+                AnnouncementColor = AnnouncementColor.Blue,
+                CustomProperties = new Dictionary<string, object>()
             }
         ];
 
         public static void WriteConfig(ConfigTypes configType, object o, string path = null, bool isBackup = false)
         {
-            path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            path ??= AppPaths.GetAppDirectory();
             Directory.CreateDirectory(path);
 
             ISerializer serializer = new SerializerBuilder()
@@ -328,6 +370,59 @@ namespace Songify_Slim.Util.Configuration
             }
         }
 
+        internal static readonly List<RefundCondition> DefaultFailureRefundConditions =
+        [
+            RefundCondition.UserLevelTooLow,
+            RefundCondition.UserBlocked,
+            RefundCondition.WrongPlayerRequested,
+            RefundCondition.SpotifyNotConnected,
+            RefundCondition.SongUnavailable,
+            RefundCondition.ArtistBlocked,
+            RefundCondition.SongTooLong,
+            RefundCondition.SongAlreadyInQueue,
+            RefundCondition.NoSongFound,
+            RefundCondition.SongAddedButError,
+            RefundCondition.TrackIsExplicit,
+            RefundCondition.SongBlocked,
+            RefundCondition.QueueLimitReached
+        ];
+
+        internal static void MigrateReleaseChannel(AppConfig appConfig)
+        {
+            if (appConfig.ReleaseChannel != null)
+            {
+                appConfig.BetaUpdates = appConfig.ReleaseChannel == ReleaseChannel.Beta;
+                return;
+            }
+
+            appConfig.ReleaseChannel = appConfig.BetaUpdates ? ReleaseChannel.Beta : ReleaseChannel.Stable;
+        }
+
+        internal static void MigrateRefundConditions(AppConfig appConfig)
+        {
+            if (appConfig.RefundConditionsMigrated)
+                return;
+
+            if (appConfig.RefundConditons == null || appConfig.RefundConditons.Count == 0)
+                appConfig.RefundConditons = [.. DefaultFailureRefundConditions];
+
+            appConfig.RefundConditionsMigrated = true;
+        }
+
+        /// <summary>
+        /// Known bots used to be ignored automatically. Copy them onto the editable list once
+        /// so existing installs keep the same behavior, then turn the toggle off permanently.
+        /// </summary>
+        internal static void MigrateIgnoreBotMessages(AppConfig appConfig)
+        {
+            if (appConfig == null || !appConfig.IgnoreBotMessages)
+                return;
+
+            appConfig.IgnoredChatUsers ??= [];
+            TwitchChatIgnore.MergeKnownBots(appConfig.IgnoredChatUsers);
+            appConfig.IgnoreBotMessages = false;
+        }
+
         private static T LoadOrCreateConfig<T>(string path, string fileName, IDeserializer deserializer) where T : new()
         {
             string yamlPath = Path.Combine(path, fileName + ".yaml");
@@ -368,7 +463,7 @@ namespace Songify_Slim.Util.Configuration
 
         public static void ReadConfig(string path = null)
         {
-            path ??= Path.GetDirectoryName(Assembly.GetEntryAssembly()?.Location);
+            path ??= AppPaths.GetAppDirectory();
             IDeserializer deserializer = new DeserializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 //.WithTypeConverter(new SingleStringToListConverter())
@@ -402,6 +497,10 @@ namespace Songify_Slim.Util.Configuration
 
                     case ConfigTypes.AppConfig:
                         config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
+                        config.AppConfig.DownloadCover = true;
+                        MigrateReleaseChannel(config.AppConfig);
+                        MigrateRefundConditions(config.AppConfig);
+                        MigrateIgnoreBotMessages(config.AppConfig);
                         WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
@@ -474,6 +573,140 @@ namespace Songify_Slim.Util.Configuration
             }
 
             Settings.Import(config);
+            // Keep only compact ID/name indexes in RAM; full artist objects stay on disk until edited.
+            ArtistBlocklistStore.InitializeFromConfigAndUnload();
+        }
+
+        /// <summary>Live settings plus blocked artists from disk, for import diffs.</summary>
+        public static Configuration SnapshotLocalForCompare()
+        {
+            Configuration local = DeepCloneYaml(Settings.CurrentConfig) ?? new Configuration();
+            local.BlockedSpotifyArtists = new BlockedSpotifyArtists
+            {
+                Artists = ArtistBlocklistStore.LoadCopy()
+            };
+            if (local.AppConfig != null)
+                local.AppConfig.ArtistBlacklist = [];
+            return local;
+        }
+
+        /// <summary>
+        /// Loads YAML from a backup folder without writing or replacing live settings.
+        /// Missing files stay null so they are not treated as empty defaults.
+        /// </summary>
+        public static Configuration LoadForImport(string path)
+        {
+            IDeserializer deserializer = CreateConfigDeserializer();
+            Configuration config = new();
+
+            if (ConfigFileExists(path, "AppConfig"))
+            {
+                config.AppConfig = LoadOrCreateConfig<AppConfig>(path, "AppConfig", deserializer);
+                if (config.AppConfig != null)
+                {
+                    config.AppConfig.DownloadCover = true;
+                    MigrateReleaseChannel(config.AppConfig);
+                    MigrateRefundConditions(config.AppConfig);
+                    MigrateIgnoreBotMessages(config.AppConfig);
+                }
+            }
+
+            if (ConfigFileExists(path, "BotConfig"))
+                config.BotConfig = LoadOrCreateConfig<BotConfig>(path, "BotConfig", deserializer);
+
+            if (ConfigFileExists(path, "TwitchCommands"))
+            {
+                config.TwitchCommands = LoadOrCreateConfig<TwitchCommands>(path, "TwitchCommands", deserializer);
+                EnsureTwitchCommands(config.TwitchCommands);
+            }
+
+            if (ConfigFileExists(path, "BlockedSpotifyArtists"))
+                config.BlockedSpotifyArtists = LoadOrCreateConfig<BlockedSpotifyArtists>(path, "BlockedSpotifyArtists", deserializer);
+
+            if (ConfigFileExists(path, "SpotifyCredentials"))
+                config.SpotifyCredentials = LoadOrCreateConfig<SpotifyCredentials>(path, "SpotifyCredentials", deserializer);
+
+            if (ConfigFileExists(path, "TwitchCredentials"))
+                config.TwitchCredentials = LoadOrCreateConfig<TwitchCredentials>(path, "TwitchCredentials", deserializer);
+
+            if (config.BlockedSpotifyArtists != null || config.AppConfig?.ArtistBlacklist is { Count: > 0 })
+                NormalizeBlockedArtistsForCompare(config);
+
+            return config;
+        }
+
+        public static bool HasImportableFiles(string path)
+            => ConfigFileExists(path, "AppConfig")
+               || ConfigFileExists(path, "BotConfig")
+               || ConfigFileExists(path, "TwitchCommands")
+               || ConfigFileExists(path, "BlockedSpotifyArtists")
+               || ConfigFileExists(path, "SpotifyCredentials")
+               || ConfigFileExists(path, "TwitchCredentials");
+
+        private static bool ConfigFileExists(string path, string fileName)
+            => File.Exists(Path.Combine(path, fileName + ".yaml"))
+               || File.Exists(Path.Combine(path, fileName + ".bak"));
+
+        private static IDeserializer CreateConfigDeserializer()
+            => new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithTypeConverter(new PlaylistSnapshotYamlConverter())
+                .WithTypeConverter(new PlayerTypeYamlConverter())
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedUser>(s => new BlockedUser { Username = s }))
+                .WithTypeConverter(new SongBlacklistConverter())
+                .IgnoreUnmatchedProperties()
+                .Build();
+
+        private static void EnsureTwitchCommands(TwitchCommands twitchCommands)
+        {
+            if (twitchCommands == null)
+                return;
+
+            twitchCommands.Commands ??= [];
+            if (twitchCommands.Commands.Count == 0)
+                twitchCommands.Commands = [.. DefaultCommands];
+
+            foreach (CommandType cmdType in Enum.GetValues(typeof(CommandType)))
+            {
+                if (twitchCommands.Commands.All(c => c.CommandType != cmdType))
+                {
+                    twitchCommands.Commands.Add(DefaultCommands.First(c => c.CommandType == cmdType));
+                    continue;
+                }
+
+                TwitchCommand existingCommand = twitchCommands.Commands.First(c => c.CommandType == cmdType);
+                TwitchCommand defaultCommand = DefaultCommands.First(c => c.CommandType == cmdType);
+                existingCommand.CustomProperties ??= new Dictionary<string, object>();
+
+                if (cmdType == CommandType.Voteskip && !existingCommand.CustomProperties.ContainsKey("SkipCount"))
+                {
+                    existingCommand.CustomProperties["SkipCount"] =
+                        defaultCommand.CustomProperties.TryGetValue("SkipCount", out object skip)
+                            ? skip
+                            : 5;
+                }
+                else if (cmdType == CommandType.Volume && !existingCommand.CustomProperties.ContainsKey("VolumeSetResponse"))
+                {
+                    existingCommand.CustomProperties["VolumeSetResponse"] =
+                        defaultCommand.CustomProperties.TryGetValue("VolumeSetResponse", out object vol)
+                            ? vol
+                            : "Volume set to {vol}%.";
+                }
+            }
+        }
+
+        /// <summary>Load blocked artists from YAML without keeping them on <see cref="Settings.CurrentConfig"/>.</summary>
+        public static BlockedSpotifyArtists LoadBlockedSpotifyArtists(string path = null)
+        {
+            path ??= AppPaths.GetAppDirectory();
+            IDeserializer deserializer = new DeserializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .WithTypeConverter(new ListStringOrObjectConverter<BlockedArtist>(s => new BlockedArtist { Name = s }))
+                .IgnoreUnmatchedProperties()
+                .Build();
+
+            return LoadOrCreateConfig<BlockedSpotifyArtists>(path, "BlockedSpotifyArtists", deserializer);
         }
 
         public static void WriteAllConfig(Configuration config, string path = null, bool isBackup = false)
@@ -490,24 +723,20 @@ namespace Songify_Slim.Util.Configuration
 
             foreach ((ConfigTypes type, object obj) in configsToWrite)
             {
+                // When the full artist list was unloaded from memory, CurrentConfig holds an empty list.
+                // Disk is the source of truth — do not overwrite BlockedSpotifyArtists.yaml with [].
+                if (type == ConfigTypes.BlockedSpotifyArtists &&
+                    ReferenceEquals(config, Settings.CurrentConfig) &&
+                    ArtistBlocklistStore.ShouldSkipConfigWrite())
+                {
+                    continue;
+                }
+
                 WriteConfig(type, obj, path, isBackup);
             }
         }
 
-        public static string GenerateAccessKey()
-        {
-            const string allowedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_~.";
-            string key = new([
-                .. Enumerable.Repeat(allowedChars, 1)
-                    .SelectMany(s => s)
-                    .Take(128)
-                    .OrderBy(_ => Guid.NewGuid())
-            ]);
-
-            return key;
-        }
-
-        public static async Task<Tuple<bool, HttpStatusCode>> CloudSaveSettings(string apiToken, string userId,
+        public static async Task<Tuple<bool, HttpStatusCode>> CloudSaveSettings(string userId,
             Configuration config)
         {
             try
@@ -515,18 +744,28 @@ namespace Songify_Slim.Util.Configuration
                 // Deep clone entire Configuration object
                 Configuration clonedConfig = DeepCloneYaml(config);
 
-                // Exclude tokens and sensitive data
+                // Guard: never mutate the live config if YAML clone somehow shared AppConfig.
+                if (ReferenceEquals(clonedConfig.AppConfig, config.AppConfig))
+                {
+                    Logger.Error(LogSource.Core,
+                        "Cloud save aborted: deep clone shared AppConfig with live settings.");
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.InternalServerError);
+                }
+
+                // Blocked artists may be unloaded from CurrentConfig — attach a fresh disk snapshot for cloud backup.
+                clonedConfig.BlockedSpotifyArtists = new BlockedSpotifyArtists
+                {
+                    Artists = ArtistBlocklistStore.LoadCopy()
+                };
+
+                // Exclude tokens and sensitive data (clone only — live Settings must stay intact)
                 clonedConfig.AppConfig.YoutubeApiKey = null;
                 clonedConfig.AppConfig.SongifyApiKey = null;
-                clonedConfig.AppConfig.AccessKey = null;
                 clonedConfig.AppConfig.WebServerPassword = null;
 
                 // Strip sensitive information
                 clonedConfig.SpotifyCredentials = null;
                 clonedConfig.TwitchCredentials = null;
-
-                // Optional: sanitize other values
-                clonedConfig.AppConfig.SongifyApiKey = null;
 
                 // Serialize to YAML and then base64
                 ISerializer serializer = new SerializerBuilder()
@@ -536,46 +775,25 @@ namespace Songify_Slim.Util.Configuration
                 string yaml = serializer.Serialize(clonedConfig);
                 string base64 = Convert.ToBase64String(Encoding.UTF8.GetBytes(yaml));
 
-                // Prepare HTTP body
-                var body = new
+                CloudSettingsSaveRequest payload = new()
                 {
-                    userId = userId,
-                    settings = base64
+                    UserId = userId,
+                    Settings = base64,
+                    SchemaVersion = CloudSettingsSchemaVersion
                 };
+                string requestJson = JsonConvert.SerializeObject(payload, CloudJsonSettings);
 
-                StringContent content = new(JsonConvert.SerializeObject(body), Encoding.UTF8, "application/json");
-
-                string url = $"{GlobalObjects.ApiUrl}/user_settings";
-
-                using HttpClient http = new();
-                http.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
-                HttpResponseMessage response = await http.PostAsync(url, content);
-                switch (response.StatusCode)
+                using HttpResponseMessage response = await SongifyApi.PostUserSettingsAsync(requestJson);
+                string responseBody = await response.Content.ReadAsStringAsync();
+                SongifyPremiumService.ApplyFromCloudStatus(response.StatusCode);
+                if (response.StatusCode != HttpStatusCode.OK)
                 {
-                    // Handle response codes 200 OK: User has premium access and operation succeeded
-                    // 401 Unauthorized: Invalid token
-                    // 403 Forbidden: User not found, no email, or no premium status
-                    // 500 Internal Server Error: Database error
-                    case HttpStatusCode.Unauthorized:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud save failed: Unauthorized access. Invalid API token or user ID.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.Unauthorized);
-
-                    case HttpStatusCode.Forbidden:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud save failed: Forbidden access. User not found or no premium status.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
-
-                    case HttpStatusCode.InternalServerError:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud save failed: Internal server error. Please try again later.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.InternalServerError);
+                    LogCloudHttpFailure("save", response.StatusCode, responseBody);
+                    return new Tuple<bool, HttpStatusCode>(false, response.StatusCode);
                 }
 
-                return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, response.StatusCode);
+                await RefreshOpenCloudImportPreviewAsync().ConfigureAwait(true);
+                return new Tuple<bool, HttpStatusCode>(true, HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
@@ -586,6 +804,9 @@ namespace Songify_Slim.Util.Configuration
 
         private static T DeepCloneYaml<T>(T obj)
         {
+            if (obj == null)
+                return default;
+
             ISerializer serializer = new SerializerBuilder()
                 .WithNamingConvention(CamelCaseNamingConvention.Instance)
                 .Build();
@@ -599,72 +820,115 @@ namespace Songify_Slim.Util.Configuration
             return deserializer.Deserialize<T>(yaml);
         }
 
-        public static async Task<Tuple<bool, HttpStatusCode>> CloudRestoreSettings(string apiToken, string userId)
+        internal static T CloneYaml<T>(T obj) => DeepCloneYaml(obj);
+
+        internal static string CloneToYaml(object obj)
         {
+            if (obj == null)
+                return "";
+
+            ISerializer serializer = new SerializerBuilder()
+                .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                .Build();
+            return serializer.Serialize(obj);
+        }
+
+        internal static object CloneYamlObject(object value)
+        {
+            if (value == null)
+                return null;
+
+            return typeof(ConfigHandler)
+                .GetMethod(nameof(CloneYaml), BindingFlags.NonPublic | BindingFlags.Static)!
+                .MakeGenericMethod(value.GetType())
+                .Invoke(null, [value]);
+        }
+
+        /// <summary>
+        /// Migrates legacy <see cref="AppConfig.ArtistBlacklist"/> into
+        /// <see cref="BlockedSpotifyArtists"/> for fair restore diffs (does not write disk).
+        /// </summary>
+        private static void NormalizeBlockedArtistsForCompare(Configuration config)
+        {
+            if (config == null)
+                return;
+
+            config.BlockedSpotifyArtists ??= new BlockedSpotifyArtists();
+            config.BlockedSpotifyArtists.Artists ??= [];
+
+            List<BlockedArtist> legacy = config.AppConfig?.ArtistBlacklist;
+            if (legacy is not { Count: > 0 })
+            {
+                if (config.AppConfig != null)
+                    config.AppConfig.ArtistBlacklist = [];
+                return;
+            }
+
+            HashSet<string> existingKeys = config.BlockedSpotifyArtists.Artists
+                .Select(x => x.Key)
+                .Where(k => !string.IsNullOrEmpty(k))
+                .ToHashSet();
+
+            config.BlockedSpotifyArtists.Artists.AddRange(
+                legacy.Where(x => !string.IsNullOrEmpty(x.Key) && existingKeys.Add(x.Key)));
+
+            config.AppConfig.ArtistBlacklist = [];
+        }
+
+        public static async Task<Tuple<bool, HttpStatusCode>> CloudRestoreSettings(string userId)
+        {
+            List<CloudSettingsRevision> revisions = null;
+            Window_CloudImportPreview preview = null;
             try
             {
-                string url = $"{GlobalObjects.ApiUrl}/user_settings?user_id={userId}";
+                (HttpStatusCode statusCode, List<CloudSettingsRevision> fetched) =
+                    await GetCloudSettingsRevisionsAsync().ConfigureAwait(true);
+                if (statusCode != HttpStatusCode.OK)
+                    return new Tuple<bool, HttpStatusCode>(false, statusCode);
 
-                using HttpClient http = new();
-                http.DefaultRequestHeaders.Authorization =
-                    new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiToken);
+                revisions = fetched;
+                if (revisions == null || revisions.Count == 0)
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NoContent);
 
-                HttpResponseMessage response = await http.GetAsync(url);
-
-                switch (response.StatusCode)
+                CloudSettingsRevision selectedRevision = revisions[0];
+                if (IsCloudRevisionTooNew(selectedRevision) && revisions.Count == 1)
                 {
-                    // Handle response codes 200 OK: User has premium access and operation succeeded
-                    // 401 Unauthorized: Invalid token
-                    // 403 Forbidden: User not found, no email, or no premium status
-                    // 500 Internal Server Error: Database error
-                    case HttpStatusCode.Unauthorized:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud restore failed: Unauthorized access. Invalid API token or user ID.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.Unauthorized);
-
-                    case HttpStatusCode.Forbidden:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud restore failed: Forbidden access. User not found or no premium status.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, HttpStatusCode.Forbidden);
-
-                    case HttpStatusCode.InternalServerError:
-                        Logger.Warning(LogSource.Api,
-                            "Cloud restore failed: Internal server error. Please try again later.");
-                        return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode,
-                            HttpStatusCode.InternalServerError);
+                    Logger.Warning(LogSource.Api,
+                        $"Cloud restore skipped: schema version {selectedRevision.SchemaVersion} is newer than {CloudSettingsSchemaVersion}. Update Songify.");
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.UpgradeRequired);
                 }
 
-                // If the API returns the raw base64 blob directly:
-                string base64 = await response.Content.ReadAsStringAsync();
-                base64 = JsonConvert.DeserializeObject<string>(base64);
-                if (string.IsNullOrWhiteSpace(base64))
-                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NoContent);
-                //base64 = base64.Replace("\"", "");
-                // Decode base64 and parse YAML
-                string yaml = Encoding.UTF8.GetString(Convert.FromBase64String(base64));
+                Configuration restoredConfig = null;
+                if (!IsCloudRevisionTooNew(selectedRevision))
+                {
+                    restoredConfig = await Task.Run(() => DecodeCloudRevisionSettings(selectedRevision))
+                        .ConfigureAwait(true);
+                    if (restoredConfig == null)
+                    {
+                        Logger.Warning(LogSource.Api, "Cloud restore failed: could not decode the latest revision.");
+                        return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.ServiceUnavailable);
+                    }
+                }
 
-                IDeserializer deserializer = new DeserializerBuilder()
-                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
-                    .IgnoreUnmatchedProperties()
-                    .Build();
+                Configuration localForCompare = SnapshotLocalForCompare();
+                if (localForCompare.AppConfig != null)
+                    localForCompare.AppConfig.ArtistBlacklist = [];
 
-                Configuration restoredConfig = deserializer.Deserialize<Configuration>(yaml);
                 Window sW = new();
                 foreach (Window win in Application.Current.Windows)
                 {
-                    if (win is Window_Settings)
+                    if (win is ShellWindow)
                         sW = win;
                 }
 
-                // Preview the import
-                Window_CloudImportPreview preview = new(Settings.CurrentConfig, restoredConfig)
+                preview = new Window_CloudImportPreview(
+                    localForCompare, restoredConfig, ImportPreviewKind.Cloud, revisions)
                 {
                     Owner = sW,
                     WindowStartupLocation = WindowStartupLocation.CenterOwner
                 };
 
-                if (preview.DiffCount == 0)
+                if (preview.DiffCount == 0 && revisions.Count == 1 && restoredConfig != null)
                 {
                     return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NotModified);
                 }
@@ -676,22 +940,214 @@ namespace Songify_Slim.Util.Configuration
                     return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.NotAcceptable);
                 }
 
-                await Settings.ImportCloudSave(restoredConfig);
-                return new Tuple<bool, HttpStatusCode>(response.IsSuccessStatusCode, response.StatusCode);
+                Configuration selectedConfig = preview.SelectedConfiguration;
+                IReadOnlyList<string> selectedPaths = preview.SelectedPaths;
+                if (selectedConfig == null)
+                {
+                    Logger.Warning(LogSource.Api,
+                        "Cloud restore cancelled: selected revision could not be imported.");
+                    return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.UpgradeRequired);
+                }
+
+                await Settings.ApplySelectedImport(selectedConfig, selectedPaths, preserveSecrets: true);
+                return new Tuple<bool, HttpStatusCode>(true, HttpStatusCode.OK);
             }
             catch (Exception ex)
             {
                 Logger.Error(LogSource.Core, "Error restoring cloud save.", ex);
                 return new Tuple<bool, HttpStatusCode>(false, HttpStatusCode.ServiceUnavailable);
             }
+            finally
+            {
+                revisions?.Clear();
+                preview?.ReleaseCloudRevisions();
+            }
         }
 
-        private class CloudSettingsResponse
+        private static async Task<(HttpStatusCode Status, List<CloudSettingsRevision> Revisions)>
+            GetCloudSettingsRevisionsAsync()
         {
-            [JsonProperty("settings")] public string Settings { get; set; }
+            using HttpResponseMessage response = await SongifyApi.GetUserSettingsAsync();
+            string body = await response.Content.ReadAsStringAsync();
+            SongifyPremiumService.ApplyFromCloudStatus(response.StatusCode);
+            if (response.StatusCode != HttpStatusCode.OK)
+            {
+                LogCloudHttpFailure("restore", response.StatusCode, body);
+                return (response.StatusCode, null);
+            }
 
-            [JsonProperty("updatedAt")] public DateTime? UpdatedAt { get; set; }
+            if (!TryParseCloudSettingsList(body, response.StatusCode, out List<CloudSettingsRevision> revisions))
+                return (HttpStatusCode.UnprocessableEntity, null);
+
+            return (HttpStatusCode.OK, revisions);
         }
+
+        private static async Task RefreshOpenCloudImportPreviewAsync()
+        {
+            Window_CloudImportPreview open = Application.Current?.Windows
+                .OfType<Window_CloudImportPreview>()
+                .FirstOrDefault(w => w.IsLoaded);
+            if (open == null)
+                return;
+
+            (HttpStatusCode status, List<CloudSettingsRevision> revisions) =
+                await GetCloudSettingsRevisionsAsync().ConfigureAwait(true);
+            if (status != HttpStatusCode.OK || revisions == null)
+                return;
+
+            if (open.Dispatcher.CheckAccess())
+            {
+                await open.ReloadCloudRevisionsAsync(revisions).ConfigureAwait(true);
+                return;
+            }
+
+            Task reload = await open.Dispatcher.InvokeAsync(() => open.ReloadCloudRevisionsAsync(revisions));
+            await reload.ConfigureAwait(true);
+        }
+
+        private static void LogCloudHttpFailure(string operation, HttpStatusCode statusCode, string body)
+        {
+            Logger.Warning(LogSource.Api,
+                $"Cloud {operation} failed: {(int)statusCode} {statusCode}. {TrimCloudBody(body)}");
+        }
+
+        private static string TrimCloudBody(string body)
+        {
+            if (string.IsNullOrWhiteSpace(body))
+                return "";
+            body = body.Trim();
+            return body.Length <= 400 ? body : body[..400];
+        }
+
+        /// <summary>
+        /// GET /v3/user_settings is either a revisions object (new) or a JSON string of the latest
+        /// base64 blob (current production). Detect with JToken before any preview UI.
+        /// </summary>
+        internal static bool TryParseCloudSettingsList(
+            string body,
+            HttpStatusCode statusCode,
+            out List<CloudSettingsRevision> revisions)
+        {
+            revisions = [];
+            if (string.IsNullOrWhiteSpace(body))
+                return true;
+
+            JToken token;
+            try
+            {
+                token = JToken.Parse(body);
+            }
+            catch (JsonException ex)
+            {
+                LogCloudHttpFailure("restore", statusCode, body);
+                Logger.Error(LogSource.Api, "Cloud restore failed: GET /user_settings was not valid JSON.", ex);
+                return false;
+            }
+
+            switch (token.Type)
+            {
+                case JTokenType.String:
+                {
+                    string base64 = token.Value<string>() ?? JsonConvert.DeserializeObject<string>(body);
+                    revisions =
+                    [
+                        new CloudSettingsRevision
+                        {
+                            Id = 0,
+                            SchemaVersion = 0,
+                            CreatedAt = DateTime.UtcNow,
+                            Settings = base64 ?? ""
+                        }
+                    ];
+                    return true;
+                }
+                case JTokenType.Object:
+                {
+                    try
+                    {
+                        CloudSettingsList parsed =
+                            token.ToObject<CloudSettingsList>(JsonSerializer.Create(CloudJsonSettings));
+                        revisions = parsed?.Revisions ?? [];
+                        return true;
+                    }
+                    catch (JsonException ex)
+                    {
+                        LogCloudHttpFailure("restore", statusCode, body);
+                        Logger.Error(LogSource.Api,
+                            "Cloud restore failed: GET /user_settings JSON object could not be read.", ex);
+                        return false;
+                    }
+                }
+                default:
+                    LogCloudHttpFailure("restore", statusCode, body);
+                    Logger.Warning(LogSource.Api,
+                        $"Cloud restore failed: GET /user_settings unexpected JSON type {token.Type}.");
+                    return false;
+            }
+        }
+
+        internal static bool IsCloudRevisionTooNew(CloudSettingsRevision revision)
+            => revision != null && revision.SchemaVersion > CloudSettingsSchemaVersion;
+
+        /// <summary>
+        /// Decodes one revision's base64 YAML. Call off the UI thread; does not decode other revisions.
+        /// </summary>
+        internal static Configuration DecodeCloudRevisionSettings(CloudSettingsRevision revision)
+        {
+            if (revision == null || string.IsNullOrWhiteSpace(revision.Settings))
+                return null;
+
+            try
+            {
+                string yaml = Encoding.UTF8.GetString(Convert.FromBase64String(revision.Settings));
+                IDeserializer deserializer = new DeserializerBuilder()
+                    .WithNamingConvention(CamelCaseNamingConvention.Instance)
+                    .IgnoreUnmatchedProperties()
+                    .Build();
+
+                Configuration restoredConfig = deserializer.Deserialize<Configuration>(yaml);
+                NormalizeBlockedArtistsForCompare(restoredConfig);
+                return restoredConfig;
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Core, "Error decoding cloud settings revision.", ex);
+                return null;
+            }
+        }
+    }
+
+    internal sealed class CloudSettingsSaveRequest
+    {
+        [JsonProperty("userId")]
+        public string UserId { get; set; }
+
+        [JsonProperty("settings")]
+        public string Settings { get; set; }
+
+        [JsonProperty("schemaVersion")]
+        public int SchemaVersion { get; set; }
+    }
+
+    internal sealed class CloudSettingsRevision
+    {
+        [JsonProperty("id")]
+        public long Id { get; set; }
+
+        [JsonProperty("schemaVersion")]
+        public int SchemaVersion { get; set; }
+
+        [JsonProperty("createdAt")]
+        public DateTime CreatedAt { get; set; }
+
+        [JsonProperty("settings")]
+        public string Settings { get; set; }
+    }
+
+    internal sealed class CloudSettingsList
+    {
+        [JsonProperty("revisions")]
+        public List<CloudSettingsRevision> Revisions { get; set; }
     }
 
     public class Configuration
@@ -875,17 +1331,25 @@ namespace Songify_Slim.Util.Configuration
         public bool AutoClearQueue { get; set; }
         public bool Autostart { get; set; }
         public bool AutoStartWebServer { get; set; }
+        /// <summary>Legacy bool from before <see cref="ReleaseChannel"/>. Kept so old YAML still deserializes.</summary>
         public bool BetaUpdates { get; set; }
+        /// <summary>Null in configs written before release channels existed.</summary>
+        public ReleaseChannel? ReleaseChannel { get; set; }
         public bool BlockAllExplicitSongs { get; set; }
         public bool BotOnlyWorkWhenLive { get; set; }
         public bool CustomPauseTextEnabled { get; set; }
         public bool DonationReminder { get; set; }
         public bool DownloadCanvas { get; set; }
-        public bool DownloadCover { get; set; }
+        public bool DownloadCover { get; set; } = true;
         public bool KeepAlbumCover { get; set; } = false;
         public bool LimitSrToPlaylist { get; set; }
         public bool MsgLoggingEnabled { get; set; }
         public bool OpenQueueOnStartup { get; set; }
+
+        /// <summary>
+        /// When <see cref="OpenQueueOnStartup"/> is true, open the standalone queue window instead of the Queue page.
+        /// </summary>
+        public bool OpenQueuePopOutOnStartup { get; set; }
         public bool RewardGoalEnabled { get; set; }
         public bool SaveHistory { get; set; }
         public bool SplitOutput { get; set; }
@@ -898,7 +1362,6 @@ namespace Songify_Slim.Util.Configuration
         public bool TwSrUnlimitedSr { get; set; }
         public bool UpdateRequired { get; set; } = true;
         public bool Upload { get; set; }
-        public bool UploadHistory { get; set; }
         public bool UseDefaultBrowser { get; set; }
         public bool UseOwnApp { get; set; }
         public PauseOptions PauseOption { get; set; } = PauseOptions.Nothing;
@@ -929,25 +1392,32 @@ namespace Songify_Slim.Util.Configuration
         public int WebServerPort { get; set; } = 65530;
 
         /// <summary>
-        /// When true, WebSocket control commands require <see cref="WebServerPassword"/>
-        /// (via auth action, per-command password field, or ?password= on the WS URL).
+        /// When true, WebSocket and HTTP API access require <see cref="WebServerPassword"/>
+        /// (via ?password= on the URL, X-Songify-Password, Authorization: Bearer, or auth/command password).
         /// Off by default — localhost is treated as trusted unless the user opts in.
         /// </summary>
         public bool WebServerPasswordEnabled { get; set; }
 
         /// <summary>Shared secret for optional WebSocket command authentication.</summary>
         public string WebServerPassword { get; set; } = "";
+
         public List<RefundCondition> RefundConditons { get; set; } = [];
+
+        /// <summary>
+        /// True after empty refund lists have been filled with default failure conditions.
+        /// Distinguishes "never configured" from "user turned every refund off".
+        /// </summary>
+        public bool RefundConditionsMigrated { get; set; }
         public List<int> QueueWindowColumns { get; set; } = [0, 1, 2, 3, 4];
         public List<int> ReadNotificationIds { get; set; } = [];
         public List<int> UserLevelsCommand { get; set; } = [0, 1, 2, 3];
         public List<int> UserLevelsReward { get; set; } = [0, 1, 2, 3];
+        public List<int> UserLevelsExplicitSongs { get; set; } = [];
         public List<BlockedArtist> ArtistBlacklist { get; set; } = [];
         public List<string> TwRewardId { get; set; } = [];
         public List<string> TwRewardSkipId { get; set; } = [];
         public List<BlockedUser> UserBlacklist { get; set; } = [];
         public List<BlockedSong> SongBlacklist { get; set; } = [];
-        public string AccessKey { get; set; } = ConfigHandler.GenerateAccessKey();
         public string BaseUrl { get; set; } = "https://songify.rocks";
         public string Color { get; set; } = "Blue";
         public string CustomPauseText { get; set; } = "";
@@ -960,6 +1430,31 @@ namespace Songify_Slim.Util.Configuration
         public PlaylistSnapshot SpotifyPlaylistId { get; set; } = new();
         public string SpotifySongLimitPlaylist { get; set; } = "";
         public string Theme { get; set; } = "Dark";
+
+        /// <summary>WPF-UI window backdrop: None, Auto, Mica, Acrylic, Tabbed.</summary>
+        public string WindowBackdrop { get; set; } = "Mica";
+
+        /// <summary>
+        /// Extra UI zoom on top of Windows DPI (1.0 = 100%, 2.0 = 200%).
+        /// Helps 1440p / 4K when the 900×500 layout is too small to read.
+        /// </summary>
+        public double UiScale { get; set; } = 1.0;
+
+        /// <summary>
+        /// When true, the main shell can be resized below its designed minimum size (900×500).
+        /// This may break the UI layout.
+        /// </summary>
+        public bool OverruleShellMinWidth { get; set; }
+
+        /// <summary>
+        /// WPF-UI <c>NavigationView.PaneDisplayMode</c>: Left (Expanded), Top, Bottom.
+        /// Empty / unknown / legacy values (LeftMinimal, LeftFluent) fall back to Left.
+        /// </summary>
+        public string NavigationPaneDisplayMode { get; set; } = "Left";
+
+        /// <summary>Whether the left navigation pane is expanded. Default true for Expanded mode.</summary>
+        public bool NavigationPaneOpen { get; set; } = true;
+
         public string TwRewardGoalRewardId { get; set; } = "";
         public string Uuid { get; set; } = "";
         public bool ShowUserLevelBadges { get; set; } = true;
@@ -1015,6 +1510,21 @@ namespace Songify_Slim.Util.Configuration
         public TwitchPollSettings TwitchPollSettings { get; set; } = new();
         public List<string> TwRewardSkipPoll { get; set; } = [];
         public bool SharedChatEnabled { get; set; } = false;
+
+        /// <summary>
+        /// Legacy: known bots were ignored automatically. Kept so existing configs can be migrated onto
+        /// <see cref="IgnoredChatUsers"/>. New logic ignores only that list (plus the linked Songify bot).
+        /// </summary>
+        public bool IgnoreBotMessages { get; set; } = true;
+
+        /// <summary>Twitch logins or display names (no @) whose <c>!</c> messages are always ignored, including the broadcaster.</summary>
+        public List<string> IgnoredChatUsers { get; set; } = [];
+
+        /// <summary>Hex accent (e.g. #0078D4). Empty = Windows system accent.</summary>
+        public string AccentColor { get; set; } = "";
+
+        /// <summary>Most recently used custom accent hex values, newest first. Max 7.</summary>
+        public List<string> RecentAccentColors { get; set; } = [];
         public string SrForBitsKeyWord { get; set; }
         public SpotifyPersistentIssue SpotifyPersistentIssue { get; set; }
         public List<SpotifyPersistentIssue> SpotifyPersistentIssues { get; set; } = new();
@@ -1027,6 +1537,20 @@ namespace Songify_Slim.Util.Configuration
         public string WebUserAgent = "Songify Data Provider";
         public string YtmdToken;
         public int MinimumBitsForSR = 1;
+
+        /// <summary>True after the first-launch setup wizard was finished or skipped.</summary>
+        public bool SetupCompleted { get; set; }
+
+        /// <summary>True when the Overview "Getting started" card was dismissed.</summary>
+        public bool SetupChecklistDismissed { get; set; }
+
+        /// <summary>True when the Home widget promo card was dismissed.</summary>
+        public bool WidgetPromoDismissed { get; set; }
+
+        /// <summary>Last completed guided-setup flow version. 0 = never shown.</summary>
+        public int SetupWizardVersion { get; set; }
+
+        public int MinimumMessagesBetweenAnnounces { get; set; } = 0;
     }
 
     public class BlockedSpotifyArtists

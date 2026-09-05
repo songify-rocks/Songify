@@ -1,10 +1,11 @@
-﻿using FuzzySharp;
-using MahApps.Metro.Controls;
-using MahApps.Metro.Controls.Dialogs;
+using FuzzySharp;
+using Songify_Slim.Util.General;
+using MessageDialogResult = Songify_Slim.Util.General.AppDialogResult;
+using MessageDialogStyle = Songify_Slim.Util.General.AppDialogStyle;
+using MetroDialogSettings = Songify_Slim.Util.General.AppDialogSettings;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
-using Songify_Slim.Views;
 using SpotifyAPI.Web;
 using SpotifyAPI.Web.Auth;
 using System;
@@ -745,26 +746,9 @@ namespace Songify_Slim.Util.Spotify
                     }
 
                     ApiCallMeter.ReleaseRateLimit();
+                    RefreshShellSpotifyIndicator();
 
-                    foreach (Window window in Application.Current.Windows)
-                    {
-                        switch (window)
-                        {
-                            case MainWindow mw:
-                                mw.UpdateSpotifyStatusIndicator();
-                                if (Settings.Player == PlayerType.Spotify)
-                                    mw.SetIdleNowPlayingPromptIfPlaceholder();
-                                if (!Settings.BypassSpotifyFetchGate)
-                                {
-                                    mw.SetBypassNotice();
-                                }
-                                break;
-
-                            case Window_Settings ws:
-                                await ws.SetControls();
-                                break;
-                        }
-                    }
+                    await SettingsUi.RefreshAsync();
                 }
                 catch (Exception ex)
                 {
@@ -787,13 +771,27 @@ namespace Songify_Slim.Util.Spotify
                 if (AuthTimer.Enabled)
                     AuthTimer.Stop();
 
-                if (Application.Current?.MainWindow is MainWindow mw)
-                    mw.UpdateSpotifyStatusIndicator();
+                RefreshShellSpotifyIndicator();
             }
             catch (Exception ex)
             {
                 Logger.LogExc(ex);
             }
+        }
+
+        /// <summary>Push Spotify connection/premium state to the WPF-UI shell status bar.</summary>
+        public static void RefreshShellSpotifyIndicator()
+        {
+            if (Client == null)
+            {
+                AppShellBridge.Current?.SetSpotifyState(SpotifyIndicatorState.Disconnected);
+                return;
+            }
+
+            string product = Settings.SpotifyProfile?.Product ?? GlobalObjects.SpotifyProfile?.Product;
+            bool premium = string.Equals(product, "premium", StringComparison.OrdinalIgnoreCase);
+            AppShellBridge.Current?.SetSpotifyState(
+                premium ? SpotifyIndicatorState.Premium : SpotifyIndicatorState.Free);
         }
 
         public static async Task ShowPremiumRequiredDialogAsync()
@@ -806,12 +804,10 @@ namespace Songify_Slim.Util.Spotify
                 AnimateHide = true,
             };
 
-            // You need a reference to the dialog host (usually the main window)
-            MetroWindow mainWindow = (Application.Current.MainWindow as MetroWindow);
-            if (mainWindow == null)
+            if (Application.Current.MainWindow == null)
                 return;
 
-            MessageDialogResult result = await mainWindow.ShowMessageAsync(
+            MessageDialogResult result = await AppDialog.ShowAsync(
                 "Spotify Premium required",
                 "Spotify Premium is required to perform song requests. Songify was unable to verify your Spotify Premium status.",
                 MessageDialogStyle.AffirmativeAndNegative,
@@ -1113,7 +1109,13 @@ namespace Songify_Slim.Util.Spotify
             {
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
-                return await ApiCallMeter.RunAsync("Tracks.Get", () => Client.Tracks.Get(id, cts.Token), SoftLimitPerminute, cts.Token);
+                // market=from_token enables track relinking and populates is_playable
+                // instead of available_markets, which is what region-lock checks need.
+                return await ApiCallMeter.RunAsync(
+                    "Tracks.Get",
+                    () => Client.Tracks.Get(id, new TrackRequest { Market = "from_token" }, cts.Token),
+                    SoftLimitPerminute,
+                    cts.Token);
             }
             catch (Exception ex)
             {
@@ -1137,7 +1139,8 @@ namespace Songify_Slim.Util.Spotify
             {
                 SearchRequest request = new(SearchRequest.Types.Track, query)
                 {
-                    Limit = take
+                    Limit = take,
+                    Market = "from_token"
                 };
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
@@ -1593,7 +1596,7 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             try
             {
-                SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 5 };
+                SearchRequest request = new(SearchRequest.Types.Artist, search) { Limit = 8 };
                 using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
 
                 SearchResponse result = await ApiCallMeter.RunAsync("Search.Item", () => Client.Search.Item(request, cts.Token),
@@ -1606,6 +1609,70 @@ namespace Songify_Slim.Util.Spotify
                 return null;
             }
         }
+
+        public static async Task<List<FullTrack>> GetTracks(string search)
+        {
+            if (Client == null)
+                return null;
+            try
+            {
+                SearchRequest request = new(SearchRequest.Types.Track, search)
+                {
+                    Limit = 8,
+                    Market = "from_token"
+                };
+                using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+                SearchResponse result = await ApiCallMeter.RunAsync("Search.Item",
+                    () => Client.Search.Item(request, cts.Token), SoftLimitPerminute, cts.Token);
+                return result.Tracks?.Items?
+                    .Where(t => t != null && !string.IsNullOrWhiteSpace(t.Id))
+                    .ToList();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                return null;
+            }
+        }
+
+        /// <summary>Extracts a Spotify track ID from a URI, URL, or raw 22-character ID.</summary>
+        public static string TryParseSpotifyTrackId(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return null;
+
+            string value = input.Trim();
+
+            if (value.StartsWith("spotify:track:", StringComparison.OrdinalIgnoreCase))
+            {
+                string id = value["spotify:track:".Length..].Split('?', '#')[0];
+                return IsSpotifyBase62Id(id) ? id : null;
+            }
+
+            Match urlMatch = Regex.Match(
+                value,
+                @"open\.spotify\.com/(?:intl-[a-z]{2}/)?track/([A-Za-z0-9]{22})",
+                RegexOptions.IgnoreCase);
+            if (urlMatch.Success)
+                return urlMatch.Groups[1].Value;
+
+            return IsSpotifyBase62Id(value) ? value : null;
+        }
+
+        public static bool LooksLikeSpotifyTrackReference(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return false;
+
+            string value = input.Trim();
+            return value.Contains("open.spotify.com/", StringComparison.OrdinalIgnoreCase)
+                   || value.StartsWith("spotify:track:", StringComparison.OrdinalIgnoreCase)
+                   || value.Contains("spotify.link/", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static bool IsSpotifyBase62Id(string value)
+            => value is { Length: 22 } && value.All(char.IsLetterOrDigit);
 
         public static async Task<PrivateUser> GetUser(CancellationToken ct = default)
         {

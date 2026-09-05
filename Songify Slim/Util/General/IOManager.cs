@@ -1,5 +1,4 @@
-﻿using Songify_Slim.Views;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -12,7 +11,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
 using Songify_Slim.Util.Configuration;
 
 namespace Songify_Slim.Util.General
@@ -121,11 +119,7 @@ namespace Songify_Slim.Util.General
 
                         Application.Current.Dispatcher.Invoke(() =>
                         {
-                            MainWindow main = Application.Current.MainWindow as MainWindow;
-                            main?.ImgCover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                            {
-                                main.StopCanvas();
-                            }));
+                            AppShellBridge.Current?.StopCanvas();
                         });
 
                         const int tries = 5;
@@ -170,11 +164,7 @@ namespace Songify_Slim.Util.General
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MainWindow main = Application.Current.MainWindow as MainWindow;
-                    main?.ImgCover.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                    {
-                        main.SetCanvas(canvasPath);
-                    }));
+                    AppShellBridge.Current?.SetCanvas(canvasPath);
                 });
             }
             catch (Exception ex)
@@ -195,10 +185,7 @@ namespace Songify_Slim.Util.General
                 // Stop the animation before downloading
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (Application.Current.MainWindow is MainWindow main)
-                    {
-                        main.StopCanvas();
-                    }
+                    AppShellBridge.Current?.StopCanvas();
                 });
 
                 await _downloadSemaphore.WaitAsync(); // Prevent overlapping downloads
@@ -288,10 +275,7 @@ namespace Songify_Slim.Util.General
                 Logger.Debug(LogSource.Core, $"[IOManager.DownloadCover] Calling SetCoverImage with path: {coverPath}");
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (Application.Current.MainWindow is MainWindow main)
-                    {
-                        main.SetCoverImage(coverPath);
-                    }
+                    AppShellBridge.Current?.SetCoverImage(coverPath);
                 });
             }
             catch (Exception ex)
@@ -330,10 +314,7 @@ namespace Songify_Slim.Util.General
             {
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    if (Application.Current.MainWindow is MainWindow main)
-                    {
-                        main.StopCanvas();
-                    }
+                    AppShellBridge.Current?.StopCanvas();
                 });
 
                 await _imageDownloadLock.WaitAsync();

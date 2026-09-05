@@ -4,6 +4,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using Songify_Slim.Util.General;
+using Wpf.Ui.Controls;
+using Button = Wpf.Ui.Controls.Button;
+using TextBlock = System.Windows.Controls.TextBlock;
 
 namespace Songify_Slim.Views
 {
@@ -31,14 +35,15 @@ namespace Songify_Slim.Views
         public Window_ResponseParams()
         {
             InitializeComponent();
+            ThemeHandler.ApplyTheme();
         }
 
-        private void MetroWindow_Loaded(object sender, RoutedEventArgs e)
+        private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             LoadItems();
         }
 
-        private void TxtSearch_TextChanged(object sender, TextChangedEventArgs e)
+        private void TxtSearch_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             RefreshParamList();
         }
@@ -171,7 +176,7 @@ namespace Songify_Slim.Views
                 if (!MatchesFilter(filter, entry))
                     continue;
 
-                PnlParams.Children.Add(CreateParamBorder(entry));
+                PnlParams.Children.Add(CreateParamCard(entry));
             }
         }
 
@@ -181,7 +186,7 @@ namespace Songify_Slim.Views
                 return true;
 
             string haystack = $"{entry.Key} {entry.Description} {entry.Keywords}".ToLowerInvariant();
-            foreach (string token in filter.ToLowerInvariant().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (string token in filter.ToLowerInvariant().Split([' '], StringSplitOptions.RemoveEmptyEntries))
             {
                 if (!haystack.Contains(token))
                     return false;
@@ -190,62 +195,87 @@ namespace Songify_Slim.Views
             return true;
         }
 
-        private Border CreateParamBorder(ResponseParamEntry entry)
+        private UIElement CreateParamCard(ResponseParamEntry entry)
         {
-            Button btn = new()
+            var keyBlock = new TextBlock
             {
-                Content = new TextBlock
-                {
-                    Text = entry.Key
-                },
-                FontWeight = FontWeights.Bold,
-                HorizontalAlignment = HorizontalAlignment.Left,
+                Text = entry.Key,
+                FontFamily = new FontFamily("Cascadia Mono, Consolas, Courier New"),
+                FontSize = 13,
+                FontWeight = FontWeights.SemiBold,
+                VerticalAlignment = VerticalAlignment.Center,
+                Foreground = TryBrush("AccentTextFillColorPrimaryBrush") ?? Brushes.DodgerBlue
             };
 
-            btn.Click += BtnOnClick;
+            var copyBtn = new Button
+            {
+                Content = keyBlock,
+                Appearance = ControlAppearance.Secondary,
+                Padding = new Thickness(10, 4, 10, 4),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Margin = new Thickness(0, 0, 8, 0)
+            };
+            copyBtn.Click += BtnOnClick;
+
+            var copiedHint = new TextBlock
+            {
+                Text = "",
+                VerticalAlignment = VerticalAlignment.Center,
+                FontSize = 12,
+                Opacity = 0,
+                Foreground = TryBrush("TextFillColorSecondaryBrush") ?? Brushes.Gray
+            };
+
+            var header = new StackPanel
+            {
+                Orientation = Orientation.Horizontal,
+                Margin = new Thickness(0, 0, 0, 6),
+                Children = { copyBtn, copiedHint }
+            };
+
+            var description = new TextBlock
+            {
+                Text = entry.Description,
+                TextWrapping = TextWrapping.Wrap,
+                FontSize = 12,
+                Foreground = TryBrush("TextFillColorSecondaryBrush") ?? Brushes.Gray
+            };
+
+            var body = new StackPanel
+            {
+                Children = { header, description }
+            };
 
             return new Border
             {
-                BorderThickness = new Thickness(0),
-                Background = Application.Current.TryFindResource("MahApps.Brushes.Accent") as Brush,
-                Margin = new Thickness(5),
-                Padding = new Thickness(5),
-                CornerRadius = new CornerRadius(5),
-                Child = new StackPanel
-                {
-                    Margin = new Thickness(6),
-                    Children =
-                    {
-                        new StackPanel()
-                        {
-                            Orientation = Orientation.Horizontal,
-                            Children =
-                            {
-                                btn,
-                                new TextBlock
-                                {
-                                    Text = "",
-                                    VerticalAlignment = VerticalAlignment.Center,
-                                    Margin = new Thickness(6, 0, 0, 0)
-                                }
-                            }
-                        },
-                        new TextBlock
-                        {
-                            Text = entry.Description,
-                            TextWrapping = TextWrapping.Wrap
-                        }
-                    }
-                }
+                Margin = new Thickness(0, 0, 0, 8),
+                Padding = new Thickness(12, 10, 12, 10),
+                CornerRadius = new CornerRadius(8),
+                Background = TryBrush("CardBackgroundFillColorDefaultBrush")
+                              ?? TryBrush("ControlFillColorDefaultBrush")
+                              ?? Brushes.Transparent,
+                BorderBrush = TryBrush("CardStrokeColorDefaultBrush")
+                              ?? TryBrush("ControlStrokeColorDefaultBrush"),
+                BorderThickness = new Thickness(1),
+                Child = body
             };
         }
 
+        private static Brush TryBrush(string key) =>
+            Application.Current?.TryFindResource(key) as Brush;
+
         private async void BtnOnClick(object sender, RoutedEventArgs e)
         {
-            if (sender is not Button button) return;
+            if (sender is not System.Windows.Controls.Button button) return;
 
-            if (button.Content is TextBlock tbx)
-                Clipboard.SetDataObject($"{tbx.Text}");
+            string keyText = button.Content switch
+            {
+                TextBlock tbx => tbx.Text,
+                _ => button.Content?.ToString() ?? ""
+            };
+
+            if (!string.IsNullOrEmpty(keyText))
+                Clipboard.SetDataObject(keyText);
 
             if (button.Parent is not StackPanel pnl) return;
 
@@ -257,7 +287,6 @@ namespace Songify_Slim.Views
                 tb.Text = Application.Current.TryFindResource("common_copied") as string ?? "Copied";
                 tb.Text += "!";
 
-                // Fade in over 5 steps (each step is 0.2 opacity, 10ms delay each)
                 for (int i = 0; i < 5; i++)
                 {
                     tb.Opacity += 0.2;
@@ -267,7 +296,6 @@ namespace Songify_Slim.Views
 
                 await Task.Delay(2000);
 
-                // Fade out over 5 steps (each step is 0.2 opacity, 10ms delay each)
                 for (int i = 0; i < 5; i++)
                 {
                     tb.Opacity -= 0.2;
@@ -280,13 +308,11 @@ namespace Songify_Slim.Views
 
         public void Window_ResponseParams_OnLocationChanged(object sender, EventArgs e)
         {
-            if (!IsLoaded)
+            if (!IsLoaded || Owner is not Window owner)
                 return;
-            if (Owner is not Window_Settings settings) return;
-            settings.LocationChanged -= settings.MetroWindow_LocationChanged;
-            settings.Left = Left - settings.Width;
-            settings.Top = Top;
-            settings.LocationChanged += settings.MetroWindow_LocationChanged;
+
+            owner.Left = Left - owner.ActualWidth;
+            owner.Top = Top;
         }
     }
 }

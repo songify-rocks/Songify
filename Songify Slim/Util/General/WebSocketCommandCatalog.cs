@@ -67,7 +67,7 @@ namespace Songify_Slim.Util.General
                 Action = "auth",
                 Aliases = Array.Empty<string>(),
                 Description =
-                    "Optional. When WebServer password protection is enabled in Settings, authenticate this connection. You can also pass ?password= on the WebSocket URL or include \"password\" on any command.",
+                    "When password protection is enabled, the WebSocket handshake is rejected unless ?password= (or X-Songify-Password / Authorization: Bearer) matches. You can also send this auth action or include \"password\" on any command after connecting.",
                 DataRequired = true,
                 ExampleJson = "{\"action\":\"auth\",\"data\":{\"password\":\"your-password\"}}"
             },

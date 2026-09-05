@@ -9,10 +9,14 @@ namespace Songify_Slim.Util
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is bool isChecked && isChecked)
-                return Visibility.Visible;
+            bool flag = value is bool b && b;
+            bool invert = parameter is string s &&
+                          s.Equals("Invert", StringComparison.OrdinalIgnoreCase);
 
-            return Visibility.Collapsed;
+            if (invert)
+                flag = !flag;
+
+            return flag ? Visibility.Visible : Visibility.Collapsed;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

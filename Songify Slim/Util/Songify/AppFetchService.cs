@@ -1,0 +1,264 @@
+using System;
+using System.Threading.Tasks;
+using System.Timers;
+using System.Windows;
+using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
+using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Youtube.Pear;
+using static Songify_Slim.Util.General.Enums;
+
+namespace Songify_Slim.Util.Songify;
+
+/// <summary>
+/// Application-wide song fetch logic: runs SongFetcher on a timer and updates GlobalObjects.CurrentSong.
+/// Owns the song-fetch timer for the Fluent shell.
+/// </summary>
+public static class AppFetchService
+{
+    private static readonly SongFetcher Sf = new();
+    private static Timer _timer;
+    private static bool _running;
+
+    /// <summary>Raised when Spotify idle backoff stage/interval may have changed (UI should refresh).</summary>
+    public static event Action IdleBackoffChanged;
+
+    /// <summary>Raised after the active player source changes (e.g. Spotify ↔ Pear).</summary>
+    public static event Action PlayerSourceChanged;
+
+    public static bool IsSpotifyIdleBackoffActive => Sf.IsSpotifyIdleBackoffActive;
+
+    public static int GetEffectiveSpotifyFetchIntervalSeconds() =>
+        Sf.GetEffectiveSpotifyFetchIntervalSeconds();
+
+    public static TimeSpan? GetPearConnectBackoffRemaining() =>
+        Sf.GetPearConnectBackoffRemaining();
+
+    public static Task ForceFetchSpotifyAsync(bool forceUpdate = true) =>
+        Sf.FetchSpotifyWeb(forceUpdate);
+
+    public static Task ForceFetchPearAsync(bool forceNow = true) =>
+        Sf.FetchPear(forceNow);
+
+    public static Task NotifyPearPlayerInactiveAsync() =>
+        Sf.NotifyPearPlayerInactiveAsync();
+
+    public static void Start()
+    {
+        if (_running) return;
+        _running = true;
+        SyncPearAutoConnect();
+        RunGetCurrentSongAsync();
+        SetTimer();
+        RaiseIdleBackoffChanged();
+    }
+
+    public static void Stop()
+    {
+        _running = false;
+        try
+        {
+            _timer?.Stop();
+            _timer?.Dispose();
+            _timer = null;
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
+    /// <summary>
+    /// Apply player-source side effects (Pear WebSocket auto-connect / cleanup) then restart the fetch timer.
+    /// </summary>
+    public static async Task ApplyPlayerSourceAsync(PlayerType previous, PlayerType selected)
+    {
+        if (previous == PlayerType.Pear && selected != PlayerType.Pear)
+            await Sf.NotifyPearPlayerInactiveAsync().ConfigureAwait(true);
+
+        PearWebSocketClient.AutoConnectEnabled = selected == PlayerType.Pear;
+
+        Stop();
+        Start();
+        RaisePlayerSourceChanged();
+    }
+
+    /// <summary>
+    /// Clears Spotify idle fetch backoff and restarts the fetch timer at the settings interval.
+    /// Used when Twitch commands/rewards or the status-bar chip indicate activity.
+    /// </summary>
+    public static void NotifySpotifyRelatedActivity(string reason = "Twitch command or reward")
+    {
+        if (Settings.Player != PlayerType.Spotify)
+            return;
+
+        Sf.RestoreSpotifyFetchRate(reason);
+        ApplySpotifyFetchTimerInterval();
+        RaiseIdleBackoffChanged();
+    }
+
+    private static void SyncPearAutoConnect()
+    {
+        PearWebSocketClient.AutoConnectEnabled = Settings.Player == PlayerType.Pear;
+    }
+
+    private static void RaisePlayerSourceChanged()
+    {
+        try
+        {
+            PlayerSourceChanged?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
+    private static void SetTimer()
+    {
+        try
+        {
+            _timer?.Stop();
+            _timer?.Dispose();
+        }
+        catch { /* ignore */ }
+
+        PlayerType player = Settings.Player;
+        int intervalMs;
+        switch (player)
+        {
+            case PlayerType.WindowsPlayback:
+            case PlayerType.Vlc:
+            case PlayerType.FooBar2000:
+            case PlayerType.Pear:
+                intervalMs = 1000;
+                break;
+
+            case PlayerType.Spotify:
+                intervalMs = Sf.GetEffectiveSpotifyFetchIntervalMs();
+                break;
+
+            case PlayerType.BrowserCompanion:
+            default:
+                return;
+        }
+
+        _timer = new Timer(intervalMs);
+        _timer.Elapsed += OnTimedEvent;
+        _timer.Enabled = true;
+    }
+
+    private static void ApplySpotifyFetchTimerInterval()
+    {
+        if (_timer == null || Settings.Player != PlayerType.Spotify)
+            return;
+
+        try
+        {
+            // Changing Interval while Enabled restarts the countdown with the restored rate.
+            _timer.Interval = Sf.GetEffectiveSpotifyFetchIntervalMs();
+        }
+        catch (ObjectDisposedException)
+        {
+            // Timer may be mid-recreate during source switches.
+        }
+        catch (ArgumentException)
+        {
+            // Interval must be > 0.
+        }
+    }
+
+    private static async void OnTimedEvent(object sender, ElapsedEventArgs e)
+    {
+        if (!_running || _timer == null) return;
+        try
+        {
+            _timer.Enabled = false;
+            _timer.Elapsed -= OnTimedEvent;
+
+            await Application.Current.Dispatcher.InvokeAsync(async () =>
+            {
+                try
+                {
+                    await RunGetCurrentSongAsync();
+                }
+                finally
+                {
+                    if (_running && _timer != null)
+                    {
+                        if (Settings.Player == PlayerType.Spotify)
+                        {
+                            ApplySpotifyFetchTimerInterval();
+                            RaiseIdleBackoffChanged();
+                        }
+
+                        _timer.Elapsed += OnTimedEvent;
+                        _timer.Enabled = true;
+                    }
+                }
+            });
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+            if (_running && _timer != null)
+            {
+                _timer.Elapsed += OnTimedEvent;
+                _timer.Enabled = true;
+            }
+        }
+    }
+
+    private static async Task RunGetCurrentSongAsync()
+    {
+        PlayerType player = Settings.Player;
+        try
+        {
+            switch (player)
+            {
+                case PlayerType.BrowserCompanion:
+                    await Sf.FetchYoutubeData();
+                    break;
+
+                case PlayerType.Vlc:
+                    await Sf.FetchDesktopPlayer("vlc");
+                    break;
+
+                case PlayerType.FooBar2000:
+                    await Sf.FetchDesktopPlayer("foobar2000");
+                    break;
+
+                case PlayerType.Spotify:
+                    await Sf.FetchSpotifyWeb();
+                    break;
+
+                case PlayerType.Pear:
+                    await Sf.FetchPear();
+                    break;
+
+                case PlayerType.WindowsPlayback:
+                    await Sf.FetchWindowsApi();
+                    break;
+
+                default:
+                    break;
+            }
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
+    private static void RaiseIdleBackoffChanged()
+    {
+        try
+        {
+            IdleBackoffChanged?.Invoke();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+}

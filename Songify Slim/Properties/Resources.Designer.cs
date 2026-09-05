@@ -1618,6 +1618,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Displays the current playlist.
+        /// </summary>
+        public static string window_botresponses_cmd_playlist {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_playlist", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Displays the queue position of the users songrequests.
         /// </summary>
         public static string window_botresponses_cmd_pos {
@@ -1659,6 +1668,15 @@ namespace Songify_Slim.Properties {
         public static string window_botresponses_cmd_skip {
             get {
                 return ResourceManager.GetString("window_botresponses_cmd_skip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Starts a Twitch skip poll for the current song.
+        /// </summary>
+        public static string window_botresponses_cmd_skippoll {
+            get {
+                return ResourceManager.GetString("window_botresponses_cmd_skippoll", resourceCulture);
             }
         }
         
@@ -2671,6 +2689,51 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Release channel.
+        /// </summary>
+        public static string window_settings_system_release_channel {
+            get {
+                return ResourceManager.GetString("window_settings_system_release_channel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Choose which updates you receive.
+        /// </summary>
+        public static string window_settings_system_release_channel_hint {
+            get {
+                return ResourceManager.GetString("window_settings_system_release_channel_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Stable.
+        /// </summary>
+        public static string window_settings_release_channel_stable {
+            get {
+                return ResourceManager.GetString("window_settings_release_channel_stable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Beta.
+        /// </summary>
+        public static string window_settings_release_channel_beta {
+            get {
+                return ResourceManager.GetString("window_settings_release_channel_beta", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Dev (Unstable).
+        /// </summary>
+        public static string window_settings_release_channel_dev {
+            get {
+                return ResourceManager.GetString("window_settings_release_channel_dev", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to EXPORT CONFIG.
         /// </summary>
         public static string window_settings_config_export {
@@ -3328,7 +3391,7 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to To be able to refund points the Reward has to be created through Songify!.
+        ///   Looks up a localized string similar to Failed requests are refunded automatically when the matching condition is on. The channel-point reward must be created in Songify (not in the Twitch dashboard) — Twitch only lets the creating app cancel redemptions.
         /// </summary>
         public static string window_settings_refund_conditions_info {
             get {
@@ -3679,6 +3742,15 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to User Levels (Explicit).
+        /// </summary>
+        public static string window_settings_spotify_sr_user_levels_explicit {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_user_levels_explicit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to User Levels (Reward).
         /// </summary>
         public static string window_settings_spotify_sr_user_levels_reward {
@@ -3693,6 +3765,15 @@ namespace Songify_Slim.Properties {
         public static string window_settings_spotify_sr_userlevel_command {
             get {
                 return ResourceManager.GetString("window_settings_spotify_sr_userlevel_command", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allowed user levels to request explicit songs.
+        /// </summary>
+        public static string window_settings_spotify_sr_userlevel_explicit {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_sr_userlevel_explicit", resourceCulture);
             }
         }
         

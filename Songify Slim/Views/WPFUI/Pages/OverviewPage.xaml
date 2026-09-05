@@ -1,0 +1,484 @@
+<Page
+    x:Class="Songify_Slim.Views.WPFUI.Pages.OverviewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    xmlns:util="clr-namespace:Songify_Slim.Util"
+    Title="{DynamicResource nav_home}"
+    ScrollViewer.CanContentScroll="False"
+    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+    ScrollViewer.PanningMode="None"
+    ScrollViewer.VerticalScrollBarVisibility="Disabled"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <ResourceDictionary>
+            <util:ResourceStringFormatConverter x:Key="ResourceStringFormatConverter" />
+            <util:UrlToImageSourceConverter x:Key="UrlToImageSourceConverter" />
+            <!--  Visibility via DataTriggers; album URLs go through UrlToImageSourceConverter (null-safe)  -->
+            <!--  Badge colors (theme-friendly)  -->
+            <SolidColorBrush x:Key="BadgeNowPlaying" Color="#4682B4" />
+            <SolidColorBrush x:Key="BadgeSongRequest" Color="#2E8B57" />
+            <SolidColorBrush x:Key="BadgeSkipping" Color="#CD5C5C" />
+            <!--  Queue item card style (in resources so Card has single content child)  -->
+            <Style x:Key="QueueItemCardStyle" TargetType="ui:Card">
+                <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+                <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                        <Setter Property="BorderBrush" Value="{DynamicResource AccentFillColorDefaultBrush}" />
+                        <Setter Property="BorderThickness" Value="2" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ResourceDictionary>
+    </Page.Resources>
+    <ScrollViewer
+        HorizontalScrollBarVisibility="Disabled"
+        PanningMode="VerticalOnly"
+        VerticalScrollBarVisibility="Auto">
+        <Grid
+            MaxWidth="800"
+            Margin="24"
+            VerticalAlignment="Top">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <TextBlock
+                    Margin="0,0,12,0"
+                    VerticalAlignment="Center"
+                    FontSize="28"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                    Text="{DynamicResource nav_home}" />
+                <ComboBox
+                    x:Name="CbxPlayer"
+                    Grid.Column="1"
+                    MinWidth="190"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    SelectionChanged="CbxPlayer_SelectionChanged" />
+            </Grid>
+
+            <!--  Getting started  -->
+            <StackPanel Grid.Row="1">
+                <ui:Card
+                    x:Name="CardGettingStarted"
+                    Margin="0,0,0,16"
+                    Padding="16"
+                    Visibility="Collapsed">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                            <ui:Button
+                                x:Name="BtnDismissChecklist"
+                                Padding="8,2"
+                                HorizontalAlignment="Right"
+                                Appearance="Transparent"
+                                Click="BtnDismissChecklist_Click"
+                                Content="{DynamicResource setup_checklist_dismiss}"
+                                DockPanel.Dock="Right"
+                                FontSize="12"
+                                Icon="{ui:SymbolIcon Dismiss24}" />
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource setup_checklist_title}" />
+                        </DockPanel>
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{DynamicResource setup_checklist_body}"
+                            TextWrapping="Wrap" />
+                        <StackPanel x:Name="PnlChecklistItems" />
+                        <ui:Button
+                            x:Name="BtnContinueSetup"
+                            Margin="0,4,0,0"
+                            HorizontalAlignment="Left"
+                            Appearance="Secondary"
+                            Click="BtnContinueSetup_Click"
+                            Content="{DynamicResource window_overview_continue_setup}"
+                            Icon="{ui:SymbolIcon Clipboard24}" />
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card
+                    x:Name="CardApiToken"
+                    Margin="0,0,0,16"
+                    Padding="16"
+                    Visibility="Collapsed">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,8"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                            Text="{DynamicResource window_overview_api_token_title}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{DynamicResource window_overview_api_token_body}"
+                            TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,8,0"
+                                Appearance="Primary"
+                                Click="BtnGetApiToken_Click"
+                                Content="{DynamicResource setup_token_get}"
+                                Icon="{ui:SymbolIcon Key24}" />
+                            <ui:Button
+                                MinWidth="110"
+                                Appearance="Secondary"
+                                Click="BtnApiTokenSettings_Click"
+                                Content="{DynamicResource menu_file_settings}"
+                                Icon="{ui:SymbolIcon Settings24}" />
+                        </StackPanel>
+                    </StackPanel>
+                </ui:Card>
+
+                <ui:Card
+                    x:Name="CardWidget"
+                    Margin="0,0,0,16"
+                    Padding="16"
+                    Visibility="Collapsed">
+                    <StackPanel>
+                        <DockPanel Margin="0,0,0,8" LastChildFill="True">
+                            <ui:Button
+                                Padding="8,2"
+                                HorizontalAlignment="Right"
+                                Appearance="Transparent"
+                                Click="BtnDismissWidget_Click"
+                                Content="{DynamicResource setup_checklist_dismiss}"
+                                DockPanel.Dock="Right"
+                                FontSize="12"
+                                Icon="{ui:SymbolIcon Dismiss24}" />
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="SemiBold"
+                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                Text="{DynamicResource window_overview_widget_title}" />
+                        </DockPanel>
+                        <TextBlock
+                            Margin="0,0,0,12"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{DynamicResource window_overview_widget_body}"
+                            TextWrapping="Wrap" />
+                        <WrapPanel>
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,8,8"
+                                Appearance="Primary"
+                                Click="BtnWidgetGallery_Click"
+                                Content="{DynamicResource window_overview_widget_open_gallery}"
+                                Icon="{ui:SymbolIcon Window24}" />
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,8,8"
+                                Appearance="Secondary"
+                                Click="BtnWidgetGenerator_Click"
+                                Content="{DynamicResource window_overview_widget_open_generator}"
+                                Icon="{ui:SymbolIcon Wrench24}" />
+                            <ui:Button
+                                MinWidth="110"
+                                Margin="0,0,0,8"
+                                Appearance="Secondary"
+                                Click="BtnWidgetLocal_Click"
+                                Content="{DynamicResource window_overview_widget_open_local}"
+                                Icon="{ui:SymbolIcon Server24}" />
+                        </WrapPanel>
+                    </StackPanel>
+                </ui:Card>
+            </StackPanel>
+
+            <!--  Now playing: compact card, no stretched empty space  -->
+            <ui:Card
+                Grid.Row="2"
+                Margin="0,0,0,16"
+                Padding="16"
+                HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid
+                        Width="120"
+                        Height="120"
+                        Margin="0,0,12,0">
+                        <ui:Card
+                            x:Name="CoverPlaceholder"
+                            Width="120"
+                            Height="120"
+                            MinWidth="120"
+                            MinHeight="120"
+                            Padding="0"
+                            Background="{DynamicResource SongifyOpaqueSecondaryBrush}"
+                            Visibility="Visible">
+                            <Grid
+                                Width="120"
+                                Height="120"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch">
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                    Text="{DynamicResource window_queue_no_art}"
+                                    TextAlignment="Center" />
+                            </Grid>
+                        </ui:Card>
+                        <ui:Image
+                            x:Name="ImgCover"
+                            Width="120"
+                            Height="120"
+                            MaxWidth="120"
+                            MaxHeight="120"
+                            CornerRadius="12"
+                            RenderOptions.BitmapScalingMode="HighQuality"
+                            Stretch="UniformToFill"
+                            Visibility="Collapsed" />
+                        <Border
+                            x:Name="CanvasHost"
+                            Width="120"
+                            Height="120"
+                            ClipToBounds="True"
+                            CornerRadius="12,0,0,0"
+                            Visibility="Collapsed">
+                            <Border.Clip>
+                                <RectangleGeometry
+                                    RadiusX="12"
+                                    RadiusY="12"
+                                    Rect="0,0,120,120" />
+                            </Border.Clip>
+                            <MediaElement
+                                x:Name="CanvasPlayer"
+                                VerticalAlignment="Center"
+                                IsMuted="True"
+                                LoadedBehavior="Manual"
+                                MediaEnded="CanvasPlayer_MediaEnded"
+                                MediaFailed="CanvasPlayer_MediaFailed"
+                                Stretch="UniformToFill"
+                                UnloadedBehavior="Manual"
+                                Volume="0" />
+                        </Border>
+                    </Grid>
+                    <StackPanel
+                        Grid.Column="1"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center">
+                        <TextBlock
+                            x:Name="TxtNowPlaying"
+                            FontSize="36"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                            Text="{DynamicResource window_overview_nothing_playing}"
+                            TextWrapping="Wrap" />
+                        <TextBlock
+                            x:Name="TxtArtist"
+                            FontSize="18"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text=""
+                            TextWrapping="Wrap" />
+                        <Grid x:Name="PlayingStatePanel" Margin="0,8,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock
+                                x:Name="TxtElapsed"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="" />
+                            <ProgressBar
+                                x:Name="TrackProgressBar"
+                                Grid.Column="1"
+                                Height="6"
+                                Margin="6,0"
+                                VerticalAlignment="Center"
+                                Maximum="100"
+                                Minimum="0"
+                                Visibility="Collapsed"
+                                Value="0" />
+                            <TextBlock
+                                x:Name="TxtDuration"
+                                Grid.Column="2"
+                                Margin="4,0,0,0"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                FontSize="12"
+                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                Text="" />
+                        </Grid>
+                    </StackPanel>
+                </Grid>
+            </ui:Card>
+
+            <!--  Up next (next 3 from playback queue)  -->
+            <ui:Card
+                Grid.Row="3"
+                Margin="0,0,0,16"
+                Padding="14"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top">
+                <StackPanel>
+                    <DockPanel Margin="0,0,0,10" LastChildFill="False">
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{DynamicResource window_overview_up_next}" />
+                        <TextBlock
+                            VerticalAlignment="Center"
+                            Cursor="Hand"
+                            DockPanel.Dock="Right"
+                            FontSize="12"
+                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                            MouseLeftButtonUp="UpNextCard_MouseLeftButtonUp"
+                            Text="{DynamicResource window_overview_open_queue}" />
+                    </DockPanel>
+                    <ItemsControl x:Name="UpNextList">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Columns="3" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel Margin="0,0,12,0" Orientation="Horizontal">
+                                    <Border
+                                        Width="64"
+                                        Height="64"
+                                        HorizontalAlignment="Left"
+                                        Background="{DynamicResource SongifyOpaqueSecondaryBrush}"
+                                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        ClipToBounds="True"
+                                        CornerRadius="8">
+                                        <ui:Image
+                                            CornerRadius="8"
+                                            RenderOptions.BitmapScalingMode="HighQuality"
+                                            Source="{Binding CoverUrl}"
+                                            Stretch="UniformToFill" />
+                                    </Border>
+                                    <StackPanel Margin="6,0,0,0">
+                                        <TextBlock
+                                            Margin="0,8,0,0"
+                                            FontSize="11"
+                                            Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                            Text="{Binding Position, StringFormat='#{0}'}"
+                                            TextWrapping="WrapWithOverflow"
+                                            Visibility="Collapsed" />
+                                        <TextBlock
+                                            MaxWidth="150"
+                                            HorizontalAlignment="Left"
+                                            FontSize="13"
+                                            FontWeight="SemiBold"
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{Binding Title}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
+                                        <TextBlock
+                                            MaxWidth="140"
+                                            HorizontalAlignment="Left"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{Binding Subtitle}"
+                                            TextTrimming="CharacterEllipsis"
+                                            TextWrapping="NoWrap" />
+                                        <Border
+                                            Margin="0,6,0,0"
+                                            Padding="8,3"
+                                            VerticalAlignment="Center"
+                                            Background="{StaticResource BadgeSongRequest}"
+                                            CornerRadius="10">
+                                            <Border.Style>
+                                                <Style TargetType="Border">
+                                                    <Setter Property="Visibility" Value="Visible" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding Requester}" Value="{x:Null}">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding Requester}" Value="">
+                                                            <Setter Property="Visibility" Value="Collapsed" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Border.Style>
+                                            <StackPanel Orientation="Horizontal">
+                                                <ui:SymbolIcon
+                                                    Margin="0,0,6,0"
+                                                    Filled="True"
+                                                    Foreground="White"
+                                                    Symbol="Person28" />
+                                                <TextBlock
+                                                    FontSize="11"
+                                                    FontWeight="SemiBold"
+                                                    Foreground="White"
+                                                    Text="{Binding Requester}"
+                                                    TextWrapping="NoWrap" />
+                                            </StackPanel>
+                                        </Border>
+                                    </StackPanel>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <TextBlock
+                        x:Name="TxtUpNextEmpty"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        Text="{DynamicResource window_overview_nothing_queued}"
+                        Visibility="Collapsed" />
+                </StackPanel>
+            </ui:Card>
+
+            <ui:Button
+                x:Name="BtnSupport"
+                Grid.Row="4"
+                Padding="10,4"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Appearance="Secondary"
+                Click="BtnSupport_Click"
+                Content="{DynamicResource cta_premium}"
+                Icon="{ui:SymbolIcon Heart24,
+                                     Filled=True}"
+                ToolTip="{DynamicResource cta_premium_tooltip}" />
+
+            <!--  Kept for code-behind / localization hooks  -->
+            <!--<ui:Button
+                x:Name="BtnSettings"
+                Click="BtnSettings_Click"
+                Visibility="Collapsed" />
+            <ui:Button
+                x:Name="BtnQueue"
+                Click="BtnQueue_Click"
+                Visibility="Collapsed" />
+            <ui:Button
+                x:Name="BtnTwitchConnect"
+                Click="BtnTwitchConnect_Click"
+                Visibility="Collapsed" />-->
+        </Grid>
+    </ScrollViewer>
+</Page>

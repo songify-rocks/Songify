@@ -15,11 +15,13 @@
 **Stream overlay**
 - [Widget and OBS](Widget-and-OBS)
 - [Web server and API](Web-server-and-API)
+- [WebSocket commands](WebSocket-commands)
+- [WebSocket data stream](WebSocket-data)
 
 **Reference**
 - [Twitch commands](Twitch-commands)
-- [WebSocket commands](WebSocket-commands)
 - [Songify Premium](Songify-Premium)
+- [YouTube Data API key](YouTube-Data-API-Key)
 - [Troubleshooting](Troubleshooting)
 
 **Maintainers**

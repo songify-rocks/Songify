@@ -11,11 +11,14 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="/Resources/Strings.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Themes/Light.Blue.xaml" />
                 <ResourceDictionary Source="/Resources/CustomToolTipStyle.xaml" />
+                <ResourceDictionary Source="/Resources/Icons/BrandIcons.xaml" />
+                <ui:ThemesDictionary Theme="Dark" />
+                <ui:ControlsDictionary />
             </ResourceDictionary.MergedDictionaries>
+            <!--  Seeded opaque surfaces; ThemeHandler refreshes these after theme apply.  -->
+            <SolidColorBrush x:Key="SongifyOpaqueSurfaceBrush" Color="#FF202020" />
+            <SolidColorBrush x:Key="SongifyOpaqueSecondaryBrush" Color="#FF2C2C2C" />
         </ResourceDictionary>
     </Application.Resources>
 </Application>

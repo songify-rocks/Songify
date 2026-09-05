@@ -9,9 +9,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
 using Songify_Slim.Util.Configuration;
-using Songify_Slim.Views;
 using TwitchLib.Api;
 using TwitchLib.Api.Core.Enums;
 using TwitchLib.Api.Core.Exceptions;
@@ -369,7 +367,6 @@ namespace Songify_Slim.Util.Songify.Twitch
             }
         }
 
-
         private async Task EnsureSubscription(
             List<EventSubSubscription> existing,
             string type,
@@ -488,9 +485,8 @@ namespace Songify_Slim.Util.Songify.Twitch
 
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
-                    if (mainWindow?.IconTwitchBot != null)
-                        mainWindow.IconTwitchBot.Foreground = chatEnabled ? Brushes.GreenYellow : Brushes.IndianRed;
+                    AppShellBridge.Current?.SetTwitchBotState(
+                        chatEnabled ? ConnectionIndicatorState.Connected : ConnectionIndicatorState.Error);
                 });
             }
             catch (Exception ex)
@@ -503,6 +499,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             _logger.LogError("Websocket {SessionId} disconnected!", _eventSubWebsocketClient.SessionId);
             Logger.Info(LogSource.Twitch, "EventSub websocket disconnected.");
+            AppShellBridge.Current?.SetTwitchBotState(ConnectionIndicatorState.Error);
 
             if (_isStopping)
             {
@@ -566,8 +563,6 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             return string.Equals(GetTransportMethod(sub), "websocket", StringComparison.OrdinalIgnoreCase);
         }
-
-
 
         #region Events
 
@@ -669,12 +664,17 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             ChannelChatMessage chatMsg = e.Payload.Event;
 
+            GlobalObjects.messagesSinceLastAnnounce++;
+
             if (!chatMsg.Message.Text.StartsWith("!"))
                 return Task.CompletedTask;
 
             if (!Settings.SharedChatEnabled &&
                 chatMsg.SourceBroadcasterUserId != null &&
                 chatMsg.SourceBroadcasterUserId != Settings.TwitchUser.Id)
+                return Task.CompletedTask;
+
+            if (TwitchChatIgnore.ShouldIgnore(chatMsg))
                 return Task.CompletedTask;
 
             TwitchHandler.ExecuteChatCommand(chatMsg);

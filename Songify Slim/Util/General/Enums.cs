@@ -96,7 +96,13 @@ public static class Enums
         BanSong,
 
         [Description("Toggle Songrequest")]
-        ToggleSr
+        ToggleSr,
+
+        [Description("Skip Poll")]
+        SkipPoll,
+
+        [Description("Playlist")]
+        Playlist
     }
 
     public enum ConfigTypes
@@ -149,6 +155,18 @@ public static class Enums
         Nothing = 0,
         PauseText = 1,
         ClearAll = 2
+    }
+
+    public enum ReleaseChannel
+    {
+        [Description("Stable")]
+        Stable,
+
+        [Description("Beta")]
+        Beta,
+
+        [Description("Dev (Unstable)")]
+        Dev
     }
 
     public enum PlaybackAction

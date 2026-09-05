@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -372,9 +372,6 @@
   <data name="window_createreward_create" xml:space="preserve">
     <value>Créer une récompense</value>
   </data>
-  <data name="window_createreward_title" xml:space="preserve">
-    <value>Titre</value>
-  </data>
   <data name="window_createreward_cost" xml:space="preserve">
     <value>Prix</value>
   </data>
@@ -518,6 +515,21 @@
   </data>
   <data name="window_settings_config_beta_updates" xml:space="preserve">
     <value>Obtenir les mises à jour bêta</value>
+  </data>
+  <data name="window_settings_system_release_channel" xml:space="preserve">
+    <value>Canal de mise à jour</value>
+  </data>
+  <data name="window_settings_system_release_channel_hint" xml:space="preserve">
+    <value>Choisissez les mises à jour à recevoir.</value>
+  </data>
+  <data name="window_settings_release_channel_stable" xml:space="preserve">
+    <value>Stable</value>
+  </data>
+  <data name="window_settings_release_channel_beta" xml:space="preserve">
+    <value>Bêta</value>
+  </data>
+  <data name="window_settings_release_channel_dev" xml:space="preserve">
+    <value>Dev (Instable)</value>
   </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Veuillez lier votre compte Spotify. Paramètres -&gt; Spotify</value>
@@ -1478,5 +1490,1040 @@
   </data>
   <data name="window_settings_spotify_show_toasts_tooltip" xml:space="preserve">
     <value>Des notifications Windows s'affichent pour les limitations de débit de Spotify, les problèmes de connexion et les erreurs d'API. La bannière intégrée à l'application reste visible même lorsque cette option est désactivée.</value>
+  </data>
+  <data name="window_createreward_title" xml:space="preserve">
+    <value>Créer une récompense de chaîne</value>
+  </data>
+  <data name="window_settings_section_general" xml:space="preserve">
+    <value>Général</value>
+  </data>
+  <data name="window_settings_section_limits" xml:space="preserve">
+    <value>Limites</value>
+  </data>
+  <data name="window_settings_section_filters" xml:space="preserve">
+    <value>Filtres</value>
+  </data>
+  <data name="window_settings_section_bits" xml:space="preserve">
+    <value>Morceaux</value>
+  </data>
+  <data name="window_settings_section_more_options" xml:space="preserve">
+    <value>Plus d'options</value>
+  </data>
+  <data name="window_settings_user_levels_none" xml:space="preserve">
+    <value>Aucun sélectionné</value>
+  </data>
+  <data name="window_settings_section_advanced" xml:space="preserve">
+    <value>Avancé</value>
+  </data>
+  <data name="window_settings_section_backup" xml:space="preserve">
+    <value>Sauvegarde</value>
+  </data>
+  <data name="window_settings_section_cloud" xml:space="preserve">
+    <value>Nuage</value>
+  </data>
+  <data name="window_settings_section_auth_ports" xml:space="preserve">
+    <value>Ports d'authentification Twitch</value>
+  </data>
+  <data name="window_settings_twitch_refresh" xml:space="preserve">
+    <value>Actualiser la connexion Twitch</value>
+  </data>
+  <data name="window_settings_output_format_hint" xml:space="preserve">
+    <value>Cliquez avec le bouton droit pour insérer des jetons de format (artiste, titre, demandeur, …).</value>
+  </data>
+  <data name="window_settings_sync_user_levels" xml:space="preserve">
+    <value>Synchronisation avec tous les niveaux d'utilisateur</value>
+  </data>
+  <data name="window_main_spotify_idle_polling" xml:space="preserve">
+    <value>Interrogation {0}s (inactif)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_minute" xml:space="preserve">
+    <value>Interrogation pendant 1 min (inactif)</value>
+  </data>
+  <data name="window_main_spotify_idle_polling_tooltip" xml:space="preserve">
+    <value>La fréquence de téléchargement de Spotify a été réduite en cas d'inactivité afin d'économiser le quota API. Cliquez ici pour rétablir la fréquence normale dans les paramètres.</value>
+  </data>
+  <data name="menu_tools" xml:space="preserve">
+    <value>Outils</value>
+    <comment>Context: Top shell menu for Widget, web server URL, queue/history in browser.</comment>
+  </data>
+  <data name="menu_more" xml:space="preserve">
+    <value>Plus…</value>
+    <comment>Context: Overflow menu in shell title bar.</comment>
+  </data>
+  <data name="nav_home" xml:space="preserve">
+    <value>Accueil</value>
+    <comment>Context: Shell navigation item for the overview/home page.</comment>
+  </data>
+  <data name="common_loading" xml:space="preserve">
+    <value>Chargement…</value>
+    <comment>Context: Generic loading indicator on pages (e.g. block list).</comment>
+  </data>
+  <data name="common_import" xml:space="preserve">
+    <value>Importer</value>
+    <comment>Context: Generic Import button.</comment>
+  </data>
+  <data name="common_refresh" xml:space="preserve">
+    <value>Actualiser</value>
+    <comment>Context: Generic Refresh button.</comment>
+  </data>
+  <data name="common_remove_selected" xml:space="preserve">
+    <value>Supprimer la sélection</value>
+    <comment>Context: Button to remove the currently selected list item(s).</comment>
+  </data>
+  <data name="common_show" xml:space="preserve">
+    <value>Afficher</value>
+    <comment>Context: Tray menu item to show the main window.</comment>
+  </data>
+  <data name="common_website" xml:space="preserve">
+    <value>Site web</value>
+    <comment>Context: Button/link to open the product website.</comment>
+  </data>
+  <data name="common_dismiss" xml:space="preserve">
+    <value>Fermer</value>
+    <comment>Context: Tooltip or action to dismiss a banner/notification.</comment>
+  </data>
+  <data name="window_blocklist_subtitle" xml:space="preserve">
+    <value>Artistes, utilisateurs et titres bloqués</value>
+    <comment>Context: Subtitle under Block list page title.</comment>
+  </data>
+  <data name="window_blocklist_categories" xml:space="preserve">
+    <value>CATÉGORIES</value>
+    <comment>Context: Section label above block-list category rail (Artists/Users/Songs).</comment>
+  </data>
+  <data name="window_blocklist_search_artist_placeholder" xml:space="preserve">
+    <value>Rechercher un artiste Spotify…</value>
+    <comment>Context: Placeholder in artist search box (Spotify lookup).</comment>
+  </data>
+  <data name="window_blocklist_filter_artists" xml:space="preserve">
+    <value>Filtrer les artistes…</value>
+    <comment>Context: Placeholder for filtering the artists list.</comment>
+  </data>
+  <data name="window_blocklist_filter_users" xml:space="preserve">
+    <value>Filtrer les utilisateurs…</value>
+    <comment>Context: Placeholder for filtering the users list.</comment>
+  </data>
+  <data name="window_blocklist_filter_songs" xml:space="preserve">
+    <value>Filtrer les titres…</value>
+    <comment>Context: Placeholder for filtering the songs list.</comment>
+  </data>
+  <data name="window_blocklist_add_username" xml:space="preserve">
+    <value>Ajouter un nom d'utilisateur</value>
+    <comment>Context: Placeholder for adding a Twitch username to the block list.</comment>
+  </data>
+  <data name="window_blocklist_clear_artists" xml:space="preserve">
+    <value>Vider les artistes</value>
+    <comment>Context: Button to clear all blocked artists.</comment>
+  </data>
+  <data name="window_blocklist_clear_users" xml:space="preserve">
+    <value>Vider les utilisateurs</value>
+    <comment>Context: Button to clear all blocked users.</comment>
+  </data>
+  <data name="window_blocklist_clear_songs" xml:space="preserve">
+    <value>Vider les titres</value>
+    <comment>Context: Button to clear all blocked songs.</comment>
+  </data>
+  <data name="window_blocklist_item_singular" xml:space="preserve">
+    <value>1 élément</value>
+    <comment>Context: Count label on category rail when exactly one entry.</comment>
+  </data>
+  <data name="window_blocklist_item_plural" xml:space="preserve">
+    <value>{0} éléments</value>
+    <comment>Context: Count label on category rail; {0} = number of entries.</comment>
+  </data>
+  <data name="window_history_subtitle" xml:space="preserve">
+    <value>Titres joués ces derniers jours</value>
+    <comment>Context: Subtitle under History page title.</comment>
+  </data>
+  <data name="window_history_days" xml:space="preserve">
+    <value>JOURS</value>
+    <comment>Context: Section label above history date list.</comment>
+  </data>
+  <data name="window_history_copy_url" xml:space="preserve">
+    <value>Copier l'URL</value>
+    <comment>Context: Button to copy the public history URL.</comment>
+  </data>
+  <data name="window_history_save_locally" xml:space="preserve">
+    <value>Enregistrer localement</value>
+    <comment>Context: Toggle to save history to disk.</comment>
+  </data>
+  <data name="window_history_delete_day" xml:space="preserve">
+    <value>Supprimer le jour</value>
+    <comment>Context: Context menu to delete a history day.</comment>
+  </data>
+  <data name="window_history_delete_song" xml:space="preserve">
+    <value>Supprimer le titre</value>
+    <comment>Context: Context menu to delete a song from history.</comment>
+  </data>
+  <data name="window_history_empty" xml:space="preserve">
+    <value>Pas encore d'historique</value>
+    <comment>Context: Empty state when no history days exist.</comment>
+  </data>
+  <data name="window_history_no_songs" xml:space="preserve">
+    <value>Aucun titre pour ce jour</value>
+    <comment>Context: Empty state when selected day has no songs.</comment>
+  </data>
+  <data name="window_history_refresh_tooltip" xml:space="preserve">
+    <value>Recharger le fichier d'historique</value>
+    <comment>Context: Tooltip on History Refresh button.</comment>
+  </data>
+  <data name="window_history_save_tooltip" xml:space="preserve">
+    <value>Enregistrer l'historique sur le disque</value>
+    <comment>Context: Tooltip on Save locally toggle.</comment>
+  </data>
+  <data name="window_history_upload_tooltip" xml:space="preserve">
+    <value>Envoyer l'historique vers Songify</value>
+    <comment>Context: Tooltip on Upload history toggle.</comment>
+  </data>
+  <data name="window_settings_page_subtitle" xml:space="preserve">
+    <value>Préférences app, musique, Twitch et réseau</value>
+    <comment>Context: Subtitle under Settings page title.</comment>
+  </data>
+  <data name="window_overview_nothing_playing" xml:space="preserve">
+    <value>Rien en lecture</value>
+    <comment>Context: Empty state on Home/Overview when no track is playing.</comment>
+  </data>
+  <data name="window_overview_up_next" xml:space="preserve">
+    <value>À suivre</value>
+    <comment>Context: Label for the next queued track on Home.</comment>
+  </data>
+  <data name="window_overview_open_queue" xml:space="preserve">
+    <value>Ouvrir la file</value>
+    <comment>Context: Link/button on Home to open the queue page.</comment>
+  </data>
+  <data name="window_overview_nothing_queued" xml:space="preserve">
+    <value>Rien en file</value>
+    <comment>Context: Empty state when the request queue has no upcoming tracks.</comment>
+  </data>
+  <data name="window_queue_no_art" xml:space="preserve">
+    <value>Pas de pochette</value>
+    <comment>Context: Placeholder when album art is missing in queue/home cards.</comment>
+  </data>
+  <data name="window_console_refresh_metrics" xml:space="preserve">
+    <value>Actualiser les métriques</value>
+    <comment>Context: Button on Console page to refresh API metrics.</comment>
+  </data>
+  <data name="window_createreward_fields_required" xml:space="preserve">
+    <value>Le nom, l'invite et le coût sont obligatoires.</value>
+    <comment>Context: Validation message when create-reward form is incomplete.</comment>
+  </data>
+  <data name="window_createreward_unable" xml:space="preserve">
+    <value>Impossible de créer la récompense.</value>
+    <comment>Context: Error when Twitch reward creation fails without exception detail.</comment>
+  </data>
+  <data name="window_main_status_twitch_api" xml:space="preserve">
+    <value>API Twitch</value>
+    <comment>Context: Status bar label for Twitch API connection.</comment>
+  </data>
+  <data name="window_main_status_twitch_bot" xml:space="preserve">
+    <value>Bot Twitch</value>
+    <comment>Context: Status bar label for Twitch chat bot connection.</comment>
+  </data>
+  <data name="window_main_status_spotify" xml:space="preserve">
+    <value>Spotify</value>
+    <comment>Context: Status bar label for Spotify connection.</comment>
+  </data>
+  <data name="window_main_status_pear" xml:space="preserve">
+    <value>Pear</value>
+    <comment>Context: Status bar label for Pear desktop player.</comment>
+  </data>
+  <data name="window_main_status_webserver" xml:space="preserve">
+    <value>Serveur web</value>
+    <comment>Context: Status bar label for local web server.</comment>
+  </data>
+  <data name="window_settings_spotify_idle_backoff_tooltip" xml:space="preserve">
+    <value>Interrogation Spotify ralentie en inactivité pour économiser le quota API. Cliquez pour rétablir le rythme normal dans Paramètres.</value>
+    <comment>Context: Tooltip on status-bar chip when Spotify polling is in idle backoff.</comment>
+  </data>
+  <data name="window_settings_nav_general" xml:space="preserve">
+    <value>Général</value>
+    <comment>Context: Settings left-nav group header for System/Output/Config.</comment>
+  </data>
+  <data name="window_settings_nav_music" xml:space="preserve">
+    <value>Musique</value>
+    <comment>Context: Settings left-nav group header for Spotify/YouTube.</comment>
+  </data>
+  <data name="window_settings_nav_network" xml:space="preserve">
+    <value>Réseau</value>
+    <comment>Context: Settings left-nav group header for Web server.</comment>
+  </data>
+  <data name="window_settings_nav_other" xml:space="preserve">
+    <value>Autre</value>
+    <comment>Context: Settings left-nav group header for uncategorized tabs.</comment>
+  </data>
+  <data name="window_settings_appearance_theme" xml:space="preserve">
+    <value>Thème</value>
+    <comment>Context: Settings appearance label for light/dark theme.</comment>
+  </data>
+  <data name="window_settings_appearance_theme_hint" xml:space="preserve">
+    <value>Thème clair ou sombre de l'application</value>
+    <comment>Context: Hint under Theme in Settings appearance.</comment>
+  </data>
+  <data name="window_settings_appearance_backdrop" xml:space="preserve">
+    <value>Arrière-plan de la fenêtre</value>
+    <comment>Context: Settings appearance label for Mica/Acrylic backdrop.</comment>
+  </data>
+  <data name="window_settings_appearance_backdrop_hint" xml:space="preserve">
+    <value>Effets d'arrière-plan de l'app.</value>
+    <comment>Context: Hint under Window backdrop in Settings.</comment>
+  </data>
+  <data name="window_settings_options" xml:space="preserve">
+    <value>Options</value>
+    <comment>Context: Section header for misc options in Settings.</comment>
+  </data>
+  <data name="window_settings_accounts_hint" xml:space="preserve">
+    <value>Liez votre compte diffuseur et éventuellement un compte bot pour le chat.</value>
+    <comment>Context: Hint under Accounts section in Twitch settings.</comment>
+  </data>
+  <data name="window_settings_broadcaster" xml:space="preserve">
+    <value>DIFFUSEUR</value>
+    <comment>Context: Uppercase label for broadcaster Twitch account card.</comment>
+  </data>
+  <data name="window_settings_bot" xml:space="preserve">
+    <value>BOT</value>
+    <comment>Context: Uppercase label for Twitch bot account card.</comment>
+  </data>
+  <data name="window_settings_chat_account_hint" xml:space="preserve">
+    <value>Choisissez quel compte lié publie dans le chat.</value>
+    <comment>Context: Hint for chat account picker in Twitch settings.</comment>
+  </data>
+  <data name="window_settings_manual_oauth_hint" xml:space="preserve">
+    <value>Avancé : collez manuellement le nom d'utilisateur, le jeton OAuth et la chaîne.</value>
+    <comment>Context: Hint for manual Twitch OAuth fields.</comment>
+  </data>
+  <data name="window_settings_connection_chat" xml:space="preserve">
+    <value>Connexion et chat</value>
+    <comment>Context: Section header for Twitch connection and chat options.</comment>
+  </data>
+  <data name="window_settings_poll_content" xml:space="preserve">
+    <value>Contenu du sondage</value>
+    <comment>Context: Section header for skip-vote poll title/options text.</comment>
+  </data>
+  <data name="window_settings_voting_options" xml:space="preserve">
+    <value>Options de vote</value>
+    <comment>Context: Section header for poll answer buttons / choices.</comment>
+  </data>
+  <data name="window_settings_poll_skip_on_win_hint" xml:space="preserve">
+    <value>Si cette réponse gagne le sondage, Songify passera le titre en cours.</value>
+    <comment>Context: Hint for poll answer that triggers a song skip.</comment>
+  </data>
+  <data name="window_settings_who_can_request" xml:space="preserve">
+    <value>Qui peut demander</value>
+    <comment>Context: Section header for song-request user-level permissions.</comment>
+  </data>
+  <data name="window_settings_spotify_account" xml:space="preserve">
+    <value>Compte Spotify</value>
+    <comment>Context: Section header for linked Spotify account.</comment>
+  </data>
+  <data name="window_settings_poll_interval_seconds" xml:space="preserve">
+    <value>Intervalle d'interrogation (secondes)</value>
+    <comment>Context: Label for numeric poll/fetch interval in seconds.</comment>
+  </data>
+  <data name="window_settings_artist_blocklist_sync" xml:space="preserve">
+    <value>Sync. liste d'artistes bloqués</value>
+    <comment>Context: Section header for hourly CSV artist blocklist sync.</comment>
+  </data>
+  <data name="window_settings_artist_blocklist_sync_hint" xml:space="preserve">
+    <value>Télécharge chaque heure un CSV HTTPS (ex. raw GitHub) et ajoute les nouveaux artistes à la liste Spotify. Définissez le mapping des colonnes une fois après Détecter.</value>
+    <comment>Context: Description of artist blocklist CSV sync feature.</comment>
+  </data>
+  <data name="window_settings_csv_url" xml:space="preserve">
+    <value>URL CSV</value>
+    <comment>Context: Label for CSV download URL field.</comment>
+  </data>
+  <data name="window_settings_name_column" xml:space="preserve">
+    <value>Colonne nom</value>
+    <comment>Context: CSV column mapping for artist name.</comment>
+  </data>
+  <data name="window_settings_id_column" xml:space="preserve">
+    <value>Colonne id</value>
+    <comment>Context: CSV column mapping for artist id.</comment>
+  </data>
+  <data name="window_settings_detect" xml:space="preserve">
+    <value>Détecter</value>
+    <comment>Context: Button to detect CSV columns for blocklist sync.</comment>
+  </data>
+  <data name="window_settings_sync_now" xml:space="preserve">
+    <value>Synchroniser maintenant</value>
+    <comment>Context: Button to run artist blocklist CSV sync immediately.</comment>
+  </data>
+  <data name="window_settings_hourly_auto_sync" xml:space="preserve">
+    <value>Sync. auto horaire</value>
+    <comment>Context: Toggle for hourly artist blocklist sync.</comment>
+  </data>
+  <data name="window_settings_last_sync_never" xml:space="preserve">
+    <value>Dernière sync. : jamais</value>
+    <comment>Context: Status when artist blocklist has never synced.</comment>
+  </data>
+  <data name="window_settings_last_sync" xml:space="preserve">
+    <value>Dernière sync. : {0}</value>
+    <comment>Context: Status showing last artist blocklist sync time; {0} = timestamp.</comment>
+  </data>
+  <data name="window_settings_youtube_api_key_hint" xml:space="preserve">
+    <value>Requis pour les recherches YouTube. Gardez votre clé privée.</value>
+    <comment>Context: Hint under YouTube API key field.</comment>
+  </data>
+  <data name="window_settings_webserver_admin_lan_hint" xml:space="preserve">
+    <value>Songify tourne en tant qu'administrateur. Le serveur web écoute aussi sur l'IP LAN pour qu'un second PC se connecte. Réservez cela à un réseau de confiance et activez éventuellement le mot de passe WebSocket ci-dessous.</value>
+    <comment>Context: Warning when web server runs elevated and binds to LAN.</comment>
+  </data>
+  <data name="window_settings_server" xml:space="preserve">
+    <value>Serveur</value>
+    <comment>Context: Section header for web server controls.</comment>
+  </data>
+  <data name="window_settings_webserver_urls_tooltip" xml:space="preserve">
+    <value>JSON piste : URL racine — testeur WebSocket : /ws-docs</value>
+    <comment>Context: Tooltip describing web server URL endpoints.</comment>
+  </data>
+  <data name="window_settings_security" xml:space="preserve">
+    <value>Sécurité</value>
+    <comment>Context: Section header for web server security options.</comment>
+  </data>
+  <data name="window_settings_require_websocket_password" xml:space="preserve">
+    <value>Exiger un mot de passe WebSocket</value>
+    <comment>Context: Toggle to require password for WebSocket control commands.</comment>
+  </data>
+  <data name="window_settings_require_websocket_password_tooltip" xml:space="preserve">
+    <value>Si activé, les commandes WebSocket exigent le mot de passe (action auth, champ mot de passe ou ?password= dans l'URL). Désactivé par défaut. N'affecte pas la lecture des broadcasts /ws/data.</value>
+    <comment>Context: Tooltip explaining WebSocket password requirement.</comment>
+  </data>
+  <data name="window_settings_websocket_password" xml:space="preserve">
+    <value>Mot de passe WebSocket</value>
+    <comment>Context: Label for WebSocket password field.</comment>
+  </data>
+  <data name="window_settings_keep_last_log_files" xml:space="preserve">
+    <value>Conserver les derniers fichiers journaux</value>
+    <comment>Context: Label for how many daily log files to retain.</comment>
+  </data>
+  <data name="window_settings_keep_last_log_files_tooltip" xml:space="preserve">
+    <value>Nombre de fichiers journaux quotidiens à conserver (normal et DEBUG séparément). Les plus anciens sont supprimés. 0 = tout garder.</value>
+    <comment>Context: Tooltip for log retention count.</comment>
+  </data>
+  <data name="window_about_credits" xml:space="preserve">
+    <value>Lead Developer
+Jan aka Inzaniity
+
+Contributors
+gwyden - Hertz - karimawii
+</value>
+    <comment>Context: Credits section body on About page (names may stay as-is).</comment>
+  </data>
+  <data name="window_queue_requested_by" xml:space="preserve">
+    <value>Demandé par {0}</value>
+    <comment>Context: Queue row subtitle; {0} = requester name.</comment>
+  </data>
+  <data name="window_queue_decrease_font" xml:space="preserve">
+    <value>Réduire la taille de police</value>
+    <comment>Context: Tooltip for decrease font size in queue window.</comment>
+  </data>
+  <data name="window_queue_increase_font" xml:space="preserve">
+    <value>Augmenter la taille de police</value>
+    <comment>Context: Tooltip for increase font size in queue window.</comment>
+  </data>
+  <data name="window_queue_remove_from_queue" xml:space="preserve">
+    <value>Retirer de la file</value>
+    <comment>Context: Context menu item to remove a track from the queue.</comment>
+  </data>
+  <data name="window_queue_previous_restart" xml:space="preserve">
+    <value>Précédent / Redémarrer</value>
+    <comment>Context: Tooltip for previous/restart player control.</comment>
+  </data>
+  <data name="window_queue_play_pause" xml:space="preserve">
+    <value>Lecture / Pause</value>
+    <comment>Context: Tooltip for play/pause player control.</comment>
+  </data>
+  <data name="window_queue_next" xml:space="preserve">
+    <value>Suivant</value>
+    <comment>Context: Tooltip for next track player control.</comment>
+  </data>
+  <data name="common_skip" xml:space="preserve">
+    <value>Passer</value>
+    <comment>Context: Short button label to skip a song.</comment>
+  </data>
+  <data name="common_remove" xml:space="preserve">
+    <value>Supprimer</value>
+    <comment>Context: Short button/tooltip to remove an item.</comment>
+  </data>
+  <data name="common_notification" xml:space="preserve">
+    <value>Notification</value>
+    <comment>Context: Dialog title for informational notifications.</comment>
+  </data>
+  <data name="common_error" xml:space="preserve">
+    <value>Erreur</value>
+    <comment>Context: Dialog title for error messages.</comment>
+  </data>
+  <data name="common_success" xml:space="preserve">
+    <value>Succès</value>
+    <comment>Context: Dialog title for success messages.</comment>
+  </data>
+  <data name="common_inactive" xml:space="preserve">
+    <value>Inactif</value>
+    <comment>Context: Status label when a service is inactive.</comment>
+  </data>
+  <data name="window_main_more_count" xml:space="preserve">
+    <value>Plus… ({0})</value>
+    <comment>Context: Shell overflow header when more Spotify issues exist; {0} = count.</comment>
+  </data>
+  <data name="window_main_status_pear_inactive_unselected" xml:space="preserve">
+    <value>Inactif (non sélectionné)</value>
+    <comment>Context: Pear status when Pear is not the selected player.</comment>
+  </data>
+  <data name="window_main_spotify_issue_fallback" xml:space="preserve">
+    <value>Problème Spotify</value>
+    <comment>Context: Fallback title when a Spotify persistent issue has no title.</comment>
+  </data>
+  <data name="window_main_spotify_issue_eta" xml:space="preserve">
+    <value>Estimation : devrait refonctionner dans environ {0} (vers {1}).</value>
+    <comment>Context: Spotify issue ETA; {0} = human duration, {1} = local time.</comment>
+  </data>
+  <data name="window_main_spotify_issue_eta_ready" xml:space="preserve">
+    <value>Le délai estimé est terminé (vers {0}). Si ça échoue encore, ça peut prendre plus longtemps.</value>
+    <comment>Context: Spotify issue when cooldown ended; {0} = local time.</comment>
+  </data>
+  <data name="window_main_spotify_issue_seen_at" xml:space="preserve">
+    <value>Vu à {0}.</value>
+    <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
+    <value>L’app API Spotify nécessite Premium</value>
+  </data>
+  <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
+    <value>Spotify exige que le propriétaire de votre app API (le compte sur developer.spotify.com qui a créé le Client ID) ait un abonnement Spotify Premium actif.
+
+Ce n’est pas Songify Premium, ni le compte Spotify lié dans Songify pour la lecture. Abonnez ce compte du tableau de bord à Premium, puis attendez quelques heures — Spotify indique que l’accès peut tarder après un changement d’abonnement.</value>
+  </data>
+  <data name="common_duration_hours" xml:space="preserve">
+    <value>{0} heure(s)</value>
+    <comment>Context: Relative duration; {0} = hours.</comment>
+  </data>
+  <data name="common_duration_minutes" xml:space="preserve">
+    <value>{0} minute(s)</value>
+    <comment>Context: Relative duration; {0} = minutes.</comment>
+  </data>
+  <data name="common_duration_seconds" xml:space="preserve">
+    <value>{0} seconde(s)</value>
+    <comment>Context: Relative duration; {0} = seconds.</comment>
+  </data>
+  <data name="window_history_select_day" xml:space="preserve">
+    <value>Sélectionnez un jour</value>
+    <comment>Context: History detail header when no day is selected.</comment>
+  </data>
+  <data name="window_history_saving_on" xml:space="preserve">
+    <value>Enregistrement local de l'historique</value>
+    <comment>Context: Status when local history saving is enabled.</comment>
+  </data>
+  <data name="window_history_saving_off" xml:space="preserve">
+    <value>Enregistrement local de l'historique désactivé</value>
+    <comment>Context: Status when local history saving is disabled.</comment>
+  </data>
+  <data name="window_history_upload_on" xml:space="preserve">
+    <value>Envoi de l'historique</value>
+    <comment>Context: Status when history upload is enabled.</comment>
+  </data>
+  <data name="window_history_upload_off" xml:space="preserve">
+    <value>Envoi de l'historique désactivé</value>
+    <comment>Context: Status when history upload is disabled.</comment>
+  </data>
+  <data name="window_history_url_copied" xml:space="preserve">
+    <value>URL de l'historique copiée</value>
+    <comment>Context: Status after copying history URL to clipboard.</comment>
+  </data>
+  <data name="window_blocklist_total" xml:space="preserve">
+    <value>{0} au total</value>
+    <comment>Context: Blocklist status; {0} = total count.</comment>
+  </data>
+  <data name="window_blocklist_filter_showing" xml:space="preserve">
+    <value>Affiche {0} sur {1} — tapez pour filtrer</value>
+    <comment>Context: Blocklist status when list is truncated; {0}=visible {1}=total.</comment>
+  </data>
+  <data name="window_blocklist_filter_showing_capped" xml:space="preserve">
+    <value>Affiche les {0} premiers résultats sur {1}</value>
+    <comment>Context: Blocklist status with filter and cap; {0}=visible {1}=total.</comment>
+  </data>
+  <data name="window_blocklist_filter_matches" xml:space="preserve">
+    <value>{0} résultat(s) sur {1}</value>
+    <comment>Context: Blocklist filtered status; {0}=matches {1}=total.</comment>
+  </data>
+  <data name="window_blocklist_spotify_not_connected" xml:space="preserve">
+    <value>Spotify n'est pas connecté. Connectez Spotify pour remplir la liste de blocage.</value>
+    <comment>Context: Dialog when Spotify is required for blocklist actions.</comment>
+  </data>
+  <data name="window_blocklist_artist_not_found" xml:space="preserve">
+    <value>Aucun artiste correspondant trouvé sur Spotify.</value>
+    <comment>Context: Dialog when Spotify artist search finds no match.</comment>
+  </data>
+  <data name="window_blocklist_search_failed" xml:space="preserve">
+    <value>Échec de la recherche Spotify pour cet artiste.</value>
+    <comment>Context: Dialog when Spotify artist search fails.</comment>
+  </data>
+  <data name="window_blocklist_spotify_refresh_hint" xml:space="preserve">
+    <value>Spotify n'est pas connecté. Connectez Spotify pour actualiser les ID d'artistes.</value>
+    <comment>Context: Dialog when Spotify is needed to refresh artist IDs.</comment>
+  </data>
+  <data name="window_blocklist_refresh_complete" xml:space="preserve">
+    <value>Actualisation terminée</value>
+    <comment>Context: Dialog title after refreshing artist IDs.</comment>
+  </data>
+  <data name="window_blocklist_refresh_none" xml:space="preserve">
+    <value>Aucune entrée d'artiste héritée à résoudre.</value>
+    <comment>Context: Message when no legacy artist entries needed resolving.</comment>
+  </data>
+  <data name="window_blocklist_refresh_resolved" xml:space="preserve">
+    <value>{0} ID d'artiste(s) résolu(s) (premier résultat Spotify).</value>
+    <comment>Context: Message after resolving artist IDs; {0} = count.</comment>
+  </data>
+  <data name="window_blocklist_refresh_failed" xml:space="preserve">
+    <value>Échec de l'actualisation des ID d'artistes. Voir les journaux.</value>
+    <comment>Context: Dialog when refreshing artist IDs fails.</comment>
+  </data>
+  <data name="window_settings_main_account" xml:space="preserve">
+    <value>Compte principal :</value>
+    <comment>Context: Label for linked Twitch broadcaster account.</comment>
+  </data>
+  <data name="window_settings_bot_account" xml:space="preserve">
+    <value>Compte bot :</value>
+    <comment>Context: Label for linked Twitch bot account.</comment>
+  </data>
+  <data name="window_settings_detecting_columns" xml:space="preserve">
+    <value>Détection des colonnes…</value>
+    <comment>Context: Status while detecting CSV columns.</comment>
+  </data>
+  <data name="window_settings_detect_columns_title" xml:space="preserve">
+    <value>Détecter les colonnes</value>
+    <comment>Context: Dialog title for CSV column detection.</comment>
+  </data>
+  <data name="window_settings_detected_columns" xml:space="preserve">
+    <value>{0} colonne(s) détectée(s). Mapping enregistré.</value>
+    <comment>Context: Status after CSV column detection; {0} = column count.</comment>
+  </data>
+  <data name="window_settings_detect_failed" xml:space="preserve">
+    <value>Échec de la détection.</value>
+    <comment>Context: Status when CSV column detection fails.</comment>
+  </data>
+  <data name="window_settings_detect_csv_error" xml:space="preserve">
+    <value>Impossible de charger le CSV. Vérifiez l'URL et réessayez.</value>
+    <comment>Context: Dialog body when CSV cannot be loaded for column detect.</comment>
+  </data>
+  <data name="window_settings_artist_sync_title" xml:space="preserve">
+    <value>Sync. liste d'artistes bloqués</value>
+    <comment>Context: Dialog title for artist blocklist sync results.</comment>
+  </data>
+  <data name="window_settings_artist_sync_failed" xml:space="preserve">
+    <value>Échec de la synchronisation. Voir les journaux.</value>
+    <comment>Context: Dialog when manual artist blocklist sync fails.</comment>
+  </data>
+  <data name="window_settings_cloud_need_api_key" xml:space="preserve">
+    <value>Veuillez saisir votre clé API Songify.</value>
+    <comment>Context: Cloud sync validation error.</comment>
+  </data>
+  <data name="window_settings_cloud_need_twitch" xml:space="preserve">
+    <value>Veuillez vous connecter à votre compte Twitch.</value>
+    <comment>Context: Cloud sync validation error when Twitch is not linked.</comment>
+  </data>
+  <data name="window_settings_cloud_saved" xml:space="preserve">
+    <value>Paramètres enregistrés dans le cloud avec succès</value>
+    <comment>Context: Cloud sync success message.</comment>
+  </data>
+  <data name="window_settings_cloud_unauthorized" xml:space="preserve">
+    <value>Accès non autorisé. Vérifiez votre jeton API.</value>
+    <comment>Context: Cloud sync HTTP 401 message.</comment>
+  </data>
+  <data name="window_settings_cloud_forbidden" xml:space="preserve">
+    <value>Accès refusé. Fonction réservée aux membres Ko-Fi.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+  </data>
+  <data name="window_settings_cloud_server_error" xml:space="preserve">
+    <value>Erreur serveur interne. Réessayez plus tard.</value>
+    <comment>Context: Cloud sync HTTP 500 message.</comment>
+  </data>
+  <data name="window_settings_reset_confirm" xml:space="preserve">
+    <value>Voulez-vous vraiment réinitialiser tous les paramètres ?</value>
+    <comment>Context: Confirm dialog before resetting all settings.</comment>
+  </data>
+  <data name="window_settings_folder_save_config" xml:space="preserve">
+    <value>Sélectionnez un dossier pour enregistrer le fichier de config</value>
+    <comment>Context: Folder browser description when exporting config.</comment>
+  </data>
+  <data name="window_settings_folder_import_config" xml:space="preserve">
+    <value>Sélectionnez le dossier contenant les fichiers de config</value>
+    <comment>Context: Folder browser description when importing config.</comment>
+  </data>
+  <data name="window_settings_config_saved" xml:space="preserve">
+    <value>Fichier de configuration enregistré avec succès</value>
+    <comment>Context: Success dialog after exporting config.</comment>
+  </data>
+  <data name="window_settings_folder_song_output" xml:space="preserve">
+    <value>Chemin où se trouvera le fichier texte.</value>
+    <comment>Context: Folder browser for song output text file path.</comment>
+  </data>
+  <data name="uc_psa_issued" xml:space="preserve">
+    <value>Publié :</value>
+    <comment>Context: Label prefix for PSA issue date.</comment>
+  </data>
+  <data name="uc_psa_severity" xml:space="preserve">
+    <value>Gravité :</value>
+    <comment>Context: Label prefix for PSA severity.</comment>
+  </data>
+  <data name="uc_psa_author" xml:space="preserve">
+    <value>Auteur :</value>
+    <comment>Context: Label prefix for PSA author.</comment>
+  </data>
+  <data name="uc_command_volume_set_response" xml:space="preserve">
+    <value>Réponse Volume Set</value>
+    <comment>Context: Label for volume-set bot response field in command editor.</comment>
+  </data>
+  <data name="window_manualtwitch_title_main" xml:space="preserve">
+    <value>Liaison compte Twitch : Compte principal</value>
+    <comment>Context: Manual Twitch login window title for broadcaster/main account.</comment>
+  </data>
+  <data name="window_manualtwitch_title_bot" xml:space="preserve">
+    <value>Liaison compte Twitch : Compte bot</value>
+    <comment>Context: Manual Twitch login window title for bot account.</comment>
+  </data>
+  <data name="window_cloudimport_permission_warning" xml:space="preserve">
+    <value>Avertissement d'autorisations</value>
+    <comment>Context: Banner title when cloud import widens Twitch command permissions.</comment>
+  </data>
+  <data name="window_cloudimport_permission_body" xml:space="preserve">
+    <value>Cet import élargit qui peut utiliser certaines commandes Twitch ou demandes de titres :</value>
+    <comment>Context: Intro line before bullet list of widened permissions on cloud import.</comment>
+  </data>
+  <data name="window_cloudimport_no_differences" xml:space="preserve">
+    <value>Aucune différence détectée.</value>
+    <comment>Context: Shown in cloud import preview when local and cloud configs match.</comment>
+  </data>
+  <data name="window_artistimport_title" xml:space="preserve">
+    <value>Importer des artistes</value>
+    <comment>Context: Title of artist CSV import dialog from blocklist.</comment>
+  </data>
+  <data name="window_artistimport_hint" xml:space="preserve">
+    <value>Chargez un CSV depuis un fichier ou une URL HTTPS, mappez les colonnes Nom/Id, puis importez dans la liste d'artistes bloqués.</value>
+    <comment>Context: Intro hint on artist CSV import dialog.</comment>
+  </data>
+  <data name="window_artistimport_source" xml:space="preserve">
+    <value>SOURCE</value>
+    <comment>Context: Section header for CSV source on artist import dialog.</comment>
+  </data>
+  <data name="window_artistimport_file" xml:space="preserve">
+    <value>Fichier</value>
+    <comment>Context: Radio option to import artists from a local CSV file.</comment>
+  </data>
+  <data name="window_artistimport_url" xml:space="preserve">
+    <value>URL</value>
+    <comment>Context: Radio option to import artists from a CSV URL.</comment>
+  </data>
+  <data name="window_artistimport_no_file" xml:space="preserve">
+    <value>Aucun fichier sélectionné</value>
+    <comment>Context: Placeholder when no CSV file is chosen for artist import.</comment>
+  </data>
+  <data name="window_artistimport_load_csv" xml:space="preserve">
+    <value>Charger le CSV</value>
+    <comment>Context: Button to load CSV for artist import preview.</comment>
+  </data>
+  <data name="window_artistimport_id_column_optional" xml:space="preserve">
+    <value>Colonne id (facultatif)</value>
+    <comment>Context: Optional Spotify id column mapping on artist import.</comment>
+  </data>
+  <data name="window_artistimport_preview" xml:space="preserve">
+    <value>APERÇU</value>
+    <comment>Context: Section header for artist import CSV preview list.</comment>
+  </data>
+  <data name="window_artistimport_no_csv" xml:space="preserve">
+    <value>Aucun CSV chargé.</value>
+    <comment>Context: Status when artist import has no CSV loaded yet.</comment>
+  </data>
+  <data name="window_history_migrate_title" xml:space="preserve">
+    <value>Updating history</value>
+    <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
+  </data>
+  <data name="window_history_migrate_body" xml:space="preserve">
+    <value>Converting your song history to the new format...</value>
+    <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
+  </data>
+  <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
+    <value>Les utilisateurs autorisés à demander des chansons explicites</value>
+  </data>
+  <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
+    <value>Niveaux d'utilisateur (explicites)</value>
+  </data>
+  <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
+    <value>Lance un sondage Twitch pour passer la chanson en cours</value>
+  </data>
+  <data name="window_botresponses_cmd_playlist" xml:space="preserve">
+    <value>Affiche la playlist actuelle</value>
+  </data>
+  <data name="setup_wizard_title" xml:space="preserve">
+    <value>Configurer Songify</value>
+  </data>
+  <data name="setup_welcome_title" xml:space="preserve">
+    <value>Bienvenue sur Songify</value>
+  </data>
+  <data name="setup_welcome_body" xml:space="preserve">
+    <value>Songify affiche le morceau en cours de diffusion et accepte les demandes de chansons sur Twitch. Cette configuration rapide permet de préparer Spotify, Twitch et le fichier texte OBS. Vous pouvez ignorer certaines étapes et les modifier ultérieurement dans les paramètres.</value>
+  </data>
+  <data name="setup_player_title" xml:space="preserve">
+    <value>Quel joueur utilisez-vous ?</value>
+  </data>
+  <data name="setup_player_body" xml:space="preserve">
+    <value>La plupart des gens utilisent Spotify. Vous pourrez changer cela plus tard depuis l'écran d'accueil.</value>
+  </data>
+  <data name="setup_spotify_title" xml:space="preserve">
+    <value>Connectez-vous à Spotify</value>
+  </data>
+  <data name="setup_spotify_body" xml:space="preserve">
+    <value>Créez une application développeur Spotify, collez l'identifiant client ici, puis associez votre compte. Le bouton d'aide ouvre le guide d'installation.</value>
+  </data>
+  <data name="setup_spotify_help_tooltip" xml:space="preserve">
+    <value>Ouvrez le guide d'installation de Spotify</value>
+  </data>
+  <data name="setup_spotify_open_guide" xml:space="preserve">
+    <value>Comment obtenir un identifiant client</value>
+  </data>
+  <data name="setup_spotify_linked" xml:space="preserve">
+    <value>Lié comme {0}</value>
+  </data>
+  <data name="setup_spotify_linked_unknown" xml:space="preserve">
+    <value>Lié</value>
+  </data>
+  <data name="setup_spotify_not_linked" xml:space="preserve">
+    <value>Pas encore lié. Vous pouvez le faire plus tard dans les paramètres.</value>
+  </data>
+  <data name="setup_twitch_title" xml:space="preserve">
+    <value>Connectez-vous à Twitch</value>
+  </data>
+  <data name="setup_twitch_body" xml:space="preserve">
+    <value>Associez votre compte de diffuseur si vous souhaitez recevoir des demandes de chansons dans le chat. Ignorez cette étape si vous souhaitez uniquement afficher le titre en cours de lecture. Vous pourrez ajouter un compte bot ultérieurement dans les paramètres.</value>
+  </data>
+  <data name="setup_twitch_linked" xml:space="preserve">
+    <value>Lié comme {0}</value>
+  </data>
+  <data name="setup_twitch_linked_unknown" xml:space="preserve">
+    <value>Compte Twitch lié.</value>
+  </data>
+  <data name="setup_twitch_not_linked" xml:space="preserve">
+    <value>Optionnel si vous avez uniquement besoin d'une superposition indiquant le jeu en cours.</value>
+  </data>
+  <data name="setup_output_title" xml:space="preserve">
+    <value>fichier de sortie de la chanson</value>
+  </data>
+  <data name="setup_output_body" xml:space="preserve">
+    <value>Songify enregistre le morceau en cours dans ce fichier texte. Dans OBS, ajoutez une source de texte et pointez-la vers Songify.txt.</value>
+  </data>
+  <data name="setup_done_title" xml:space="preserve">
+    <value>Vous êtes prêt</value>
+  </data>
+  <data name="setup_done_body" xml:space="preserve">
+    <value>Vous pouvez terminer les tâches en cours depuis l'accueil ou les paramètres. Une visite guidée vous permettra de voir où elles se trouvent.</value>
+  </data>
+  <data name="setup_skip" xml:space="preserve">
+    <value>Passer</value>
+  </data>
+  <data name="setup_back" xml:space="preserve">
+    <value>Dos</value>
+  </data>
+  <data name="setup_next" xml:space="preserve">
+    <value>Suivant</value>
+  </data>
+  <data name="setup_finish" xml:space="preserve">
+    <value>Finition</value>
+  </data>
+  <data name="setup_show_me_around" xml:space="preserve">
+    <value>Faites-moi visiter</value>
+  </data>
+  <data name="setup_step_label" xml:space="preserve">
+    <value>Étape {0} de {1}</value>
+  </data>
+  <data name="setup_checklist_title" xml:space="preserve">
+    <value>Commencer</value>
+  </data>
+  <data name="setup_checklist_body" xml:space="preserve">
+    <value>Terminez ces étapes pour que Songify puisse afficher la chanson en cours et accepter les demandes.</value>
+  </data>
+  <data name="setup_checklist_dismiss" xml:space="preserve">
+    <value>Fermer</value>
+  </data>
+  <data name="setup_checklist_go" xml:space="preserve">
+    <value>Aller</value>
+  </data>
+  <data name="setup_checklist_spotify" xml:space="preserve">
+    <value>Lien Spotify</value>
+  </data>
+  <data name="setup_checklist_twitch" xml:space="preserve">
+    <value>Lien Twitch (pour les demandes de chansons)</value>
+  </data>
+  <data name="setup_checklist_output" xml:space="preserve">
+    <value>Fichier de sortie du morceau (OBS)</value>
+  </data>
+  <data name="menu_setup_wizard" xml:space="preserve">
+    <value>Assistant d'installation</value>
+  </data>
+  <data name="setup_tour_home_title" xml:space="preserve">
+    <value>Accueil</value>
+  </data>
+  <data name="setup_tour_home_body" xml:space="preserve">
+    <value>Voici un aperçu. Utilisez le menu déroulant du lecteur pour choisir Spotify ou une autre source. Le titre en cours de lecture et les prochains titres demandés s'affichent ici.</value>
+  </data>
+  <data name="setup_tour_spotify_title" xml:space="preserve">
+    <value>Paramètres Spotify</value>
+  </data>
+  <data name="setup_tour_spotify_body" xml:space="preserve">
+    <value>Dans Réglages → Musique → Spotify, vous saisissez votre identifiant client et associez votre compte. Vous pouvez modifier ces paramètres à tout moment.</value>
+  </data>
+  <data name="setup_tour_twitch_title" xml:space="preserve">
+    <value>Comptes Twitch</value>
+  </data>
+  <data name="setup_tour_twitch_body" xml:space="preserve">
+    <value>Associez ici votre compte de diffuseur pour les demandes de chansons, les récompenses et les commandes de chat. Un compte bot est facultatif.</value>
+  </data>
+  <data name="setup_tour_output_title" xml:space="preserve">
+    <value>Sortie et widget</value>
+  </data>
+  <data name="setup_tour_output_body" xml:space="preserve">
+    <value>Dans les paramètres de sortie, indiquez à OBS l'emplacement du fichier Songify.txt. Cliquez sur Outils → Widget pour ouvrir la fenêtre qui s'affiche dans votre navigateur. Voilà, c'est tout !</value>
+  </data>
+  <data name="window_console_detach" xml:space="preserve">
+    <value>Détacher</value>
+  </data>
+  <data name="window_console_open_window" xml:space="preserve">
+    <value>Fenêtre de console</value>
+  </data>
+  <data name="window_console_detached_title" xml:space="preserve">
+    <value>La console se trouve dans une autre fenêtre.</value>
+  </data>
+  <data name="window_console_detached_body" xml:space="preserve">
+    <value>Le journal s'ouvre dans une fenêtre séparée pour que vous puissiez le consulter tout en utilisant le reste de Songify. Fermez cette fenêtre pour faire revenir la console ici.</value>
+  </data>
+  <data name="window_console_show_window" xml:space="preserve">
+    <value>Afficher la fenêtre</value>
+  </data>
+  <data name="setup_checklist_token" xml:space="preserve">
+    <value>Ajouter un jeton d'API Songify</value>
+  </data>
+  <data name="setup_token_title" xml:space="preserve">
+    <value>jeton API Songify</value>
+  </data>
+  <data name="setup_token_body" xml:space="preserve">
+    <value>Les services web, comme le chargement du morceau en cours et la gestion de la file d'attente, nécessitent un jeton d'API Songify. Connectez-vous à songify.rocks avec votre compte Twitch, générez un jeton sur votre page de compte, puis collez-le ici. Si le site propose l'option « Importer vers Songify », le jeton sera automatiquement envoyé à cette application.</value>
+  </data>
+  <data name="setup_token_get" xml:space="preserve">
+    <value>Obtenir un jeton</value>
+  </data>
+  <data name="setup_token_missing" xml:space="preserve">
+    <value>Aucun jeton n'a encore été ajouté. Le chargement des données musicales et de la file d'attente ne fonctionnera pas tant que vous n'en aurez pas ajouté un.</value>
+  </data>
+  <data name="setup_token_present" xml:space="preserve">
+    <value>Jeton enregistré. Générez-en un nouveau sur votre page de compte si vous devez le remplacer.</value>
+  </data>
+  <data name="window_settings_songify_api_token_help" xml:space="preserve">
+    <value>Nécessaire pour les données des chansons en ligne et la file d'attente des requêtes. Connectez-vous à songify.rocks avec Twitch, générez un jeton sur votre page de compte, puis collez-le ici ou utilisez l'option « Importer dans Songify » sur le site web.</value>
+  </data>
+  <data name="window_overview_api_token_title" xml:space="preserve">
+    <value>Jeton d'API Songify requis</value>
+  </data>
+  <data name="window_overview_api_token_body" xml:space="preserve">
+    <value>Les données des morceaux et la file d'attente des requêtes ne seront pas mises à jour sur le web tant que vous n'aurez pas ajouté un jeton d'API Songify. Connectez-vous à songify.rocks avec Twitch, générez un jeton sur votre page de compte, puis importez-le dans Paramètres → Configuration.</value>
+  </data>
+  <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
+    <value>Messages minimums entre les annonces de chansons</value>
+  </data>
+  <data name="cta_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="cta_premium_tooltip" xml:space="preserve">
+    <value>Récap du stream, titres les plus demandés, sync cloud et widgets en plus. Songify reste gratuit.</value>
+  </data>
+  <data name="window_main_title_premium" xml:space="preserve">
+    <value>Songify Premium</value>
+  </data>
+  <data name="window_main_status_premium" xml:space="preserve">
+    <value>Prime</value>
+  </data>
+  <data name="window_main_status_premium_active" xml:space="preserve">
+    <value>Songify Premium est activé. Cliquez pour ouvrir le récapitulatif du stream.</value>
+  </data>
+  <data name="window_main_status_premium_inactive" xml:space="preserve">
+    <value>Songify Premium est inactif. Cliquez pour débloquer le récapitulatif, les statistiques et la synchronisation cloud.</value>
+  </data>
+  <data name="window_main_status_premium_no_token" xml:space="preserve">
+    <value>Ajoutez un jeton Songify, puis débloquez l'accès Premium sur votre page de compte.</value>
+  </data>
+  <data name="window_main_status_premium_invalid" xml:space="preserve">
+    <value>Ce jeton Songify est invalide. Veuillez en générer un nouveau sur songify.rocks.</value>
+  </data>
+  <data name="window_main_status_premium_unknown" xml:space="preserve">
+    <value>Vérification du statut Songify Premium…</value>
+  </data>
+  <data name="window_about_premium_active" xml:space="preserve">
+    <value>Songify Premium est actif</value>
+  </data>
+  <data name="window_about_premium_inactive" xml:space="preserve">
+    <value>L'abonnement Premium est inactif — débloquez le récapitulatif, les statistiques et la synchronisation cloud</value>
+  </data>
+  <data name="window_about_premium_invalid" xml:space="preserve">
+    <value>Le jeton Songify est invalide.</value>
+  </data>
+  <data name="window_about_premium_no_token" xml:space="preserve">
+    <value>Ajoutez un jeton Songify pour activer l'abonnement Premium.</value>
+  </data>
+  <data name="window_history_open_recap" xml:space="preserve">
+    <value>Récapitulatif du stream</value>
+  </data>
+  <data name="window_history_open_recap_tooltip" xml:space="preserve">
+    <value>Consultez le récapitulatif quotidien des demandes sur songify.rocks. La liste complète des chansons est incluse dans l'abonnement Premium.</value>
+  </data>
+  <data name="window_settings_cloud_premium_hint" xml:space="preserve">
+    <value>La synchronisation cloud est incluse avec Songify Premium.</value>
+  </data>
+  <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
+    <value>La synchronisation cloud est incluse avec Songify Premium.</value>
+  </data>
+  <data name="setup_token_premium_active" xml:space="preserve">
+    <value>Jeton enregistré. Songify Premium est actif.</value>
+  </data>
+  <data name="setup_token_premium_inactive" xml:space="preserve">
+    <value>Jeton enregistré. Liez votre compte Ko-fi sur votre page de compte pour débloquer le récapitulatif, les statistiques et la synchronisation cloud.</value>
+  </data>
+  <data name="setup_token_invalid" xml:space="preserve">
+    <value>Ce jeton est invalide. Veuillez en générer un nouveau sur votre page de compte.</value>
+  </data>
+  <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
+    <value>Masquer les rappels Premium</value>
+  </data>
+  <data name="window_settings_premium_reminder_title" xml:space="preserve">
+    <value>Rappels Premium désactivés</value>
+  </data>
+  <data name="window_settings_premium_reminder_body" xml:space="preserve">
+    <value>Songify reste gratuit. La version Premium ajoute le récapitulatif des écoutes, les titres les plus populaires et les demandes d'écoute, la synchronisation cloud et des widgets supplémentaires.
+
+Vous pouvez toujours accéder à Songify Premium à tout moment depuis l'accueil ou la section « À propos ».</value>
+  </data>
+  <data name="setup_token_refresh_premium" xml:space="preserve">
+    <value>Actualiser le statut Premium</value>
+  </data>
+  <data name="setup_token_checking_premium" xml:space="preserve">
+    <value>Vérification du statut Songify Premium…</value>
+  </data>
+  <data name="window_main_premium_reminder_title" xml:space="preserve">
+    <value>Songify reste gratuit</value>
+  </data>
+  <data name="window_main_premium_reminder_body" xml:space="preserve">
+    <value>La version Premium ajoute le récapitulatif du stream, les titres les plus populaires et les demandes d'écoute, la synchronisation cloud et des widgets supplémentaires. Débloquez-la à tout moment depuis l'accueil ou la section À propos.</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
+    <value>Ce message disparaîtra dans {0} secondes</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_one" xml:space="preserve">
+    <value>Ce message disparaîtra dans {0} seconde</value>
+  </data>
+  <data name="window_main_premium_reminder_dismiss_now" xml:space="preserve">
+    <value>Ce message va disparaître maintenant :)</value>
+  </data>
+  <data name="window_settings_appearance_scale" xml:space="preserve">
+    <value>Échelle d'interface</value>
+  </data>
+  <data name="window_settings_appearance_scale_hint" xml:space="preserve">
+    <value>Agrandir l'application en 1440p et 4K.</value>
+  </data>
+  <data name="window_settings_appearance_scale_value" xml:space="preserve">
+    <value>{0}%</value>
   </data>
 </root>
