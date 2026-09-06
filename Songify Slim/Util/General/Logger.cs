@@ -84,6 +84,10 @@ namespace Songify_Slim.Util.General
             if (App.IsBeta)
                 File.AppendAllText(fileName, "!! BETA !!" + Environment.NewLine);
             File.AppendAllText(fileName, "Date: " + date + Environment.NewLine);
+            File.AppendAllText(fileName, $"OS Version: {SystemInfo.GetWindowsVersion()}" + Environment.NewLine);
+            File.AppendAllText(fileName, $"CPU: {SystemInfo.GetCpuInfo()}" + Environment.NewLine);
+            File.AppendAllText(fileName, $"GPU(s): {string.Join(", ", SystemInfo.GetGpus())}" + Environment.NewLine);
+            File.AppendAllText(fileName, $"RAM: {SystemInfo.GetRamBytes() / (1024 * 1024 * 1024)} GB" + Environment.NewLine);
             File.AppendAllText(fileName, "====================" + Environment.NewLine);
             PruneOldLogFiles();
             return fileName;

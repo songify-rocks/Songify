@@ -1142,6 +1142,14 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             return;
 
         Style style = TryFindResource("StatusToolTip") as Style;
+        // Assign the ToolTip instance before any await. Replacing it after WPF has
+        // parented the popup throws "ToolTip cannot have a logical or visual parent".
+        ToolTip tooltip = ServiceToolTip.EnsureHostToolTip(host, style);
+        int applyToken = (tooltip.Tag as int? ?? 0) + 1;
+        tooltip.Tag = applyToken;
+        if (tooltip.Content == null)
+            tooltip.Content = "…";
+
         SymbolIcon icon = new() { Width = 14, Height = 14 };
         string header;
         List<(string Label, string Value)> rows;
@@ -1205,7 +1213,10 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 break;
         }
 
-        host.ToolTip = ServiceToolTip.Build(header, rows, style, icon);
+        if (!ReferenceEquals(host.ToolTip, tooltip) || !Equals(tooltip.Tag, applyToken))
+            return;
+
+        ServiceToolTip.Apply(tooltip, header, rows, style, icon);
     }
 
     private static async Task<List<EventSubSubscription>> GetEventSubsSafeAsync()

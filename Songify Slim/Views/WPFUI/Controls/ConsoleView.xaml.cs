@@ -49,7 +49,8 @@ public partial class ConsoleView
         if (GlobalObjects.DetachConsole && !IsFloatingHost)
             return;
         AttachConsoleDocument();
-        EnsureChart();
+        if (TabGraph?.IsSelected == true)
+            EnsureChart();
         RequestScrollConsoleToEnd();
     }
 
@@ -179,17 +180,46 @@ public partial class ConsoleView
         return null;
     }
 
+    private void ConsoleTabs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (TabGraph?.IsSelected == true)
+            EnsureChart();
+    }
+
     private void EnsureChart()
     {
-        if (ApiChartHost?.Content != null)
+        if (ApiChartHost == null)
             return;
+
         try
         {
-            ApiChartHost.Content = new ApiChart { DataContext = GlobalObjects.ApiMetrics };
+            if (ApiChartHost.Content == null)
+                ApiChartHost.Content = new ApiChart { DataContext = GlobalObjects.ApiMetrics };
+
+            InvalidateChartLayout();
+            Dispatcher.BeginInvoke(DispatcherPriority.Loaded, InvalidateChartLayout);
+            Dispatcher.BeginInvoke(DispatcherPriority.Render, InvalidateChartLayout);
         }
         catch (Exception)
         {
             // If chart dependencies aren't available, just leave it empty
+        }
+    }
+
+    private void InvalidateChartLayout()
+    {
+        if (ApiChartHost == null)
+            return;
+
+        ApiChartHost.InvalidateMeasure();
+        ApiChartHost.InvalidateArrange();
+        ApiChartHost.UpdateLayout();
+
+        if (ApiChartHost.Content is UIElement chart)
+        {
+            chart.InvalidateMeasure();
+            chart.InvalidateArrange();
+            chart.InvalidateVisual();
         }
     }
 

@@ -20,10 +20,10 @@ namespace Songify_Slim.Views
     public partial class WindowPatchnotes
     {
         private const string BetaNotesRawUrl =
-            "https://raw.githubusercontent.com/songify-rocks/Songify/refs/heads/feature/wpfui-shell/docs/releases/beta_update.md";
+            "https://raw.githubusercontent.com/songify-rocks/Songify/refs/heads/master/docs/releases/beta_update.md";
 
         private const string BetaNotesPageUrl =
-            "https://github.com/songify-rocks/Songify/blob/feature/wpfui-shell/docs/releases/beta_update.md";
+            "https://github.com/songify-rocks/Songify/blob/master/docs/releases/beta_update.md";
 
         // One template for both GitHub HTML and beta markdown
         private readonly string htmlTemplate = """

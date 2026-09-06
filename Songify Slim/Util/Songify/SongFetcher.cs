@@ -61,6 +61,13 @@ namespace Songify_Slim.Util.Songify
         private static bool _trackChanged;
         private string _localTrackTitle;
         private static bool _isLocalTrack;
+
+        /// <summary>
+        /// Last auto-announced track. Pause/resume, Spotify is_playing flicker, and ForceUpdate
+        /// all re-enter <see cref="WriteSongInfo"/> for the same song; chat should only fire once.
+        /// </summary>
+        private static string _lastChatAnnounceSongId;
+        private static string _lastChatAnnounceDisplayKey;
         private static Tuple<bool, string> _canvasResponse;
         private static readonly Regex DriveLetterRegex = new(@"^[A-Z]:", RegexOptions.IgnoreCase);
         private PlaylistInfo _playbackPlaylist = null;
@@ -1077,6 +1084,31 @@ namespace Songify_Slim.Util.Songify
             };
         }
 
+        private static string GetChatAnnounceDisplayKey(TrackInfo songInfo)
+        {
+            return $"{songInfo?.Artists ?? ""}\n{songInfo?.Title ?? ""}";
+        }
+
+        private static bool WasAlreadyAnnouncedInChat(TrackInfo songInfo)
+        {
+            if (songInfo == null)
+                return false;
+
+            if (!string.IsNullOrEmpty(songInfo.SongId) &&
+                string.Equals(_lastChatAnnounceSongId, songInfo.SongId, StringComparison.Ordinal))
+                return true;
+
+            string displayKey = GetChatAnnounceDisplayKey(songInfo);
+            return !string.IsNullOrWhiteSpace(displayKey) &&
+                   string.Equals(_lastChatAnnounceDisplayKey, displayKey, StringComparison.Ordinal);
+        }
+
+        private static void RememberChatAnnounce(TrackInfo songInfo)
+        {
+            _lastChatAnnounceSongId = songInfo?.SongId ?? "";
+            _lastChatAnnounceDisplayKey = GetChatAnnounceDisplayKey(songInfo);
+        }
+
         private static async Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
         {
             // If no song info at all, bail out
@@ -1323,11 +1355,14 @@ namespace Songify_Slim.Util.Songify
             // Update Song Queue, Track has been played. All parameters are optional except track id, playedd and o. o has to be the value "u"
             //if (rTrackId != null) WebHelper.UpdateWebQueue(rTrackId, "", "", "", "", "1", "u");
 
-            // Send Message to Twitch if checked
-            if (Settings.AnnounceInChat)
+            // Auto-announce only when this track has not already been posted.
+            // WriteSongInfo also runs on ForceUpdate (IsPlaying flicker, output-format edits),
+            // which must still retry until MinimumMessagesBetweenAnnounces is met, then stop.
+            if (Settings.AnnounceInChat && !WasAlreadyAnnouncedInChat(songInfo))
             {
                 if (GlobalObjects.messagesSinceLastAnnounce >= Settings.MinimumMessagesBetweenAnnounces)
                 {
+                    RememberChatAnnounce(songInfo);
                     GlobalObjects.messagesSinceLastAnnounce = 0;
                     TwitchHandler.SendCurrSong();
                 }

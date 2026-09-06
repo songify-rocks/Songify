@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using Songify_Slim.Util.Configuration;
@@ -31,11 +33,10 @@ public static class AppStartup
         if (!await CheckAndNotifyConfigurationIssuesAsync())
             return;
 
-        bool internetAvailable = await WaitForInternetConnectionAsync();
-        if (!internetAvailable)
+        if (!await WaitForInternetConnectionAsync())
         {
-            await RunInternetCheckDialogAsync(owner);
-            return;
+            if (!await RunInternetCheckDialogAsync(owner))
+                return;
         }
 
         Task authTask = AuthenticateSongifyApiAsync();
@@ -169,26 +170,84 @@ public static class AppStartup
 
     private static async Task<bool> WaitForInternetConnectionAsync()
     {
-        string[] urlsToCheck = { "https://www.google.com", "https://www.cloudflare.com", "https://songify.rocks" };
-        using var httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(5) };
-        try
+        for (int attempt = 1; attempt <= 2; attempt++)
         {
-            var tasks = urlsToCheck.Select(url => httpClient.GetAsync(url)).ToList();
-            var completed = await Task.WhenAny(tasks);
-            if (completed != null && (await completed).IsSuccessStatusCode)
+            if (await ProbeInternetAsync())
             {
                 Logger.Info(LogSource.Core, "Internet Connection Established");
                 return true;
             }
+
+            if (attempt < 2)
+                await Task.Delay(500);
         }
-        catch { /* ignore */ }
+
+        Logger.Warning(LogSource.Core, "Internet connection check failed.");
+        return false;
+    }
+
+    private static async Task<bool> ProbeInternetAsync()
+    {
+        string[] urlsToCheck =
+        [
+            "https://www.google.com",
+            "https://www.cloudflare.com",
+            "https://songify.rocks"
+        ];
+
+        using HttpClient httpClient = new() { Timeout = TimeSpan.FromSeconds(5) };
+        using CancellationTokenSource cts = new(TimeSpan.FromSeconds(5));
+
+        List<Task<bool>> probes = urlsToCheck
+            .Select(url => ProbeInternetUrlAsync(httpClient, url, cts.Token))
+            .ToList();
+
+        while (probes.Count > 0)
+        {
+            Task<bool> completed = await Task.WhenAny(probes);
+            probes.Remove(completed);
+
+            bool reached;
+            try
+            {
+                reached = await completed;
+            }
+            catch
+            {
+                reached = false;
+            }
+
+            if (!reached)
+                continue;
+
+            await cts.CancelAsync();
+            return true;
+        }
 
         return false;
     }
 
-    private static async Task RunInternetCheckDialogAsync(Window owner)
+    private static async Task<bool> ProbeInternetUrlAsync(
+        HttpClient httpClient, string url, CancellationToken cancellationToken)
     {
-        var win = owner ?? Application.Current.MainWindow;
+        try
+        {
+            using HttpResponseMessage response = await httpClient.GetAsync(
+                url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
+            // Any HTTP response means the network is up (403/redirects still count).
+            return true;
+        }
+        catch (Exception ex)
+        {
+            Logger.Debug(LogSource.Core, $"Internet probe failed for {url}: {ex.Message}");
+            return false;
+        }
+    }
+
+    /// <returns><c>true</c> if internet was confirmed and startup should continue.</returns>
+    private static async Task<bool> RunInternetCheckDialogAsync(Window owner)
+    {
+        Window win = owner ?? Application.Current.MainWindow;
         while (true)
         {
             AppDialogResult result = await AppDialog.ShowAsync(
@@ -204,11 +263,11 @@ public static class AppStartup
             if (result != AppDialogResult.Primary)
             {
                 win?.Close();
-                return;
+                return false;
             }
 
             if (await WaitForInternetConnectionAsync())
-                return;
+                return true;
         }
     }
 
@@ -316,14 +375,14 @@ public static class AppStartup
 
     private static void OpenPatchNotes(Window owner)
     {
-        if (Application.Current.Windows.OfType<WindowPatchnotes>().FirstOrDefault() is WindowPatchnotes existing)
+        if (Application.Current.Windows.OfType<WindowPatchnotes>().FirstOrDefault() is { } existing)
         {
             existing.Focus();
             existing.Activate();
             return;
         }
 
-        var wPn = new WindowPatchnotes { Owner = owner ?? Application.Current.MainWindow };
+        WindowPatchnotes wPn = new() { Owner = owner ?? Application.Current.MainWindow };
         wPn.Show();
         wPn.Activate();
     }

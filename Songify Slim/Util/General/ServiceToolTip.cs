@@ -15,6 +15,23 @@ namespace Songify_Slim.Util.General
             Style style = null,
             SymbolIcon icon = null)
         {
+            ToolTip tooltip = new();
+            Apply(tooltip, header, rows, style, icon);
+            return tooltip;
+        }
+
+        /// <summary>
+        /// Fills an existing <see cref="ToolTip"/>. Replacing <see cref="FrameworkElement.ToolTip"/>
+        /// while it is opening/shown parents a ToolTip in the live tree and throws
+        /// "ToolTip cannot have a logical or visual parent".
+        /// </summary>
+        public static void Apply(
+            ToolTip tooltip,
+            string header,
+            IEnumerable<(string Label, string Value)> rows,
+            Style style = null,
+            SymbolIcon icon = null)
+        {
             Grid grid = new();
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
@@ -77,15 +94,30 @@ namespace Songify_Slim.Util.General
                 r++;
             }
 
-            return new ToolTip
-            {
-                Content = grid,
-                Style = style,
-                Background = ThemeBrushes.CreateOpaqueSurfaceBrush(),
-                BorderBrush =
-                    Application.Current.TryFindResource("AccentFillColorDefaultBrush") as Brush
-                    ?? SystemColors.ActiveBorderBrush,
-            };
+            if (style != null && !ReferenceEquals(tooltip.Style, style))
+                tooltip.Style = style;
+
+            tooltip.Background = ThemeBrushes.CreateOpaqueSurfaceBrush();
+            tooltip.BorderBrush =
+                Application.Current.TryFindResource("AccentFillColorDefaultBrush") as Brush
+                ?? SystemColors.ActiveBorderBrush;
+            tooltip.Content = grid;
+        }
+
+        public static ToolTip EnsureHostToolTip(FrameworkElement host, Style style = null)
+        {
+            if (host.ToolTip is ToolTip existing)
+                return existing;
+
+            ToolTip tooltip = new();
+            if (style != null)
+                tooltip.Style = style;
+            tooltip.Background = ThemeBrushes.CreateOpaqueSurfaceBrush();
+            tooltip.BorderBrush =
+                Application.Current.TryFindResource("AccentFillColorDefaultBrush") as Brush
+                ?? SystemColors.ActiveBorderBrush;
+            host.ToolTip = tooltip;
+            return tooltip;
         }
 
         private static SymbolIcon CloneIcon(SymbolIcon src)

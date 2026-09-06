@@ -11,10 +11,12 @@
     <Copyright>Copyright © 2026</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
     <!-- Single source of truth for AssemblyVersion, FileVersion, and InformationalVersion. -->
-    <Version>2.0.0.6</Version>
+    <Version>2.0.0.7</Version>
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <LangVersion>latest</LangVersion>
+    <!-- Keep PDB line numbers in crash logs without embedding local machine paths. -->
+    <PathMap>$(MSBuildProjectDirectory)=/Songify/</PathMap>
     <!-- WinForms is still referenced (folder pickers). Trimming hard-fails (NETSDK1175). -->
     <PublishTrimmed>false</PublishTrimmed>
     <!-- Disable leftover ClickOnce publish/manifest generation (no longer used). -->
@@ -130,6 +132,7 @@
     <PackageReference Include="SpotifyAPI.Web.Auth">
       <Version>7.4.2</Version>
     </PackageReference>
+    <PackageReference Include="System.Management" Version="10.0.11" />
     <PackageReference Include="TwitchLib.Api">
       <Version>3.10.2</Version>
     </PackageReference>

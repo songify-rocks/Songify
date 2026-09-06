@@ -51,6 +51,9 @@ namespace Songify_Slim.Views
         public ObservableCollection<ISeries> SeriesCollection { get; } = new ObservableCollection<ISeries>();
         public Axis[] XAxes { get; }
         public Axis[] YAxes { get; }
+        public SolidColorPaint LegendTextPaint { get; } = new(new SKColor(160, 160, 160));
+        public SolidColorPaint TooltipTextPaint { get; } = new(SKColors.White);
+        public SolidColorPaint TooltipBackgroundPaint { get; } = new(new SKColor(32, 32, 32, 230));
 
         private readonly DispatcherTimer _timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
 
@@ -185,7 +188,8 @@ namespace Songify_Slim.Views
                         GeometrySize = 0, // No points
                         LineSmoothness = 0,
                         Stroke = NextStroke(),
-                        Fill = null
+                        Fill = null,
+                        YToolTipLabelFormatter = point => $"{point.Coordinate.PrimaryValue:0} /min"
                     };
 
                     _seriesByKey[kv.Key] = series;

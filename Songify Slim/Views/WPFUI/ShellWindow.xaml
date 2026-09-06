@@ -576,11 +576,13 @@
                         ContextMenuService.Placement="Top"
                         Style="{StaticResource IconOnlyButton}"
                         Tag="TwitchAPI"
-                        ToolTip=""
                         ToolTipOpening="ServiceToolTipOpening"
                         ToolTipService.BetweenShowDelay="100"
                         ToolTipService.InitialShowDelay="0"
                         ToolTipService.ShowDuration="20000">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource StatusToolTip}" />
+                        </Button.ToolTip>
                         <StackPanel Orientation="Horizontal">
                             <Ellipse
                                 Width="8"
@@ -604,11 +606,13 @@
                         ContextMenuService.Placement="Top"
                         Style="{StaticResource IconOnlyButton}"
                         Tag="TwitchBot"
-                        ToolTip=""
                         ToolTipOpening="ServiceToolTipOpening"
                         ToolTipService.BetweenShowDelay="100"
                         ToolTipService.InitialShowDelay="0"
                         ToolTipService.ShowDuration="20000">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource StatusToolTip}" />
+                        </Button.ToolTip>
                         <StackPanel Orientation="Horizontal">
                             <Ellipse
                                 Width="8"
@@ -629,11 +633,13 @@
                         Click="ServiceIcon_Click"
                         Style="{StaticResource IconOnlyButton}"
                         Tag="Spotify"
-                        ToolTip=""
                         ToolTipOpening="ServiceToolTipOpening"
                         ToolTipService.BetweenShowDelay="100"
                         ToolTipService.InitialShowDelay="0"
                         ToolTipService.ShowDuration="20000">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource StatusToolTip}" />
+                        </Button.ToolTip>
                         <StackPanel Orientation="Horizontal">
                             <Ellipse
                                 Width="8"
@@ -654,11 +660,13 @@
                         Click="ServiceIcon_Click"
                         Style="{StaticResource IconOnlyButton}"
                         Tag="PearDesktop"
-                        ToolTip=""
                         ToolTipOpening="ServiceToolTipOpening"
                         ToolTipService.BetweenShowDelay="100"
                         ToolTipService.InitialShowDelay="0"
                         ToolTipService.ShowDuration="20000">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource StatusToolTip}" />
+                        </Button.ToolTip>
                         <StackPanel Orientation="Horizontal">
                             <Ellipse
                                 Width="8"
@@ -678,11 +686,13 @@
                         Click="ServiceIcon_Click"
                         Style="{StaticResource IconOnlyButton}"
                         Tag="WebServer"
-                        ToolTip=""
                         ToolTipOpening="ServiceToolTipOpening"
                         ToolTipService.BetweenShowDelay="100"
                         ToolTipService.InitialShowDelay="0"
                         ToolTipService.ShowDuration="20000">
+                        <Button.ToolTip>
+                            <ToolTip Style="{StaticResource StatusToolTip}" />
+                        </Button.ToolTip>
                         <StackPanel Orientation="Horizontal">
                             <Ellipse
                                 Width="8"

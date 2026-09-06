@@ -1,8 +1,8 @@
-# Songify 2.0.0 Beta
+# Songify 2.0.0 Beta (pre-release)
 
 Songify 2.0 is a new app on the outside, with the same job as 1.8.x: now playing for your overlay, Twitch song requests, and the players you already use.
 
-This is a **beta**. Settings and history migrate automatically. Before you switch, copy the folder that contains `Songify.exe` (that is where `AppConfig.yaml` and history live).
+This is a **pre-release**. Settings and history migrate automatically. Before you switch, copy the folder that contains `Songify.exe` (that is where `AppConfig.yaml` and history live).
 
 Compared with **1.8.13**, a few things you relied on have changed. Those are listed first.
 
@@ -10,10 +10,11 @@ Compared with **1.8.13**, a few things you relied on have changed. Those are lis
 
 ## Do this after updating
 
-1. **Add a Songify API token** (Home checklist, or Settings → System → Songify token). Widget upload, the online queue, recap, and cloud sync need it. Get one at [songify.rocks](https://songify.rocks/token-import).
-2. **Link Spotify and Twitch again** if the status bar dots stay red. Tokens and your Client ID / Secret from 1.8 usually carry over; if they do not, use Home → Getting started.
+1. **Add a Songify API token** (Home checklist, Help, or Settings → System → Songify token). Widget upload, the online queue, recap, and cloud sync need it. Get one at [songify.rocks](https://songify.rocks/token-import).
+2. **Link Spotify and Twitch again** if the status bar dots stay red. Tokens and your Client ID / Secret from 1.8 usually carry over; if they do not, use **Help → Getting started**.
 3. Confirm **OBS** still points at the same output folder (`Songify.txt`, `cover.png`). Covers are always written now.
 4. If you used **in-app history on the website**, that upload is gone. Local history is still in Songify; recap is on [songify.rocks/recap](https://songify.rocks/recap).
+5. Check **Settings → Twitch** for the new **ignored chat users** list. The old “ignore bots” toggle is gone (your known bots are copied onto the list once).
 
 ---
 
@@ -23,7 +24,7 @@ Compared with **1.8.13**, a few things you relied on have changed. Those are lis
 
 - Songify now runs on **.NET 10**. You need **Windows 10 version 1809** (October 2018) or later, or **Windows 11**. Windows 7 / 8 are not supported.
 - Keep using the **zip + `Songify.exe`** install. The leftover ClickOnce/publish machinery from old builds is gone.
-- The window is larger: **minimum 900×500**. On a small screen, Home now **scrolls**.
+- The window is larger: **minimum 900×500**. On a small screen, Home now **scrolls**. You can allow smaller windows under **Settings → Appearance → Overrule minimum size**.
 - In-app patch notes use **WebView2**. If it is missing, Songify opens them in your browser instead.
 
 ### Songify API token (replaces AccessKey)
@@ -41,15 +42,23 @@ Generate the token once on [songify.rocks](https://songify.rocks/token-import). 
 
 - Local history is now **`history.yaml`** next to Songify. On first start, **`history.shr` is converted and then deleted**.
 - You may see a short **migration progress** window if the old file is large.
-- **Uploading history to the website from the app is removed.** Stream recap lives on [songify.rocks](https://songify.rocks/recap) (Premium). The in-app History page is local only.
+- **Uploading history to the website from the app is removed.** Stream recap lives on [songify.rocks/recap](https://songify.rocks/recap) (Premium). The in-app History page is local only.
 
 ### Album covers
 
 **Download album cover** is always on. There is no toggle anymore. `cover.png` is written whenever the player provides art (Spotify, Pear, and other sources that have it).
 
+Spotify **canvas** download is still optional (**Settings → Output**). When enabled, `canvas.mp4` is written to the same folder and can play on Home.
+
+### Ignore bots → ignored users
+
+The old **Ignore bot messages** toggle is gone. Songify now uses an editable **ignored chat users** list (Settings → Twitch).
+
+On first 2.0 start, if that toggle was on, known bots (Nightbot, StreamElements, Fossabot, …) are **copied onto the list once**, then the toggle is turned off. After that you add or remove names yourself. The linked Songify bot is always ignored. You can also ignore the broadcaster.
+
 ### First-run wizard
 
-Existing 1.8 installs skip the wizard. New installs get a **setup wizard** (language, Spotify, Twitch, token) and a **Getting started** list on Home until the basics are done. Spotify still uses **your** Client ID and Secret, same as 1.8.
+Existing 1.8 installs skip the wizard. New installs get a **setup wizard** (language, player, Spotify, Twitch, song requests, rewards, limits, token, OBS output, widget) and a **Getting started** list on Home until the basics are done. Re-run it anytime from **Help**. Spotify still uses **your** Client ID and Secret, same as 1.8.
 
 ---
 
@@ -60,19 +69,19 @@ The old MahApps windows (main window, separate Settings, History, Queue, Blockli
 | 1.8 location | 2.0 location |
 |--------------|----------------|
 | Center of the main window (now playing) | **Home** |
-| Song requests → Queue | **Queue** in the sidebar |
+| Song requests → Queue | **Queue** in the sidebar, or **Tools → Queue window** (pop-out) |
 | History window | **History** in the sidebar (calendar) |
 | Song requests → Blocklist | **Blocklist** in the sidebar |
 | User list | **Users** in the sidebar |
-| View → Console | **Console** in the sidebar, or **Tools → Console window** (detach) |
+| View → Console | **Help** (live log), or **Tools → Console window** (detach) |
 | File → Settings | **Settings** in the sidebar |
 | File → Widget | **Tools → Widget** |
-| File → Patch notes / Help | **Help** menu |
+| File → Patch notes / Help | **Help** in the sidebar |
 | Twitch → Connect / login | **Twitch** menu, or click the **Twitch** dots in the status bar |
 | Player dropdown | Still on **Home** (top right) |
 | Footer status icons | Same idea — **clickable** (connect, start web server, open Pear, …) |
 
-Settings tabs are the same ideas (System, Output, Twitch, Rewards, Song requests, Bot commands, Spotify, …) in a cleaner layout. Bot responses are one catalog with edit, reset, and preview.
+Settings tabs are the same ideas (System, Appearance, Output, Twitch, Rewards, Song requests, Bot commands, Spotify, …) in a cleaner layout. Bot responses are one catalog with edit, reset, and preview.
 
 **“Get beta updates”** is gone. Use **Settings → System → Release channel**:
 
@@ -86,17 +95,28 @@ If you had “Get beta updates” turned **on**, you are on **Beta** automatical
 
 ## What is new
 
-### Home
+### Home and onboarding
 
-- **Getting started** checklist (Spotify, Twitch, API token, OBS output file) with Go buttons into Settings. Dismiss when you are done.
+- **Getting started** checklist (Spotify, Twitch, API token, OBS output file, widget) with Go buttons into Settings. Dismiss when you are done.
+- **Setup wizard** you can re-run from Help: language, player, Spotify, Twitch, channel points vs chat requests, create/select rewards, who can request, token, output folder, widget.
 - **Up Next** — next three queued songs with art and requester chips. Click through to the full queue.
 - **Canvas** — when a Spotify track has a canvas and download is enabled, Home can play looping `canvas.mp4` (also saved in your output folder for OBS).
 - Quiet **Songify Premium** button on Home and About if you are not subscribed (tooltip lists what it includes). No status-bar nag.
 
-### Queue and History
+### Appearance
+
+- **Accent color** — color wheel, Windows system accent, last 7 custom colors, or a hex value.
+- **Interface scale** — zoom the whole UI from **100% to 200%** on top of Windows DPI (PerMonitorV2). Useful on 4K / high-DPI screens.
+- **Window backdrop** — Mica, Acrylic, Tabbed, Auto, or None.
+- **Side menu** — left (expanded/collapsed, remembered), top, or bottom. Collapsed icons show a tooltip on hover.
+- **Overrule minimum size** — allow the main window below 900×500.
+
+### Queue, History, Help
 
 - Queue: larger now-playing art, request badges, pending list kept in sync under load.
+- **Pop-out queue window** (Tools), optional **open queue on startup**.
 - History: **calendar** with days that have plays, delete-a-day, context actions. Data is YAML, grouped by local date.
+- **Help** page: Getting started, patch notes, Discord, wiki, config/log folders, and a live log.
 
 ### Twitch and song requests
 
@@ -105,8 +125,16 @@ If you had “Get beta updates” turned **on**, you are on **Beta** automatical
 - **Explicit songs** — if “block all explicit” is on, you can allow specific **user levels** (VIP, mods, …) to request them anyway.
 - **Minimum messages between song announcements** — auto-announce waits until chat has had N messages, so quiet chats are not spammed.
 - Spotify short links: **`spotify.link`** and **`open.spotify.com/s/`** both work for requests.
+- **Ignored chat users** — editable list instead of a hidden bot filter. Add Nightbot-style bots, extra bots, or even yourself.
+- Commands **rebind after a config load or import**, so imported triggers actually apply without restarting.
 
 Commands you already used (`!ssr`, `!song`, `!skip`, `!voteskip`, `!queue`, …) are unchanged. Triggers and responses still live under Bot commands / Bot responses.
+
+### Cloud settings (Premium)
+
+- Cloud save/restore now keeps **revisions**. When you restore, you can pick an older snapshot.
+- Config has a **schema version**. If a cloud revision is newer than this build, restore is blocked until you update Songify.
+- Import preview is clearer about permission changes before you apply.
 
 ### Songify Premium (optional)
 
@@ -126,11 +154,12 @@ Activate: Ko-fi → [songify.rocks](https://songify.rocks) → link Ko-fi with t
 
 - Twitch API, Twitch bot, Spotify, Pear, and WebServer indicators are **buttons**, not just lights.
 - In-app **notifications / PSAs** replace the old separate popup window.
-- Clearer Spotify errors. If Spotify returns 403 “app owner must have Premium”, that refers to the **Developer Dashboard account that created your Client ID**, not Songify Premium and not necessarily the playback account you linked. Subscribe that Dashboard account to Spotify Premium and wait — access can lag a few hours.
+- Persistent **Spotify issue banner** when something keeps failing (for example 403). Clearer copy than a one-shot dialog.
+- If Spotify returns 403 “app owner must have Premium”, that refers to the **Developer Dashboard account that created your Client ID**, not Songify Premium and not necessarily the playback account you linked. Subscribe that Dashboard account to Spotify Premium and wait — access can lag a few hours.
 
 ### Localization
 
-The new UI is fully resource-based and switches language live (Settings → System). Strings for the wizard, Premium, new commands, and release channel are included for:
+The new UI is fully resource-based and switches language live (Settings → System). Strings for the wizard, Premium, new commands, appearance, and release channel are included for:
 
 English, German, Dutch, French, Spanish, Italian, Polish, Portuguese (PT & BR), Russian, Belarusian.
 
@@ -146,7 +175,7 @@ These still behave like 1.8 for a typical OBS setup:
 - **Upload song info** for the [widget generator](https://widget.songify.rocks) (needs the new API token)
 - Local **web server** HTTP JSON and WebSocket control (`ws://127.0.0.1:<port>/`) and data stream (`/ws/data`)
 - Optional **WebSocket password** (added in 1.8.13)
-- Players: Spotify, Windows Playback API, foobar2000, VLC, Browser Companion, Pear Desktop
+- Players: Spotify, Windows Playback API, foobar2000, VLC, Browser Companion, Pear Desktop, Qobuz
 - Twitch rewards, refunds, Bits SR, aliases, skip-only-non-requested, artist CSV blocklist sync from 1.8.13
 
 New file you may want in OBS: **`canvas.mp4`** in the same output folder, if canvas download is enabled.
@@ -156,10 +185,12 @@ New file you may want in OBS: **`canvas.mp4`** in the same output folder, if can
 ## Fixes worth knowing
 
 - Queue and now playing stay aligned when many requests come in at once.
+- **Region-locked Spotify tracks** are detected from `is_playable` / market restrictions (Spotify dropped `available_markets`).
+- Pear queue index lookup and connection errors are more reliable; Pear state shows in the status bar.
 - Light theme: section titles and icons no longer wash out.
 - Secret fields (tokens, passwords) are not wiped when you change theme or language.
-- Pear connection state shows in the status bar.
 - Skip poll will not stack on an already running poll.
+- Chat commands apply after importing a config, without a restart.
 
 ---
 
