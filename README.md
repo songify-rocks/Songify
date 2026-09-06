@@ -23,8 +23,7 @@ Now playing overlays, Twitch chat integration, and song requests for streamers.
 ### Download
 
 **[Get the latest `Songify.zip`](https://github.com/songify-rocks/Songify/releases/latest)** - extract it and run `Songify.exe`. Windows only.
-
-![Songify Interface](https://github.com/user-attachments/assets/6fab125f-e0f6-4b00-b11d-aefa34639553)
+![Songify Interface](https://github.com/user-attachments/assets/958bec2a-897c-4f94-9bdf-123b0eb5a462)
 
 ---
 
