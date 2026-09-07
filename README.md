@@ -7,6 +7,7 @@ Now playing overlays, Twitch chat integration, and song requests for streamers.
 [![Song requests made](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.songify.rocks%2Fv2%2Fstats&query=%24.sr_total&style=for-the-badge&label=song%20requests%20made&color=%2316a349)](https://songify.rocks)
 [![Active users](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.songify.rocks%2Fv2%2Fstats&query=%24.monthly_users&style=for-the-badge&label=active%20users&color=%2316a349)](https://songify.rocks)
 
+[![Build](https://img.shields.io/github/actions/workflow/status/songify-rocks/Songify/build.yml?branch=master&style=for-the-badge&label=build)](https://github.com/songify-rocks/Songify/actions/workflows/build.yml)
 [![Windows](https://img.shields.io/badge/platform-windows-blue?style=for-the-badge&color=%2316a349)](https://github.com/songify-rocks/Songify/releases/latest)
 [![C#](https://img.shields.io/badge/written_in-C%23-blue?style=for-the-badge&color=%2316a349)](https://github.com/songify-rocks/Songify)
 [![GitHub Downloads](https://img.shields.io/github/downloads/songify-rocks/Songify/total?style=for-the-badge&color=%2316a349)](https://github.com/songify-rocks/Songify/releases)
