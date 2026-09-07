@@ -573,7 +573,7 @@
     <value>Канал абнаўленняў</value>
   </data>
   <data name="window_settings_system_release_channel_hint" xml:space="preserve">
-    <value>Выберыце, якія абнаўленні атрымліваць.</value>
+    <value>Абярыце, якія абнаўленні атрымліваць.</value>
   </data>
   <data name="window_settings_release_channel_stable" xml:space="preserve">
     <value>Стабільны</value>
@@ -908,7 +908,7 @@
     <comment>Header for the textbox when the !voteskip command has been executed</comment>
   </data>
   <data name="window_settings_integration_refund_disclaimer" xml:space="preserve">
-    <value>Каб мець магчымасць вяртаць балы, узнагароду патрэбна ствараць праз Songify. Выберыце ўзнагароду, якой вы жадаеце кіраваць, альбо стварыце новую.</value>
+    <value>Каб мець магчымасць вяртаць балы, узнагароду патрэбна ствараць праз Songify. Абярыце ўзнагароду, якой вы жадаеце кіраваць, альбо стварыце новую.</value>
     <comment>Short disclaimer that hides Refund Conditions if the Reward is not managaeable by Songify.</comment>
   </data>
   <data name="window_botresponses_explicit_songs" xml:space="preserve">
@@ -1069,7 +1069,7 @@
     <value>Толькі для каманды !pos, стварае спіс песень, якія карыстальнік мае ў чарзе, з іх пазіцыяй</value>
   </data>
   <data name="param_votes_description" xml:space="preserve">
-    <value>Колькасць галасоў за пропуск галасавання/усяго</value>
+    <value>Колькасць галасоў за пропуск галасавання/усяго галасоў</value>
   </data>
   <data name="param_cooldown_description" xml:space="preserve">
     <value>Перазарадка ў секундах (глабальная і карыстальніцкая)</value>
@@ -1238,7 +1238,7 @@
     <value>Выбраць выканаўцу</value>
   </data>
   <data name="window_blocklist_multiple_artists_match" xml:space="preserve">
-    <value>Некалькі выканаўцаў адпавядаюць пошуку. Выберыце аднаго для блакіроўкі.</value>
+    <value>Некалькі выканаўцаў адпавядаюць пошуку. Абярыце аднаго для блакіроўкі.</value>
   </data>
   <data name="window_blocklist_block_selected" xml:space="preserve">
     <value>Заблакіраваць абраныя</value>
@@ -1274,7 +1274,7 @@
     <value>Абнавіць ID карыстальнікаў</value>
   </data>
   <data name="window_blocklist_search_multi_select" xml:space="preserve">
-    <value>Пошук вярнуў больш за аднаго выканаўцу. Выберыце аднаго або некалькіх для блакіроўкі.</value>
+    <value>Пошук вярнуў больш за аднаго выканаўцу. Абярыце аднаго або некалькіх для блакіроўкі.</value>
   </data>
   <data name="window_blocklist_add_selected" xml:space="preserve">
     <value>Дадаць абраныя</value>
@@ -1346,7 +1346,7 @@
     <value>Умовы вяртання</value>
   </data>
   <data name="window_settings_refund_conditions_info" xml:space="preserve">
-    <value>Каб было магчыма вяртаць балы, узнагарода павінна быць створана праз Songify!</value>
+    <value>Балы за няўдалыя запыты вяртаюцца аўтаматычна, калі ўключана ўмова супадзення. Узнагарода за балы канала павінна быць створана ў Songify (не ў панэлі кіравання Twitch) — Twitch дазваляе адмяняць актывацыі толькі праграме, якая яе стварыла.</value>
   </data>
   <data name="window_settings_poll_setup_hint" xml:space="preserve">
     <value>Наладзьце сістэму галасавання за пропуск</value>
@@ -1400,7 +1400,7 @@
     <value>API YouTube Ключ</value>
   </data>
   <data name="window_settings_test_api" xml:space="preserve">
-    <value>Тэставаць API</value>
+    <value>Праверыць API</value>
   </data>
   <data name="window_settings_twitch_auth_ports" xml:space="preserve">
     <value>Парты аўтарызацыі Twitch</value>
@@ -1514,7 +1514,7 @@
     <value>Імпарт налад з воблака</value>
   </data>
   <data name="window_cloudimport_intro" xml:space="preserve">
-    <value>Зараз будуць імпартаваны налады з воблака.</value>
+    <value>Абярыце якія налады з воблака перазапісаць. Неадзначаныя элементы застануцца без зменаў.</value>
   </data>
   <data name="window_cloudimport_import" xml:space="preserve">
     <value>Імпартаваць</value>
@@ -1658,7 +1658,7 @@
     <value>Аўтаматычна (бягучы сеанс)</value>
   </data>
   <data name="window_main_windows_media_session_tooltip" xml:space="preserve">
-    <value>Выберыце, медыя-сеанс якой праграмы чытаць, калі актыўна некалькі.</value>
+    <value>Абярыце, медыя-сеанс якой праграмы чытаць, калі актыўна некалькі.</value>
   </data>
   <data name="window_main_windows_media_session_unavailable" xml:space="preserve">
     <value>(недаступна)</value>
@@ -1955,7 +1955,7 @@
     <comment>Context: Section header for misc options in Settings.</comment>
   </data>
   <data name="window_settings_accounts_hint" xml:space="preserve">
-    <value>Прывяжыце акаўнт стрымера і пры жаданні бота для чата.</value>
+    <value>Прывяжыце ўліковы запіс стрымера і, апцыянальна, уліковы запіс бота для чата.</value>
     <comment>Context: Hint under Accounts section in Twitch settings.</comment>
   </data>
   <data name="window_settings_broadcaster" xml:space="preserve">
@@ -1967,7 +1967,7 @@
     <comment>Context: Uppercase label for Twitch bot account card.</comment>
   </data>
   <data name="window_settings_chat_account_hint" xml:space="preserve">
-    <value>Выберыце, які прывязаны акаўнт піша ў чат.</value>
+    <value>Абярыце, які прывязаны ўл.запіс піша ў чат.</value>
     <comment>Context: Hint for chat account picker in Twitch settings.</comment>
   </data>
   <data name="window_settings_manual_oauth_hint" xml:space="preserve">
@@ -1979,7 +1979,7 @@
     <comment>Context: Section header for Twitch connection and chat options.</comment>
   </data>
   <data name="window_settings_poll_content" xml:space="preserve">
-    <value>Змесціва апытання</value>
+    <value>Змесціва апытвання</value>
     <comment>Context: Section header for skip-vote poll title/options text.</comment>
   </data>
   <data name="window_settings_voting_options" xml:space="preserve">
@@ -1987,7 +1987,7 @@
     <comment>Context: Section header for poll answer buttons / choices.</comment>
   </data>
   <data name="window_settings_poll_skip_on_win_hint" xml:space="preserve">
-    <value>Калі гэты адказ пераможа ў апытанні, Songify прапусціць бягучы трэк.</value>
+    <value>Калі гэты адказ пераможа ў апытванні, Songify прапусціць бягучы трэк.</value>
     <comment>Context: Hint for poll answer that triggers a song skip.</comment>
   </data>
   <data name="window_settings_who_can_request" xml:space="preserve">
@@ -1995,11 +1995,11 @@
     <comment>Context: Section header for song-request user-level permissions.</comment>
   </data>
   <data name="window_settings_spotify_account" xml:space="preserve">
-    <value>Акаўнт Spotify</value>
+    <value>Уліковы запіс Spotify</value>
     <comment>Context: Section header for linked Spotify account.</comment>
   </data>
   <data name="window_settings_poll_interval_seconds" xml:space="preserve">
-    <value>Інтэрвал апытання (секунды)</value>
+    <value>Інтэрвал апытвання (секунды)</value>
     <comment>Context: Label for numeric poll/fetch interval in seconds.</comment>
   </data>
   <data name="window_settings_artist_blocklist_sync" xml:space="preserve">
@@ -2007,7 +2007,7 @@
     <comment>Context: Section header for hourly CSV artist blocklist sync.</comment>
   </data>
   <data name="window_settings_artist_blocklist_sync_hint" xml:space="preserve">
-    <value>Кожную гадзіну спампоўвайце HTTPS CSV (напрыклад raw GitHub) і дадавайце выканаўцаў у блокліст Spotify. Наладзьце слупкі аднойчы пасля «Вызначыць».</value>
+    <value>Кожную гадзіну спампоўвайце HTTPS CSV (напрыклад raw GitHub) і дадавайце выканаўцаў у блокліст Spotify. Наладзьце слупкі адзін раз, а затым націсніце «Знасці».</value>
     <comment>Context: Description of artist blocklist CSV sync feature.</comment>
   </data>
   <data name="window_settings_csv_url" xml:space="preserve">
@@ -2015,7 +2015,7 @@
     <comment>Context: Label for CSV download URL field.</comment>
   </data>
   <data name="window_settings_name_column" xml:space="preserve">
-    <value>Слупок імя</value>
+    <value>Слупок імені</value>
     <comment>Context: CSV column mapping for artist name.</comment>
   </data>
   <data name="window_settings_id_column" xml:space="preserve">
@@ -2031,7 +2031,7 @@
     <comment>Context: Button to run artist blocklist CSV sync immediately.</comment>
   </data>
   <data name="window_settings_hourly_auto_sync" xml:space="preserve">
-    <value>Аўтасінхранізацыя кожную гадзіну</value>
+    <value>Пагадзінная аўтаматычная сінхранізацыя</value>
     <comment>Context: Toggle for hourly artist blocklist sync.</comment>
   </data>
   <data name="window_settings_last_sync_never" xml:space="preserve">
@@ -2043,11 +2043,11 @@
     <comment>Context: Status showing last artist blocklist sync time; {0} = timestamp.</comment>
   </data>
   <data name="window_settings_youtube_api_key_hint" xml:space="preserve">
-    <value>Патрэбны для пошуку трэкаў на YouTube. Не публікуйце ключ.</value>
+    <value>Патрэбны для пошуку песень на YouTube. Захоўвайце ключ у таямніцы.</value>
     <comment>Context: Hint under YouTube API key field.</comment>
   </data>
   <data name="window_settings_webserver_admin_lan_hint" xml:space="preserve">
-    <value>Songify запушчана ад імя адміністратара. Вэб-сервер таксама слухае LAN IP, каб падключыўся другі ПК. Рабіце гэта толькі ў даверанай сетцы і пры неабходнасці ўключыце пароль WebSocket ніжэй.</value>
+    <value>Праграма Songify запушчана ад імя адміністратара. Вэб-сервер таксама слухае IP-адрас лакальнай сеткі, каб другі камп'ютар мог падключыцца, і правіла міжсеткавага экрану Windows для порта дадаецца падчас працы сервера . Рабіце гэта толькі ў надзейнай сетцы і падумайце аб уключэнні параметра «Патрабаваць пароль WebSocket» ніжэй.</value>
     <comment>Context: Warning when web server runs elevated and binds to LAN.</comment>
   </data>
   <data name="window_settings_server" xml:space="preserve">
@@ -2116,7 +2116,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Tooltip for play/pause player control.</comment>
   </data>
   <data name="window_queue_next" xml:space="preserve">
-    <value>Наступны</value>
+    <value>Далей</value>
     <comment>Context: Tooltip for next track player control.</comment>
   </data>
   <data name="common_skip" xml:space="preserve">
@@ -2171,9 +2171,9 @@ gwyden - Hertz - karimawii
     <value>Прыкладанню Spotify API патрэбен Premium</value>
   </data>
   <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
-    <value>Spotify патрабуе, каб у ўладальніка вашага API-прыкладання (акаўнт на developer.spotify.com, які стварыў Client ID) была актыўная падпіска Spotify Premium.
+    <value>Spotify патрабуе, каб у ўладальніка вашага API-праграмы (ул.запіс на developer.spotify.com, які стварыў ID кліента) была актыўная падпіска Spotify Premium.
 
-Гэта не Songify Premium і не акаўнт Spotify, прывязаны ў Songify для прайгравання. Аформіце Premium на гэтым акаўнце ў панэлі распрацоўшчыка і пачакайце некалькі гадзін — Spotify піша, што доступ можа затрымацца пасля змены падпіскі.</value>
+Гэта не Songify Premium і не ўл.запіс Spotify, прывязаны ў Songify для прайгравання. Аформіце Premium на гэтым акаўнце ў панэлі распрацоўшчыка і пачакайце некалькі гадзін — Spotify піша, што доступ можа затрымацца пасля змен у падпісцы.</value>
   </data>
   <data name="common_duration_hours" xml:space="preserve">
     <value>{0} гадз</value>
@@ -2188,7 +2188,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Relative duration; {0} = seconds.</comment>
   </data>
   <data name="window_history_select_day" xml:space="preserve">
-    <value>Выберыце дзень</value>
+    <value>Абярыце дзень</value>
     <comment>Context: History detail header when no day is selected.</comment>
   </data>
   <data name="window_history_saving_on" xml:space="preserve">
@@ -2260,15 +2260,15 @@ gwyden - Hertz - karimawii
     <comment>Context: Dialog when refreshing artist IDs fails.</comment>
   </data>
   <data name="window_settings_main_account" xml:space="preserve">
-    <value>Асноўны акаўнт:</value>
+    <value>Асноўны ўл.запіс:</value>
     <comment>Context: Label for linked Twitch broadcaster account.</comment>
   </data>
   <data name="window_settings_bot_account" xml:space="preserve">
-    <value>Акаўнт бота:</value>
+    <value>Ул.запіс бота:</value>
     <comment>Context: Label for linked Twitch bot account.</comment>
   </data>
   <data name="window_settings_detecting_columns" xml:space="preserve">
-    <value>Вызначэнне слупкоў…</value>
+    <value>Пошук слупкоў…</value>
     <comment>Context: Status while detecting CSV columns.</comment>
   </data>
   <data name="window_settings_detect_columns_title" xml:space="preserve">
@@ -2280,7 +2280,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Status after CSV column detection; {0} = column count.</comment>
   </data>
   <data name="window_settings_detect_failed" xml:space="preserve">
-    <value>Вызначэнне не ўдалося.</value>
+    <value>Знасці не атрымалася.</value>
     <comment>Context: Status when CSV column detection fails.</comment>
   </data>
   <data name="window_settings_detect_csv_error" xml:space="preserve">
@@ -2300,7 +2300,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Cloud sync validation error.</comment>
   </data>
   <data name="window_settings_cloud_need_twitch" xml:space="preserve">
-    <value>Увайдзіце ў акаўнт Twitch.</value>
+    <value>Увайдзіце ва ўл.заіс Twitch.</value>
     <comment>Context: Cloud sync validation error when Twitch is not linked.</comment>
   </data>
   <data name="window_settings_cloud_saved" xml:space="preserve">
@@ -2324,11 +2324,11 @@ gwyden - Hertz - karimawii
     <comment>Context: Confirm dialog before resetting all settings.</comment>
   </data>
   <data name="window_settings_folder_save_config" xml:space="preserve">
-    <value>Выберыце папку для захавання файла канфігурацыі</value>
+    <value>Абярыце папку для захавання файла канфігурацыі</value>
     <comment>Context: Folder browser description when exporting config.</comment>
   </data>
   <data name="window_settings_folder_import_config" xml:space="preserve">
-    <value>Выберыце папку з файламі канфігурацыі</value>
+    <value>Абярыце папку з файламі канфігурацыі</value>
     <comment>Context: Folder browser description when importing config.</comment>
   </data>
   <data name="window_settings_config_saved" xml:space="preserve">
@@ -2352,15 +2352,15 @@ gwyden - Hertz - karimawii
     <comment>Context: Label prefix for PSA author.</comment>
   </data>
   <data name="uc_command_volume_set_response" xml:space="preserve">
-    <value>Адказ Volume Set</value>
+    <value>Адказ на змену гучнасці</value>
     <comment>Context: Label for volume-set bot response field in command editor.</comment>
   </data>
   <data name="window_manualtwitch_title_main" xml:space="preserve">
-    <value>Прывязка Twitch: Асноўны акаўнт</value>
+    <value>Прывязка Twitch: Асноўны ўл.запіс</value>
     <comment>Context: Manual Twitch login window title for broadcaster/main account.</comment>
   </data>
   <data name="window_manualtwitch_title_bot" xml:space="preserve">
-    <value>Прывязка Twitch: Акаўнт бота</value>
+    <value>Прывязка Twitch: Ул.запіс бота</value>
     <comment>Context: Manual Twitch login window title for bot account.</comment>
   </data>
   <data name="window_cloudimport_permission_warning" xml:space="preserve">
@@ -2420,7 +2420,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
   </data>
   <data name="window_history_migrate_body" xml:space="preserve">
-    <value>Converting your song history to the new format...</value>
+    <value>Ператварэнне гісторыі вашых песень у новы фармат...</value>
     <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
   </data>
   <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
@@ -2430,19 +2430,19 @@ gwyden - Hertz - karimawii
     <value>Узроўні карыстальнікаў (адкрытае змесціва)</value>
   </data>
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
-    <value>Пачынае апытанне Twitch з прапускам бягучай песні</value>
+    <value>Пачынае апытванне Twitch з прапускам бягучай песні</value>
   </data>
   <data name="window_botresponses_cmd_playlist" xml:space="preserve">
     <value>Паказвае бягучы плэйліст</value>
   </data>
   <data name="setup_wizard_title" xml:space="preserve">
-    <value>Наладзьце Songify</value>
+    <value>Пачатак працы</value>
   </data>
   <data name="setup_welcome_title" xml:space="preserve">
     <value>Сардэчна запрашаем у Songify</value>
   </data>
   <data name="setup_welcome_body" xml:space="preserve">
-    <value>Songify паказвае бягучую песню ў стрыме і можа прымаць запыты на песні з Twitch. Гэта кароткая налада падрыхтуе Spotify, Twitch і тэкставы файл OBS. Вы можаце прапусціць любыя змены і змяніць іх пазней у наладах.</value>
+    <value>Songify паказвае бягучую песню падчас трансляцыі і можа прымаць запыты на песні з Twitch. Гэта кароткая наладка падрыхтуе Spotify, Twitch і тэкставы файл OBS. Вы можаце прапусціць любыя этапы і змяніць іх пазней у наладах.</value>
   </data>
   <data name="setup_player_title" xml:space="preserve">
     <value>Якім плэерам вы карыстаецеся?</value>
@@ -2454,7 +2454,7 @@ gwyden - Hertz - karimawii
     <value>Падключыце Spotify</value>
   </data>
   <data name="setup_spotify_body" xml:space="preserve">
-    <value>Стварыце праграму Spotify Developer, устаўце сюды ідэнтыфікатар кліента, а затым прывяжыце свой уліковы запіс. Кнопка даведкі адкрывае кіраўніцтва па наладзе.</value>
+    <value>Стварыце праграму Spotify Developer, устаўце сюды ідэнтыфікатар кліента, а затым прывяжыце свой уліковы запіс. Кнопка даведкі адкрывае кіраўніцтва па наладцы.</value>
   </data>
   <data name="setup_spotify_help_tooltip" xml:space="preserve">
     <value>Адкрыйце кіраўніцтва па наладзе Spotify</value>
@@ -2475,7 +2475,7 @@ gwyden - Hertz - karimawii
     <value>Падключыцца да Twitch</value>
   </data>
   <data name="setup_twitch_body" xml:space="preserve">
-    <value>Прывяжыце свой уліковы запіс вяшчальніка, калі хочаце атрымліваць запыты на песні ў чаце. Прапусціце гэта, калі вам патрэбна толькі накладка "Цяпер прайграваецца". Уліковы запіс бота можна дадаць пазней у наладах.</value>
+    <value>Прывяжыце свой уліковы запіс стрымера, калі хочаце атрымліваць запыты на песні ў чаце. Прапусціце гэта, калі вам патрэбна толькі накладка "Цяпер прайграецца". Уліковы запіс бота можна дадаць пазней у наладах.</value>
   </data>
   <data name="setup_twitch_linked" xml:space="preserve">
     <value>Звязана як {0}</value>
@@ -2484,19 +2484,19 @@ gwyden - Hertz - karimawii
     <value>Уліковы запіс Twitch звязаны.</value>
   </data>
   <data name="setup_twitch_not_linked" xml:space="preserve">
-    <value>Неабавязкова, калі вам патрэбна толькі накладка, якая зараз прайграваецца.</value>
+    <value>Неабавязкова, калі вам патрэбна толькі накладка "Цяпер прайграецца".</value>
   </data>
   <data name="setup_output_title" xml:space="preserve">
-    <value>Вывадны файл песні</value>
+    <value>Выхадны файл песні</value>
   </data>
   <data name="setup_output_body" xml:space="preserve">
     <value>Songify запісвае бягучую песню ў гэты тэкставы файл. У OBS дадайце крыніцу тэксту і накіруйце яе на Songify.txt.</value>
   </data>
   <data name="setup_done_title" xml:space="preserve">
-    <value>Ты гатовы</value>
+    <value>Вы гатовыя</value>
   </data>
   <data name="setup_done_body" xml:space="preserve">
-    <value>Усё, што яшчэ адкрыта, можна завяршыць на галоўнай старонцы або ў наладах. Кароткі агляд дапаможа вам убачыць, дзе што знаходзіцца.</value>
+    <value>Усе няскончаныя наладкі можна зрабіць апасля з Галоўнай старонкі або ў Наладах. Скарыстайся "Кароткім аглядам" каб убачыць, дзе што знаходзіцца.</value>
   </data>
   <data name="setup_skip" xml:space="preserve">
     <value>Прапусціць</value>
@@ -2505,13 +2505,13 @@ gwyden - Hertz - karimawii
     <value>Назад</value>
   </data>
   <data name="setup_next" xml:space="preserve">
-    <value>Наступны</value>
+    <value>Далей</value>
   </data>
   <data name="setup_finish" xml:space="preserve">
-    <value>Фініш</value>
+    <value>Скончыць</value>
   </data>
   <data name="setup_show_me_around" xml:space="preserve">
-    <value>Пакажы мне вакол</value>
+    <value>Кароткі агляд</value>
   </data>
   <data name="setup_step_label" xml:space="preserve">
     <value>Крок {0} з {1}</value>
@@ -2526,46 +2526,46 @@ gwyden - Hertz - karimawii
     <value>Закрыць</value>
   </data>
   <data name="setup_checklist_go" xml:space="preserve">
-    <value>Ісці</value>
+    <value>Перайсці</value>
   </data>
   <data name="setup_checklist_spotify" xml:space="preserve">
-    <value>Спасылка на Spotify</value>
+    <value>Прывязка Spotify</value>
   </data>
   <data name="setup_checklist_twitch" xml:space="preserve">
-    <value>Спасылка на Twitch (для запытаў песень)</value>
+    <value>Прывязка Twitch (для запытаў песень)</value>
   </data>
   <data name="setup_checklist_output" xml:space="preserve">
-    <value>Вывадны файл песні (OBS)</value>
+    <value>Выхадны файл песні (OBS)</value>
   </data>
   <data name="menu_setup_wizard" xml:space="preserve">
-    <value>Майстар налады</value>
+    <value>Пачатак працы</value>
   </data>
   <data name="setup_tour_home_title" xml:space="preserve">
     <value>Галоўная</value>
   </data>
   <data name="setup_tour_home_body" xml:space="preserve">
-    <value>Гэта агляд. Выкарыстоўвайце выпадальны спіс прайгравальніка, каб выбраць Spotify або іншую крыніцу. Тут адлюстроўваюцца песні, якія вы хочаце прайграць, і наступныя запытаныя песні.</value>
+    <value>Гэта агляд. Выкарыстоўвайце выпадны спіс з плэерамі, каб абраць Spotify або іншую крыніцу. Тут адлюстроўваюцца бягучыя і наступныя песні.</value>
   </data>
   <data name="setup_tour_spotify_title" xml:space="preserve">
     <value>Налады Spotify</value>
   </data>
   <data name="setup_tour_spotify_body" xml:space="preserve">
-    <value>У Налады → Музыка → Spotify вы ўводзіце свой ідэнтыфікатар кліента і прывязваеце свой уліковы запіс. Вы можаце змяніць гэта ў любы час.</value>
+    <value>У раздзеле Налады → Музыка → Spotify вы ўводзіце свой ID кліента і прывязваеце свой уліковы запіс. Вы зможаце змяніць гэта ў любы момант.</value>
   </data>
   <data name="setup_tour_twitch_title" xml:space="preserve">
-    <value>Акаўнты Twitch</value>
+    <value>Ул.запісы Twitch</value>
   </data>
   <data name="setup_tour_twitch_body" xml:space="preserve">
-    <value>Прывяжыце свой уліковы запіс вяшчальніка сюды, каб запытваць песні, атрымліваць узнагароды і каманды чата. Уліковы запіс бота неабавязковы.</value>
+    <value>Прывяжыце тут свой уліковы запіс стрымера для працы запытаў песень, узнагарод і каманд чата. Уліковы запіс бота неабавязковы.</value>
   </data>
   <data name="setup_tour_output_title" xml:space="preserve">
     <value>Вывад і віджэт</value>
   </data>
   <data name="setup_tour_output_body" xml:space="preserve">
-    <value>Навядзіце курсор OBS на файл Songify.txt у наладах вываду. Інструменты → Віджэт адкрывае акно браўзера. Вось і агляд — усё гатова.</value>
+    <value>Тут вы можаце ўказаць OBS на файл Songify.txt альбо скарыстацца «Browser source» з URL-адрасам віджэта з раздзелу Інструменты → Галерэя віджэтаў.</value>
   </data>
   <data name="window_console_detach" xml:space="preserve">
-    <value>Адлучыць</value>
+    <value>Адмацаваць</value>
   </data>
   <data name="window_console_open_window" xml:space="preserve">
     <value>Акно кансолі</value>
@@ -2586,19 +2586,19 @@ gwyden - Hertz - karimawii
     <value>Токен API Songify</value>
   </data>
   <data name="setup_token_body" xml:space="preserve">
-    <value>Для такіх вэб-сэрвісаў, як загрузка бягучай песні і чарга запытаў, патрабуецца токен API Songify. Увайдзіце ў songify.rocks з дапамогай свайго ўліковага запісу Twitch, стварыце токен на старонцы ўліковага запісу, а затым устаўце яго сюды. Калі вэб-сайт прапануе опцыю «Імпартаваць у Songify», токен будзе адпраўлены ў гэту праграму аўтаматычна.</value>
+    <value>Для такіх вэб-сэрвісаў, як загрузка бягучай песні і чарга запытаў, патрабуецца токен API Songify. Увайдзіце ў songify.rocks з дапамогай свайго ўліковага запісу Twitch, стварыце токен, а затым устаўце яго сюды. Той жа токен разблакуе Прэміяльныя функцыі, такія як падсумоўванне, статыстыка і воблачная сінхранізацыя пасля падлучэння Ko-fi.</value>
   </data>
   <data name="setup_token_get" xml:space="preserve">
     <value>Атрымаць токен</value>
   </data>
   <data name="setup_token_missing" xml:space="preserve">
-    <value>Пакуль няма токена. Даныя песень і загрузка чаргі не будуць працаваць, пакуль вы яго не дадасце.</value>
+    <value>Токена пакуль няма. Даныя песень і загрузка чаргі не будуць працаваць, пакуль вы яго не дадасце.</value>
   </data>
   <data name="setup_token_present" xml:space="preserve">
     <value>Токен захаваны. Калі вам трэба яго замяніць, стварыце новы на старонцы вашага ўліковага запісу.</value>
   </data>
   <data name="window_settings_songify_api_token_help" xml:space="preserve">
-    <value>Патрабуецца для дадзеных вэб-песень і чаргі запытаў. Увайдзіце ў songify.rocks з дапамогай Twitch, стварыце токен на старонцы вашага ўліковага запісу, а затым устаўце яго сюды або скарыстайцеся функцыяй «Імпартаваць у Songify» на вэб-сайце.</value>
+    <value>Патрабуецца для вэб-даных аб песнях і чаргі запытаў. Той жа токен разблакуе Прэміўм (падсумоўванне, статыстыка і воблачная сінхранізацыя) пасля падлучэння Ko-fi на старонцы вашага ўліковага запісу.</value>
   </data>
   <data name="window_overview_api_token_title" xml:space="preserve">
     <value>Патрабуецца токен API Songify</value>
@@ -2613,7 +2613,7 @@ gwyden - Hertz - karimawii
     <value>Songify Premium</value>
   </data>
   <data name="cta_premium_tooltip" xml:space="preserve">
-    <value>Вынікі стрыму, топ песень, воблачная сінхранізацыя і дадатковыя віджэты. Songify застаецца бясплатным.</value>
+    <value>Падсумоўванне трансляцыі, топ песень, воблачная сінхранізацыя і дадатковыя віджэты. Songify усё яшчэ застаецца бясплатным.</value>
   </data>
   <data name="window_main_title_premium" xml:space="preserve">
     <value>Songify Premium</value>
@@ -2637,7 +2637,7 @@ gwyden - Hertz - karimawii
     <value>Праверка статусу Songify Premium…</value>
   </data>
   <data name="window_about_premium_active" xml:space="preserve">
-    <value>Прэміум-акаўнт Songify актыўны</value>
+    <value>Прэміум-ул.запіс Songify актыўны</value>
   </data>
   <data name="window_about_premium_inactive" xml:space="preserve">
     <value>Прэміум-падпіска неактыўная — разблакуйце агляд, статыстыку і сінхранізацыю з воблакам</value>
@@ -2676,9 +2676,9 @@ gwyden - Hertz - karimawii
     <value>Прэміум-напаміны выключаны</value>
   </data>
   <data name="window_settings_premium_reminder_body" xml:space="preserve">
-    <value>Songify застаецца бясплатным. Прэміум-версія дадае агляд трансляцый, лепшыя песні і аўтараў запытаў, сінхранізацыю з воблакам і дадатковыя віджэты.
+    <value>Songify застаецца бясплатным. Прэміум-версія дадае падсумоўванне трансляцыі, спіс лепшых песень і аўтараў запытаў, сінхранізацыю з воблакам і дадатковыя віджэты.
 
-Вы ўсё яшчэ можаце адкрыць Songify Premium у любы час з галоўнай старонкі або з раздзела "Аб праграме".</value>
+Вы ўсё яшчэ можаце адкрыць Songify Premium у любы час з Галоўнай старонкі або з раздзела "Аб праграме".</value>
   </data>
   <data name="setup_token_refresh_premium" xml:space="preserve">
     <value>Абнавіць статус прэміум-класа</value>
@@ -2709,5 +2709,446 @@ gwyden - Hertz - karimawii
   </data>
   <data name="window_settings_appearance_scale_value" xml:space="preserve">
     <value>{0}%</value>
+  </data>
+  <data name="window_help_setup_desc" xml:space="preserve">
+    <value>Прывязаць ул.запісы, запыты песень і віджэты.</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width" xml:space="preserve">
+    <value>Адмяніць мінімальны памер</value>
+    <comment>Context: Settings appearance toggle to allow resizing the main window below the designed 900×500 minimum.</comment>
+  </data>
+  <data name="window_main_status_twitch_click_hint" xml:space="preserve">
+    <value>Націсніце тут, каб Увайсці, Падключыцца і Праверыць анлайн-статус</value>
+    <comment>Context: Status-bar tooltip hint that Twitch chips open the Twitch actions menu.</comment>
+  </data>
+  <data name="setup_requests_reward_hint" xml:space="preserve">
+    <value>Гледачы выкарыстоўваюць узнагароду для заказу песні. Цяпер ствары ўзнагароду або абяры існуючую. Вяртанне балаў працуе для ўзнагарод, што былі створаны праз Songify.</value>
+  </data>
+  <data name="window_overview_widget_body" xml:space="preserve">
+    <value>Паказвае бягучую песню ў OBS праз накладку браўзера. Галерэя змяшчае Прэміяльныя віджэты; генератар гэта просты наладжвальнік.</value>
+  </data>
+  <data name="window_help_log_desc" xml:space="preserve">
+    <value>Адкрывае папку, якая выкарыстоўваецца для запісу праблем.</value>
+  </data>
+  <data name="window_cloudimport_schema_too_new" xml:space="preserve">
+    <value>Гэтае воблачнае захаванне было створана новай версіяй Songify. Абнавіце Songify, каб аднавіць яго.</value>
+    <comment>Context: Banner when the selected cloud revision has a newer schemaVersion than this app.</comment>
+  </data>
+  <data name="setup_requests_command_hint" xml:space="preserve">
+    <value>Гледачы друкуюць !ssr плюс назву песні. Гэта ўключае каманды запыту песень. Адрэдагаваць трыгер, узроўні карыстальнікаў і адказы вы можаце пазней праз Налады → Каманды. Падключыце бота з дапамогай значка статусу Twitch, калі вы выйдзеце ў прамы эфір.</value>
+  </data>
+  <data name="setup_tour_rewards_body" xml:space="preserve">
+    <value>Абярыце ўзнагароду, што дадае песню. Вяртанні працуюць толькі для ўзнагарод, што былі створаны праз Songify (значок Songify). Падраздзел пра Умовы вяртання знаходзіцца на гэтай старонцы.</value>
+  </data>
+  <data name="window_help_github_desc" xml:space="preserve">
+    <value>Справаздачы і прапановы.</value>
+  </data>
+  <data name="window_import_group_app" xml:space="preserve">
+    <value>Налады праграмы</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_settings_cloud_bad_response" xml:space="preserve">
+    <value>Немагчыма прачытаць налады з воблака. Падрабязнасці глядзіце ў журнале.</value>
+    <comment>Context: Cloud restore GET body was neither a revisions object nor a legacy JSON string.</comment>
+  </data>
+  <data name="setup_rewards_refund" xml:space="preserve">
+    <value>Аўтаматычнае вяртанне балаў працуе толькі тады, калі ўзнагарода створана праз Songify. Балы за ўзнагароды, створаныя праз панэль кіравання Twitch, нельга вярнуць. Узнагароды, створаныя праз Songify, маюць значок Songify.</value>
+  </data>
+  <data name="window_queue_detached_title" xml:space="preserve">
+    <value>Чарга ў іншым акне</value>
+    <comment>Context: Title on Queue page while the queue is popped out.</comment>
+  </data>
+  <data name="window_settings_cloud_need_update" xml:space="preserve">
+    <value>Гэтае воблачнае захаванне было створана новай версіяй Songify. Калі ласка, абнавіце Songify.</value>
+    <comment>Context: Cloud restore when schemaVersion is newer than this app.</comment>
+  </data>
+  <data name="window_queue_detached_body" xml:space="preserve">
+    <value>Чарга адкрыта ў асобным акне, таму вы можаце пакінуць яе бачнай, пакуль карыстаецеся іншай часткай Songify. Закрыйце гэта акно, каб вярнуць яе назад.</value>
+    <comment>Context: Body on Queue page while the queue is popped out.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_messages_hint" xml:space="preserve">
+    <value>Каманды ад гэты імён і прапускаюцца, уключаючы вашае. Дадайце вядомых ботаў, а затым выдаліце любыя ўліковыя запісы, якія вы выкарыстоўваеце ў якасці рэтранслятара запытаў песень (напрыклад, SoundAlerts).</value>
+    <comment>Context: Settings → Twitch hint under ignored chat users.</comment>
+  </data>
+  <data name="window_blocklist_select_song" xml:space="preserve">
+    <value>Абярыце песню</value>
+    <comment>Context: Dialog title when multiple songs match search (choose one to block).</comment>
+  </data>
+  <data name="window_blocklist_multiple_songs_match" xml:space="preserve">
+    <value>Некалькі песень адпавядаюць вашаму пошуку. Абярыце адну, каб заблакаваць.</value>
+    <comment>Context: Message in blocklist dialog when search returns multiple songs.</comment>
+  </data>
+  <data name="window_blocklist_search_song_placeholder" xml:space="preserve">
+    <value>Знайдзіце песню са Spotify альбо ўстаўце спасылку…</value>
+    <comment>Context: Placeholder in song search box (Spotify lookup or track URL).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left_minimal" xml:space="preserve">
+    <value>Накладка</value>
+    <comment>Context: Navigation pane mode — hamburger overlay (LeftMinimal). Default.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left" xml:space="preserve">
+    <value>Разгорнутае</value>
+    <comment>Context: Navigation pane mode — always show labels (Left).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_bottom" xml:space="preserve">
+    <value>Знізу</value>
+    <comment>Context: Navigation pane mode — tabs along the bottom (Bottom).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_top" xml:space="preserve">
+    <value>Зверху</value>
+    <comment>Context: Navigation pane mode — tabs along the top (Top).</comment>
+  </data>
+  <data name="window_settings_appearance_nav_style" xml:space="preserve">
+    <value>Бакавое меню</value>
+    <comment>Context: Settings appearance label for shell NavigationView pane style.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_style_hint" xml:space="preserve">
+    <value>Як адлюстроўваецца асноўная навігацыя: разгорнутае бакавое меню, зверху або знізу. Разгорнуты або згорнуты стан бакавога меню запамінаецца.</value>
+    <comment>Context: Hint under Side menu in Settings appearance.</comment>
+  </data>
+  <data name="window_settings_appearance_nav_left_fluent" xml:space="preserve">
+    <value>Вялікія значкі</value>
+    <comment>Context: Navigation pane mode — large icons with titles (LeftFluent).</comment>
+  </data>
+  <data name="window_blocklist_song_not_found" xml:space="preserve">
+    <value>Не атрымалася знайсці песню з такой назвай у Spotify.</value>
+    <comment>Context: Dialog when Spotify song search finds no match.</comment>
+  </data>
+  <data name="window_blocklist_search_song_failed" xml:space="preserve">
+    <value>Не атрымалася знайсці гэту песню ў Spotify.</value>
+    <comment>Context: Dialog when Spotify song search fails.</comment>
+  </data>
+  <data name="window_cloudimport_revision_label" xml:space="preserve">
+    <value>Захаваная версія</value>
+    <comment>Context: Label for the cloud settings history ComboBox on the import preview.</comment>
+  </data>
+  <data name="window_cloudimport_revision_invalid" xml:space="preserve">
+    <value>Гэтую захаваную версію немагчыма прачытаць.</value>
+    <comment>Context: Shown when a cloud revision blob cannot be decoded.</comment>
+  </data>
+  <data name="window_cloudimport_unknown_revision" xml:space="preserve">
+    <value>Невядомае захаванне</value>
+    <comment>Context: Fallback ComboBox label when a cloud revision has no createdAt.</comment>
+  </data>
+  <data name="window_cloudimport_latest_revision" xml:space="preserve">
+    <value>Апошняе захаванне</value>
+    <comment>Context: ComboBox label for a v2 cloud blob that has no createdAt timestamp.</comment>
+  </data>
+  <data name="window_settings_cloud_restored" xml:space="preserve">
+    <value>Налады з воблака паспяхова адноўлены</value>
+    <comment>Context: Cloud restore success message.</comment>
+  </data>
+  <data name="window_settings_cloud_empty" xml:space="preserve">
+    <value>Воблачных захаванняў пакуль няма.</value>
+    <comment>Context: Cloud restore when the user has no saved revisions.</comment>
+  </data>
+  <data name="window_settings_cloud_no_changes" xml:space="preserve">
+    <value>Змен не выяўлена, захоўваюцца лакальныя налады.</value>
+    <comment>Context: Cloud restore when the latest revision matches local settings.</comment>
+  </data>
+  <data name="window_settings_cloud_cancelled" xml:space="preserve">
+    <value>Адменена карыстальнікам.</value>
+    <comment>Context: Cloud restore preview closed without importing.</comment>
+  </data>
+  <data name="window_settings_cloud_unavailable" xml:space="preserve">
+    <value>Памылка падключэння да сэрвісу Songify.</value>
+    <comment>Context: Cloud restore network or decode failure.</comment>
+  </data>
+  <data name="window_settings_cloud_unprocessable" xml:space="preserve">
+    <value>Сервер адхіліў воблачнае захаванне. Калі ласка, паўтарыце спробу.</value>
+    <comment>Context: Cloud save HTTP 422 — request JSON shape was rejected.</comment>
+  </data>
+  <data name="window_backupimport_title" xml:space="preserve">
+    <value>Аднавіць рэзервовую копію</value>
+    <comment>Context: Title of the local config import picker.</comment>
+  </data>
+  <data name="window_backupimport_intro" xml:space="preserve">
+    <value>Абярыце якія налады з гэтай рэзервовай копіі перазапісаць. Неадзначаныя элементы застануцца без зменаў.</value>
+    <comment>Context: Intro on the local config import picker.</comment>
+  </data>
+  <data name="window_import_select_all" xml:space="preserve">
+    <value>Абраць усё</value>
+    <comment>Context: Button on config import picker.</comment>
+  </data>
+  <data name="window_import_select_none" xml:space="preserve">
+    <value>Не абіраць нічога</value>
+    <comment>Context: Button on config import picker.</comment>
+  </data>
+  <data name="window_import_selected_count" xml:space="preserve">
+    <value>{0} з {1} абрана</value>
+    <comment>Context: Selection count on config import picker. {0} selected, {1} total.</comment>
+  </data>
+  <data name="window_import_group_bot" xml:space="preserve">
+    <value>Адказы бота</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_commands" xml:space="preserve">
+    <value>Каманды Twitch</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_artists" xml:space="preserve">
+    <value>Заблакаваныя выканаўцы</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_spotify" xml:space="preserve">
+    <value>Ул.запіс Spotify</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_import_group_twitch" xml:space="preserve">
+    <value>Ул.запіс Twitch</value>
+    <comment>Context: Group header on config import picker.</comment>
+  </data>
+  <data name="window_settings_config_import_empty" xml:space="preserve">
+    <value>У гэтай папцы не знойдзена файлаў канфігурацыі Songify.</value>
+    <comment>Context: Error when the chosen backup folder has no YAML config files.</comment>
+  </data>
+  <data name="setup_requests_reward" xml:space="preserve">
+    <value>Балы каналу</value>
+  </data>
+  <data name="setup_requests_body" xml:space="preserve">
+    <value>Гледачы могуць заказваць песні з дапамогай балаў каналу, каманд чата, або разам. Прапусціце гэта, калі вам патрэбна толькі накладка "Цяпер прайграецца".</value>
+  </data>
+  <data name="setup_requests_command" xml:space="preserve">
+    <value>Каманды чата</value>
+  </data>
+  <data name="setup_requests_need_twitch" xml:space="preserve">
+    <value>Спачатку прывяжыце Twitch, каб стварыць узнагароду або ўключыць каманды чата.</value>
+  </data>
+  <data name="setup_requests_title" xml:space="preserve">
+    <value>Запыты песень</value>
+    <comment>Context: Setup wizard step title for channel points vs chat commands.</comment>
+  </data>
+  <data name="setup_requests_create_reward" xml:space="preserve">
+    <value>Стварыць узнагароду</value>
+  </data>
+  <data name="setup_requests_open_rewards" xml:space="preserve">
+    <value>Адкрыць налады ўзнагарод</value>
+  </data>
+  <data name="setup_requests_open_commands" xml:space="preserve">
+    <value>Адкрыць налады каманд</value>
+  </data>
+  <data name="setup_rewards_title" xml:space="preserve">
+    <value>Абярыце ўзнагароды для запыту песень</value>
+  </data>
+  <data name="setup_rewards_body" xml:space="preserve">
+    <value>Праверце кожную ўзнагароду за балы канала, якая павінна дадаць песню. Вы можаце прызначыць узнагароду-пропуск або галасаванне за пропуск пазней у Налады → Узнагароды.</value>
+  </data>
+  <data name="setup_rewards_loading" xml:space="preserve">
+    <value>Загрузка ўзнагарод…</value>
+  </data>
+  <data name="setup_rewards_empty" xml:space="preserve">
+    <value>Узнагарод пакуль няма. Стварыце адну ніжэй або стварыце адну праз Twitch і націсніце «Абнавіць».</value>
+  </data>
+  <data name="setup_rewards_error" xml:space="preserve">
+    <value>Не атрымалася загрузіць узнагароды. Прывяжыце Twitch і паспрабуйце абнавіць.</value>
+  </data>
+  <data name="setup_rewards_refresh" xml:space="preserve">
+    <value>Абнавіць</value>
+  </data>
+  <data name="setup_rewards_manageable" xml:space="preserve">
+    <value>Вяртанне працуе (створана праз Songify)</value>
+  </data>
+  <data name="setup_rewards_selected" xml:space="preserve">
+    <value>{0} абрана для запытаў песень</value>
+  </data>
+  <data name="setup_limits_title" xml:space="preserve">
+    <value>Правілы запыту</value>
+  </data>
+  <data name="setup_limits_body" xml:space="preserve">
+    <value>Задайце, хто можа рабіць запыты за балы канала і колькі песень яны могуць мець у чарзе. Вы можаце змяніць усё гэта пазней, не запускаючы наладку зноў.</value>
+  </data>
+  <data name="setup_limits_who" xml:space="preserve">
+    <value>Хто можа рабіць запыт за балы канала</value>
+  </data>
+  <data name="setup_limits_who_hint" xml:space="preserve">
+    <value>Узроўні падпісчыкаў і іншыя параметры знаходзяцца ў Налады → Запыты песень.</value>
+  </data>
+  <data name="setup_limits_queue" xml:space="preserve">
+    <value>Максімальная колькасць песень у чарзе (на карыстальніка)</value>
+  </data>
+  <data name="setup_limits_queue_hint" xml:space="preserve">
+    <value>Пакуль што дзейнічае для ўсіх узроўняў карыстальнікаў. У раздзеле Налады → Запыты песень можна ўсталяваць розны ліміт для кожнага значка, а таксама перазарадку.</value>
+  </data>
+  <data name="setup_later_title" xml:space="preserve">
+    <value>Дзе гэта можна змяніць пазней</value>
+  </data>
+  <data name="setup_later_song_requests" xml:space="preserve">
+    <value>Налады → Запыты песень — каб наладзіць, хто можа заказваць, ліміты чаргі, перазарадкі.</value>
+  </data>
+  <data name="setup_widget_title" xml:space="preserve">
+    <value>Віджэт трансляцыі</value>
+    <comment>Context: Setup wizard step title for OBS browser widgets.</comment>
+  </data>
+  <data name="setup_widget_body" xml:space="preserve">
+    <value>Браўзерны віджэт паказвае бягучую песню ў OBS з большай колькасцю стылістычных налад, чым тэкставы файл. Віджэты (таксама Прэміяльныя) размешчаны ў songify.rocks. Прапусціце гэта, калі вам патрэбна толькі Songify.txt.</value>
+  </data>
+  <data name="setup_widget_use" xml:space="preserve">
+    <value>Ужыць віджэт-накладку</value>
+  </data>
+  <data name="setup_widget_use_hint" xml:space="preserve">
+    <value>Уключае загрузку песень, каб размешчаныя віджэты маглі адсочваць, што зараз грае. Вы зможаце змяніць гэта пазней у Налады→ Вывад.</value>
+  </data>
+  <data name="setup_later_rewards" xml:space="preserve">
+    <value>Налады → Узнагароды — каб абраць узнагароды, узнагароды-пропуск і ўмовы вяртання.</value>
+  </data>
+  <data name="setup_later_responses" xml:space="preserve">
+    <value>Налады → Адказы — каб наладзіць, што бот кажа ў чаце.</value>
+  </data>
+  <data name="setup_widget_gallery" xml:space="preserve">
+    <value>Прагляд віджэтаў</value>
+  </data>
+  <data name="setup_later_commands" xml:space="preserve">
+    <value>Налады → Каманды — каб уключыць !ssr і іншыя каманды чата, трыгеры і хто можа імі карыстацца.</value>
+  </data>
+  <data name="setup_widget_generator" xml:space="preserve">
+    <value>Генератар віджэтаў</value>
+  </data>
+  <data name="setup_widget_generator_hint" xml:space="preserve">
+    <value>Просты наладжвальнік базавай панэлі "Цяпер прайграецца".</value>
+  </data>
+  <data name="setup_widget_gallery_hint" xml:space="preserve">
+    <value>Уся галерэя, уключаючы Прэміяльныя віджэты. Скапіюйце URL-адрас у «Browser source» OBS.</value>
+  </data>
+  <data name="setup_widget_local" xml:space="preserve">
+    <value>Лакальная накладка (вэб-сервер)</value>
+  </data>
+  <data name="setup_widget_local_hint" xml:space="preserve">
+    <value>Для адмысловых HTML-накладак і JSON API. Запусціце сервер, а затым адкрыйце лакальную старонку.</value>
+  </data>
+  <data name="setup_widget_open_local" xml:space="preserve">
+    <value>Адкрыць лакальную старонку</value>
+  </data>
+  <data name="setup_widget_port" xml:space="preserve">
+    <value>Порт вэб-сервера</value>
+  </data>
+  <data name="setup_checklist_widget" xml:space="preserve">
+    <value>Наладзіць віджэт трансляцыі</value>
+    <comment>Context: Home checklist item for the OBS browser widget.</comment>
+  </data>
+  <data name="setup_checklist_reward" xml:space="preserve">
+    <value>Абраць узнагароду для Запыту песень</value>
+    <comment>Context: Home checklist item when channel-point song requests have no reward selected.</comment>
+  </data>
+  <data name="setup_checklist_requests" xml:space="preserve">
+    <value>Абраць паміж Камандамі чата і Баламі каналу</value>
+    <comment>Context: Home checklist item for picking a song-request method.</comment>
+  </data>
+  <data name="window_overview_widget_title" xml:space="preserve">
+    <value>Віджэт трансляцыі</value>
+    <comment>Context: Home card title promoting OBS widgets.</comment>
+  </data>
+  <data name="setup_tour_requests_title" xml:space="preserve">
+    <value>Правілы Запыту песень</value>
+  </data>
+  <data name="setup_tour_requests_body" xml:space="preserve">
+    <value>У раздзеле Налады → Запыты песень вы абіраеце, хто можа заказваць, ліміты чаргі па ўзроўні карыстальніка і перазарадкі. Правы доступу да каманд можна знайсці для кожнай каманды ў раздзеле Налады → Каманды.</value>
+  </data>
+  <data name="setup_tour_rewards_title" xml:space="preserve">
+    <value>Узнагароды і вяртанні</value>
+  </data>
+  <data name="menu_widget_gallery" xml:space="preserve">
+    <value>Галерэя віджэтаў</value>
+    <comment>Context: Tools menu item that opens songify.rocks/widgets.</comment>
+  </data>
+  <data name="setup_tour_widget_title" xml:space="preserve">
+    <value>Віджэты</value>
+  </data>
+  <data name="setup_tour_widget_body" xml:space="preserve">
+    <value>На галоўнай старонцы ёсць картка віджэтаў, а ў меню Інструменты → Галерэя віджэтаў адкрываецца поўны спіс накладанняў (у тым ліку Прэміяльных). Навядзіце курсор на значкі злева, калі меню згорнутае, каб убачыць, дзе знаходзіцца кожная старонка.</value>
+  </data>
+  <data name="window_overview_continue_setup" xml:space="preserve">
+    <value>Працягнуць наладку</value>
+    <comment>Context: Home checklist button that reopens Getting started.</comment>
+  </data>
+  <data name="window_overview_widget_open_generator" xml:space="preserve">
+    <value>Наладзіць</value>
+  </data>
+  <data name="window_overview_widget_open_gallery" xml:space="preserve">
+    <value>Прагляд віджэтаў</value>
+  </data>
+  <data name="window_overview_widget_open_local" xml:space="preserve">
+    <value>Лакальны перадпрагляд</value>
+  </data>
+  <data name="menu_widget_generator" xml:space="preserve">
+    <value>Генератар віджэтаў</value>
+    <comment>Context: Tools menu item that opens the simpler widget.songify.rocks customizer.</comment>
+  </data>
+  <data name="window_help_subtitle" xml:space="preserve">
+    <value>Наладка, супольнасць, папкі і журнал.</value>
+    <comment>Context: Help page subtitle.</comment>
+  </data>
+  <data name="window_help_patchnotes_desc" xml:space="preserve">
+    <value>Прагледзець спіс змен гэтай версіі.</value>
+  </data>
+  <data name="window_help_section_start" xml:space="preserve">
+    <value>Пачатак працы</value>
+  </data>
+  <data name="window_help_faq_desc" xml:space="preserve">
+    <value>Адказы на songify.rocks.</value>
+  </data>
+  <data name="window_help_discord_desc" xml:space="preserve">
+    <value>Чат з іншымі стрымерамі і камандай.</value>
+  </data>
+  <data name="window_help_section_community" xml:space="preserve">
+    <value>Супольнасць</value>
+  </data>
+  <data name="window_help_section_files" xml:space="preserve">
+    <value>Файлы</value>
+  </data>
+  <data name="window_help_app_desc" xml:space="preserve">
+    <value>Канфігурацыя, выхадныя файлы і сама праграма.</value>
+  </data>
+  <data name="window_help_section_updates" xml:space="preserve">
+    <value>Праграма</value>
+  </data>
+  <data name="window_help_updates_desc" xml:space="preserve">
+    <value>Спампаваць найноўшы выпуск Songify.</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width_hint" xml:space="preserve">
+    <value>Дазваляе рабіць памер галоўнага акна менш чым 900х500. Гэта можа паламаць макет карыстальніцкага інтэрфейсу.</value>
+    <comment>Context: Hint under Overrule minimum size in Settings appearance.</comment>
+  </data>
+  <data name="window_queue_pop_out_tooltip" xml:space="preserve">
+    <value>Адкрыць чаргу ў асобным акне без мінімальнага памеру</value>
+    <comment>Context: Tooltip on Queue page Pop out button.</comment>
+  </data>
+  <data name="window_queue_open_window" xml:space="preserve">
+    <value>Чарга ў акне</value>
+    <comment>Context: Tools menu item that opens the detached queue window.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_messages" xml:space="preserve">
+    <value>Карыстальнікі чата, якія ігнаруюцца</value>
+    <comment>Context: Settings → Twitch heading for the chat ignore list.</comment>
+  </data>
+  <data name="window_settings_ignore_bot_placeholder" xml:space="preserve">
+    <value>Імя карыстальніка, якога трэба ігнараваць</value>
+    <comment>Context: Placeholder for adding a custom ignored chat login.</comment>
+  </data>
+  <data name="window_settings_ignore_add_known_bots" xml:space="preserve">
+    <value>Дадаць вядомых ботаў</value>
+    <comment>Context: Settings → Twitch button that inserts Nightbot, StreamElements, SoundAlerts, etc. into the ignore list.</comment>
+  </data>
+  <data name="window_settings_ignore_remove_all" xml:space="preserve">
+    <value>Выдаліць усіх</value>
+    <comment>Context: Settings → Twitch button that clears the ignored chat users list.</comment>
+  </data>
+  <data name="window_help_console_subtitle" xml:space="preserve">
+    <value>Журнал і паказчыкі API. Адмацуйце, каб яны адлюстроўваліся на экране пакуль карыстаецеся іншай часткай Songify.</value>
+  </data>
+  <data name="window_settings_appearance_accent" xml:space="preserve">
+    <value>Акцэнтны колер</value>
+    <comment>Context: Settings → Appearance row title.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_hint" xml:space="preserve">
+    <value>Націсніце на колер, каб выбраць акцэнт, або пакіньце рэжым «Сістэма», каб выкарыстоўваць акцэнт Windows.</value>
+    <comment>Context: Settings → Appearance accent hint.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_system" xml:space="preserve">
+    <value>Сістэма</value>
+    <comment>Context: Accent option that uses the Windows accent color.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_system_hint" xml:space="preserve">
+    <value>Выкарыстоўваць акцэнтны колер Windows</value>
+    <comment>Context: Subtitle under the System accent button in the color popup.</comment>
   </data>
 </root>
