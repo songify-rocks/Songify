@@ -240,7 +240,7 @@
     <comment>Toggleswitch content for "auto connect"</comment>
   </data>
   <data name="window_settings_integration_link" xml:space="preserve">
-    <value>ЗВЯЗАЦЬ</value>
+    <value>ПРЫВЯЗАЦЬ</value>
     <comment>Button content for "Link"</comment>
   </data>
   <data name="window_botresponses_song_too_long" xml:space="preserve">
@@ -252,7 +252,7 @@
     <comment>Watermark for Nightbot Username (deprecated, unused)</comment>
   </data>
   <data name="window_settings_integration_spotify_linked" xml:space="preserve">
-    <value>Звязаны ўл.запіс:</value>
+    <value>Прывязаны ўл.запіс:</value>
     <comment>Label content for "Linked account:"</comment>
   </data>
   <data name="window_settings_integration_twitch_channel" xml:space="preserve">
@@ -864,7 +864,7 @@
     <comment>Menu Header for "Buy Us A Coffee"</comment>
   </data>
   <data name="window_main_link_spotify" xml:space="preserve">
-    <value>Калі ласка, звяжыце ваш ул.запіс Spotify. Налады -&gt; Spotify</value>
+    <value>Калі ласка, прывяжыце ваш ул.запіс Spotify. Налады -&gt; Spotify</value>
     <comment>Textblock content for "Please link your Spotify account Settings -&gt; Spotify"</comment>
   </data>
   <data name="window_settings_spotify_sr_userlevel_command" xml:space="preserve">
@@ -921,7 +921,7 @@
     <value>Ужываць Canvas, калі ён даступны</value>
   </data>
   <data name="window_queue_now_playing" xml:space="preserve">
-    <value>Зараз грае</value>
+    <value>"Цяпер прайграецца"</value>
   </data>
   <data name="window_queue_song_request" xml:space="preserve">
     <value>Запыт песні</value>
@@ -1105,7 +1105,7 @@
     <value>Песня заблакаваная</value>
   </data>
   <data name="window_settings_spotify_sr_add_only_to_playlist" xml:space="preserve">
-    <value>Дадаць запыты толькі ў выбраны плэй-ліст</value>
+    <value>Дадаць запыты толькі ў абраны плэй-ліст</value>
   </data>
   <data name="window_settings_spotify_sr_enable_for_bits" xml:space="preserve">
     <value>Уключыць запыты песень за Bits</value>
@@ -1520,7 +1520,7 @@
     <value>Імпартаваць</value>
   </data>
   <data name="window_manualtwitch_title" xml:space="preserve">
-    <value>Прывязка ўл.запісу Twitch</value>
+    <value>Прывязванне ўл.запісу Twitch</value>
   </data>
   <data name="window_manualtwitch_instructions" xml:space="preserve">
     <value>Як увайсці праз Twitch:</value>
@@ -1589,7 +1589,7 @@
     <value>Прапусціць песню</value>
   </data>
   <data name="uc_reward_start_skip_poll" xml:space="preserve">
-    <value>Пачаць галасаванне за прапуск</value>
+    <value>Пачаць галасаванне за пропуск</value>
   </data>
   <data name="uc_psa_mark_as_read" xml:space="preserve">
     <value>Адзначыць як прачытанае</value>
@@ -1731,7 +1731,7 @@
     <comment>Context: Top shell menu for Widget, web server URL, queue/history in browser.</comment>
   </data>
   <data name="menu_more" xml:space="preserve">
-    <value>Яшчэ…</value>
+    <value>Больш…</value>
     <comment>Context: Overflow menu in shell title bar.</comment>
   </data>
   <data name="nav_home" xml:space="preserve">
@@ -1751,7 +1751,7 @@
     <comment>Context: Generic Refresh button.</comment>
   </data>
   <data name="common_remove_selected" xml:space="preserve">
-    <value>Выдаліць выбранае</value>
+    <value>Выдаліць абранае</value>
     <comment>Context: Button to remove the currently selected list item(s).</comment>
   </data>
   <data name="common_show" xml:space="preserve">
@@ -1759,15 +1759,15 @@
     <comment>Context: Tray menu item to show the main window.</comment>
   </data>
   <data name="common_website" xml:space="preserve">
-    <value>Сайт</value>
+    <value>Вэб-сайт</value>
     <comment>Context: Button/link to open the product website.</comment>
   </data>
   <data name="common_dismiss" xml:space="preserve">
-    <value>Закрыць</value>
+    <value>Адхіліць</value>
     <comment>Context: Tooltip or action to dismiss a banner/notification.</comment>
   </data>
   <data name="window_blocklist_subtitle" xml:space="preserve">
-    <value>Заблакаваныя выканаўцы, карыстальнікі і трэкі</value>
+    <value>Заблакаваныя выканаўцы, карыстальнікі і песні</value>
     <comment>Context: Subtitle under Block list page title.</comment>
   </data>
   <data name="window_blocklist_categories" xml:space="preserve">
@@ -1775,7 +1775,7 @@
     <comment>Context: Section label above block-list category rail (Artists/Users/Songs).</comment>
   </data>
   <data name="window_blocklist_search_artist_placeholder" xml:space="preserve">
-    <value>Пошук выканаўцы Spotify…</value>
+    <value>Пошук выканаўцы у Spotify…</value>
     <comment>Context: Placeholder in artist search box (Spotify lookup).</comment>
   </data>
   <data name="window_blocklist_filter_artists" xml:space="preserve">
@@ -1787,7 +1787,7 @@
     <comment>Context: Placeholder for filtering the users list.</comment>
   </data>
   <data name="window_blocklist_filter_songs" xml:space="preserve">
-    <value>Фільтр трэкаў…</value>
+    <value>Фільтр песень…</value>
     <comment>Context: Placeholder for filtering the songs list.</comment>
   </data>
   <data name="window_blocklist_add_username" xml:space="preserve">
@@ -1803,7 +1803,7 @@
     <comment>Context: Button to clear all blocked users.</comment>
   </data>
   <data name="window_blocklist_clear_songs" xml:space="preserve">
-    <value>Ачысціць трэкі</value>
+    <value>Ачысціць песні</value>
     <comment>Context: Button to clear all blocked songs.</comment>
   </data>
   <data name="window_blocklist_item_singular" xml:space="preserve">
@@ -1815,7 +1815,7 @@
     <comment>Context: Count label on category rail; {0} = number of entries.</comment>
   </data>
   <data name="window_history_subtitle" xml:space="preserve">
-    <value>Трэкі за апошнія дні</value>
+    <value>Песні за апошнія дні</value>
     <comment>Context: Subtitle under History page title.</comment>
   </data>
   <data name="window_history_days" xml:space="preserve">
@@ -1835,7 +1835,7 @@
     <comment>Context: Context menu to delete a history day.</comment>
   </data>
   <data name="window_history_delete_song" xml:space="preserve">
-    <value>Выдаліць трэк</value>
+    <value>Выдаліць песню</value>
     <comment>Context: Context menu to delete a song from history.</comment>
   </data>
   <data name="window_history_empty" xml:space="preserve">
@@ -1843,7 +1843,7 @@
     <comment>Context: Empty state when no history days exist.</comment>
   </data>
   <data name="window_history_no_songs" xml:space="preserve">
-    <value>Няма трэкаў за гэты дзень</value>
+    <value>Няма песень за гэты дзень</value>
     <comment>Context: Empty state when selected day has no songs.</comment>
   </data>
   <data name="window_history_refresh_tooltip" xml:space="preserve">
@@ -1855,7 +1855,7 @@
     <comment>Context: Tooltip on Save locally toggle.</comment>
   </data>
   <data name="window_history_upload_tooltip" xml:space="preserve">
-    <value>Загружаць гісторыю ў Songify</value>
+    <value>Запампоўваць гісторыю ў Songify</value>
     <comment>Context: Tooltip on Upload history toggle.</comment>
   </data>
   <data name="window_settings_page_subtitle" xml:space="preserve">
@@ -1887,7 +1887,7 @@
     <comment>Context: Button on Console page to refresh API metrics.</comment>
   </data>
   <data name="window_createreward_fields_required" xml:space="preserve">
-    <value>Пазначце назву, апісанне і кошт.</value>
+    <value>Патрабуецца назва, апісанне і кошт.</value>
     <comment>Context: Validation message when create-reward form is incomplete.</comment>
   </data>
   <data name="window_createreward_unable" xml:space="preserve">
@@ -1979,7 +1979,7 @@
     <comment>Context: Section header for Twitch connection and chat options.</comment>
   </data>
   <data name="window_settings_poll_content" xml:space="preserve">
-    <value>Змесціва апытвання</value>
+    <value>Змест апытвання</value>
     <comment>Context: Section header for skip-vote poll title/options text.</comment>
   </data>
   <data name="window_settings_voting_options" xml:space="preserve">
@@ -1987,7 +1987,7 @@
     <comment>Context: Section header for poll answer buttons / choices.</comment>
   </data>
   <data name="window_settings_poll_skip_on_win_hint" xml:space="preserve">
-    <value>Калі гэты адказ пераможа ў апытванні, Songify прапусціць бягучы трэк.</value>
+    <value>Калі гэты адказ пераможа ў апытванні, Songify прапусціць бягучы песню.</value>
     <comment>Context: Hint for poll answer that triggers a song skip.</comment>
   </data>
   <data name="window_settings_who_can_request" xml:space="preserve">
@@ -1995,7 +1995,7 @@
     <comment>Context: Section header for song-request user-level permissions.</comment>
   </data>
   <data name="window_settings_spotify_account" xml:space="preserve">
-    <value>Уліковы запіс Spotify</value>
+    <value>Ул. запіс Spotify</value>
     <comment>Context: Section header for linked Spotify account.</comment>
   </data>
   <data name="window_settings_poll_interval_seconds" xml:space="preserve">
@@ -2043,7 +2043,7 @@
     <comment>Context: Status showing last artist blocklist sync time; {0} = timestamp.</comment>
   </data>
   <data name="window_settings_youtube_api_key_hint" xml:space="preserve">
-    <value>Патрэбны для пошуку песень на YouTube. Захоўвайце ключ у таямніцы.</value>
+    <value>Патрэбны для пошуку песень у YouTube. Захоўвайце ключ у таямніцы.</value>
     <comment>Context: Hint under YouTube API key field.</comment>
   </data>
   <data name="window_settings_webserver_admin_lan_hint" xml:space="preserve">
@@ -2055,7 +2055,7 @@
     <comment>Context: Section header for web server controls.</comment>
   </data>
   <data name="window_settings_webserver_urls_tooltip" xml:space="preserve">
-    <value>JSON трэка: каранёвы URL — тэстар WebSocket: /ws-docs</value>
+    <value>JSON песні: каранёвы URL — тэстар WebSocket: /ws-docs</value>
     <comment>Context: Tooltip describing web server URL endpoints.</comment>
   </data>
   <data name="window_settings_security" xml:space="preserve">
@@ -2067,7 +2067,7 @@
     <comment>Context: Toggle to require password for WebSocket control commands.</comment>
   </data>
   <data name="window_settings_require_websocket_password_tooltip" xml:space="preserve">
-    <value>Калі ўключана, кіроўныя каманды WebSocket патрабуюць пароль (auth, поле ці ?password= у URL). Па змаўчанні выкл. Не ўплывае на чытанне /ws/data.</value>
+    <value>Калі ўключана, для падключэння да вэб-сервера і WebSocket (у тым ліку /ws/data) патрабуецца пароль у выглядзе ?password= у URL-адрасе, загалоўку X-Songify-Password або паведамленні аўтарызацыі. /ws-docs застаецца адкрытым, каб вы маглі яго ўвесці. Па змаўчанні выключана.</value>
     <comment>Context: Tooltip explaining WebSocket password requirement.</comment>
   </data>
   <data name="window_settings_websocket_password" xml:space="preserve">
@@ -2075,7 +2075,7 @@
     <comment>Context: Label for WebSocket password field.</comment>
   </data>
   <data name="window_settings_keep_last_log_files" xml:space="preserve">
-    <value>Захоўваць апошнія файлы логаў</value>
+    <value>Захоўваць апошнія файлы журнала</value>
     <comment>Context: Label for how many daily log files to retain.</comment>
   </data>
   <data name="window_settings_keep_last_log_files_tooltip" xml:space="preserve">
@@ -2092,7 +2092,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Credits section body on About page (names may stay as-is).</comment>
   </data>
   <data name="window_queue_requested_by" xml:space="preserve">
-    <value>Запытаў: {0}</value>
+    <value>Запытаў ад {0}</value>
     <comment>Context: Queue row subtitle; {0} = requester name.</comment>
   </data>
   <data name="window_queue_decrease_font" xml:space="preserve">
@@ -2120,7 +2120,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Tooltip for next track player control.</comment>
   </data>
   <data name="common_skip" xml:space="preserve">
-    <value>Прапуск</value>
+    <value>Пропуск</value>
     <comment>Context: Short button label to skip a song.</comment>
   </data>
   <data name="common_remove" xml:space="preserve">
@@ -2144,11 +2144,11 @@ gwyden - Hertz - karimawii
     <comment>Context: Status label when a service is inactive.</comment>
   </data>
   <data name="window_main_more_count" xml:space="preserve">
-    <value>Яшчэ… ({0})</value>
+    <value>Больш… ({0})</value>
     <comment>Context: Shell overflow header when more Spotify issues exist; {0} = count.</comment>
   </data>
   <data name="window_main_status_pear_inactive_unselected" xml:space="preserve">
-    <value>Неактыўна (не выбраны)</value>
+    <value>Неактыўна (не абрана)</value>
     <comment>Context: Pear status when Pear is not the selected player.</comment>
   </data>
   <data name="window_main_spotify_issue_fallback" xml:space="preserve">
@@ -2156,11 +2156,11 @@ gwyden - Hertz - karimawii
     <comment>Context: Fallback title when a Spotify persistent issue has no title.</comment>
   </data>
   <data name="window_main_spotify_issue_eta" xml:space="preserve">
-    <value>Ацэнка: зноў запрацуе прыкладна праз {0} (каля {1}).</value>
+    <value>Меркаваны час: зноў запрацуе прыкладна праз {0} (каля {1}).</value>
     <comment>Context: Spotify issue ETA; {0} = human duration, {1} = local time.</comment>
   </data>
   <data name="window_main_spotify_issue_eta_ready" xml:space="preserve">
-    <value>Чаканае чаканне скончылася (каля {0}). Калі ўсё яшчэ не працуе — можа заняць даўжэй.</value>
+    <value>Меркаваны час перазарадкі (каля {0}). Калі ўсё яшчэ не працуе — гэта можа заняць больш часу.</value>
     <comment>Context: Spotify issue when cooldown ended; {0} = local time.</comment>
   </data>
   <data name="window_main_spotify_issue_seen_at" xml:space="preserve">
@@ -2168,12 +2168,12 @@ gwyden - Hertz - karimawii
     <comment>Context: Spotify issue timestamp; {0} = local time.</comment>
   </data>
   <data name="window_main_spotify_app_owner_premium_title" xml:space="preserve">
-    <value>Прыкладанню Spotify API патрэбен Premium</value>
+    <value>API праграмы Spotify патрэбна Прэміум-падпіска</value>
   </data>
   <data name="window_main_spotify_app_owner_premium_body" xml:space="preserve">
-    <value>Spotify патрабуе, каб у ўладальніка вашага API-праграмы (ул.запіс на developer.spotify.com, які стварыў ID кліента) была актыўная падпіска Spotify Premium.
+    <value>Spotify патрабуе, каб у ўладальніка вашага API-праграмы (ул.запіс на developer.spotify.com, які стварыў ID кліента) была актыўная Прэміум-падпіска Spotify.
 
-Гэта не Songify Premium і не ўл.запіс Spotify, прывязаны ў Songify для прайгравання. Аформіце Premium на гэтым акаўнце ў панэлі распрацоўшчыка і пачакайце некалькі гадзін — Spotify піша, што доступ можа затрымацца пасля змен у падпісцы.</value>
+Гэта не Прэміум-падпіска Songify і не ўл.запіс Spotify, прывязаны ў Songify для прайгравання. Аформіце Premium на гэтым акаўнце ў панэлі распрацоўшчыка і пачакайце некалькі гадзін — Spotify піша, што доступ можа затрымацца пасля змен у падпісцы.</value>
   </data>
   <data name="common_duration_hours" xml:space="preserve">
     <value>{0} гадз</value>
@@ -2200,11 +2200,11 @@ gwyden - Hertz - karimawii
     <comment>Context: Status when local history saving is disabled.</comment>
   </data>
   <data name="window_history_upload_on" xml:space="preserve">
-    <value>Загрузка гісторыі</value>
+    <value>Запампоўка гісторыі</value>
     <comment>Context: Status when history upload is enabled.</comment>
   </data>
   <data name="window_history_upload_off" xml:space="preserve">
-    <value>Загрузка гісторыі выключана</value>
+    <value>Запампоўка гісторыі выключана</value>
     <comment>Context: Status when history upload is disabled.</comment>
   </data>
   <data name="window_history_url_copied" xml:space="preserve">
@@ -2224,7 +2224,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Blocklist status with filter and cap; {0}=visible {1}=total.</comment>
   </data>
   <data name="window_blocklist_filter_matches" xml:space="preserve">
-    <value>{0} супадзенняў з {1}</value>
+    <value>{0} супадзення(ў) з {1}</value>
     <comment>Context: Blocklist filtered status; {0}=matches {1}=total.</comment>
   </data>
   <data name="window_blocklist_spotify_not_connected" xml:space="preserve">
@@ -2256,7 +2256,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Message after resolving artist IDs; {0} = count.</comment>
   </data>
   <data name="window_blocklist_refresh_failed" xml:space="preserve">
-    <value>Не ўдалося абнавіць ID выканаўцаў. Гл. логі.</value>
+    <value>Не ўдалося абнавіць ID выканаўцаў. Для падрабязнасцяў праверце журнал.</value>
     <comment>Context: Dialog when refreshing artist IDs fails.</comment>
   </data>
   <data name="window_settings_main_account" xml:space="preserve">
@@ -2276,11 +2276,11 @@ gwyden - Hertz - karimawii
     <comment>Context: Dialog title for CSV column detection.</comment>
   </data>
   <data name="window_settings_detected_columns" xml:space="preserve">
-    <value>Вызначана слупкоў: {0}. Супастаўленне захавана.</value>
+    <value>Знойдзена слупкоў: {0}. Супастаўленне захавана.</value>
     <comment>Context: Status after CSV column detection; {0} = column count.</comment>
   </data>
   <data name="window_settings_detect_failed" xml:space="preserve">
-    <value>Знасці не атрымалася.</value>
+    <value>Знайсці не атрымалася.</value>
     <comment>Context: Status when CSV column detection fails.</comment>
   </data>
   <data name="window_settings_detect_csv_error" xml:space="preserve">
@@ -2288,19 +2288,19 @@ gwyden - Hertz - karimawii
     <comment>Context: Dialog body when CSV cannot be loaded for column detect.</comment>
   </data>
   <data name="window_settings_artist_sync_title" xml:space="preserve">
-    <value>Сінхранізацыя блокліста</value>
+    <value>Сінхранізацыя блокліста артыстаў</value>
     <comment>Context: Dialog title for artist blocklist sync results.</comment>
   </data>
   <data name="window_settings_artist_sync_failed" xml:space="preserve">
-    <value>Сінхранізацыя не ўдалася. Гл. логі.</value>
+    <value>Сінхранізацыя не ўдалася. Для падрабязнасцяў праверце журнал.</value>
     <comment>Context: Dialog when manual artist blocklist sync fails.</comment>
   </data>
   <data name="window_settings_cloud_need_api_key" xml:space="preserve">
-    <value>Увядзіце ключ API Songify.</value>
+    <value>Калі ласка, увядзіце ключ API Songify.</value>
     <comment>Context: Cloud sync validation error.</comment>
   </data>
   <data name="window_settings_cloud_need_twitch" xml:space="preserve">
-    <value>Увайдзіце ва ўл.заіс Twitch.</value>
+    <value>Увайдзіце ва ўл.запіс Twitch.</value>
     <comment>Context: Cloud sync validation error when Twitch is not linked.</comment>
   </data>
   <data name="window_settings_cloud_saved" xml:space="preserve">
@@ -2308,11 +2308,11 @@ gwyden - Hertz - karimawii
     <comment>Context: Cloud sync success message.</comment>
   </data>
   <data name="window_settings_cloud_unauthorized" xml:space="preserve">
-    <value>Няма доступу. Праверце API-токен.</value>
+    <value>Няма доступу. Праверце ваш API-токен.</value>
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Доступ забаронены. Толькі для удзельнікаў Ko-Fi.</value>
+    <value>Доступ забаронены. Функцыянал даступны толькі чальцам Ko-Fi.</value>
     <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
@@ -2320,7 +2320,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Cloud sync HTTP 500 message.</comment>
   </data>
   <data name="window_settings_reset_confirm" xml:space="preserve">
-    <value>Скінуць усе налады?</value>
+    <value>Вы ўпэўнены, што жадаеце скінуць усе налады?</value>
     <comment>Context: Confirm dialog before resetting all settings.</comment>
   </data>
   <data name="window_settings_folder_save_config" xml:space="preserve">
@@ -2340,7 +2340,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Folder browser for song output text file path.</comment>
   </data>
   <data name="uc_psa_issued" xml:space="preserve">
-    <value>Апублікавана:</value>
+    <value>Выдана:</value>
     <comment>Context: Label prefix for PSA issue date.</comment>
   </data>
   <data name="uc_psa_severity" xml:space="preserve">
@@ -2356,11 +2356,11 @@ gwyden - Hertz - karimawii
     <comment>Context: Label for volume-set bot response field in command editor.</comment>
   </data>
   <data name="window_manualtwitch_title_main" xml:space="preserve">
-    <value>Прывязка Twitch: Асноўны ўл.запіс</value>
+    <value>Прывязванне Twitch: Асноўны ўл.запіс</value>
     <comment>Context: Manual Twitch login window title for broadcaster/main account.</comment>
   </data>
   <data name="window_manualtwitch_title_bot" xml:space="preserve">
-    <value>Прывязка Twitch: Ул.запіс бота</value>
+    <value>Прывязванне Twitch: Ул.запіс бота</value>
     <comment>Context: Manual Twitch login window title for bot account.</comment>
   </data>
   <data name="window_cloudimport_permission_warning" xml:space="preserve">
@@ -2368,7 +2368,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Banner title when cloud import widens Twitch command permissions.</comment>
   </data>
   <data name="window_cloudimport_permission_body" xml:space="preserve">
-    <value>Гэты імпарт пашырае кола карыстальнікаў некаторых каманд Twitch ці заказаў трэкаў:</value>
+    <value>Гэты імпарт пашырае кола карыстальнікаў, хто можа выкарыстоўваць некаторыя каманды Twitch або запыты на песні:</value>
     <comment>Context: Intro line before bullet list of widened permissions on cloud import.</comment>
   </data>
   <data name="window_cloudimport_no_differences" xml:space="preserve">
@@ -2396,7 +2396,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Radio option to import artists from a CSV URL.</comment>
   </data>
   <data name="window_artistimport_no_file" xml:space="preserve">
-    <value>Файл не выбраны</value>
+    <value>Файл не абраны</value>
     <comment>Context: Placeholder when no CSV file is chosen for artist import.</comment>
   </data>
   <data name="window_artistimport_load_csv" xml:space="preserve">
@@ -2408,7 +2408,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Optional Spotify id column mapping on artist import.</comment>
   </data>
   <data name="window_artistimport_preview" xml:space="preserve">
-    <value>ПАПЯРЭДНІ ПРАГЛЯД</value>
+    <value>ПЕРАДПРАГЛЯД</value>
     <comment>Context: Section header for artist import CSV preview list.</comment>
   </data>
   <data name="window_artistimport_no_csv" xml:space="preserve">
@@ -2416,7 +2416,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Status when artist import has no CSV loaded yet.</comment>
   </data>
   <data name="window_history_migrate_title" xml:space="preserve">
-    <value>Updating history</value>
+    <value>Абнаўленне гісторыі</value>
     <comment>Context: Title of progress dialog while converting legacy history.shr to YAML.</comment>
   </data>
   <data name="window_history_migrate_body" xml:space="preserve">
@@ -2424,13 +2424,13 @@ gwyden - Hertz - karimawii
     <comment>Context: Body text on history.shr to history.yaml migration progress dialog.</comment>
   </data>
   <data name="window_settings_spotify_sr_userlevel_explicit" xml:space="preserve">
-    <value>Узроўні карыстальнікаў, якім дазволена запытваць песні нецэнзурнага характару</value>
+    <value>Узроўні карыстальнікаў, якія маюць дазвол на песні нецэнзурнага характару</value>
   </data>
   <data name="window_settings_spotify_sr_user_levels_explicit" xml:space="preserve">
-    <value>Узроўні карыстальнікаў (адкрытае змесціва)</value>
+    <value>Узроўні карыстальнікаў (нецэнзурны змест)</value>
   </data>
   <data name="window_botresponses_cmd_skippoll" xml:space="preserve">
-    <value>Пачынае апытванне Twitch з прапускам бягучай песні</value>
+    <value>Пачынае апытванне Twitch за пропуск бягучай песні</value>
   </data>
   <data name="window_botresponses_cmd_playlist" xml:space="preserve">
     <value>Паказвае бягучы плэйліст</value>
@@ -2448,25 +2448,25 @@ gwyden - Hertz - karimawii
     <value>Якім плэерам вы карыстаецеся?</value>
   </data>
   <data name="setup_player_body" xml:space="preserve">
-    <value>Большасць людзей карыстаюцца Spotify. Вы можаце пераключыцца на яго пазней на галоўным экране.</value>
+    <value>Spotify і Pear Desktop могуць прымаць запыты на песні. Іншыя крыніцы толькі абнаўляюць інфармацыю "Цяпер прайграецца". Вы зможаце змяніць гэта пазней з галоўнага экрана.</value>
   </data>
   <data name="setup_spotify_title" xml:space="preserve">
     <value>Падключыце Spotify</value>
   </data>
   <data name="setup_spotify_body" xml:space="preserve">
-    <value>Стварыце праграму Spotify Developer, устаўце сюды ідэнтыфікатар кліента, а затым прывяжыце свой уліковы запіс. Кнопка даведкі адкрывае кіраўніцтва па наладцы.</value>
+    <value>Стварыце праграму Spotify Developer, устаўце сюды ID кліента, а затым прывяжыце свой уліковы запіс. Кнопка даведкі адкрывае кіраўніцтва па наладцы.</value>
   </data>
   <data name="setup_spotify_help_tooltip" xml:space="preserve">
-    <value>Адкрыйце кіраўніцтва па наладзе Spotify</value>
+    <value>Адкрыць кіраўніцтва па наладцы Spotify</value>
   </data>
   <data name="setup_spotify_open_guide" xml:space="preserve">
-    <value>Як атрымаць ідэнтыфікатар кліента</value>
+    <value>Як атрымаць ID кліента</value>
   </data>
   <data name="setup_spotify_linked" xml:space="preserve">
-    <value>Звязана як {0}</value>
+    <value>Прывязана як {0}</value>
   </data>
   <data name="setup_spotify_linked_unknown" xml:space="preserve">
-    <value>Звязана</value>
+    <value>Прывязана</value>
   </data>
   <data name="setup_spotify_not_linked" xml:space="preserve">
     <value>Пакуль не падключана. Вы можаце зрабіць гэта пазней у наладах.</value>
@@ -2478,10 +2478,10 @@ gwyden - Hertz - karimawii
     <value>Прывяжыце свой уліковы запіс стрымера, калі хочаце атрымліваць запыты на песні ў чаце. Прапусціце гэта, калі вам патрэбна толькі накладка "Цяпер прайграецца". Уліковы запіс бота можна дадаць пазней у наладах.</value>
   </data>
   <data name="setup_twitch_linked" xml:space="preserve">
-    <value>Звязана як {0}</value>
+    <value>Прывязана як {0}</value>
   </data>
   <data name="setup_twitch_linked_unknown" xml:space="preserve">
-    <value>Уліковы запіс Twitch звязаны.</value>
+    <value>Уліковы запіс Twitch прывязаны.</value>
   </data>
   <data name="setup_twitch_not_linked" xml:space="preserve">
     <value>Неабавязкова, калі вам патрэбна толькі накладка "Цяпер прайграецца".</value>
@@ -2520,10 +2520,10 @@ gwyden - Hertz - karimawii
     <value>Пачатак працы</value>
   </data>
   <data name="setup_checklist_body" xml:space="preserve">
-    <value>Завершыце іх, каб Songify мог паказваць бягучую песню і прымаць запыты.</value>
+    <value>Выканайце гэтыя дзенні, каб Songify мог паказваць бягучую песню, прымаць запыты і кіраваць вашай накладкай.</value>
   </data>
   <data name="setup_checklist_dismiss" xml:space="preserve">
-    <value>Закрыць</value>
+    <value>Адхіліць</value>
   </data>
   <data name="setup_checklist_go" xml:space="preserve">
     <value>Перайсці</value>
@@ -2574,7 +2574,7 @@ gwyden - Hertz - karimawii
     <value>Кансоль знаходзіцца ў іншым акне</value>
   </data>
   <data name="window_console_detached_body" xml:space="preserve">
-    <value>Журнал адкрыты ў асобным акне, таму вы можаце праглядаць яго, пакуль карыстаецеся астатнімі праграмамі Songify. Закрыйце гэта акно, каб вярнуць кансоль сюды.</value>
+    <value>Журнал адкрыты ў асобным акне, таму вы можаце праглядаць яго, пакуль карыстаецеся іншай часткай Songify. Закрыйце гэта акно, каб вярнуць кансоль назад.</value>
   </data>
   <data name="window_console_show_window" xml:space="preserve">
     <value>Паказаць акно</value>
@@ -2586,102 +2586,102 @@ gwyden - Hertz - karimawii
     <value>Токен API Songify</value>
   </data>
   <data name="setup_token_body" xml:space="preserve">
-    <value>Для такіх вэб-сэрвісаў, як загрузка бягучай песні і чарга запытаў, патрабуецца токен API Songify. Увайдзіце ў songify.rocks з дапамогай свайго ўліковага запісу Twitch, стварыце токен, а затым устаўце яго сюды. Той жа токен разблакуе Прэміяльныя функцыі, такія як падсумоўванне, статыстыка і воблачная сінхранізацыя пасля падлучэння Ko-fi.</value>
+    <value>Для такіх вэб-сэрвісаў, як загрузка бягучай песні і чарга запытаў, патрабуецца токен API Songify. Увайдзіце ў songify.rocks з дапамогай свайго ўліковага запісу Twitch, стварыце токен, а затым устаўце яго сюды. Той жа токен разблакуе функцыі Прэміум-падпіскі, такія як падсумоўванне, статыстыка і воблачная сінхранізацыя пасля падлучэння Ko-fi.</value>
   </data>
   <data name="setup_token_get" xml:space="preserve">
     <value>Атрымаць токен</value>
   </data>
   <data name="setup_token_missing" xml:space="preserve">
-    <value>Токена пакуль няма. Даныя песень і загрузка чаргі не будуць працаваць, пакуль вы яго не дадасце.</value>
+    <value>Токена пакуль няма. Запампоўка даных песень і чаргі не будуць працаваць, пакуль вы яго не дадасце.</value>
   </data>
   <data name="setup_token_present" xml:space="preserve">
     <value>Токен захаваны. Калі вам трэба яго замяніць, стварыце новы на старонцы вашага ўліковага запісу.</value>
   </data>
   <data name="window_settings_songify_api_token_help" xml:space="preserve">
-    <value>Патрабуецца для вэб-даных аб песнях і чаргі запытаў. Той жа токен разблакуе Прэміўм (падсумоўванне, статыстыка і воблачная сінхранізацыя) пасля падлучэння Ko-fi на старонцы вашага ўліковага запісу.</value>
+    <value>Патрабуецца для вэб-даных аб песнях і чаргі запытаў. Той жа токен разблакуе Прэміум-падпіску (падсумоўванне, статыстыка і воблачная сінхранізацыя) пасля падлучэння Ko-fi на старонцы вашага ўліковага запісу.</value>
   </data>
   <data name="window_overview_api_token_title" xml:space="preserve">
     <value>Патрабуецца токен API Songify</value>
   </data>
   <data name="window_overview_api_token_body" xml:space="preserve">
-    <value>Дадзеныя песні і чарга запытаў не будуць абнаўляцца ў інтэрнэце, пакуль вы не дадасце токен API Songify. Увайдзіце ў songify.rocks праз Twitch, стварыце токен на старонцы вашага ўліковага запісу, а затым імпартуйце яго ў Налады → Канфігурацыя.</value>
+    <value>Даныя песні і чарга запытаў не будуць абнаўляцца ў інтэрнэце, пакуль вы не дадасце токен API Songify. Увайдзіце ў songify.rocks праз Twitch, стварыце токен на старонцы вашага ўліковага запісу, а затым імпартуйце яго ў Налады → Канфігурацыя.</value>
   </data>
   <data name="window_settings_integration_min_msg_for_announce" xml:space="preserve">
     <value>Мінімальная колькасць паведамленняў паміж анонсамі песень</value>
   </data>
   <data name="cta_premium" xml:space="preserve">
-    <value>Songify Premium</value>
+    <value>Прэміум-падпіска Songify</value>
   </data>
   <data name="cta_premium_tooltip" xml:space="preserve">
     <value>Падсумоўванне трансляцыі, топ песень, воблачная сінхранізацыя і дадатковыя віджэты. Songify усё яшчэ застаецца бясплатным.</value>
   </data>
   <data name="window_main_title_premium" xml:space="preserve">
-    <value>Songify Premium</value>
+    <value>Прэміум-падпіска Songify</value>
   </data>
   <data name="window_main_status_premium" xml:space="preserve">
-    <value>Прэміум</value>
+    <value>Прэміум-падпіска</value>
   </data>
   <data name="window_main_status_premium_active" xml:space="preserve">
-    <value>Падпіска Songify Premium актыўная. Націсніце, каб адкрыць агляд трансляцыі.</value>
+    <value>Прэміум-падпіска Songify актываваная. Націсніце, каб адкрыць падсумоўванне трансляцыі.</value>
   </data>
   <data name="window_main_status_premium_inactive" xml:space="preserve">
-    <value>Падпіска Songify Premium неактыўная. Націсніце, каб разблакіраваць агляд, статыстыку і сінхранізацыю з воблакам.</value>
+    <value>Прэміум-падпіска Songify неактываваная. Націсніце, каб разблакіраваць падсумоўванне, статыстыку і воблачную сінхранізацыю.</value>
   </data>
   <data name="window_main_status_premium_no_token" xml:space="preserve">
-    <value>Дадайце токен Songify, а затым разблакуйце Premium на старонцы вашага ўліковага запісу.</value>
+    <value>Дадайце токен Songify, а затым разблакуйце Прэміум-падпіску на старонцы вашага ўліковага запісу.</value>
   </data>
   <data name="window_main_status_premium_invalid" xml:space="preserve">
     <value>Гэты токен Songify несапраўдны. Згенеруйце новы на songify.rocks.</value>
   </data>
   <data name="window_main_status_premium_unknown" xml:space="preserve">
-    <value>Праверка статусу Songify Premium…</value>
+    <value>Праверка статусу Прэміум-падпіскі Songify…</value>
   </data>
   <data name="window_about_premium_active" xml:space="preserve">
-    <value>Прэміум-ул.запіс Songify актыўны</value>
+    <value>Прэміум-падпіска Songify актываваная</value>
   </data>
   <data name="window_about_premium_inactive" xml:space="preserve">
-    <value>Прэміум-падпіска неактыўная — разблакуйце агляд, статыстыку і сінхранізацыю з воблакам</value>
+    <value>Прэміум-падпіска неактыўная — разблакуйце падсумоўванне, статыстыку і воблачную сінхранізацыю</value>
   </data>
   <data name="window_about_premium_invalid" xml:space="preserve">
     <value>Токен Songify несапраўдны</value>
   </data>
   <data name="window_about_premium_no_token" xml:space="preserve">
-    <value>Дадайце токен Songify, каб уключыць Premium</value>
+    <value>Дадайце токен Songify, каб уключыць Прэміум-падпіску</value>
   </data>
   <data name="window_history_open_recap" xml:space="preserve">
-    <value>Кароткі змест трансляцыі</value>
+    <value>Падсумоўванне трансляцыі</value>
   </data>
   <data name="window_history_open_recap_tooltip" xml:space="preserve">
-    <value>Адкрыйце штодзённы агляд запытаў на songify.rocks. Поўны спіс песень уключаны ў Premium.</value>
+    <value>Адкрыйце штодзённае падсумоўванне запытаў на songify.rocks. Поўны спіс песень уключаны ў Прэміум-падпіску.</value>
   </data>
   <data name="window_settings_cloud_premium_hint" xml:space="preserve">
-    <value>Сінхранізацыя з воблакам уключана ў Songify Premium.</value>
+    <value>Воблачная сінхранізацыя уключана ў Прэміум-падпіску Songify.</value>
   </data>
   <data name="window_settings_cloud_forbidden_premium" xml:space="preserve">
-    <value>Сінхранізацыя з воблакам уключана ў Songify Premium.</value>
+    <value>Воблачная сінхранізацыя уключана ў Прэміум-падпіску Songify.</value>
   </data>
   <data name="setup_token_premium_active" xml:space="preserve">
-    <value>Токен захаваны. Прэміум-падпіска Songify актыўная.</value>
+    <value>Токен захаваны. Прэміум-падпіска Songify актывавана.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Токен захаваны. Дадайце спасылку на Ko-fi на старонцы вашага ўліковага запісу, каб разблакіраваць агляд, статыстыку і сінхранізацыю з воблакам.</value>
+    <value>Токен захаваны. Прывяжыце Ko-fi на старонцы вашага ўліковага запісу, каб разблакіраваць падсумоўванне, статыстыку і воблачную сінхранізацыю.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Гэты токен несапраўдны. Згенеруйце новы на старонцы вашага ўліковага запісу.</value>
   </data>
   <data name="window_settings_system_hide_premium_reminder" xml:space="preserve">
-    <value>Схаваць прэміум-напаміны</value>
+    <value>Схаваць напаміны аб Прэміуме</value>
   </data>
   <data name="window_settings_premium_reminder_title" xml:space="preserve">
-    <value>Прэміум-напаміны выключаны</value>
+    <value>Напаміны аб Прэміуме выключаны</value>
   </data>
   <data name="window_settings_premium_reminder_body" xml:space="preserve">
-    <value>Songify застаецца бясплатным. Прэміум-версія дадае падсумоўванне трансляцыі, спіс лепшых песень і аўтараў запытаў, сінхранізацыю з воблакам і дадатковыя віджэты.
+    <value>Songify застаецца бясплатным. Прэміум-версія дадае падсумоўванне трансляцыі, спіс лепшых песень і аўтараў запытаў, воблачную сінхранізацыю і дадатковыя віджэты.
 
 Вы ўсё яшчэ можаце адкрыць Songify Premium у любы час з Галоўнай старонкі або з раздзела "Аб праграме".</value>
   </data>
   <data name="setup_token_refresh_premium" xml:space="preserve">
-    <value>Абнавіць статус прэміум-класа</value>
+    <value>Абнавіць статус Прэміума</value>
   </data>
   <data name="setup_token_checking_premium" xml:space="preserve">
     <value>Праверка статусу Songify Premium…</value>
@@ -2690,7 +2690,7 @@ gwyden - Hertz - karimawii
     <value>Songify застаецца бясплатным</value>
   </data>
   <data name="window_main_premium_reminder_body" xml:space="preserve">
-    <value>Прэміум-клас дадае агляд трансляцый, лепшыя песні і аўтараў запытаў, сінхранізацыю з воблакам і дадатковыя віджэты. Разблакуйце яго ў любы час на галоўнай старонцы або ў раздзеле "Пра праграму".</value>
+    <value>Прэміум дадае падсумоўванне трансляцый, спіс лепшых песень і аўтараў запытаў, воблачную сінхранізацыю і дадатковыя віджэты. Разблакуйце яго ў любы час на галоўнай старонцы або ў раздзеле "Аб праграме".</value>
   </data>
   <data name="window_main_premium_reminder_dismiss" xml:space="preserve">
     <value>Гэтае паведамленне знікне праз {0} секунд</value>
@@ -2705,7 +2705,7 @@ gwyden - Hertz - karimawii
     <value>Маштаб інтэрфейсу</value>
   </data>
   <data name="window_settings_appearance_scale_hint" xml:space="preserve">
-    <value>Павялічце праграму на 1440p і 4K.</value>
+    <value>Павялічыць раздзяляльнасць праграмы да 1440p і 4K.</value>
   </data>
   <data name="window_settings_appearance_scale_value" xml:space="preserve">
     <value>{0}%</value>
@@ -2779,7 +2779,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Message in blocklist dialog when search returns multiple songs.</comment>
   </data>
   <data name="window_blocklist_search_song_placeholder" xml:space="preserve">
-    <value>Знайдзіце песню са Spotify альбо ўстаўце спасылку…</value>
+    <value>Знайдзіце песню у Spotify альбо ўстаўце спасылку…</value>
     <comment>Context: Placeholder in song search box (Spotify lookup or track URL).</comment>
   </data>
   <data name="window_settings_appearance_nav_left_minimal" xml:space="preserve">
@@ -2980,13 +2980,13 @@ gwyden - Hertz - karimawii
     <comment>Context: Setup wizard step title for OBS browser widgets.</comment>
   </data>
   <data name="setup_widget_body" xml:space="preserve">
-    <value>Браўзерны віджэт паказвае бягучую песню ў OBS з большай колькасцю стылістычных налад, чым тэкставы файл. Віджэты (таксама Прэміяльныя) размешчаны ў songify.rocks. Прапусціце гэта, калі вам патрэбна толькі Songify.txt.</value>
+    <value>Браўзерны віджэт паказвае бягучую песню ў OBS з большай колькасцю стылістычных налад, чым тэкставы файл. Віджэты (таксама з Прэміум-падпіскі) размешчаны ў songify.rocks. Прапусціце гэта, калі вам патрэбна толькі Songify.txt.</value>
   </data>
   <data name="setup_widget_use" xml:space="preserve">
     <value>Ужыць віджэт-накладку</value>
   </data>
   <data name="setup_widget_use_hint" xml:space="preserve">
-    <value>Уключае загрузку песень, каб размешчаныя віджэты маглі адсочваць, што зараз грае. Вы зможаце змяніць гэта пазней у Налады→ Вывад.</value>
+    <value>Уключае запампоўку песень, каб размешчаныя віджэты маглі адсочваць, што зараз грае. Вы зможаце змяніць гэта пазней у Налады→ Вывад.</value>
   </data>
   <data name="setup_later_rewards" xml:space="preserve">
     <value>Налады → Узнагароды — каб абраць узнагароды, узнагароды-пропуск і ўмовы вяртання.</value>
@@ -3007,7 +3007,7 @@ gwyden - Hertz - karimawii
     <value>Просты наладжвальнік базавай панэлі "Цяпер прайграецца".</value>
   </data>
   <data name="setup_widget_gallery_hint" xml:space="preserve">
-    <value>Уся галерэя, уключаючы Прэміяльныя віджэты. Скапіюйце URL-адрас у «Browser source» OBS.</value>
+    <value>Уся галерэя, уключаючы віджэты з Прэміум-падпіскі. Скапіюйце URL-адрас у «Browser source» OBS.</value>
   </data>
   <data name="setup_widget_local" xml:space="preserve">
     <value>Лакальная накладка (вэб-сервер)</value>
@@ -3102,7 +3102,7 @@ gwyden - Hertz - karimawii
     <value>Праграма</value>
   </data>
   <data name="window_help_updates_desc" xml:space="preserve">
-    <value>Спампаваць найноўшы выпуск Songify.</value>
+    <value>Спампаваць найноўшае абнаўленне Songify.</value>
   </data>
   <data name="window_settings_appearance_overrule_min_width_hint" xml:space="preserve">
     <value>Дазваляе рабіць памер галоўнага акна менш чым 900х500. Гэта можа паламаць макет карыстальніцкага інтэрфейсу.</value>
@@ -3170,5 +3170,13 @@ gwyden - Hertz - karimawii
   <data name="window_titlebar_up_next" xml:space="preserve">
     <value>Далей: {0}</value>
     <comment>Context: Compact title-bar next-song line. {0} is artist — title.</comment>
+  </data>
+  <data name="player_group_song_requests" xml:space="preserve">
+    <value>Запыты песень</value>
+    <comment>Context: Player dropdown group for sources that can enqueue song requests.</comment>
+  </data>
+  <data name="player_group_now_playing" xml:space="preserve">
+    <value>Толькі "Цяпер прайграецца"</value>
+    <comment>Context: Player dropdown group for overlay-only sources.</comment>
   </data>
 </root>
