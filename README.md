@@ -8,16 +8,12 @@ Now playing overlays, Twitch chat integration, and song requests for streamers.
 [![Active users](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.songify.rocks%2Fv2%2Fstats&query=%24.monthly_users&label=active%20users&color=%2316a349)](https://songify.rocks)
 
 [![Build](https://img.shields.io/github/actions/workflow/status/songify-rocks/Songify/build.yml?branch=master&label=build)](https://github.com/songify-rocks/Songify/actions/workflows/build.yml)
-[![Windows](https://img.shields.io/badge/platform-windows-blue?&color=%2316a349)](https://github.com/songify-rocks/Songify/releases/latest)
-[![C#](https://img.shields.io/badge/written_in-C%23-blue?&color=%2316a349)](https://github.com/songify-rocks/Songify)
-[![GitHub Downloads](https://img.shields.io/github/downloads/songify-rocks/Songify/total?&color=%2316a349)](https://github.com/songify-rocks/Songify/releases)
+[![Release](https://img.shields.io/github/v/release/songify-rocks/Songify?label=release&color=%2316a349)](https://github.com/songify-rocks/Songify/releases/latest)
+[![GitHub Downloads](https://img.shields.io/github/downloads/songify-rocks/Songify/total?color=%2316a349)](https://github.com/songify-rocks/Songify/releases)
 
-[![GitHub Repo stars](https://img.shields.io/github/stars/songify-rocks/Songify?&color=%2316a349)](https://github.com/songify-rocks/Songify/stargazers)
-[![GitHub contributors](https://img.shields.io/github/contributors/songify-rocks/Songify?&color=%2316a349)](https://github.com/songify-rocks/Songify/graphs/contributors)
-[![License](https://img.shields.io/badge/LICENSE-GPLv3-blue?&color=%2316a349)](https://github.com/songify-rocks/Songify/blob/master/LICENSE)
-
-[![Discord](https://img.shields.io/discord/117032577977679873?&logo=discord&logoColor=%23ffffff&color=%2316a349)](https://discord.gg/H8nd4T4)
-[![Support on Ko-Fi](https://img.shields.io/badge/support_on-Ko--Fi-blue?&logo=kofi&logoColor=%23ffffff&color=%2316a349)](https://ko-fi.com/S6S167PLK)
+[![Discord](https://img.shields.io/discord/117032577977679873?logo=discord&logoColor=%23ffffff&color=%2316a349)](https://discord.gg/H8nd4T4)
+[![Support on Ko-Fi](https://img.shields.io/badge/support_on-Ko--Fi-blue?logo=kofi&logoColor=%23ffffff&color=%2316a349)](https://ko-fi.com/S6S167PLK)
+[![License](https://img.shields.io/badge/LICENSE-GPLv3-blue?color=%2316a349)](https://github.com/songify-rocks/Songify/blob/master/LICENSE)
 
 ---
 
