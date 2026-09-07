@@ -2399,7 +2399,13 @@ Das ist nicht Songify Premium und nicht das in Songify verknüpfte Wiedergabe-Ko
     <value>Welchen Player benutzt du?</value>
   </data>
   <data name="setup_player_body" xml:space="preserve">
-    <value>Die meisten Leute nutzen Spotify. Du kannst das später vom Startbildschirm aus ändern.</value>
+    <value>Spotify und Pear Desktop können Song Requests annehmen. Andere Quellen aktualisieren nur den Now-Playing-Text. Du kannst das später vom Startbildschirm aus ändern.</value>
+  </data>
+  <data name="player_group_song_requests" xml:space="preserve">
+    <value>Song Requests</value>
+  </data>
+  <data name="player_group_now_playing" xml:space="preserve">
+    <value>Nur Now Playing</value>
   </data>
   <data name="setup_spotify_title" xml:space="preserve">
     <value>Verbinde dich mit Spotify</value>

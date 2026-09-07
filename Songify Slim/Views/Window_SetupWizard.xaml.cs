@@ -10,6 +10,7 @@ using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.Twitch;
+using Songify_Slim.Util.UI;
 using Songify_Slim.Views.WPFUI.Pages;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using static Songify_Slim.Util.General.Enums;
@@ -119,14 +120,7 @@ public partial class WindowSetupWizard
     private void BindPlayerCombo()
     {
         _playerComboReady = false;
-        var items = Enum.GetValues(typeof(PlayerType))
-            .Cast<PlayerType>()
-            .Select(p => new { Value = p, Name = EnumHelper.GetDescription(p) })
-            .ToList();
-        CbxPlayer.ItemsSource = items;
-        CbxPlayer.DisplayMemberPath = "Name";
-        CbxPlayer.SelectedValuePath = "Value";
-        CbxPlayer.SelectedValue = Settings.Player;
+        PlayerComboBinder.Bind(CbxPlayer, Settings.Player);
         _playerComboReady = true;
     }
 
@@ -314,6 +308,7 @@ public partial class WindowSetupWizard
             return;
         LocalizationHelper.Apply(code);
         BindLanguageCombo();
+        BindPlayerCombo();
         ShowCurrentStep();
     }
 
@@ -334,6 +329,9 @@ public partial class WindowSetupWizard
         {
             Logger.LogExc(ex);
         }
+
+        if (previous == PlayerType.BrowserCompanion)
+            BindPlayerCombo();
 
         RebuildSteps(keepCurrent: true);
         ShowCurrentStep();

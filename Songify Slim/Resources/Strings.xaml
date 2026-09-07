@@ -186,7 +186,9 @@ Please send any questions about this EULA to info@songify.rocks.</system:String>
     <system:String x:Key="setup_welcome_title">Welcome to Songify</system:String>
     <system:String x:Key="setup_welcome_body">This short guide links your music source, optional Twitch song requests, and a stream overlay (text file or widget). Skip anything and change it later in Settings or from Home.</system:String>
     <system:String x:Key="setup_player_title">Which player do you use?</system:String>
-    <system:String x:Key="setup_player_body">Most people use Spotify. You can switch this later from the Home screen.</system:String>
+    <system:String x:Key="setup_player_body">Spotify and Pear Desktop can take song requests. Other sources only update now playing. You can switch this later from the Home screen.</system:String>
+    <system:String x:Key="player_group_song_requests">Song requests</system:String>
+    <system:String x:Key="player_group_now_playing">Now playing only</system:String>
     <system:String x:Key="setup_spotify_title">Connect Spotify</system:String>
     <system:String x:Key="setup_spotify_body">Create a Spotify Developer app, paste the Client ID here, then link your account. The help button opens the setup guide.</system:String>
     <system:String x:Key="setup_spotify_help_tooltip">Open the Spotify setup guide</system:String>

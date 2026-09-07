@@ -66,10 +66,14 @@
                 <ComboBox
                     x:Name="CbxPlayer"
                     Grid.Column="1"
-                    MinWidth="190"
+                    MinWidth="220"
                     Margin="0,0,8,0"
                     VerticalAlignment="Center"
-                    SelectionChanged="CbxPlayer_SelectionChanged" />
+                    SelectionChanged="CbxPlayer_SelectionChanged">
+                    <ComboBox.GroupStyle>
+                        <GroupStyle HeaderTemplate="{StaticResource PlayerComboGroupHeader}" />
+                    </ComboBox.GroupStyle>
+                </ComboBox>
             </Grid>
 
             <!--  Getting started  -->

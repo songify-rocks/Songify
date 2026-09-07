@@ -19,6 +19,14 @@
             <!--  Seeded opaque surfaces; ThemeHandler refreshes these after theme apply.  -->
             <SolidColorBrush x:Key="SongifyOpaqueSurfaceBrush" Color="#FF202020" />
             <SolidColorBrush x:Key="SongifyOpaqueSecondaryBrush" Color="#FF2C2C2C" />
+            <DataTemplate x:Key="PlayerComboGroupHeader">
+                <TextBlock
+                    Margin="8,8,8,2"
+                    FontSize="11"
+                    FontWeight="SemiBold"
+                    Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                    Text="{Binding Name}" />
+            </DataTemplate>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

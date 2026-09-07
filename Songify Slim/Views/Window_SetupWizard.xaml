@@ -96,7 +96,11 @@
                             x:Name="CbxPlayer"
                             MinWidth="260"
                             HorizontalAlignment="Left"
-                            SelectionChanged="CbxPlayer_OnSelectionChanged" />
+                            SelectionChanged="CbxPlayer_OnSelectionChanged">
+                            <ComboBox.GroupStyle>
+                                <GroupStyle HeaderTemplate="{StaticResource PlayerComboGroupHeader}" />
+                            </ComboBox.GroupStyle>
+                        </ComboBox>
                     </StackPanel>
 
                     <!--  Spotify  -->

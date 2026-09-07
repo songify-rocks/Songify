@@ -13,10 +13,12 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.UI;
 using Songify_Slim.Views.WPFUI;
 using Wpf.Ui.Controls;
 using static Songify_Slim.Util.General.Enums;
 using Button = System.Windows.Controls.Button;
+using ComboBox = System.Windows.Controls.ComboBox;
 using TextBlock = System.Windows.Controls.TextBlock;
 
 namespace Songify_Slim.Views.WPFUI.Pages;
@@ -122,10 +124,8 @@ public partial class OverviewPage
             if (!_playerDropdownInitialized || CbxPlayer == null)
                 return;
 
-            if (CbxPlayer.SelectedValue is PlayerType selected && selected == Settings.Player)
-                return;
-
-            CbxPlayer.SelectedValue = Settings.Player;
+            BindPlayerDropdown();
+            _playerDropdownInitialized = true;
         }
 
         if (!Dispatcher.CheckAccess())
@@ -267,20 +267,16 @@ public partial class OverviewPage
         if (_playerDropdownInitialized || CbxPlayer == null)
             return;
 
-        var items = Enum.GetValues(typeof(PlayerType))
-            .Cast<PlayerType>()
-            .Select(p => new
-            {
-                Value = p,
-                Name = EnumHelper.GetDescription(p)
-            })
-            .ToList();
-
-        CbxPlayer.ItemsSource = items;
-        CbxPlayer.DisplayMemberPath = "Name";
-        CbxPlayer.SelectedValuePath = "Value";
-        CbxPlayer.SelectedValue = (PlayerType)Settings.Player;
+        BindPlayerDropdown();
         _playerDropdownInitialized = true;
+    }
+
+    private void BindPlayerDropdown()
+    {
+        bool ready = _playerDropdownInitialized;
+        _playerDropdownInitialized = false;
+        PlayerComboBinder.Bind(CbxPlayer, Settings.Player);
+        _playerDropdownInitialized = ready;
     }
 
     private async void CbxPlayer_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -299,6 +295,12 @@ public partial class OverviewPage
 
         // Apply new fetch interval/source immediately (also enables Pear WebSocket auto-connect).
         await Util.Songify.AppFetchService.ApplyPlayerSourceAsync(previous, selected);
+
+        if (previous == PlayerType.BrowserCompanion)
+        {
+            BindPlayerDropdown();
+            _playerDropdownInitialized = true;
+        }
 
         // Force refresh visuals (cover might change source semantics).
         _lastCoverUrl = null;

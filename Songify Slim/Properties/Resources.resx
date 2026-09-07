@@ -2751,7 +2751,15 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <value>Which player do you use?</value>
   </data>
   <data name="setup_player_body" xml:space="preserve">
-    <value>Most people use Spotify. You can switch this later from the Home screen.</value>
+    <value>Spotify and Pear Desktop can take song requests. Other sources only update now playing. You can switch this later from the Home screen.</value>
+  </data>
+  <data name="player_group_song_requests" xml:space="preserve">
+    <value>Song requests</value>
+    <comment>Context: Player dropdown group for sources that can enqueue song requests.</comment>
+  </data>
+  <data name="player_group_now_playing" xml:space="preserve">
+    <value>Now playing only</value>
+    <comment>Context: Player dropdown group for overlay-only sources.</comment>
   </data>
   <data name="setup_spotify_title" xml:space="preserve">
     <value>Connect Spotify</value>
