@@ -495,7 +495,7 @@
     <value>Spotify не падключаны</value>
   </data>
   <data name="window_settings_integration_refund_wrong_player_requested" xml:space="preserve">
-    <value>Песня для іншага гульца</value>
+    <value>Песня прызначана для іншага гульца</value>
   </data>
   <data name="window_settings_integration_refund_song_not_available" xml:space="preserve">
     <value>Песня недаступная ў рэгіёне</value>
@@ -3150,5 +3150,25 @@ gwyden - Hertz - karimawii
   <data name="window_settings_appearance_accent_system_hint" xml:space="preserve">
     <value>Выкарыстоўваць акцэнтны колер Windows</value>
     <comment>Context: Subtitle under the System accent button in the color popup.</comment>
+  </data>
+  <data name="window_settings_system_open_queue_pop_out" xml:space="preserve">
+    <value>Адкрыць у асобным акне</value>
+    <comment>Context: Nested toggle under Open queue on startup. Opens the detached queue window instead of the Queue page.</comment>
+  </data>
+  <data name="window_queue_pop_out" xml:space="preserve">
+    <value>Адкрыць</value>
+    <comment>Context: Button on Queue page to open the queue in a separate window.</comment>
+  </data>
+  <data name="window_blocklist_search_list" xml:space="preserve">
+    <value>Пошук па гэтым спісе</value>
+    <comment>Context: Placeholder for the sticky search field on the blocklist.</comment>
+  </data>
+  <data name="window_settings_appearance_accent_recent" xml:space="preserve">
+    <value>Нядаўні</value>
+    <comment>Context: Label above the last-used accent color swatches.</comment>
+  </data>
+  <data name="window_titlebar_up_next" xml:space="preserve">
+    <value>Далей: {0}</value>
+    <comment>Context: Compact title-bar next-song line. {0} is artist — title.</comment>
   </data>
 </root>
