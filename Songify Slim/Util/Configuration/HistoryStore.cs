@@ -429,10 +429,76 @@ public static class HistoryStore
         string yaml = Serializer.Serialize(_cache);
         string temp = FilePath + ".tmp";
         File.WriteAllText(temp, yaml);
-        if (File.Exists(FilePath))
-            File.Replace(temp, FilePath, null);
-        else
-            File.Move(temp, FilePath);
+        ReplaceHistoryFile(temp, FilePath);
+    }
+
+    /// <summary>
+    /// Atomic replace when the OS allows it; copy+overwrite if ReplaceFile fails
+    /// (ERROR_UNABLE_TO_REMOVE_REPLACED / AV / OneDrive / FileSystemWatcher).
+    /// </summary>
+    private static void ReplaceHistoryFile(string tempPath, string destPath)
+    {
+        if (File.Exists(destPath))
+        {
+            try
+            {
+                FileAttributes attrs = File.GetAttributes(destPath);
+                if ((attrs & FileAttributes.ReadOnly) != 0)
+                    File.SetAttributes(destPath, attrs & ~FileAttributes.ReadOnly);
+            }
+            catch
+            {
+                // Best-effort; replace/copy still tried below.
+            }
+        }
+
+        const int maxAttempts = 6;
+        int delayMs = 50;
+        for (int attempt = 1; ; attempt++)
+        {
+            try
+            {
+                if (File.Exists(destPath))
+                    File.Replace(tempPath, destPath, destinationBackupFileName: null, ignoreMetadataErrors: true);
+                else
+                    File.Move(tempPath, destPath);
+                return;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                if (attempt < maxAttempts)
+                {
+                    Thread.Sleep(delayMs);
+                    delayMs *= 2;
+                    continue;
+                }
+
+                try
+                {
+                    File.Copy(tempPath, destPath, overwrite: true);
+                    TryDelete(tempPath);
+                    return;
+                }
+                catch (Exception copyEx)
+                {
+                    TryDelete(tempPath);
+                    throw new IOException($"Could not save history to '{destPath}'.", copyEx);
+                }
+            }
+        }
+    }
+
+    private static void TryDelete(string path)
+    {
+        try
+        {
+            if (File.Exists(path))
+                File.Delete(path);
+        }
+        catch
+        {
+            // ignore leftover temp
+        }
     }
 
     private static HistoryDocument Clone(HistoryDocument source)

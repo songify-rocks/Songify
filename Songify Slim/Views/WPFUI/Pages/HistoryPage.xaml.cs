@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views.WPFUI.ViewModels;
@@ -16,6 +17,7 @@ public partial class HistoryPage : Page
 {
     private HistoryViewModel _viewModel;
     private FileSystemWatcher _watcher;
+    private DispatcherTimer _reloadDebounce;
 
     public HistoryPage()
     {
@@ -53,8 +55,17 @@ public partial class HistoryPage : Page
             };
             _watcher.Changed += (_, _) =>
             {
-                System.Threading.Thread.Sleep(500);
-                _viewModel.LoadFromFile();
+                Dispatcher.BeginInvoke(() =>
+                {
+                    _reloadDebounce ??= new DispatcherTimer
+                    {
+                        Interval = TimeSpan.FromMilliseconds(400)
+                    };
+                    _reloadDebounce.Tick -= ReloadHistoryFromDisk;
+                    _reloadDebounce.Tick += ReloadHistoryFromDisk;
+                    _reloadDebounce.Stop();
+                    _reloadDebounce.Start();
+                });
             };
         }
         catch (Exception ex)
@@ -65,8 +76,20 @@ public partial class HistoryPage : Page
 
     private void HistoryPage_Unloaded(object sender, RoutedEventArgs e)
     {
+        if (_reloadDebounce != null)
+        {
+            _reloadDebounce.Stop();
+            _reloadDebounce.Tick -= ReloadHistoryFromDisk;
+            _reloadDebounce = null;
+        }
         _watcher?.Dispose();
         _watcher = null;
+    }
+
+    private void ReloadHistoryFromDisk(object sender, EventArgs e)
+    {
+        _reloadDebounce?.Stop();
+        _viewModel?.LoadFromFile();
     }
 
     private void BtnRecap_Click(object sender, RoutedEventArgs e)
