@@ -120,6 +120,8 @@ internal static class AppActions
             Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
             Logger.Info(LogSource.Twitch, $"Stream is {(Settings.IsLive ? "Live" : "Offline")}");
             AppShellBridge.Current?.SetStatusText(Settings.IsLive ? "Stream is Up!" : "Stream is offline.");
+            if (Settings.IsLive)
+                AppShellBridge.Current?.ClearTwitchCommandsPausedOffline();
             return Settings.IsLive;
         }
         catch (Exception ex)

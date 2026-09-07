@@ -288,11 +288,11 @@
         </Grid>
 
         <!--  Persistent Spotify API / rate-limit banner  -->
-        <Border
-            x:Name="BrdSpotifyPersistentIssue"
-            Grid.Row="1"
-            Margin="12,0,12,8"
-            Padding="12,10"
+        <StackPanel Grid.Row="1">
+            <Border
+                x:Name="BrdSpotifyPersistentIssue"
+                Margin="12,0,12,8"
+                Padding="12,10"
             Background="{DynamicResource ControlFillColorSecondaryBrush}"
             BorderBrush="#CD5C5C"
             BorderThickness="1"
@@ -348,6 +348,50 @@
                     ToolTip="{DynamicResource common_dismiss}" />
             </Grid>
         </Border>
+        <Border
+            x:Name="BrdTwitchCommandsPaused"
+            Margin="12,0,12,8"
+            Padding="12,10"
+            Background="{DynamicResource ControlFillColorSecondaryBrush}"
+            BorderBrush="{DynamicResource AccentFillColorDefaultBrush}"
+            BorderThickness="1"
+            CornerRadius="8"
+            Visibility="Collapsed">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <StackPanel Grid.Column="0">
+                    <TextBlock
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                        Text="{DynamicResource window_twitch_commands_paused_title}"
+                        TextWrapping="Wrap" />
+                    <TextBlock
+                        x:Name="TbTwitchCommandsPausedBody"
+                        Margin="0,4,0,0"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        Text="{DynamicResource window_twitch_commands_paused_body}"
+                        TextWrapping="Wrap" />
+                </StackPanel>
+                <ui:Button
+                    Grid.Column="1"
+                    Width="32"
+                    Height="32"
+                    Margin="8,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Top"
+                    Appearance="Transparent"
+                    Click="BtnTwitchCommandsPausedDismiss_Click"
+                    Content="×"
+                    FontSize="16"
+                    ToolTip="{DynamicResource common_dismiss}" />
+            </Grid>
+        </Border>
+        </StackPanel>
 
         <ui:NavigationView
             x:Name="RootNavigationView"

@@ -1141,6 +1141,9 @@ namespace Songify_Slim.Util.Configuration
 
         public static string WebUserAgent => GetWebua();
         public static string YtmdToken { get => GetYtmdToken(); set => SetYtmdToken(value); }
+
+        /// <summary>Pear Desktop API bearer token (stored as <see cref="YtmdToken"/>).</summary>
+        public static string PearAccessToken { get => GetYtmdToken(); set => SetYtmdToken(value); }
         public static string BotCmdCommandsTrigger { get => GetBotCmdCommandsTrigger(); set => SetBotCmdCommandsTrigger(value); }
         public static string BotRespCommandDisabled { get => GetBotRespCommandDisabled(); set => SetBotRespCommandDisabled(value); }
         public static string BotRespPlayerOwnershipDenied { get => GetBotRespPlayerOwnershipDenied(); set => SetBotRespPlayerOwnershipDenied(value); }

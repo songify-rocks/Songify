@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Songify_Slim.Models.Pear;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Youtube.YTMYHCH;
 using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
@@ -7,9 +8,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
-using YamlDotNet.Core.Tokens;
 using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Songify.Pear
@@ -18,17 +20,22 @@ namespace Songify_Slim.Util.Songify.Pear
     {
         private static readonly HttpClient _httpClient;
 
+        private static readonly SemaphoreSlim AuthLock = new(1, 1);
+
         private const string LogPrefix = "PearApi";
+        private const string AuthClientId = "songify";
+        private const string AuthUrl = "http://127.0.0.1:26538/auth/" + AuthClientId;
+
+        public static bool IsAuthorizationInProgress { get; private set; }
 
         static PearApi()
         {
-            _httpClient = new HttpClient
+            _httpClient = new HttpClient(new PearAuthHandler { InnerHandler = new HttpClientHandler() })
             {
                 // Pear (formerly YTMusic Desktop) API base
-                BaseAddress = new Uri("http://localhost:26538/api/v1/")
+                BaseAddress = new Uri("http://127.0.0.1:26538/api/v1/")
             };
 
-            // Optional: tune this
             _httpClient.Timeout = TimeSpan.FromSeconds(10);
         }
 
@@ -43,7 +50,7 @@ namespace Songify_Slim.Util.Songify.Pear
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.Error(LogSource.Pear, $"HTTP Request failed with status code: {response.StatusCode}");
+                    LogHttpFailure(response.StatusCode);
                     return null;
                 }
 
@@ -72,7 +79,7 @@ namespace Songify_Slim.Util.Songify.Pear
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.Error(LogSource.Pear, $"HTTP Request failed with status code: {response.StatusCode}");
+                    LogHttpFailure(response.StatusCode);
                     return null;
                 }
 
@@ -177,7 +184,7 @@ namespace Songify_Slim.Util.Songify.Pear
                 HttpResponseMessage response = await _httpClient.GetAsync("volume");
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.Error(LogSource.Pear, $"HTTP Request failed with status code: {response.StatusCode}");
+                    LogHttpFailure(response.StatusCode);
                     return -1;
                 }
 
@@ -312,6 +319,89 @@ namespace Songify_Slim.Util.Songify.Pear
                     Ok = false
                 };
             }
+        }
+
+        private static void LogHttpFailure(System.Net.HttpStatusCode statusCode)
+        {
+            if (statusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                Logger.Error(LogSource.Pear, "Pear returned 401 Unauthorized. Authorize Songify in Settings → YouTube if the API Server uses authorization.");
+                return;
+            }
+
+            Logger.Error(LogSource.Pear, $"HTTP Request failed with status code: {statusCode}");
+        }
+
+        /// <summary>
+        /// Asks Pear Desktop to authorize this app. The Allow/Deny dialog is shown only for
+        /// <c>POST /auth/{id}</c> when the API Server strategy is AUTH_AT_FIRST and this id is new.
+        /// WebSocket and <c>/api</c> calls never trigger that prompt.
+        /// </summary>
+        public static async Task<(bool Ok, string Message)> RequestAuthorizationAsync(bool force = false)
+        {
+            await AuthLock.WaitAsync().ConfigureAwait(false);
+            IsAuthorizationInProgress = true;
+            try
+            {
+                if (!force && !string.IsNullOrWhiteSpace(Settings.PearAccessToken))
+                    return (true, "Pear token already saved.");
+
+                Logger.Info(LogSource.Pear, $"Requesting Pear authorization (POST {AuthUrl}). Allow Songify in the Pear prompt if it appears.");
+
+                using HttpClient authClient = new() { Timeout = TimeSpan.FromMinutes(2) };
+                HttpResponseMessage response = await authClient.PostAsync(AuthUrl, null).ConfigureAwait(false);
+                if (response.StatusCode == System.Net.HttpStatusCode.Forbidden)
+                    return (false, "Authorization was denied in Pear Desktop.");
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.Error(LogSource.Pear, $"Pear auth failed with status code: {response.StatusCode}");
+                    return (false, $"Pear returned {(int)response.StatusCode} {response.StatusCode}. Is the API Server plugin on?");
+                }
+
+                string json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                PearAuthResponse parsed = JsonConvert.DeserializeObject<PearAuthResponse>(json);
+                if (string.IsNullOrWhiteSpace(parsed?.AccessToken))
+                    return (false, "Pear did not return an access token.");
+
+                Settings.PearAccessToken = parsed.AccessToken;
+                return (true, "Pear authorized. Token saved.");
+            }
+            catch (TaskCanceledException)
+            {
+                return (false, "Timed out waiting for Pear. Allow the request in the Pear prompt, then try again.");
+            }
+            catch (HttpRequestException)
+            {
+                return (false, "Could not reach Pear Desktop. Start Pear and enable the API Server plugin.");
+            }
+            catch (Exception e)
+            {
+                Logger.Error(LogSource.Pear, "Pear authorization failed", e);
+                return (false, e.Message);
+            }
+            finally
+            {
+                IsAuthorizationInProgress = false;
+                AuthLock.Release();
+            }
+        }
+
+        private sealed class PearAuthHandler : DelegatingHandler
+        {
+            protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                string token = Settings.PearAccessToken;
+                if (!string.IsNullOrWhiteSpace(token))
+                    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                return base.SendAsync(request, cancellationToken);
+            }
+        }
+
+        private sealed class PearAuthResponse
+        {
+            [JsonProperty("accessToken")]
+            public string AccessToken { get; set; }
         }
     }
 }

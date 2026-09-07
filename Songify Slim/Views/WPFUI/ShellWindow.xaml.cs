@@ -39,6 +39,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private int _navChromeGeneration;
     private DispatcherTimer _spotifyIssueEtaTimer;
     private DispatcherTimer _nowPlayingTimer;
+    private bool _twitchCommandsPausedDismissed;
 
     /// <summary>
     /// Evaluated while XAML is parsed (after config load) so the first NavigationView template
@@ -1036,6 +1037,55 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         // Shell has no free-text status field yet.
     }
 
+    public void NotifyTwitchCommandsPausedOffline()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(NotifyTwitchCommandsPausedOffline);
+            return;
+        }
+
+        if (BrdTwitchCommandsPaused == null)
+            return;
+
+        if (TbTwitchCommandsPausedBody != null)
+        {
+            TbTwitchCommandsPausedBody.Text = _twitchCommandsPausedDismissed
+                ? Loc("window_twitch_commands_paused_body_again",
+                    "A command or song request was just ignored because the stream is offline and live-only Twitch activity is on.")
+                : Loc("window_twitch_commands_paused_body",
+                    "Commands and song requests are ignored while the stream is offline because live-only Twitch activity is on.");
+        }
+
+        _twitchCommandsPausedDismissed = false;
+        BrdTwitchCommandsPaused.Visibility = Visibility.Visible;
+    }
+
+    public void ClearTwitchCommandsPausedOffline()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(ClearTwitchCommandsPausedOffline);
+            return;
+        }
+
+        _twitchCommandsPausedDismissed = false;
+        if (TbTwitchCommandsPausedBody != null)
+        {
+            TbTwitchCommandsPausedBody.Text = Loc("window_twitch_commands_paused_body",
+                "Commands and song requests are ignored while the stream is offline because live-only Twitch activity is on.");
+        }
+        if (BrdTwitchCommandsPaused != null)
+            BrdTwitchCommandsPaused.Visibility = Visibility.Collapsed;
+    }
+
+    private void BtnTwitchCommandsPausedDismiss_Click(object sender, RoutedEventArgs e)
+    {
+        _twitchCommandsPausedDismissed = true;
+        if (BrdTwitchCommandsPaused != null)
+            BrdTwitchCommandsPaused.Visibility = Visibility.Collapsed;
+    }
+
     public void SetTwitchApiState(ConnectionIndicatorState state)
     {
         if (!Dispatcher.CheckAccess())
@@ -1304,6 +1354,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         return indicatorState.BuildRows(
             ("WebSocket", PearWebSocketClient.Endpoint),
             ("HTTP API", YtmDesktopApi.Endpoint),
+            ("API token", string.IsNullOrWhiteSpace(Settings.PearAccessToken) ? "Not set" : "Set"),
             ("Action", action));
     }
 

@@ -75,7 +75,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         /// Executes a command based on the trigger or alias parsed from the chat message.
         /// </summary>
         /// <returns>
-        /// Item1 (Executed): the handler ran. Item2 (KnownButDisabled): a registered command or alias matched the first token, but <see cref="TwitchCommand.IsEnabled"/> is false.
+        /// Item1 (dispatched): a matching enabled handler was invoked (it may still skip internally). Item2 (KnownButDisabled): a registered command or alias matched the first token, but <see cref="TwitchCommand.IsEnabled"/> is false.
         /// </returns>
         //public static bool TryExecuteCommand(ChatMessage message, TwitchCommandParams cmdParams)
         //{
@@ -102,7 +102,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         //    return true;
         //}
 
-        public static (bool Executed, bool KnownButDisabled) TryExecuteCommand(ChannelChatMessage msg, TwitchCommandParams cmdParams)
+        public static async Task<(bool Executed, bool KnownButDisabled)> TryExecuteCommand(ChannelChatMessage msg, TwitchCommandParams cmdParams)
         {
             if (msg == null || string.IsNullOrEmpty(msg.Message.Text))
                 return (false, false);
@@ -127,7 +127,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             if (!CommandHandlers.TryGetValue(canonical, out CommandHandlerDelegate handler) || handler == null)
                 return (false, false);
 
-            handler(msg, command, cmdParams);
+            await handler(msg, command, cmdParams).ConfigureAwait(false);
             return (true, false);
         }
 

@@ -2883,6 +2883,39 @@
                                 </StackPanel>
                             </StackPanel>
                         </ui:Card>
+                        <ui:Card Margin="0,12,0,0" Padding="16">
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontSize="14"
+                                    FontWeight="SemiBold"
+                                    Text="{DynamicResource window_settings_pear_title}" />
+                                <TextBlock
+                                    Margin="0,0,0,12"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    Text="{DynamicResource window_settings_pear_hint}"
+                                    TextWrapping="Wrap" />
+                                <TextBlock
+                                    Margin="0,0,0,8"
+                                    Text="{DynamicResource window_settings_pear_token}" />
+                                <PasswordBox
+                                    x:Name="PasswordBox_PearToken"
+                                    Margin="0,0,0,12"
+                                    PasswordChanged="PasswordBox_PearToken_OnPasswordChanged" />
+                                <StackPanel Orientation="Horizontal">
+                                    <Button
+                                        x:Name="BtnPearAuthorize"
+                                        Margin="0,0,12,0"
+                                        Click="BtnPearAuthorize_OnClick"
+                                        Content="{DynamicResource window_settings_pear_authorize}" />
+                                    <TextBlock
+                                        x:Name="TextBlock_PearAuthResult"
+                                        VerticalAlignment="Center"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </StackPanel>
+                        </ui:Card>
                     </StackPanel>
                 </ScrollViewer>
             </TabItem>

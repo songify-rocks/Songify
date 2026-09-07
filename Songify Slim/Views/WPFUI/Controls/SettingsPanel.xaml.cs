@@ -5,9 +5,11 @@ using Songify_Slim.UserControls;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify;
+using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Songify.Twitch;
 using Songify_Slim.Util.Songify.TwitchOAuth;
 using Songify_Slim.Util.Spotify;
+using Songify_Slim.Util.Youtube.Pear;
 using Songify_Slim.Util.Youtube.Youtube;
 using Songify_Slim.Views;
 using Songify_Slim.Views.WPFUI;
@@ -121,6 +123,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 UpdateSongifyTokenStatus();
                 if (PasswordBox_YoutubeApiKey != null)
                     PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey ?? "";
+                if (PasswordBox_PearToken != null)
+                    PasswordBox_PearToken.Password = Settings.PearAccessToken ?? "";
                 if (PasswordBox_WebServer != null)
                     PasswordBox_WebServer.Password = Settings.WebServerPassword ?? "";
             }
@@ -421,6 +425,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
             PasswordBox.Password = Settings.SongifyApiKey;
             UpdateSongifyTokenStatus();
             PasswordBox_YoutubeApiKey.Password = Settings.YoutubeApiKey;
+            if (PasswordBox_PearToken != null)
+                PasswordBox_PearToken.Password = Settings.PearAccessToken ?? "";
             NudBits.Value = Settings.MinimumBitsForSr;
             TbBitsKeyword.Text = Settings.SrForBitsKeyWord;
             TxtbxTwChannel.Text = Settings.TwChannel;
@@ -2048,8 +2054,15 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 return;
             Settings.BotOnlyWorkWhenLive = TglOnlyWorkWhenLive.IsChecked == true;
             TglInformChat.IsEnabled = TglOnlyWorkWhenLive.IsChecked == true;
-            if (TglOnlyWorkWhenLive.IsChecked == true) return;
-            TglInformChat.IsChecked = false;
+            if (TglOnlyWorkWhenLive.IsChecked != true)
+            {
+                TglInformChat.IsChecked = false;
+                AppShellBridge.Current?.ClearTwitchCommandsPausedOffline();
+                return;
+            }
+
+            if (!Settings.IsLive)
+                AppShellBridge.Current?.NotifyTwitchCommandsPausedOffline();
         }
 
         private void ToggleSwitchUnlimitedSR_Toggled(object sender, RoutedEventArgs e)
@@ -3358,6 +3371,54 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(Settings.YoutubeApiKey))
                 return;
             Settings.YoutubeApiKey = pwd;
+        }
+
+        private void PasswordBox_PearToken_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            string pwd = PasswordBox_PearToken.Password ?? "";
+            if (string.IsNullOrEmpty(pwd) && !string.IsNullOrEmpty(Settings.PearAccessToken))
+                return;
+            Settings.PearAccessToken = pwd;
+        }
+
+        private async void BtnPearAuthorize_OnClick(object sender, RoutedEventArgs e)
+        {
+            BtnPearAuthorize.IsEnabled = false;
+            TextBlock_PearAuthResult.Text = Loc("window_settings_pear_authorize_waiting", "Waiting for Pear Desktop… allow Songify in the prompt.");
+            try
+            {
+                (bool ok, string message) = await PearApi.RequestAuthorizationAsync(force: true);
+                TextBlock_PearAuthResult.Text = message;
+                if (!ok)
+                    return;
+
+                _isSettingControls = true;
+                try
+                {
+                    PasswordBox_PearToken.Password = Settings.PearAccessToken ?? "";
+                }
+                finally
+                {
+                    _isSettingControls = false;
+                }
+
+                if (Settings.Player == Enums.PlayerType.Pear)
+                {
+                    await PearWebSocketClient.DisconnectAsync();
+                    await AppFetchService.ForceFetchPearAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                TextBlock_PearAuthResult.Text = ex.Message;
+            }
+            finally
+            {
+                BtnPearAuthorize.IsEnabled = true;
+            }
         }
 
         private void BtnTestYoutubeApi_OnClick(object sender, RoutedEventArgs e)

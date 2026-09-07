@@ -29,6 +29,25 @@
       <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)" Condition="'%(Extension)' == '.xml'" />
     </ItemGroup>
   </Target>
+  <!-- WebView2Loader.dll is a Content item from the NuGet targets (CopyToOutputDirectory only).
+       Folder/RID publish and the zip historically missed it; ship all Windows loaders under runtimes\. -->
+  <Target Name="Songify_IncludeWebView2Loaders" AfterTargets="Songify_RemoveXmlFromPublish">
+    <ItemGroup>
+      <_WebView2Loader Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x86\native\WebView2Loader.dll" Condition="Exists('$(PkgMicrosoft_Web_WebView2)\runtimes\win-x86\native\WebView2Loader.dll')">
+        <RelativePath>runtimes\win-x86\native\WebView2Loader.dll</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_WebView2Loader>
+      <_WebView2Loader Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-x64\native\WebView2Loader.dll" Condition="Exists('$(PkgMicrosoft_Web_WebView2)\runtimes\win-x64\native\WebView2Loader.dll')">
+        <RelativePath>runtimes\win-x64\native\WebView2Loader.dll</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_WebView2Loader>
+      <_WebView2Loader Include="$(PkgMicrosoft_Web_WebView2)\runtimes\win-arm64\native\WebView2Loader.dll" Condition="Exists('$(PkgMicrosoft_Web_WebView2)\runtimes\win-arm64\native\WebView2Loader.dll')">
+        <RelativePath>runtimes\win-arm64\native\WebView2Loader.dll</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </_WebView2Loader>
+      <ResolvedFileToPublish Include="@(_WebView2Loader)" />
+    </ItemGroup>
+  </Target>
   <!-- Zip publish output (excluding existing zips) and write checksums / updater XML. -->
   <Target Name="Songify_PackagePublish" AfterTargets="Publish" Condition="'$(PublishDir)' != '' And '$(IsInnerPublish)' != 'true'">
     <PropertyGroup>
@@ -119,6 +138,7 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Web.WebView2">
       <Version>1.0.3912.50</Version>
+      <GeneratePathProperty>true</GeneratePathProperty>
     </PackageReference>
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf">
       <Version>1.1.142</Version>

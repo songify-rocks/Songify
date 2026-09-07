@@ -6,24 +6,26 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Youtube.Pear
 {
     internal static class PearWebSocketClient
     {
-        private static readonly Uri PearUri = new("ws://127.0.0.1:26538/api/v1/ws");
+        private static readonly Uri PearUriBase = new("ws://127.0.0.1:26538/api/v1/ws");
 
         private static ClientWebSocket _socket;
         private static CancellationTokenSource _cts;
         private static readonly object _lock = new();
         private static bool _isConnecting;
+        private static volatile bool _rejectedUnauthorized;
 
         private static Func<string, Task> _messageHandler;
 
         public static event Action ConnectionStateChanged;
 
-        public static string Endpoint => PearUri.ToString();
+        public static string Endpoint => PearUriBase.ToString();
 
         /// <summary>
         /// Controls whether the periodic Pear fetch path is allowed to auto-connect the WebSocket.
@@ -102,11 +104,24 @@ namespace Songify_Slim.Util.Youtube.Pear
 
             try
             {
-                await socket.ConnectAsync(PearUri, cts.Token).ConfigureAwait(false);
-                NotifyConnectionStateChanged();
+                _rejectedUnauthorized = false;
+                await socket.ConnectAsync(BuildConnectUri(), cts.Token).ConfigureAwait(false);
 
                 // Start background receive loop for THIS socket/cts pair
                 _ = Task.Run(() => ReceiveLoop(socket, cts));
+
+                // Pear upgrades the socket (101) then closes 1008 in onOpen when auth is required
+                // and the token is missing/invalid. That is not a connect() exception.
+                for (int i = 0; i < 15; i++)
+                {
+                    if (_rejectedUnauthorized)
+                        throw new PearUnauthorizedException();
+                    if (socket.State != WebSocketState.Open)
+                        throw new WebSocketException("Pear WebSocket closed immediately after connect.");
+                    await Task.Delay(50, cts.Token).ConfigureAwait(false);
+                }
+
+                NotifyConnectionStateChanged();
             }
             catch
             {
@@ -189,6 +204,15 @@ namespace Songify_Slim.Util.Youtube.Pear
 
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
+                            bool unauthorized =
+                                result.CloseStatus == WebSocketCloseStatus.PolicyViolation
+                                || string.Equals(result.CloseStatusDescription, "Unauthorized", StringComparison.OrdinalIgnoreCase);
+                            if (unauthorized)
+                            {
+                                _rejectedUnauthorized = true;
+                                Logger.Error(LogSource.Pear, "Pear WebSocket unauthorized (token missing or rejected).");
+                            }
+
                             try
                             {
                                 await socket.CloseAsync(
@@ -246,6 +270,15 @@ namespace Songify_Slim.Util.Youtube.Pear
             }
         }
 
+        private static Uri BuildConnectUri()
+        {
+            string token = Settings.PearAccessToken;
+            if (string.IsNullOrWhiteSpace(token))
+                return PearUriBase;
+
+            return new Uri($"{PearUriBase}?token={Uri.EscapeDataString(token)}");
+        }
+
         private static void NotifyConnectionStateChanged()
         {
             try
@@ -256,6 +289,14 @@ namespace Songify_Slim.Util.Youtube.Pear
             {
                 Logger.Error(LogSource.Pear, "Pear ConnectionStateChanged subscriber failed", ex);
             }
+        }
+    }
+
+    internal sealed class PearUnauthorizedException : Exception
+    {
+        public PearUnauthorizedException()
+            : base("Pear WebSocket unauthorized. POST /auth/{id} is required when API Server authorization is not NONE.")
+        {
         }
     }
 }

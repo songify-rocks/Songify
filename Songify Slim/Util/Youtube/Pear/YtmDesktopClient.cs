@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Youtube.YTMYHCH
@@ -12,7 +15,7 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
     {
         public static class YtmDesktopApi
         {
-            private static readonly HttpClient Http = new();
+            private static readonly HttpClient Http = new(new PearAuthHandler { InnerHandler = new HttpClientHandler() });
             private const string BaseUrl = "http://127.0.0.1:26538";
 
             public static string Endpoint => BaseUrl;
@@ -94,6 +97,17 @@ namespace Songify_Slim.Util.Youtube.YTMYHCH
                 };
                 HttpResponseMessage resp = await Http.PostAsync(BaseUrl + "/api/v1/queue", new StringContent(JsonConvert.SerializeObject(payload), Encoding.UTF8, "application/json")).ConfigureAwait(false);
                 return resp.IsSuccessStatusCode;
+            }
+
+            private sealed class PearAuthHandler : DelegatingHandler
+            {
+                protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+                {
+                    string token = Settings.PearAccessToken;
+                    if (!string.IsNullOrWhiteSpace(token))
+                        request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+                    return base.SendAsync(request, cancellationToken);
+                }
             }
         }
 

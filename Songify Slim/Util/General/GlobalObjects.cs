@@ -501,6 +501,7 @@ namespace Songify_Slim.Util.General
                 //Enums.PlayerType.SpotifyLegacy => "Spotify Legacy",
                 Enums.PlayerType.FooBar2000 => "Foobar2000",
                 Enums.PlayerType.Vlc => "VLC",
+                Enums.PlayerType.Qobuz => "Qobuz",
                 Enums.PlayerType.BrowserCompanion => "Browser Extension",
                 //Enums.PlayerType.YtmDesktop => "YTM Desktop",
                 _ => ""

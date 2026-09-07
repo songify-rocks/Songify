@@ -130,6 +130,7 @@ public static class AppFetchService
             case PlayerType.WindowsPlayback:
             case PlayerType.Vlc:
             case PlayerType.FooBar2000:
+            case PlayerType.Qobuz:
             case PlayerType.Pear:
                 intervalMs = 1000;
                 break;
@@ -226,6 +227,10 @@ public static class AppFetchService
 
                 case PlayerType.FooBar2000:
                     await Sf.FetchDesktopPlayer("foobar2000");
+                    break;
+
+                case PlayerType.Qobuz:
+                    await Sf.FetchDesktopPlayer("qobuz");
                     break;
 
                 case PlayerType.Spotify:

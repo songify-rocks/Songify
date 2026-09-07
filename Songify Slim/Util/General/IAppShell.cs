@@ -16,6 +16,8 @@ public interface IAppShell
         AppDialogSettings settings = null);
 
     void SetStatusText(string text);
+    void NotifyTwitchCommandsPausedOffline();
+    void ClearTwitchCommandsPausedOffline();
     void SetTwitchApiState(ConnectionIndicatorState state);
     void SetTwitchBotState(ConnectionIndicatorState state);
     void SetWebServerRunning(bool running);

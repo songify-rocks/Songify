@@ -322,4 +322,12 @@ Please send any questions about this EULA to info@songify.rocks.</system:String>
     <system:String x:Key="window_queue_detached_title">Queue is in another window</system:String>
     <system:String x:Key="window_queue_detached_body">The queue is open in a separate window so you can keep it visible while you use the rest of Songify. Close that window to bring it back here.</system:String>
     <system:String x:Key="window_settings_system_open_queue_pop_out">Pop out as a standalone window</system:String>
+    <system:String x:Key="window_settings_pear_title">Pear Desktop API</system:String>
+    <system:String x:Key="window_settings_pear_hint">Pear’s Allow/Deny prompt only appears on the /auth request, not when the WebSocket connects. Selecting Pear or clicking Authorize starts that request — allow Songify in Pear. Paste a token here only if you already have one.</system:String>
+    <system:String x:Key="window_settings_pear_token">API token</system:String>
+    <system:String x:Key="window_settings_pear_authorize">Authorize</system:String>
+    <system:String x:Key="window_settings_pear_authorize_waiting">Waiting for Pear Desktop… allow Songify in the prompt.</system:String>
+    <system:String x:Key="window_twitch_commands_paused_title">Twitch commands paused</system:String>
+    <system:String x:Key="window_twitch_commands_paused_body">Commands and song requests are ignored while the stream is offline because live-only Twitch activity is on.</system:String>
+    <system:String x:Key="window_twitch_commands_paused_body_again">A command or song request was just ignored because the stream is offline and live-only Twitch activity is on.</system:String>
 </ResourceDictionary>

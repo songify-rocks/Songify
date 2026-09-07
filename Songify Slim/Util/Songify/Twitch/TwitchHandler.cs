@@ -439,6 +439,7 @@ public static class TwitchHandler
                 }
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
                 return "This player type does not support song requests via the API. Please use Spotify Web or YTM Desktop.";
 
@@ -1055,20 +1056,15 @@ public static class TwitchHandler
             }
 
             string commandToken = msg.Message.Text.Split([' '], 2, StringSplitOptions.RemoveEmptyEntries)[0];
-            (bool executed, bool knownButDisabled) = TwitchCommandHandler.TryExecuteCommand(msg, new TwitchCommandParams
+            TwitchCommandParams cmdParams = new()
             {
                 Subtier = subtier,
                 ExistingUser = existingUser,
                 UserLevels = userLevels
-            });
+            };
+            (bool dispatched, bool knownButDisabled) = await TwitchCommandHandler.TryExecuteCommand(msg, cmdParams);
 
-            if (executed)
-            {
-                NotifySpotifyRelatedActivity();
-                Logger.Info(LogSource.Twitch,
-                    $"Command \"{commandToken}\" by {msg.ChatterUserName}: Executed successfully.");
-            }
-            else if (knownButDisabled)
+            if (knownButDisabled)
             {
                 Logger.Warning(LogSource.Twitch,
                     $"Command \"{commandToken}\" by {msg.ChatterUserName}: Not executed (registered but disabled).");
@@ -1105,10 +1101,21 @@ public static class TwitchHandler
                     await SendChatMessage(response);
                 }
             }
-            else
+            else if (!dispatched)
             {
                 Logger.Warning(LogSource.Twitch,
                     $"Command \"{commandToken}\" by {msg.ChatterUserName}: Not executed (not a Songify command).");
+            }
+            else if (!string.IsNullOrEmpty(cmdParams.SkipReason))
+            {
+                Logger.Warning(LogSource.Twitch,
+                    $"Command \"{commandToken}\" by {msg.ChatterUserName}: Not executed ({cmdParams.SkipReason}).");
+            }
+            else
+            {
+                NotifySpotifyRelatedActivity();
+                Logger.Info(LogSource.Twitch,
+                    $"Command \"{commandToken}\" by {msg.ChatterUserName}: Executed successfully.");
             }
         }
         catch (Exception ex)
@@ -1305,6 +1312,7 @@ public static class TwitchHandler
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
             default:
                 await SendChatMessage("No player selected. Go to Settings -> Player and select a player.");
@@ -1461,6 +1469,7 @@ public static class TwitchHandler
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
             default:
                 await SendChatMessage("No player selected. Please select a player on the main window.");
@@ -1709,6 +1718,7 @@ public static class TwitchHandler
 
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
             case Enums.PlayerType.WindowsPlayback:
                 skipSucceeded = false;
@@ -1926,6 +1936,7 @@ public static class TwitchHandler
                 case Enums.PlayerType.WindowsPlayback:
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.Qobuz:
                 case Enums.PlayerType.BrowserCompanion:
                     break;
 
@@ -1959,6 +1970,7 @@ public static class TwitchHandler
                 case Enums.PlayerType.WindowsPlayback:
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.Qobuz:
                 case Enums.PlayerType.BrowserCompanion:
                     break;
 
@@ -2130,6 +2142,7 @@ public static class TwitchHandler
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
                 await SendChatMessage("This player type does not support queue removal via API song requests.");
                 return;
@@ -2264,6 +2277,7 @@ public static class TwitchHandler
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
                 //case PlayerType.YtmDesktop:
                 break;
@@ -2498,6 +2512,7 @@ public static class TwitchHandler
             response = response.Replace("{userlevel}", allowedUserLevelsString);
 
             await SendChatMessage(response);
+            cmdParams.SkipReason = "user level too low";
             return;
         }
 
@@ -2505,6 +2520,7 @@ public static class TwitchHandler
         {
             if (!CheckLiveStatus())
             {
+                cmdParams.SkipReason = "stream offline (live-only Twitch activity is on)";
                 if (Settings.ChatLiveStatus) await SendChatMessage("The stream is not live right now.");
                 return;
             }
@@ -2512,6 +2528,8 @@ public static class TwitchHandler
         catch (Exception)
         {
             Logger.Error(LogSource.Twitch, "Error sending chat message \"The stream is not live right now.\"");
+            cmdParams.SkipReason ??= "stream offline (live-only Twitch activity is on)";
+            return;
         }
 
         string requestInput = message.Message.Text.Contains(' ')
@@ -2601,6 +2619,7 @@ public static class TwitchHandler
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
             default:
                 // This should ideally never happen...
@@ -2663,6 +2682,7 @@ public static class TwitchHandler
                 case Enums.PlayerType.WindowsPlayback:
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.Qobuz:
                 case Enums.PlayerType.BrowserCompanion:
                 default:
                     throw new ArgumentOutOfRangeException();
@@ -2727,6 +2747,7 @@ public static class TwitchHandler
 
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
             case Enums.PlayerType.WindowsPlayback:
             default:
@@ -2881,6 +2902,7 @@ public static class TwitchHandler
             case Enums.PlayerType.WindowsPlayback:
             case Enums.PlayerType.FooBar2000:
             case Enums.PlayerType.Vlc:
+            case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
             default:
                 return;
@@ -3003,13 +3025,16 @@ public static class TwitchHandler
     {
         // 1. User permission check
         if (!IsUserAllowed(cmd.AllowedUserLevels, cmdParams, message.IsBroadcaster, cmd, message.ChatterUserId))
+        {
+            cmdParams.SkipReason = "user level too low";
             return false;
+        }
 
-        // 2. Live-status check
         try
         {
             if (!CheckLiveStatus())
             {
+                cmdParams.SkipReason = "stream offline (live-only Twitch activity is on)";
                 if (Settings.ChatLiveStatus)
                     await SendChatMessage("The stream is not live right now.");
 
@@ -3021,6 +3046,7 @@ public static class TwitchHandler
             Logger.Error(LogSource.Twitch,
                 "Error sending chat message \"The stream is not live right now.\"",
                 ex);
+            cmdParams.SkipReason ??= "stream offline (live-only Twitch activity is on)";
             return false;
         }
 
@@ -3451,12 +3477,14 @@ public static class TwitchHandler
         if (Settings.IsLive)
         {
             Logger.Info(LogSource.Twitch, "Stream is live.");
+            AppShellBridge.Current?.ClearTwitchCommandsPausedOffline();
             return true;
         }
         if (!Settings.BotOnlyWorkWhenLive)
             return true;
 
         Logger.Info(LogSource.Twitch, "Stream is down.");
+        AppShellBridge.Current?.NotifyTwitchCommandsPausedOffline();
         return false;
     }
 
@@ -5079,6 +5107,7 @@ public static class TwitchHandler
                 case Enums.PlayerType.WindowsPlayback:
                 case Enums.PlayerType.FooBar2000:
                 case Enums.PlayerType.Vlc:
+                case Enums.PlayerType.Qobuz:
                 case Enums.PlayerType.BrowserCompanion:
                     break;
 

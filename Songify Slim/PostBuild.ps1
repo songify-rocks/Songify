@@ -31,6 +31,43 @@ if (-not (Test-Path -Path $exeFilePath)) {
     exit 1
 }
 
+# ClickOnce/app.publish used to omit NuGet runtimes. Copy WebView2Loader.dll for
+# win-x86/x64/arm64 so patch notes work on AnyCPU zips (same as the old PostBuild).
+$loaderName = "WebView2Loader.dll"
+$rids = @("win-x86", "win-x64", "win-arm64")
+$runtimeSources = @(
+    (Join-Path $PSScriptRoot "bin\Release\net10.0-windows10.0.19041.0\runtimes"),
+    (Join-Path $PSScriptRoot "bin\Release\runtimes")
+)
+$nugetWebView2 = Join-Path $env:USERPROFILE ".nuget\packages\microsoft.web.webview2"
+if (Test-Path $nugetWebView2) {
+    $pkg = Get-ChildItem $nugetWebView2 -Directory | Sort-Object Name -Descending | Select-Object -First 1
+    if ($pkg) {
+        $runtimeSources += (Join-Path $pkg.FullName "runtimes")
+    }
+}
+
+foreach ($rid in $rids) {
+    $destDir = Join-Path $PublishDir "runtimes\$rid\native"
+    $destFile = Join-Path $destDir $loaderName
+    if (Test-Path $destFile) {
+        continue
+    }
+
+    $src = $runtimeSources |
+        ForEach-Object { Join-Path $_ "$rid\native\$loaderName" } |
+        Where-Object { Test-Path $_ } |
+        Select-Object -First 1
+
+    if (-not $src) {
+        continue
+    }
+
+    New-Item -ItemType Directory -Force -Path $destDir | Out-Null
+    Copy-Item -Path $src -Destination $destFile -Force
+    Write-Host "Copied $rid $loaderName"
+}
+
 $itemsToZip = Get-ChildItem -Path $PublishDir -Force | Where-Object {
     $_.Name -ne "Songify.zip" -and
     $_.Extension -ne ".zip" -and

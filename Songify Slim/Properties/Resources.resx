@@ -3318,4 +3318,36 @@ You can still open Songify Premium any time from Home or About.</value>
     <value>Search this list</value>
     <comment>Context: Placeholder for the sticky search field on the blocklist.</comment>
   </data>
+  <data name="window_settings_pear_title" xml:space="preserve">
+    <value>Pear Desktop API</value>
+    <comment>Context: Settings → YouTube card title for Pear Desktop API authorization.</comment>
+  </data>
+  <data name="window_settings_pear_hint" xml:space="preserve">
+    <value>Pear’s Allow/Deny prompt only appears on the /auth request, not when the WebSocket connects. Selecting Pear or clicking Authorize starts that request — allow Songify in Pear. Paste a token here only if you already have one.</value>
+    <comment>Context: Settings → YouTube hint under Pear Desktop API.</comment>
+  </data>
+  <data name="window_settings_pear_token" xml:space="preserve">
+    <value>API token</value>
+    <comment>Context: Label for the Pear API bearer token field.</comment>
+  </data>
+  <data name="window_settings_pear_authorize" xml:space="preserve">
+    <value>Authorize</value>
+    <comment>Context: Button that starts Pear Desktop Allow/Deny authorization.</comment>
+  </data>
+  <data name="window_settings_pear_authorize_waiting" xml:space="preserve">
+    <value>Waiting for Pear Desktop… allow Songify in the prompt.</value>
+    <comment>Context: Status text while Pear Desktop shows the Allow/Deny dialog.</comment>
+  </data>
+  <data name="window_twitch_commands_paused_title" xml:space="preserve">
+    <value>Twitch commands paused</value>
+    <comment>Context: In-app banner title when live-only Twitch activity suppresses commands while offline.</comment>
+  </data>
+  <data name="window_twitch_commands_paused_body" xml:space="preserve">
+    <value>Commands and song requests are ignored while the stream is offline because live-only Twitch activity is on.</value>
+    <comment>Context: In-app banner body explaining why Twitch commands are ignored.</comment>
+  </data>
+  <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
+    <value>A command or song request was just ignored because the stream is offline and live-only Twitch activity is on.</value>
+    <comment>Context: In-app banner body after the user dismissed it and another Twitch command was suppressed.</comment>
+  </data>
 </root>

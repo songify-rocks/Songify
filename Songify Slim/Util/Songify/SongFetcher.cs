@@ -1560,21 +1560,65 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
+                if (!await EnsurePearAccessTokenAsync().ConfigureAwait(false))
+                    return;
+
                 await PearWebSocketClient.ConnectAsync().ConfigureAwait(false);
-                // Successful connect — reset all failure/backoff state so the next failure cycle starts fresh.
                 ResetPearConnectionState();
+            }
+            catch (PearUnauthorizedException)
+            {
+                Logger.Info(LogSource.Pear, "Pear WebSocket rejected the token; requesting a new one via POST /auth/songify.");
+                (bool ok, string message) = await PearApi.RequestAuthorizationAsync(force: true).ConfigureAwait(false);
+                if (!ok)
+                {
+                    FailPearConnect(new InvalidOperationException(message));
+                    return;
+                }
+
+                try
+                {
+                    await PearWebSocketClient.ConnectAsync().ConfigureAwait(false);
+                    ResetPearConnectionState();
+                }
+                catch (Exception retryEx)
+                {
+                    FailPearConnect(retryEx);
+                    return;
+                }
             }
             catch (Exception ex)
             {
-                Logger.Error(LogSource.Pear, "Pear WebSocket could not connect.", ex);
-                _pearWsConnectFailureCount++;
-                _pearWsNextConnectAttemptAt = DateTimeOffset.UtcNow + GetPearConnectBackoffDelay(_pearWsConnectFailureCount);
-                NotifyPearConnectionFailure(ex);
+                FailPearConnect(ex);
                 return;
             }
 
             // WS typically does not replay the current track on connect — pull song-info once (or until success).
             await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
+        }
+
+        private async Task<bool> EnsurePearAccessTokenAsync()
+        {
+            if (!string.IsNullOrWhiteSpace(Settings.PearAccessToken))
+                return true;
+            if (PearApi.IsAuthorizationInProgress)
+                return false;
+
+            Logger.Info(LogSource.Pear, "No Pear API token. Pear only prompts on POST /auth/{id}, not on WebSocket connect.");
+            (bool ok, string message) = await PearApi.RequestAuthorizationAsync().ConfigureAwait(false);
+            if (ok)
+                return true;
+
+            FailPearConnect(new InvalidOperationException(message));
+            return false;
+        }
+
+        private void FailPearConnect(Exception ex)
+        {
+            Logger.Error(LogSource.Pear, "Pear WebSocket could not connect.", ex);
+            _pearWsConnectFailureCount++;
+            _pearWsNextConnectAttemptAt = DateTimeOffset.UtcNow + GetPearConnectBackoffDelay(_pearWsConnectFailureCount);
+            NotifyPearConnectionFailure(ex);
         }
 
         private void NotifyPearConnectionFailure(Exception ex)

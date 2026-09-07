@@ -617,6 +617,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         {
             Settings.IsLive = true;
             Logger.Info(LogSource.Twitch, "Stream live");
+            AppShellBridge.Current?.ClearTwitchCommandsPausedOffline();
             return Task.CompletedTask;
         }
 
