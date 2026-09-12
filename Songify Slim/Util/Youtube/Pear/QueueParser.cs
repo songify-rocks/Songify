@@ -14,6 +14,7 @@ public class Song
     public TimeSpan Length { get; set; }
     public int Pos { get; set; }          // position in the JSON array (current order)
     public string CoverUrl { get; set; }
+    /// <summary>Raw YouTube Music renderer <c>selected</c> flag. Can lag after next/previous; use <c>PearApi.ResolvePlayhead</c> for the actual playhead.</summary>
     public bool IsCurrent { get; set; }
 }
 

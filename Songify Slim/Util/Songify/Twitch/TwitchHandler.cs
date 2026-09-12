@@ -981,7 +981,9 @@ public static class TwitchHandler
         List<Song> queue = await PearApi.GetQueueAsync();
         if (queue == null || queue.Count == 0) return;
 
-        int currentIdx = queue.FindIndex(q => q.IsCurrent);
+        PearResponse nowPlaying = await PearApi.GetNowPlayingAsync();
+        Song playhead = PearApi.ResolvePlayhead(queue, nowPlaying?.VideoId);
+        int currentIdx = playhead == null ? -1 : queue.FindIndex(q => q.Pos == playhead.Pos);
         if (currentIdx < 0) currentIdx = 0;
         string currentId = queue[currentIdx].Id;
 
@@ -2096,7 +2098,12 @@ public static class TwitchHandler
             reqObj = ownedRequests.LastOrDefault(o => o.Requester.Equals(message.ChatterUserName, StringComparison.InvariantCultureIgnoreCase));
         }
 
-        if (reqObj == null) return;
+        if (reqObj == null)
+        {
+            Logger.Warning(LogSource.Twitch,
+                $"!remove: no ReqList row for '{(words.Length > 1 ? words[1] : message.ChatterUserName)}' (already dropped after next/back, or unknown queueid).");
+            return;
+        }
 
         switch (Settings.Player)
         {
@@ -2107,11 +2114,31 @@ public static class TwitchHandler
 
             case Enums.PlayerType.Pear:
                 {
-                    bool isCurrent = GlobalObjects.CurrentSong != null
-                        && string.Equals(reqObj.Trackid, GlobalObjects.CurrentSong.SongId, StringComparison.Ordinal);
+                    List<Song> queue = await PearApi.GetQueueAsync();
+                    PearResponse nowPlaying = await PearApi.GetNowPlayingAsync();
+                    Song playhead = PearApi.ResolvePlayhead(queue, nowPlaying?.VideoId);
+                    int pendingIndex = PearApi.FindPendingQueueIndex(queue, reqObj.Trackid, nowPlaying?.VideoId);
 
-                    if (isCurrent)
+                    if (pendingIndex >= 0)
                     {
+                        Logger.Info(LogSource.Pear,
+                            $"!remove queueid={reqObj.Queueid} track={reqObj.Trackid} pendingPos={pendingIndex} playhead={playhead?.Id}@{playhead?.Pos} action=delete");
+                        ApiOk result = await PearApi.RemoveQueueItem(pendingIndex);
+                        if (!result.Ok)
+                        {
+                            return;
+                        }
+
+                        break;
+                    }
+
+                    bool playheadIsThisTrack = playhead != null
+                        && string.Equals(playhead.Id, reqObj.Trackid, StringComparison.Ordinal);
+
+                    if (playheadIsThisTrack)
+                    {
+                        Logger.Info(LogSource.Pear,
+                            $"!remove queueid={reqObj.Queueid} track={reqObj.Trackid} playhead={playhead.Id}@{playhead.Pos} action=skip-current");
                         if (!await PearApi.SkipAsync())
                         {
                             Logger.Warning(LogSource.Pear,
@@ -2122,20 +2149,8 @@ public static class TwitchHandler
                         break;
                     }
 
-                    int index = await PearApi.GetIndexAsync(reqObj.Trackid);
-                    if (index < 0)
-                    {
-                        Logger.Warning(LogSource.Pear,
-                            $"!remove: Pear queue index not found for {reqObj.Trackid} ({reqObj.Artist} - {reqObj.Title}); dropping Songify queue entry.");
-                        break;
-                    }
-
-                    ApiOk result = await PearApi.RemoveQueueItem(index);
-                    if (!result.Ok)
-                    {
-                        return;
-                    }
-
+                    Logger.Warning(LogSource.Pear,
+                        $"!remove: Pear pending index not found for {reqObj.Trackid} ({reqObj.Artist} - {reqObj.Title}) playhead={playhead?.Id}@{playhead?.Pos}; dropping Songify queue entry.");
                     break;
                 }
 

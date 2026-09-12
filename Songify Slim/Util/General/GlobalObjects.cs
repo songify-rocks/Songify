@@ -394,8 +394,10 @@ namespace Songify_Slim.Util.General
                         return;
                     }
 
-                    // if index = -1 then we assuem the id's did match and we try to match artist and title
-                    int index = pearQueue.FindIndex(item => item.IsCurrent);
+                    Song playhead = PearApi.ResolvePlayhead(pearQueue, pearResponse.VideoId);
+                    int index = playhead == null
+                        ? -1
+                        : pearQueue.FindIndex(item => item.Pos == playhead.Pos);
 
                     if (index > 0)
                         pearQueue.RemoveRange(0, index);
@@ -414,7 +416,7 @@ namespace Songify_Slim.Util.General
                             Requester = ReqList.Any(r => r.Trackid == item.Id)
                                 ? ReqList.FirstOrDefault(r => r.Trackid == item.Id)?.Requester
                                 : "YouTube",
-                            Played = item.Id == pearResponse.VideoId ? -1 : 0,
+                            Played = playhead != null && item.Id == playhead.Id ? -1 : 0,
                             Albumcover = item.CoverUrl ?? "",
                             PlayerType = "YouTube",
                             IsLiked = false

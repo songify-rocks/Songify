@@ -1713,24 +1713,33 @@ namespace Songify_Slim.Util.Songify
                 if (data == null)
                     return;
 
-                // 0) Correlate with Pear queue current item (canonical id)
-                // We prefer the Pear queue's selected item id over now-playing VideoId,
-                // because YouTube can swap the playback id while the queue item remains stable.
+                // 0) Correlate with Pear queue playhead (canonical id).
+                // Song.IsCurrent is YTM's `selected` flag and can lag after next/previous.
+                // song-info VideoId can also differ from the selected row (YouTube swaps the playback id).
+                // ResolvePlayhead prefers selected when they match or when VideoId is not in the queue;
+                // otherwise it follows VideoId so we do not treat the actually-playing row as "upcoming".
                 List<Song> pearQueue = null;
                 Song queueCurrent = null;
-                string queueCurrentId = null;
                 try
                 {
                     pearQueue = await PearApi.GetQueueAsync().ConfigureAwait(false);
-                    queueCurrent = pearQueue?.FirstOrDefault(s => s.IsCurrent);
-                    queueCurrentId = queueCurrent?.Id;
+                    queueCurrent = PearApi.ResolvePlayhead(pearQueue, data.VideoId);
                 }
                 catch (Exception ex)
                 {
                     Logger.Error(LogSource.Pear, "ApplyPearStateAsync: failed to read Pear queue for correlation", ex);
                 }
 
-                string canonicalId = !string.IsNullOrWhiteSpace(queueCurrentId) ? queueCurrentId : data.VideoId;
+                string canonicalId = !string.IsNullOrWhiteSpace(queueCurrent?.Id) ? queueCurrent.Id : data.VideoId;
+
+                Song selected = pearQueue?.FirstOrDefault(s => s.IsCurrent);
+                if (selected != null &&
+                    !string.IsNullOrWhiteSpace(data.VideoId) &&
+                    !string.Equals(selected.Id, data.VideoId, StringComparison.Ordinal))
+                {
+                    Logger.Info(LogSource.Pear,
+                        $"Pear playhead: selected={selected.Id}@{selected.Pos} nowPlaying={data.VideoId} resolved={canonicalId}@{queueCurrent?.Pos}");
+                }
 
                 // song-info can lag behind the queue when the selection advances; keep SongId in sync with the queue
                 // but take artist/title/cover (and duration when known) from the current queue row so request matching
@@ -1743,7 +1752,7 @@ namespace Songify_Slim.Util.Songify
                 if (queueCurrent != null && queueCurrent.Length > TimeSpan.Zero)
                     songDurationSec = (int)Math.Round(queueCurrent.Length.TotalSeconds);
 
-                // If queue selection changed, the previously-current queue item finished/skipped -> remove requests
+                // If the playhead changed, the previously-current queue item finished/skipped -> remove requests
                 // for that id plus any Pear queue rows still listed above the new current (stale ReqList cleanup).
                 // Skip bulk ids that also appear *after* current: the same videoId can repeat (re-request) while an old
                 // row still sits above the playhead; removing by id would wipe the legitimate pending request.

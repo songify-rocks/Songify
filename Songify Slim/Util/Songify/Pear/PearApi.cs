@@ -273,29 +273,72 @@ namespace Songify_Slim.Util.Songify.Pear
         }
 
         /// <summary>
-        /// Pear queue API index for <paramref name="reqObjTrackid"/>.
+        /// Playhead in a GET /queue snapshot.
+        /// <see cref="Song.IsCurrent"/> is YouTube Music's renderer <c>selected</c> flag, which can lag
+        /// after next/previous. Now-playing <c>videoId</c> can also differ from that row (YouTube
+        /// sometimes swaps the playback id while the queue item stays selected).
+        /// Prefer <c>selected</c> when it matches now-playing or when now-playing is not in the queue;
+        /// otherwise prefer the now-playing row so queue ops do not DELETE the track that is actually playing.
+        /// </summary>
+        public static Song ResolvePlayhead(List<Song> queue, string nowPlayingVideoId)
+        {
+            if (queue == null || queue.Count == 0)
+                return null;
+
+            Song selected = queue.FirstOrDefault(s => s.IsCurrent);
+
+            if (string.IsNullOrWhiteSpace(nowPlayingVideoId))
+                return selected;
+
+            if (selected != null &&
+                string.Equals(selected.Id, nowPlayingVideoId, StringComparison.Ordinal))
+                return selected;
+
+            int fromPos = selected?.Pos ?? -1;
+            Song playingAtOrAfter = queue.FirstOrDefault(s =>
+                s.Pos >= fromPos &&
+                string.Equals(s.Id, nowPlayingVideoId, StringComparison.Ordinal));
+            if (playingAtOrAfter != null)
+                return playingAtOrAfter;
+
+            Song playingAny = queue.FirstOrDefault(s =>
+                string.Equals(s.Id, nowPlayingVideoId, StringComparison.Ordinal));
+            if (playingAny != null)
+                return playingAny;
+
+            // Now-playing id is not in the queue (YouTube swapped the playback id). Trust selected.
+            return selected;
+        }
+
+        /// <summary>
+        /// Pear queue API index of the first <paramref name="trackId"/> occurrence strictly after the playhead.
         /// Uses <see cref="Song.Pos"/> (original GET /queue items index), not the parsed-list index —
         /// QueueParser skips non-song rows, so FindIndex would DELETE the wrong item.
-        /// Prefers the occurrence after the current track because YTM keeps played history
-        /// (and radio/playlist copies) that can share a videoId with a later request.
+        /// Does not fall back to history or the playing row: DELETE of those advances playback.
+        /// </summary>
+        public static int FindPendingQueueIndex(List<Song> queue, string trackId, string nowPlayingVideoId)
+        {
+            if (queue == null || string.IsNullOrWhiteSpace(trackId))
+                return -1;
+
+            Song playhead = ResolvePlayhead(queue, nowPlayingVideoId);
+            int playheadPos = playhead?.Pos ?? -1;
+
+            Song pending = queue.FirstOrDefault(s =>
+                s.Pos > playheadPos &&
+                string.Equals(s.Id, trackId, StringComparison.Ordinal));
+            return pending?.Pos ?? -1;
+        }
+
+        /// <summary>
+        /// Pear queue API index for <paramref name="reqObjTrackid"/> after the live playhead.
         /// </summary>
         public static async Task<int> GetIndexAsync(string reqObjTrackid)
         {
-            List<Song> queue = await GetQueueAsync();
-            if (queue == null || string.IsNullOrWhiteSpace(reqObjTrackid))
-                return -1;
-
-            int currentPos = queue.FirstOrDefault(s => s.IsCurrent)?.Pos ?? -1;
-
-            Song pending = queue.FirstOrDefault(s =>
-                s.Pos > currentPos &&
-                string.Equals(s.Id, reqObjTrackid, StringComparison.Ordinal));
-            if (pending != null)
-                return pending.Pos;
-
-            Song any = queue.FirstOrDefault(s =>
-                string.Equals(s.Id, reqObjTrackid, StringComparison.Ordinal));
-            return any?.Pos ?? -1;
+            Task<List<Song>> queueTask = GetQueueAsync();
+            Task<PearResponse> nowTask = GetNowPlayingAsync();
+            await Task.WhenAll(queueTask, nowTask).ConfigureAwait(false);
+            return FindPendingQueueIndex(queueTask.Result, reqObjTrackid, nowTask.Result?.VideoId);
         }
 
         public static async Task<ApiOk> RemoveQueueItem(int index)

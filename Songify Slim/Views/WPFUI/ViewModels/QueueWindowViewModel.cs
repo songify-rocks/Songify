@@ -11,8 +11,10 @@ using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
 using Songify_Slim.Models;
+using Songify_Slim.Models.Pear;
 using Songify_Slim.Util;
 using Songify_Slim.Models.Spotify;
+using Songify_Slim.Util.Youtube.YTMYHCH;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.APIs;
@@ -21,6 +23,7 @@ using Songify_Slim.Util.Spotify;
 using Songify_Slim.ViewModels;
 using Swan.Formatters;
 using static Songify_Slim.Util.General.Enums;
+using PearSong = Songify_Slim.Util.Youtube.YTMYHCH.Song;
 
 namespace Songify_Slim.Views.WPFUI.ViewModels;
 
@@ -260,42 +263,48 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
     {
         if (req == null) return;
 
-        bool isCurrent = req.Played == -1
-                         || (GlobalObjects.CurrentSong != null
-                             && string.Equals(req.Trackid, GlobalObjects.CurrentSong.SongId, StringComparison.Ordinal));
-
-        if (isCurrent)
-        {
-            switch (Settings.Player)
-            {
-                case PlayerType.Spotify:
-                    await SpotifyApiHandler.SkipSong();
-                    break;
-                case PlayerType.Pear:
-                    await PearApi.SkipAsync();
-                    break;
-            }
-            return;
-        }
-
         if (Settings.Player == PlayerType.Pear
             || string.Equals(req.PlayerType, "YouTube", StringComparison.OrdinalIgnoreCase))
         {
-            int index = await PearApi.GetIndexAsync(req.Trackid);
-            if (index < 0)
+            List<PearSong> queue = await PearApi.GetQueueAsync();
+            PearResponse nowPlaying = await PearApi.GetNowPlayingAsync();
+            int pendingIndex = PearApi.FindPendingQueueIndex(queue, req.Trackid, nowPlaying?.VideoId);
+            if (pendingIndex >= 0)
             {
-                Logger.Warning(LogSource.Pear, $"Skip from queue: Pear index not found for {req.Trackid}");
-                return;
+                if (!(await PearApi.RemoveQueueItem(pendingIndex)).Ok)
+                {
+                    Logger.Warning(LogSource.Pear, $"Skip from queue: failed to remove Pear queue item {pendingIndex} ({req.Title})");
+                    return;
+                }
             }
-
-            if (!(await PearApi.RemoveQueueItem(index)).Ok)
+            else
             {
-                Logger.Warning(LogSource.Pear, $"Skip from queue: failed to remove Pear queue item {index} ({req.Title})");
+                PearSong playhead = PearApi.ResolvePlayhead(queue, nowPlaying?.VideoId);
+                bool playheadIsThisTrack = playhead != null
+                    && string.Equals(playhead.Id, req.Trackid, StringComparison.Ordinal);
+                if (!playheadIsThisTrack)
+                {
+                    Logger.Warning(LogSource.Pear, $"Skip from queue: Pear index not found for {req.Trackid}");
+                    return;
+                }
+
+                await PearApi.SkipAsync();
                 return;
             }
         }
         else
         {
+            bool isCurrent = req.Played == -1
+                             || (GlobalObjects.CurrentSong != null
+                                 && string.Equals(req.Trackid, GlobalObjects.CurrentSong.SongId, StringComparison.Ordinal));
+
+            if (isCurrent)
+            {
+                if (Settings.Player == PlayerType.Spotify)
+                    await SpotifyApiHandler.SkipSong();
+                return;
+            }
+
             await Application.Current.Dispatcher.InvokeAsync(() => GlobalObjects.SkipList.Add(req));
         }
 
