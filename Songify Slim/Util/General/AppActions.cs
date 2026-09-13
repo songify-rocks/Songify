@@ -54,9 +54,35 @@ internal static class AppActions
         AutoUpdater.UpdateMode = Mode.Normal;
         AutoUpdater.AppTitle = "Songify";
         AutoUpdater.RunUpdateAsAdmin = false;
+        AutoUpdater.ApplicationExitEvent -= AutoUpdaterOnApplicationExit;
+        AutoUpdater.ApplicationExitEvent += AutoUpdaterOnApplicationExit;
         Logger.Info(LogSource.Core, $"Checking for update ({Settings.ReleaseChannel})...");
         string updateUri = Settings.GetUpdateFeedUrl();
         AutoUpdater.Start(updateUri);
+    }
+
+    /// <summary>
+    /// AutoUpdater.NET skips its own shutdown when this event has subscribers, so we must
+    /// persist <see cref="Settings.UpdateRequired"/> and exit ourselves. That flag is what
+    /// shows the changelog prompt after the new version starts.
+    /// </summary>
+    private static void AutoUpdaterOnApplicationExit()
+    {
+        try
+        {
+            string versionFolder = (GlobalObjects.AppVersion ?? "unknown").Replace(".", "_");
+            string backupDir = Path.Combine(GlobalObjects.RootDirectory, "Backup", versionFolder);
+            Directory.CreateDirectory(backupDir);
+            ConfigHandler.WriteAllConfig(Settings.Export(), backupDir, true);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Core, "Failed to backup config before applying an update.", ex);
+        }
+
+        Settings.UpdateRequired = true;
+        Logger.Info(LogSource.Core, "Update accepted; showing patch notes on next launch.");
+        ExitApplication();
     }
 
     public static void OpenFaq() =>

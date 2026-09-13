@@ -325,31 +325,41 @@ public static class AppStartup
             Logger.Info(LogSource.Core, "SetFetchTimer");
             AppFetchService.Start();
             Logger.Info(LogSource.Core, "SetFetchTimer done");
-
-            if (Settings.UpdateRequired)
-            {
-                AppDialogResult result = await AppDialog.ShowAsync(
-                    "Songify just updated",
-                    "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog from the navigation.",
-                    AppDialogStyle.PrimaryAndSecondary,
-                    new AppDialogSettings
-                    {
-                        PrimaryButtonText = "Yes",
-                        SecondaryButtonText = "No"
-                    });
-
-                if (result == AppDialogResult.Primary)
-                    OpenPatchNotes(owner);
-
-                Settings.UpdateRequired = false;
-            }
         }
         catch (Exception e)
         {
             Logger.LogExc(e);
         }
 
+        await OfferPatchNotesAfterUpdateAsync(owner);
         AppActions.CheckForUpdates();
+    }
+
+    private static async Task OfferPatchNotesAfterUpdateAsync(Window owner)
+    {
+        if (!Settings.UpdateRequired)
+            return;
+
+        try
+        {
+            AppDialogResult result = await AppDialog.ShowAsync(
+                "Songify just updated",
+                "Would you like to read the changelog? (recommended)\n\nYou can always find the changelog from the navigation.",
+                AppDialogStyle.PrimaryAndSecondary,
+                new AppDialogSettings
+                {
+                    PrimaryButtonText = "Yes",
+                    SecondaryButtonText = "No"
+                });
+
+            Settings.UpdateRequired = false;
+            if (result == AppDialogResult.Primary)
+                OpenPatchNotes(owner);
+        }
+        catch (Exception e)
+        {
+            Logger.LogExc(e);
+        }
     }
 
     private static async Task SendTelemetryAsync()
