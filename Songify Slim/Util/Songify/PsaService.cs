@@ -1,13 +1,12 @@
 ﻿using Newtonsoft.Json;
-using Songify_Slim.Models;
+using Songify_Slim.Models.Responses;
+using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.General;
 using Songify_Slim.Util.Songify.APIs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Songify_Slim.Models.Responses;
-using Songify_Slim.Util.General;
 
 namespace Songify_Slim.Util.Songify
 {
@@ -23,7 +22,13 @@ namespace Songify_Slim.Util.Songify
             try
             {
                 List<Psa> psas = JsonConvert.DeserializeObject<List<Psa>>(result);
-                return psas is { Count: > 0 } ? psas : null;
+                if (psas is not { Count: > 0 })
+                    return null;
+
+                string version = GlobalObjects.AppVersion;
+                string channel = Settings.ReleaseChannel.ToString();
+                List<Psa> relevant = psas.Where(p => p.AppliesTo(version, channel)).ToList();
+                return relevant.Count > 0 ? relevant : null;
             }
             catch (Exception e)
             {

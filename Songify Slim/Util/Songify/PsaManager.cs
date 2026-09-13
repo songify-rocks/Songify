@@ -113,9 +113,10 @@ internal static class PsaManager
     {
         lock (Sync)
         {
-            if (_psas.Any(p => p.Severity == "High"))
+            int rank = _psas.Count == 0 ? 0 : _psas.Max(p => p.SeverityRank);
+            if (rank >= 3)
                 return new SolidColorBrush(Colors.IndianRed);
-            if (_psas.Any(p => p.Severity == "Medium"))
+            if (rank == 2)
                 return new SolidColorBrush(Colors.Orange);
             return new SolidColorBrush(Colors.DarkGray);
         }
@@ -251,24 +252,28 @@ internal static class PsaManager
 
     private static void MaybeShowHighSeverityToast()
     {
-        Psa high;
+        Psa urgent;
         lock (Sync)
-            high = _psas.FirstOrDefault(p => p.Severity == "High");
+            urgent = _psas
+                .Where(p => p.IsUrgent)
+                .OrderByDescending(p => p.SeverityRank)
+                .ThenByDescending(p => p.Id)
+                .FirstOrDefault();
 
-        if (high == null || Settings.LastShownMotdId == high.Id)
+        if (urgent == null || Settings.LastShownMotdId == urgent.Id)
             return;
 
-        string msg = high.MessageText ?? string.Empty;
+        string msg = urgent.MessageText ?? string.Empty;
         if (msg.Length > 190)
             msg = msg[..190] + "...";
 
         try
         {
             new ToastContentBuilder()
-                .AddArgument("msgId", high.Id)
-                .AddText($"{high.Author} from Songify")
+                .AddArgument("msgId", urgent.Id)
+                .AddText($"{urgent.Author} from Songify")
                 .AddText(msg)
-                .AddAttributionText(high.CreatedAtDateTime.ToString())
+                .AddAttributionText(urgent.CreatedAtDateTime.ToString())
                 .Show();
         }
         catch (Exception e)
@@ -277,7 +282,7 @@ internal static class PsaManager
         }
         finally
         {
-            Settings.LastShownMotdId = high.Id;
+            Settings.LastShownMotdId = urgent.Id;
         }
     }
 

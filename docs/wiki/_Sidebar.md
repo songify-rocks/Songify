@@ -2,6 +2,7 @@
 
 **Setup**
 - [Getting started](Getting-Started)
+- [Migrating from 1.8](Migrating-from-1.8)
 - [Settings reference](Settings-reference)
 - [Spotify setup](Spotify-setup)
 - [Twitch setup](Twitch-setup)

@@ -1,8 +1,15 @@
 # Troubleshooting
 
+### Updating from 1.8.x to 2.0
+
+Hosted widgets, recap, and cloud sync need a **Songify API token**. History converts from `history.shr` to `history.yaml`. Full steps: [Migrating from 1.8](Migrating-from-1.8).
+
+---
+
 ### Songify won’t start or behaves oddly after an update
 
 - Install the [latest release](https://github.com/songify-rocks/Songify/releases/latest).
+- Coming from 1.8: [Migrating from 1.8](Migrating-from-1.8).
 - As a last resort, reset local data (this removes settings): delete the folder  
   `%LocalAppData%\Songify.Rocks`  
   **Warning:** Backup/export config first if you use **Settings → Config → Export**.

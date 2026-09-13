@@ -43,7 +43,16 @@ namespace Songify_Slim.Util.Songify.APIs
 
         public static Task PostSongAsync(string body) => ApiClient.Post("song", body);
 
-        public static Task<string> GetMotdAsync() => ApiClient.Get("motd", "");
+        public static Task<string> GetMotdAsync()
+        {
+            Dictionary<string, string> query = [];
+            string version = GlobalObjects.AppVersion;
+            if (!string.IsNullOrWhiteSpace(version) && version != "?")
+                query["version"] = version;
+
+            query["channel"] = Settings.ReleaseChannel.ToString().ToLowerInvariant();
+            return ApiClient.Get("motd", "", query);
+        }
 
         public static Task<string> GetCanvasRawAsync(string id) => ApiClient.GetCanvas(id);
 

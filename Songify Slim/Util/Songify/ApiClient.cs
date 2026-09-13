@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Songify_Slim.Util.General;
 using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -39,11 +40,24 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
-        public async Task<string> Get(string endpoint, string uuid)
+        public async Task<string> Get(string endpoint, string uuid, IReadOnlyDictionary<string, string> extraQuery = null)
         {
             try
             {
-                string query = string.IsNullOrEmpty(uuid) ? null : $"uuid={Uri.EscapeDataString(uuid)}";
+                List<string> parts = [];
+                if (!string.IsNullOrEmpty(uuid))
+                    parts.Add($"uuid={Uri.EscapeDataString(uuid)}");
+                if (extraQuery != null)
+                {
+                    foreach (KeyValuePair<string, string> kv in extraQuery)
+                    {
+                        if (string.IsNullOrEmpty(kv.Key) || string.IsNullOrEmpty(kv.Value))
+                            continue;
+                        parts.Add($"{Uri.EscapeDataString(kv.Key)}={Uri.EscapeDataString(kv.Value)}");
+                    }
+                }
+
+                string query = parts.Count == 0 ? null : string.Join("&", parts);
                 using HttpResponseMessage response = await SendAsync(
                     HttpMethod.Get, endpoint, requireAuth: false, query: query).ConfigureAwait(false);
                 switch (response.StatusCode)

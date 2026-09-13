@@ -5,6 +5,8 @@
 1. Download the latest **`Songify.zip`** from [Releases](https://github.com/songify-rocks/Songify/releases/latest).
 2. Extract it and run **`Songify.exe`**.
 
+Coming from **1.8.x**? Follow [Migrating from 1.8](Migrating-from-1.8) before you rely on widgets or recap (you need a Songify API token).
+
 On first launch, **Getting started** walks through player, accounts, song requests, the OBS text file, and widgets. You can skip any step and finish later from **Home** or **Help → Getting started**.
 
 For a reliable Spotify setup, use your own Spotify API application—see [Spotify setup](Spotify-setup).

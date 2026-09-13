@@ -47,11 +47,13 @@ namespace Songify_Slim.UserControls
             if (!byPassLimit)
                 DisplayMessageWithReadMore(message);
 
-            Color severityColor = Psa.Severity switch
+            Color severityColor = (Psa.Severity ?? "").Trim().ToLowerInvariant() switch
             {
-                "Low" => Color.FromRgb(0x2E, 0x7D, 0x32),
-                "Medium" => Color.FromRgb(0xEF, 0x6C, 0x00),
-                "High" => Color.FromRgb(0xC6, 0x28, 0x28),
+                "info" => Color.FromRgb(0x15, 0x65, 0xC0),
+                "low" => Color.FromRgb(0x2E, 0x7D, 0x32),
+                "medium" => Color.FromRgb(0xEF, 0x6C, 0x00),
+                "high" => Color.FromRgb(0xC6, 0x28, 0x28),
+                "critical" => Color.FromRgb(0xB7, 0x1C, 0x1C),
                 _ => Color.FromRgb(0x75, 0x75, 0x75)
             };
             SolidColorBrush severityBrush = new(severityColor);
@@ -59,8 +61,8 @@ namespace Songify_Slim.UserControls
 
             BorderSeverity.Background = severityBrush;
 
-            // Left accent for high-severity cards
-            if (Psa.Severity == "High")
+            // Left accent for high / critical cards
+            if (Psa.IsUrgent)
             {
                 BorderMotd.BorderBrush = severityBrush;
                 BorderMotd.BorderThickness = new Thickness(3, 1, 1, 1);
