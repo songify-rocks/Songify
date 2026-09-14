@@ -34,6 +34,9 @@ public sealed class NowPlayingDisplay
 {
     public string Title { get; set; }
     public string Artist { get; set; }
+
+    public string Requester { get; set; }
+    public bool HasRequester => !string.IsNullOrWhiteSpace(Requester);
     public string Albumcover { get; set; }
     public ImageSource AlbumcoverImageSource { get; set; }
 }
@@ -429,6 +432,7 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
                 Title = fromQueue.Title ?? "",
                 Artist = fromQueue.Artist ?? "",
                 Albumcover = coverUrl,
+                Requester = DisplayRequester(fromQueue.Requester),
                 AlbumcoverImageSource = UrlToImageSourceConverter.FromUrl(coverUrl)
             };
             return;
@@ -444,11 +448,26 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
                 Title = song.Title ?? "",
                 Artist = song.Artists ?? "",
                 Albumcover = coverUrl,
+                Requester = "",
                 AlbumcoverImageSource = UrlToImageSourceConverter.FromUrl(coverUrl)
             };
             return;
         }
         NowPlayingDisplay = null;
+    }
+
+    /// <summary>
+    /// Returns a requester name only when it is a real viewer, not a player/source placeholder.
+    /// </summary>
+    private static string DisplayRequester(string requester)
+    {
+        if (string.IsNullOrWhiteSpace(requester))
+            return "";
+        if (string.Equals(requester, "Spotify", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(requester, "YouTube", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(requester, "Skipping...", StringComparison.OrdinalIgnoreCase))
+            return "";
+        return requester;
     }
 
     public event PropertyChangedEventHandler PropertyChanged;

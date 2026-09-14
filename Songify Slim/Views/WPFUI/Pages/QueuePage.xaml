@@ -147,19 +147,45 @@
                             Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                             Text="{Binding NowPlayingDisplay.Artist}"
                             TextTrimming="CharacterEllipsis" />
-                        <Border
-                            Margin="0,6,0,0"
-                            Padding="6,2"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Center"
-                            Background="{StaticResource BadgeNowPlaying}"
-                            CornerRadius="8">
-                            <TextBlock
-                                FontSize="10"
-                                FontWeight="SemiBold"
-                                Foreground="White"
-                                Text="{DynamicResource window_queue_now_playing}" />
-                        </Border>
+                        <StackPanel Orientation="Horizontal">
+                            <Border
+                                Margin="0,6,6,0"
+                                Padding="6,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource BadgeNowPlaying}"
+                                CornerRadius="8">
+                                <TextBlock
+                                    FontSize="10"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"
+                                    Text="{DynamicResource window_queue_now_playing}" />
+                            </Border>
+                            <Border
+                                Margin="0,6,0,0"
+                                Padding="6,2"
+                                HorizontalAlignment="Left"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource BadgeSongRequest}"
+                                CornerRadius="8">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding NowPlayingDisplay.HasRequester}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <TextBlock
+                                    FontSize="10"
+                                    FontWeight="SemiBold"
+                                    Foreground="White"
+                                    Text="{Binding NowPlayingDisplay.Requester, Converter={StaticResource ResourceStringFormatConverter}, ConverterParameter=window_queue_requested_by}" />
+                            </Border>
+                        </StackPanel>
+
                     </StackPanel>
 
                 </StackPanel>
