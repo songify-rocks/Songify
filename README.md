@@ -2,6 +2,8 @@
 
 Now playing overlays, Twitch chat integration, and song requests for streamers.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S167PLK) 
+
 ---
 
 [![Song requests made](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.songify.rocks%2Fv2%2Fstats&query=%24.sr_total&label=song%20requests%20made&color=%2316a349)](https://songify.rocks)
@@ -48,15 +50,8 @@ Supported sources:
 - **Album covers** - download art for OBS when the source provides it
 - **Widgets** - build an overlay with the [widget generator](https://widget.songify.rocks) or grab pre-built widgets [here](https://songify.rocks/widgets/)
 - **Local API** - JSON and WebSocket on a port you choose, for custom visuals and automation
-
-- **🎵 Real-Time Song Info**: Display the current song with support for text files, a hosted widget, or your own custom visuals using Songify's web server.
-- **🔊 Spotify Song Requests**: Let viewers request songs via channel points or chat commands.
-- **💬 Chat Integration**: Built-in commands to manage playback, queues, and retrieve song information.
-- **🎧 Playlist Control**: Add all song requests to a dedicated playlist or restrict requests to specific playlists.
-- **🖼️ Album Covers**: Automatically download album covers to enhance your stream's visuals.
-- **💿 Custom Widgets**: Use the [widget gallery](https://songify.rocks/widgets/) (including Premium styles) or the [widget generator](https://widget.songify.rocks) for a simpler now-playing bar.
-- **🎉 And More!** Discover additional features to elevate your streaming experience.
-The core app is free. [Songify Premium](https://github.com/songify-rocks/Songify/wiki/Songify-Premium) is optional (premium widgets, full request stats, stream recaps, and cloud sync) and does not remove free features. Any [Ko-fi](https://ko-fi.com/S6S167PLK) membership tier unlocks the same Premium.
+- **And More!** Discover additional features to elevate your streaming experience.
+The core app is free. [Songify Premium](https://github.com/songify-rocks/Songify/wiki/Songify-Premium) is optional (cloud sync and extra widget styles) and does not remove free features.
 
 ---
 
