@@ -2,6 +2,7 @@
 
 Now playing overlays, Twitch chat integration, and song requests for streamers.
 
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S167PLK)
 ---
 
 [![Song requests made](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fapi.songify.rocks%2Fv2%2Fstats&query=%24.sr_total&label=song%20requests%20made&color=%2316a349)](https://songify.rocks)
