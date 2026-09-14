@@ -19,6 +19,7 @@ public static class AppFetchService
     private static readonly SongFetcher Sf = new();
     private static Timer _timer;
     private static bool _running;
+    private static bool _forceSpotifyUpdate;
 
     /// <summary>Raised when Spotify idle backoff stage/interval may have changed (UI should refresh).</summary>
     public static event Action IdleBackoffChanged;
@@ -80,6 +81,7 @@ public static class AppFetchService
 
         Stop();
         Start();
+        SpotifyLiveGate.OnSettingsOrPlayerChanged();
         RaisePlayerSourceChanged();
     }
 
@@ -234,7 +236,14 @@ public static class AppFetchService
                     break;
 
                 case PlayerType.Spotify:
-                    await Sf.FetchSpotifyWeb();
+                    if (!SpotifyLiveGate.AllowsSpotifyFetch)
+                    {
+                        _forceSpotifyUpdate = true;
+                        break;
+                    }
+
+                    await Sf.FetchSpotifyWeb(_forceSpotifyUpdate);
+                    _forceSpotifyUpdate = false;
                     break;
 
                 case PlayerType.Pear:

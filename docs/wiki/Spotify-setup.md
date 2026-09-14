@@ -43,6 +43,14 @@ You should see your linked Spotify account in settings when successful.
 
 ---
 
+## Fetch rate and live gating
+
+**Spotify fetch rate** (Settings → Spotify) is how often Songify polls now-playing.
+
+**Enable live gate / test mode** is **off** by default: Songify fetches while you are offline. Turn it **on** to poll only when you are live on Twitch, or use **Test Mode** on Home or in the status bar for two minutes. Details: [Spotify fetching, Test Mode, and live gating](Spotify-fetching-Test-Mode-and-live-gating).
+
+---
+
 ## Song requests
 
 **Spotify Premium** is required on the account you use for playback when using Spotify-backed **song requests**.

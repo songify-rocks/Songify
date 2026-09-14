@@ -20,6 +20,7 @@ Hosted widgets, recap, and cloud sync need a **Songify API token**. History conv
 
 - Confirm the correct **player** is selected (main window dropdown).
 - For **Spotify**, ensure the account is **linked** (Settings → Spotify; status icons in the footer).
+- If **Enable live gate / test mode** is on and you are offline, Home shows that fetching is paused until you go live or turn on **Test Mode**. See [Spotify fetching, Test Mode, and live gating](Spotify-fetching-Test-Mode-and-live-gating).
 - For **Browser Companion**, try increasing the fetch interval under **Settings → System** to reduce missed updates / CPU load.
 
 ---

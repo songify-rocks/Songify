@@ -1,5 +1,6 @@
 using System;
 using System.Windows;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views.WPFUI.Pages;
 
@@ -19,6 +20,7 @@ public partial class QueueWindow
         MinWidth = 0;
         MinHeight = 0;
         ThemeHandler.ApplyTheme();
+        Topmost = Settings.QueueWindowAlwaysOnTop;
         QueueHost.Navigate(new QueuePage());
         Closed += OnClosed;
         Loaded += OnLoaded;

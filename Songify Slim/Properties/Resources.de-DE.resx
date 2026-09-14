@@ -1486,6 +1486,13 @@
   <data name="window_settings_bits_keyword_hint" xml:space="preserve">
     <value>Bits-Schlüsselwort (SR wird nur ausgelöst, wenn dieses Schlüsselwort in der Bits-Nachricht enthalten ist)</value>
   </data>
+  <data name="window_settings_spotify_enable_live_gate" xml:space="preserve">
+    <value>Live-Gate / Testmodus aktivieren</value>
+    <comment>Context: Settings → Spotify. Opt-in: when on, Spotify fetch only runs while live or Test Mode is on.</comment>
+  </data>
+  <data name="window_settings_spotify_enable_live_gate_tooltip" xml:space="preserve">
+    <value>Wenn aktiviert, ruft Songify Spotify-Wiedergabe nur ab, während du auf Twitch live bist oder der Testmodus an ist. Das reduziert API-Aufrufe, wenn der Stream offline ist. Der Testmodus erscheint auf der Startseite und in der Statusleiste und schaltet sich nach 2 Minuten aus.</value>
+  </data>
   <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
     <value>Live-/Testmodus-Limitierung umgehen</value>
   </data>
@@ -1710,6 +1717,20 @@
   <data name="window_overview_nothing_playing" xml:space="preserve">
     <value>Nichts wird abgespielt</value>
     <comment>Context: Empty state on Home/Overview when no track is playing.</comment>
+  </data>
+  <data name="window_overview_test_mode" xml:space="preserve">
+    <value>Testmodus</value>
+    <comment>Context: Home toggle that temporarily fetches Spotify while offline when live gating is on.</comment>
+  </data>
+  <data name="window_overview_test_mode_tooltip" xml:space="preserve">
+    <value>Spotify-Now-Playing vorübergehend abrufen, während du offline bist. Schaltet sich nach 2 Minuten automatisch aus.</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused" xml:space="preserve">
+    <value>Spotify-Abruf ist pausiert</value>
+    <comment>Context: Home banner title when live gate is on, the stream is offline, and Test Mode is off.</comment>
+  </data>
+  <data name="window_overview_spotify_fetch_paused_hint" xml:space="preserve">
+    <value>Geh auf Twitch live oder aktiviere den Testmodus, um Wiedergabe abzurufen. Live-Gating kannst du unter Einstellungen → Spotify deaktivieren.</value>
   </data>
   <data name="window_overview_up_next" xml:space="preserve">
     <value>Als Nächstes</value>
@@ -2663,6 +2684,13 @@ Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
   <data name="window_queue_pop_out" xml:space="preserve">
     <value>Abtrennen</value>
     <comment>Context: Button on Queue page to open the queue in a separate window.</comment>
+  </data>
+  <data name="window_queue_always_on_top" xml:space="preserve">
+    <value>Immer im Vordergrund</value>
+    <comment>Context: Toggle on the queue pop-out window to keep it above other windows.</comment>
+  </data>
+  <data name="window_queue_always_on_top_tooltip" xml:space="preserve">
+    <value>Hält das Queue-Fenster über anderen Fenstern</value>
   </data>
   <data name="window_queue_pop_out_tooltip" xml:space="preserve">
     <value>Öffnet die Queue in einem eigenen Fenster ohne Mindestgröße</value>

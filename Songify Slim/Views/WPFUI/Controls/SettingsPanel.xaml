@@ -2754,12 +2754,11 @@
                                 </Grid>
                                 <StackPanel x:Name="PnlFetchGating">
                                     <ui:ToggleSwitch
-                                        x:Name="TglBypassSpotifyFetchGate"
-                                        d:ToolTip="{x:Static local:Resources.window_settings_spotify_bypass_fetch_gate_tooltip}"
-                                        Checked="TglBypassSpotifyFetchGate_OnToggled"
-                                        Content="{DynamicResource window_settings_spotify_bypass_fetch_gate}"
-                                        ToolTip="{DynamicResource window_settings_spotify_bypass_fetch_gate_tooltip}"
-                                        Unchecked="TglBypassSpotifyFetchGate_OnToggled" />
+                                        x:Name="TglEnableSpotifyLiveGate"
+                                        Checked="TglEnableSpotifyLiveGate_OnToggled"
+                                        Content="{DynamicResource window_settings_spotify_enable_live_gate}"
+                                        ToolTip="{DynamicResource window_settings_spotify_enable_live_gate_tooltip}"
+                                        Unchecked="TglEnableSpotifyLiveGate_OnToggled" />
                                 </StackPanel>
                             </StackPanel>
                         </ui:Card>

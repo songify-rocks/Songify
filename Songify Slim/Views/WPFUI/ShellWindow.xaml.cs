@@ -38,6 +38,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
     private bool _applyingNavigationChrome;
     private int _navChromeGeneration;
     private DispatcherTimer _spotifyIssueEtaTimer;
+    private bool _syncingTestMode;
     private DispatcherTimer _nowPlayingTimer;
     private bool _twitchCommandsPausedDismissed;
 
@@ -444,6 +445,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         AppFetchService.IdleBackoffChanged += OnSpotifyIdleBackoffChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
         AppFetchService.PlayerSourceChanged += OnPlayerSourceChanged;
+        SpotifyLiveGate.Changed -= OnSpotifyLiveGateChanged;
+        SpotifyLiveGate.Changed += OnSpotifyLiveGateChanged;
         PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
         PearWebSocketClient.ConnectionStateChanged += OnPearConnectionStateChanged;
         SongifyPremiumService.StatusChanged -= OnSongifyPremiumStatusChanged;
@@ -451,6 +454,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         ApplySongifyPremiumStatus();
         UpdateSpotifyIdleBackoffIndicator();
         UpdatePearStatusIndicator();
+        RefreshTestModeControls();
         OnPropertyChanged(nameof(SpotifyBrush));
 
         PsaManager.Changed -= OnPsaChanged;
@@ -511,6 +515,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         TeardownSpotifyPersistentIssueBanner();
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
+        SpotifyLiveGate.Changed -= OnSpotifyLiveGateChanged;
         PearWebSocketClient.ConnectionStateChanged -= OnPearConnectionStateChanged;
         SongifyPremiumService.StatusChanged -= OnSongifyPremiumStatusChanged;
         PsaManager.Changed -= OnPsaChanged;
@@ -561,12 +566,44 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             UpdatePearStatusIndicator();
             OnPropertyChanged(nameof(SpotifyBrush));
             UpdateSpotifyIdleBackoffIndicator();
+            RefreshTestModeControls();
         }
 
         if (!Dispatcher.CheckAccess())
             _ = Dispatcher.BeginInvoke(Apply);
         else
             Apply();
+    }
+
+    private void OnSpotifyLiveGateChanged()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            _ = Dispatcher.BeginInvoke(RefreshTestModeControls);
+            return;
+        }
+
+        RefreshTestModeControls();
+    }
+
+    private void RefreshTestModeControls()
+    {
+        bool show = SpotifyLiveGate.ShouldShowTestMode;
+        if (TglShellTestMode != null)
+        {
+            TglShellTestMode.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+            _syncingTestMode = true;
+            TglShellTestMode.IsChecked = show && GlobalObjects.TestMode;
+            _syncingTestMode = false;
+        }
+    }
+
+    private void TglShellTestMode_OnToggled(object sender, RoutedEventArgs e)
+    {
+        if (_syncingTestMode || !IsLoaded)
+            return;
+
+        SpotifyLiveGate.SetTestMode(TglShellTestMode.IsChecked == true);
     }
 
     private void OnPearConnectionStateChanged()

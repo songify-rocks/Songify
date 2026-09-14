@@ -74,6 +74,20 @@
                         <GroupStyle HeaderTemplate="{StaticResource PlayerComboGroupHeader}" />
                     </ComboBox.GroupStyle>
                 </ComboBox>
+                <StackPanel
+                    x:Name="StkSpotifyTestMode"
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    Orientation="Horizontal"
+                    Visibility="Collapsed">
+                    <ui:ToggleSwitch
+                        x:Name="TglTestMode"
+                        VerticalAlignment="Center"
+                        Checked="TglTestMode_OnToggled"
+                        Content="{DynamicResource window_overview_test_mode}"
+                        ToolTip="{DynamicResource window_overview_test_mode_tooltip}"
+                        Unchecked="TglTestMode_OnToggled" />
+                </StackPanel>
             </Grid>
 
             <!--  Getting started  -->
@@ -218,6 +232,23 @@
                 Padding="16"
                 HorizontalAlignment="Stretch">
                 <Grid HorizontalAlignment="Stretch">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <ui:InfoBar
+                        x:Name="BarSpotifyFetchPaused"
+                        Grid.Row="0"
+                        Margin="0,0,0,12"
+                        Title="{DynamicResource window_overview_spotify_fetch_paused}"
+                        IsClosable="False"
+                        IsOpen="False"
+                        Message="{DynamicResource window_overview_spotify_fetch_paused_hint}"
+                        Severity="Informational" />
+                    <Grid
+                        x:Name="GrdNowPlaying"
+                        Grid.Row="1"
+                        HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
@@ -334,6 +365,7 @@
                                 Text="" />
                         </Grid>
                     </StackPanel>
+                    </Grid>
                 </Grid>
             </ui:Card>
 

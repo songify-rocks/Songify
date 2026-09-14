@@ -53,12 +53,25 @@
                 FontWeight="SemiBold"
                 Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                 Text="{DynamicResource menu_queue}" />
-            <StackPanel
-                HorizontalAlignment="Right"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
+            <Grid HorizontalAlignment="Stretch" VerticalAlignment="Center">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+                <ui:ToggleSwitch
+                    x:Name="TglAlwaysOnTop"
+                    Grid.Column="0"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    Checked="TglAlwaysOnTop_OnToggled"
+                    Content="{DynamicResource window_queue_always_on_top}"
+                    ToolTip="{DynamicResource window_queue_always_on_top_tooltip}"
+                    Unchecked="TglAlwaysOnTop_OnToggled"
+                    Visibility="Collapsed" />
                 <ui:Button
                     x:Name="BtnDetachQueue"
+                    Grid.Column="1"
                     Margin="0,0,8,0"
                     Appearance="Secondary"
                     Click="BtnDetachQueue_Click"
@@ -67,11 +80,12 @@
                     ToolTip="{DynamicResource window_queue_pop_out_tooltip}" />
                 <ui:Button
                     x:Name="BtnClearQueue"
+                    Grid.Column="2"
                     Appearance="Secondary"
                     Command="{Binding ClearQueueCommand}"
                     Content="{DynamicResource menu_queue_clear}"
                     Icon="{ui:SymbolIcon Delete24}" />
-            </StackPanel>
+            </Grid>
         </Grid>
         <!--  Fixed row: currently playing (compact; Border avoids Card Content-set-twice designer issue)  -->
         <Border

@@ -61,6 +61,8 @@ namespace Songify_Slim.Util.Configuration
             "AppConfig.SpotifyPersistentIssues",
             // Legacy — artists live in BlockedSpotifyArtists; AppConfig field is always empty at runtime.
             "AppConfig.ArtistBlacklist",
+            "AppConfig.BypassSpotifyFetchGate",
+            "AppConfig.SpotifyLiveGateMigrated",
             "SpotifyCredentials",
             "TwitchCredentials"
         ];

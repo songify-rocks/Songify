@@ -38,6 +38,7 @@ public partial class OverviewPage
     private string _lastUpNextFingerprint;
     private bool _canvasPlaying;
     private bool _stoppingCanvas;
+    private bool _syncingTestMode;
 
     // Progress interpolation between fetch polls
     private string _progressSongId;
@@ -75,8 +76,11 @@ public partial class OverviewPage
         SongifyPremiumService.StatusChanged += OnPremiumStatusChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
         AppFetchService.PlayerSourceChanged += OnPlayerSourceChanged;
+        SpotifyLiveGate.Changed -= OnSpotifyLiveGateChanged;
+        SpotifyLiveGate.Changed += OnSpotifyLiveGateChanged;
 
         UpdatePremiumButton();
+        RefreshTestModeControls();
         UpdateNowPlaying();
         ApplyPendingCanvas();
         UpdateChecklist();
@@ -95,6 +99,7 @@ public partial class OverviewPage
         IsVisibleChanged -= OverviewPage_IsVisibleChanged;
         SongifyPremiumService.StatusChanged -= OnPremiumStatusChanged;
         AppFetchService.PlayerSourceChanged -= OnPlayerSourceChanged;
+        SpotifyLiveGate.Changed -= OnSpotifyLiveGateChanged;
         _updateTimer?.Stop();
         _canvasPlaying = false;
         StopCanvasPlayback();
@@ -126,12 +131,58 @@ public partial class OverviewPage
 
             BindPlayerDropdown();
             _playerDropdownInitialized = true;
+            RefreshTestModeControls();
         }
 
         if (!Dispatcher.CheckAccess())
             Dispatcher.BeginInvoke(Sync);
         else
             Sync();
+    }
+
+    private void OnSpotifyLiveGateChanged()
+    {
+        if (!Dispatcher.CheckAccess())
+        {
+            Dispatcher.BeginInvoke(RefreshTestModeControls);
+            return;
+        }
+
+        RefreshTestModeControls();
+    }
+
+    private void RefreshTestModeControls()
+    {
+        bool show = SpotifyLiveGate.ShouldShowTestMode;
+        if (StkSpotifyTestMode != null)
+            StkSpotifyTestMode.Visibility = show ? Visibility.Visible : Visibility.Collapsed;
+
+        if (TglTestMode != null)
+        {
+            _syncingTestMode = true;
+            TglTestMode.IsChecked = show && GlobalObjects.TestMode;
+            _syncingTestMode = false;
+        }
+
+        UpdateFetchPausedBanner();
+    }
+
+    private void TglTestMode_OnToggled(object sender, RoutedEventArgs e)
+    {
+        if (_syncingTestMode || !IsLoaded)
+            return;
+
+        SpotifyLiveGate.SetTestMode(TglTestMode.IsChecked == true);
+    }
+
+    private void UpdateFetchPausedBanner()
+    {
+        if (BarSpotifyFetchPaused == null)
+            return;
+
+        bool paused = SpotifyLiveGate.IsFetchPaused;
+        BarSpotifyFetchPaused.IsOpen = paused;
+        BarSpotifyFetchPaused.Visibility = paused ? Visibility.Visible : Visibility.Collapsed;
     }
 
     private void OverviewPage_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -306,6 +357,7 @@ public partial class OverviewPage
         _lastCoverUrl = null;
         _lastUpNextFingerprint = null;
         ResetProgressAnchor();
+        RefreshTestModeControls();
         UpdateNowPlaying();
         UpdateChecklist();
     }
@@ -313,6 +365,8 @@ public partial class OverviewPage
     private void UpdateNowPlaying()
     {
         if (TxtNowPlaying == null) return;
+
+        UpdateFetchPausedBanner();
 
         TrackInfo current = GlobalObjects.CurrentSong;
         if (current != null)

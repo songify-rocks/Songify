@@ -5,6 +5,7 @@
 - [Migrating from 1.8](Migrating-from-1.8)
 - [Settings reference](Settings-reference)
 - [Spotify setup](Spotify-setup)
+- [Spotify fetching, Test Mode, and live gating](Spotify-fetching-Test-Mode-and-live-gating)
 - [Twitch setup](Twitch-setup)
 - [Song requests](Song-requests)
 

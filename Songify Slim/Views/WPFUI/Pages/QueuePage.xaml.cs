@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views.WPFUI.ViewModels;
 
@@ -12,6 +13,7 @@ public partial class QueuePage : Page
 {
     private QueueWindowViewModel _viewModel;
     private DispatcherTimer _playPauseTimer;
+    private bool _syncingAlwaysOnTop;
 
     public QueuePage()
     {
@@ -100,6 +102,28 @@ public partial class QueuePage : Page
             CardDetached.Visibility = detached ? Visibility.Visible : Visibility.Collapsed;
         if (BtnDetachQueue != null)
             BtnDetachQueue.Visibility = (detached || floating) ? Visibility.Collapsed : Visibility.Visible;
+
+        if (TglAlwaysOnTop != null)
+        {
+            TglAlwaysOnTop.Visibility = floating ? Visibility.Visible : Visibility.Collapsed;
+            if (floating)
+            {
+                _syncingAlwaysOnTop = true;
+                TglAlwaysOnTop.IsChecked = Settings.QueueWindowAlwaysOnTop;
+                _syncingAlwaysOnTop = false;
+            }
+        }
+    }
+
+    private void TglAlwaysOnTop_OnToggled(object sender, RoutedEventArgs e)
+    {
+        if (_syncingAlwaysOnTop || !IsLoaded || !IsFloatingHost)
+            return;
+
+        bool on = TglAlwaysOnTop.IsChecked == true;
+        Settings.QueueWindowAlwaysOnTop = on;
+        if (Window.GetWindow(this) is QueueWindow queueWindow)
+            queueWindow.Topmost = on;
     }
 
     private void BtnDetachQueue_Click(object sender, RoutedEventArgs e)

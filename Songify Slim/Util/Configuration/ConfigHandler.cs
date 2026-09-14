@@ -410,6 +410,21 @@ namespace Songify_Slim.Util.Configuration
         }
 
         /// <summary>
+        /// The Fluent shell never applied <see cref="AppConfig.BypassSpotifyFetchGate"/>, so installs
+        /// have been fetching while offline. Keep that behavior and make live gating opt-in via
+        /// <see cref="AppConfig.EnableSpotifyLiveGate"/>.
+        /// </summary>
+        internal static void MigrateSpotifyLiveGate(AppConfig appConfig)
+        {
+            if (appConfig == null || appConfig.SpotifyLiveGateMigrated)
+                return;
+
+            appConfig.EnableSpotifyLiveGate = false;
+            appConfig.BypassSpotifyFetchGate = true;
+            appConfig.SpotifyLiveGateMigrated = true;
+        }
+
+        /// <summary>
         /// Known bots used to be ignored automatically. Copy them onto the editable list once
         /// so existing installs keep the same behavior, then turn the toggle off permanently.
         /// </summary>
@@ -501,6 +516,7 @@ namespace Songify_Slim.Util.Configuration
                         MigrateReleaseChannel(config.AppConfig);
                         MigrateRefundConditions(config.AppConfig);
                         MigrateIgnoreBotMessages(config.AppConfig);
+                        MigrateSpotifyLiveGate(config.AppConfig);
                         WriteConfig(ConfigTypes.AppConfig, config.AppConfig, path, false);
                         break;
 
@@ -608,6 +624,7 @@ namespace Songify_Slim.Util.Configuration
                     MigrateReleaseChannel(config.AppConfig);
                     MigrateRefundConditions(config.AppConfig);
                     MigrateIgnoreBotMessages(config.AppConfig);
+                    MigrateSpotifyLiveGate(config.AppConfig);
                 }
             }
 
@@ -1350,6 +1367,9 @@ namespace Songify_Slim.Util.Configuration
         /// When <see cref="OpenQueueOnStartup"/> is true, open the standalone queue window instead of the Queue page.
         /// </summary>
         public bool OpenQueuePopOutOnStartup { get; set; }
+
+        /// <summary>When true, the detached queue window stays above other windows.</summary>
+        public bool QueueWindowAlwaysOnTop { get; set; }
         public bool RewardGoalEnabled { get; set; }
         public bool SaveHistory { get; set; }
         public bool SplitOutput { get; set; }
@@ -1469,13 +1489,19 @@ namespace Songify_Slim.Util.Configuration
         public int SpotifyFetchRate { get; set; } = 2;
 
         /// <summary>
-        /// When true, Spotify now-playing fetch runs even when not live on Twitch and TestMode is off.
+        /// When true, Spotify now-playing fetch runs only while live on Twitch or Test Mode is on.
+        /// Default is off: fetch continues while the stream is offline.
         /// </summary>
-        /// <remarks>
-        /// Default gating exists to limit steady Spotify Web API traffic when the stream is offline, reducing
-        /// unnecessary calls and the risk of rate limiting while Songify runs in the background.
-        /// </remarks>
-        public bool BypassSpotifyFetchGate { get; set; }
+        public bool EnableSpotifyLiveGate { get; set; }
+
+        /// <summary>
+        /// Legacy inverted flag (true = always fetch). Kept for YAML read/write compatibility
+        /// and mapped once by <see cref="ConfigHandler.MigrateSpotifyLiveGate"/>.
+        /// </summary>
+        public bool BypassSpotifyFetchGate { get; set; } = true;
+
+        /// <summary>True after the one-time move from <see cref="BypassSpotifyFetchGate"/> to opt-in <see cref="EnableSpotifyLiveGate"/>.</summary>
+        public bool SpotifyLiveGateMigrated { get; set; }
 
         /// <summary>
         /// When false, Windows toast popups for Spotify errors/rate limits are suppressed.

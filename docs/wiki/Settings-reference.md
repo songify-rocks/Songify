@@ -80,6 +80,8 @@ Configure Twitch polls integration (when available in your build).
 - **Link** — Connect your Spotify account.
 - **Use Songify App ID / own App ID** — **Own App ID** is recommended; create an app on the [Spotify Dashboard](https://developer.spotify.com/dashboard/applications). See [Spotify setup](Spotify-setup).
 - **Client ID / Client Secret** — From your Spotify application settings.
+- **Spotify fetch rate** — How often Songify polls now-playing (seconds).
+- **Enable live gate / test mode** — Off by default (fetch even while offline). When **on**, Spotify is polled only while you are live on Twitch or **Test Mode** is on. Test Mode appears on **Home** and in the status bar and turns itself off after 2 minutes. See [Spotify fetching, Test Mode, and live gating](Spotify-fetching-Test-Mode-and-live-gating).
 
 ---
 

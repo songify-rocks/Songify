@@ -4,7 +4,7 @@ Use the **player dropdown** on the main window to choose where Songify reads “
 
 | Source | Description |
 |--------|-------------|
-| **Spotify** | Full API integration; best for song requests, rich metadata, and cover art. |
+| **Spotify** | Full API integration; best for song requests, rich metadata, and cover art. Optional [live gating / Test Mode](Spotify-fetching-Test-Mode-and-live-gating) can limit polling while you are offline. |
 | **Windows Playback API** | Anything exposing metadata through Windows’ media session (many desktop players). |
 | **foobar2000** | Title via foobar2000 integration. |
 | **VLC** | VLC media player window/title integration. |

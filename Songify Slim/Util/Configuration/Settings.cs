@@ -235,7 +235,7 @@ namespace Songify_Slim.Util.Configuration
         }
 
         public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
-        public static bool BypassSpotifyFetchGate { get => GetBypassSpotifyFetchGate(); set => SetBypassSpotifyFetchGate(value); }
+        public static bool EnableSpotifyLiveGate { get => GetEnableSpotifyLiveGate(); set => SetEnableSpotifyLiveGate(value); }
         public static bool ShowSpotifyToasts { get => GetShowSpotifyToasts(); set => SetShowSpotifyToasts(value); }
         public static bool ArtistBlocklistSyncEnabled { get => GetArtistBlocklistSyncEnabled(); set => SetArtistBlocklistSyncEnabled(value); }
         public static string ArtistBlocklistSyncUrl { get => GetArtistBlocklistSyncUrl(); set => SetArtistBlocklistSyncUrl(value); }
@@ -271,15 +271,17 @@ namespace Songify_Slim.Util.Configuration
             return CurrentConfig.AppConfig.SpotifyFetchRate;
         }
 
-        private static void SetBypassSpotifyFetchGate(bool value)
+        private static void SetEnableSpotifyLiveGate(bool value)
         {
-            CurrentConfig.AppConfig.BypassSpotifyFetchGate = value;
+            CurrentConfig.AppConfig.EnableSpotifyLiveGate = value;
+            CurrentConfig.AppConfig.BypassSpotifyFetchGate = !value;
+            CurrentConfig.AppConfig.SpotifyLiveGateMigrated = true;
             ConfigHandler.WriteAllConfig(CurrentConfig);
         }
 
-        private static bool GetBypassSpotifyFetchGate()
+        private static bool GetEnableSpotifyLiveGate()
         {
-            return CurrentConfig.AppConfig.BypassSpotifyFetchGate;
+            return CurrentConfig.AppConfig.EnableSpotifyLiveGate;
         }
 
         private static void SetShowSpotifyToasts(bool value)
@@ -752,6 +754,12 @@ namespace Songify_Slim.Util.Configuration
         {
             get => GetOpenQueuePopOutOnStartup();
             set => SetOpenQueuePopOutOnStartup(value);
+        }
+
+        public static bool QueueWindowAlwaysOnTop
+        {
+            get => GetQueueWindowAlwaysOnTop();
+            set => SetQueueWindowAlwaysOnTop(value);
         }
 
         public static string OutputString
@@ -1490,6 +1498,7 @@ namespace Songify_Slim.Util.Configuration
                 MsgLoggingEnabled = GetMsgLoggingEnabled(),
                 OpenQueueOnStartup = GetOpenQueueOnStartup(),
                 OpenQueuePopOutOnStartup = GetOpenQueuePopOutOnStartup(),
+                QueueWindowAlwaysOnTop = GetQueueWindowAlwaysOnTop(),
                 OutputString = GetOutputString(),
                 OutputString2 = GetOutputString2(),
                 PauseOption = GetPauseOption(),
@@ -1516,7 +1525,9 @@ namespace Songify_Slim.Util.Configuration
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 SrForBits = GetSrForBits(),
                 SpotifyFetchRate = GetSpotifyFetchRate(),
-                BypassSpotifyFetchGate = GetBypassSpotifyFetchGate(),
+                EnableSpotifyLiveGate = GetEnableSpotifyLiveGate(),
+                BypassSpotifyFetchGate = !GetEnableSpotifyLiveGate(),
+                SpotifyLiveGateMigrated = true,
                 ShowSpotifyToasts = GetShowSpotifyToasts(),
                 ArtistBlocklistSyncEnabled = GetArtistBlocklistSyncEnabled(),
                 ArtistBlocklistSyncUrl = GetArtistBlocklistSyncUrl(),
@@ -1618,6 +1629,7 @@ namespace Songify_Slim.Util.Configuration
                 ConfigHandler.MigrateReleaseChannel(config.AppConfig);
                 ConfigHandler.MigrateRefundConditions(config.AppConfig);
                 ConfigHandler.MigrateIgnoreBotMessages(config.AppConfig);
+                ConfigHandler.MigrateSpotifyLiveGate(config.AppConfig);
             }
 
             CurrentConfig = config;
@@ -1647,6 +1659,7 @@ namespace Songify_Slim.Util.Configuration
                 ConfigHandler.MigrateReleaseChannel(CurrentConfig.AppConfig);
                 ConfigHandler.MigrateRefundConditions(CurrentConfig.AppConfig);
                 ConfigHandler.MigrateIgnoreBotMessages(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateSpotifyLiveGate(CurrentConfig.AppConfig);
             }
 
             if (paths.Any(p => p.StartsWith("BlockedSpotifyArtists", StringComparison.OrdinalIgnoreCase)))
@@ -1695,6 +1708,7 @@ namespace Songify_Slim.Util.Configuration
             {
                 ConfigHandler.MigrateReleaseChannel(CurrentConfig.AppConfig);
                 ConfigHandler.MigrateIgnoreBotMessages(CurrentConfig.AppConfig);
+                ConfigHandler.MigrateSpotifyLiveGate(CurrentConfig.AppConfig);
             }
 
             // Older cloud saves may still keep artists on AppConfig; migrate into BlockedSpotifyArtists.
@@ -2138,6 +2152,11 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetOpenQueuePopOutOnStartup()
         {
             return CurrentConfig.AppConfig.OpenQueuePopOutOnStartup;
+        }
+
+        private static bool GetQueueWindowAlwaysOnTop()
+        {
+            return CurrentConfig.AppConfig.QueueWindowAlwaysOnTop;
         }
 
         private static string GetOutputString()
@@ -3013,6 +3032,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetOpenQueuePopOutOnStartup(bool value)
         {
             CurrentConfig.AppConfig.OpenQueuePopOutOnStartup = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static void SetQueueWindowAlwaysOnTop(bool value)
+        {
+            CurrentConfig.AppConfig.QueueWindowAlwaysOnTop = value;
             ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
         }
 

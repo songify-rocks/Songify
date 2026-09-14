@@ -752,36 +752,50 @@
                         </StackPanel>
                     </Button>
                 </StackPanel>
-                <ui:Button
-                    x:Name="BtnSpotifyIdleBackoff"
+                <StackPanel
                     Grid.Column="1"
-                    MinHeight="22"
                     Margin="12,0"
-                    Padding="8,0"
                     HorizontalAlignment="Center"
                     VerticalAlignment="Center"
-                    Appearance="Transparent"
-                    Click="BtnSpotifyIdleBackoff_Click"
-                    Cursor="Hand"
-                    ToolTip="{DynamicResource window_settings_spotify_idle_backoff_tooltip}"
-                    Visibility="Collapsed">
-                    <StackPanel Orientation="Horizontal">
-                        <ui:SymbolIcon
-                            Width="12"
-                            Height="12"
-                            Margin="0,0,6,0"
-                            VerticalAlignment="Center"
-                            Foreground="IndianRed"
-                            Symbol="Gauge24" />
-                        <TextBlock
-                            x:Name="TbSpotifyIdleBackoff"
-                            VerticalAlignment="Center"
-                            FontSize="11"
-                            FontWeight="SemiBold"
-                            Foreground="IndianRed"
-                            Text="Polling 20s (idle)" />
-                    </StackPanel>
-                </ui:Button>
+                    Orientation="Horizontal">
+                    <ui:ToggleSwitch
+                        x:Name="TglShellTestMode"
+                        Margin="0,0,8,0"
+                        VerticalAlignment="Center"
+                        Checked="TglShellTestMode_OnToggled"
+                        Content="{DynamicResource window_overview_test_mode}"
+                        FontSize="11"
+                        ToolTip="{DynamicResource window_overview_test_mode_tooltip}"
+                        Unchecked="TglShellTestMode_OnToggled"
+                        Visibility="Collapsed" />
+                    <ui:Button
+                        x:Name="BtnSpotifyIdleBackoff"
+                        MinHeight="22"
+                        Padding="8,0"
+                        VerticalAlignment="Center"
+                        Appearance="Transparent"
+                        Click="BtnSpotifyIdleBackoff_Click"
+                        Cursor="Hand"
+                        ToolTip="{DynamicResource window_settings_spotify_idle_backoff_tooltip}"
+                        Visibility="Collapsed">
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon
+                                Width="12"
+                                Height="12"
+                                Margin="0,0,6,0"
+                                VerticalAlignment="Center"
+                                Foreground="IndianRed"
+                                Symbol="Gauge24" />
+                            <TextBlock
+                                x:Name="TbSpotifyIdleBackoff"
+                                VerticalAlignment="Center"
+                                FontSize="11"
+                                FontWeight="SemiBold"
+                                Foreground="IndianRed"
+                                Text="Polling 20s (idle)" />
+                        </StackPanel>
+                    </ui:Button>
+                </StackPanel>
                 <TextBlock
                     x:Name="LblCopyright"
                     Grid.Column="2"

@@ -1521,6 +1521,13 @@
   <data name="window_settings_spotify_fetch_rate" xml:space="preserve">
     <value>Spotify fetch rate (seconds)</value>
   </data>
+  <data name="window_settings_spotify_enable_live_gate" xml:space="preserve">
+    <value>Enable live gate / test mode</value>
+    <comment>Context: Settings → Spotify. Opt-in: when on, Spotify fetch only runs while live or Test Mode is on.</comment>
+  </data>
+  <data name="window_settings_spotify_enable_live_gate_tooltip" xml:space="preserve">
+    <value>When enabled, Songify only fetches Spotify playback while you are live on Twitch or Test Mode is on. Reduces API usage when the stream is offline. Test Mode appears on Home and in the status bar, and turns off after 2 minutes.</value>
+  </data>
   <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
     <value>Bypass live/TestMode gating</value>
   </data>
@@ -2026,6 +2033,20 @@
   <data name="window_overview_nothing_playing" xml:space="preserve">
     <value>Nothing playing</value>
     <comment>Context: Empty state on Home/Overview when no track is playing.</comment>
+  </data>
+  <data name="window_overview_test_mode" xml:space="preserve">
+    <value>Test Mode</value>
+    <comment>Context: Home toggle that temporarily fetches Spotify while offline when live gating is on.</comment>
+  </data>
+  <data name="window_overview_test_mode_tooltip" xml:space="preserve">
+    <value>Temporarily fetch Spotify now-playing while you are offline. Turns off automatically after 2 minutes.</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused" xml:space="preserve">
+    <value>Spotify fetching is paused</value>
+    <comment>Context: Home banner title when live gate is on, the stream is offline, and Test Mode is off.</comment>
+  </data>
+  <data name="window_overview_spotify_fetch_paused_hint" xml:space="preserve">
+    <value>Go live on Twitch or turn on Test Mode to fetch playback. You can disable live gating in Settings → Spotify.</value>
   </data>
   <data name="window_overview_up_next" xml:space="preserve">
     <value>Up next</value>
@@ -3210,6 +3231,13 @@ You can still open Songify Premium any time from Home or About.</value>
   <data name="window_queue_pop_out" xml:space="preserve">
     <value>Pop out</value>
     <comment>Context: Button on Queue page to open the queue in a separate window.</comment>
+  </data>
+  <data name="window_queue_always_on_top" xml:space="preserve">
+    <value>Always on top</value>
+    <comment>Context: Toggle on the queue pop-out window to keep it above other windows.</comment>
+  </data>
+  <data name="window_queue_always_on_top_tooltip" xml:space="preserve">
+    <value>Keep the queue window above other windows</value>
   </data>
   <data name="window_queue_pop_out_tooltip" xml:space="preserve">
     <value>Open the queue in a separate window with no minimum size</value>

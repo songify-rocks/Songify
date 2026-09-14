@@ -454,7 +454,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Tglsw_BlockAllExplicitSongs.IsChecked = Settings.BlockAllExplicitSongs;
             CbxAllowedUserLevelsExplicit.IsEnabled = Settings.BlockAllExplicitSongs;
             NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
-            TglBypassSpotifyFetchGate.IsChecked = Settings.BypassSpotifyFetchGate;
+            TglEnableSpotifyLiveGate.IsChecked = Settings.EnableSpotifyLiveGate;
             TglShowSpotifyToasts.IsChecked = Settings.ShowSpotifyToasts;
             LoadArtistBlocklistSyncControls();
             TbRequesterPrefix.Text = Settings.RequesterPrefix;
@@ -2237,12 +2237,17 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Settings.AddSrToPlaylist = ((ToggleSwitch)sender).IsChecked == true;
         }
 
-        private void TglBypassSpotifyFetchGate_OnToggled(object sender, RoutedEventArgs e)
+        private void TglEnableSpotifyLiveGate_OnToggled(object sender, RoutedEventArgs e)
         {
             if (IgnoreControlEvents)
                 return;
-            Settings.BypassSpotifyFetchGate = ((ToggleSwitch)sender).IsChecked == true;
-            AppFetchService.NotifySpotifyRelatedActivity("bypass Spotify fetch gate toggled");
+            Settings.EnableSpotifyLiveGate = ((ToggleSwitch)sender).IsChecked == true;
+            SpotifyLiveGate.OnSettingsOrPlayerChanged();
+            if (!Settings.EnableSpotifyLiveGate)
+            {
+                AppFetchService.NotifySpotifyRelatedActivity("Spotify live gate disabled");
+                _ = AppFetchService.ForceFetchSpotifyAsync(true);
+            }
         }
 
         private void TglShowSpotifyToasts_OnToggled(object sender, RoutedEventArgs e)
