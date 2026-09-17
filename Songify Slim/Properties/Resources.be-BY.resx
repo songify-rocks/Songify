@@ -3179,4 +3179,52 @@ gwyden - Hertz - karimawii
     <value>Толькі "Цяпер прайграецца"</value>
     <comment>Context: Player dropdown group for overlay-only sources.</comment>
   </data>
+  <data name="window_settings_spotify_enable_live_gate" xml:space="preserve">
+    <value>Уключыць рэжым жывога шлюза / тэставы рэжым</value>
+  </data>
+  <data name="window_settings_spotify_enable_live_gate_tooltip" xml:space="preserve">
+    <value>Калі гэты рэжым уключаны, Songify атрымлівае прайграванне Spotify толькі падчас прамой трансляцыі на Twitch або ў рэжыме тэставання. Змяншае выкарыстанне API, калі трансляцыя не ў сетцы. Тэставы рэжым адлюстроўваецца на галоўнай старонцы і ў радку стану і выключаецца праз 2 хвіліны.</value>
+  </data>
+  <data name="window_overview_test_mode" xml:space="preserve">
+    <value>Тэставы рэжым</value>
+  </data>
+  <data name="window_overview_test_mode_tooltip" xml:space="preserve">
+    <value>Часова атрымліваць інфармацыю пра прайграванне Spotify, калі вы па-за сеткай. Аўтаматычна выключаецца праз 2 хвіліны.</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused" xml:space="preserve">
+    <value>Загрузка Spotify прыпынена</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused_hint" xml:space="preserve">
+    <value>Выходзьце ў прамую трансляцыю на Twitch або ўключыце тэставы рэжым, каб атрымаць прайграванне. Вы можаце адключыць абмежаванне прамой трансляцыі ў Наладах → Spotify.</value>
+  </data>
+  <data name="window_queue_always_on_top" xml:space="preserve">
+    <value>Заўсёды на вышыні</value>
+  </data>
+  <data name="window_queue_always_on_top_tooltip" xml:space="preserve">
+    <value>Размяшчаць акно чаргі над іншымі вокнамі</value>
+  </data>
+  <data name="window_settings_pear_title" xml:space="preserve">
+    <value>API для працоўнага стала Pear</value>
+  </data>
+  <data name="window_settings_pear_hint" xml:space="preserve">
+    <value>Запыт «Дазволіць/Забараніць» у Pear з'яўляецца толькі ў запыце /auth, а не пры падключэнні WebSocket. Выбар Pear або націсканне «Аўтарызаваць» запускае гэты запыт — дазваляецца выкарыстанне Songify ў Pear. Устаўце сюды токен, толькі калі ён у вас ужо ёсць.</value>
+  </data>
+  <data name="window_settings_pear_token" xml:space="preserve">
+    <value>Токен API</value>
+  </data>
+  <data name="window_settings_pear_authorize" xml:space="preserve">
+    <value>Аўтарызаваць</value>
+  </data>
+  <data name="window_settings_pear_authorize_waiting" xml:space="preserve">
+    <value>Чаканне Pear Desktop… дазвольце Songify у камандным радку.</value>
+  </data>
+  <data name="window_twitch_commands_paused_title" xml:space="preserve">
+    <value>Каманды Twitch прыпыненыя</value>
+  </data>
+  <data name="window_twitch_commands_paused_body" xml:space="preserve">
+    <value>Каманды і запыты на песні ігнаруюцца, пакуль трансляцыя не ў сетцы, бо ўключаны толькі прамы эфір на Twitch.</value>
+  </data>
+  <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
+    <value>Каманда або запыт на песню былі праігнараваны, бо трансляцыя не ў сетцы, і ўключаны толькі прамы эфір на Twitch.</value>
+  </data>
 </root>

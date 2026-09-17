@@ -2525,4 +2525,451 @@ Puoi comunque aprire Songify Premium in qualsiasi momento dalla schermata inizia
   <data name="window_settings_appearance_scale_value" xml:space="preserve">
     <value>{0}%</value>
   </data>
+  <data name="window_settings_system_open_queue_pop_out" xml:space="preserve">
+    <value>Apri una finestra indipendente</value>
+  </data>
+  <data name="window_blocklist_select_song" xml:space="preserve">
+    <value>Seleziona brano</value>
+  </data>
+  <data name="window_blocklist_multiple_songs_match" xml:space="preserve">
+    <value>Sono stati trovati più brani corrispondenti alla ricerca. Selezionane uno da bloccare.</value>
+  </data>
+  <data name="window_settings_spotify_enable_live_gate" xml:space="preserve">
+    <value>Abilita la modalità live gate/test</value>
+  </data>
+  <data name="window_settings_spotify_enable_live_gate_tooltip" xml:space="preserve">
+    <value>Quando è attivo, Songify riproduce i contenuti di Spotify solo quando sei in diretta su Twitch o quando la Modalità di test è attiva. Riduce l'utilizzo delle API quando lo streaming è offline. La Modalità di test viene visualizzata nella schermata iniziale e nella barra di stato e si disattiva dopo 2 minuti.</value>
+  </data>
+  <data name="window_blocklist_search_song_placeholder" xml:space="preserve">
+    <value>Cerca il brano su Spotify o incolla il link…</value>
+  </data>
+  <data name="window_overview_test_mode" xml:space="preserve">
+    <value>Modalità di prova</value>
+  </data>
+  <data name="window_overview_test_mode_tooltip" xml:space="preserve">
+    <value>Scarica temporaneamente i brani in riproduzione su Spotify mentre sei offline. Si disattiva automaticamente dopo 2 minuti.</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused" xml:space="preserve">
+    <value>Il recupero dei dati da Spotify è in pausa.</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused_hint" xml:space="preserve">
+    <value>Trasmetti in diretta su Twitch o attiva la Modalità di prova per riprodurre i contenuti. Puoi disattivare il live gating in Impostazioni → Spotify.</value>
+  </data>
+  <data name="window_main_status_twitch_click_hint" xml:space="preserve">
+    <value>Fai clic per accedere, connetterti e visualizzare lo stato in tempo reale</value>
+  </data>
+  <data name="window_settings_appearance_nav_style" xml:space="preserve">
+    <value>Menù laterale</value>
+  </data>
+  <data name="window_settings_appearance_nav_style_hint" xml:space="preserve">
+    <value>Modalità di visualizzazione del menu di navigazione principale: menu laterale espanso, in alto o in basso. Lo stato (espanso o compresso) del menu laterale viene memorizzato.</value>
+  </data>
+  <data name="window_settings_appearance_nav_left" xml:space="preserve">
+    <value>Espandere</value>
+  </data>
+  <data name="window_settings_appearance_nav_left_fluent" xml:space="preserve">
+    <value>Icone grandi</value>
+  </data>
+  <data name="window_settings_appearance_nav_left_minimal" xml:space="preserve">
+    <value>Sovrapposizione</value>
+  </data>
+  <data name="window_settings_appearance_nav_top" xml:space="preserve">
+    <value>Superiore</value>
+  </data>
+  <data name="window_settings_appearance_nav_bottom" xml:space="preserve">
+    <value>Metter il fondo a</value>
+  </data>
+  <data name="window_blocklist_song_not_found" xml:space="preserve">
+    <value>Non è stato possibile trovare un brano con quel nome su Spotify.</value>
+  </data>
+  <data name="window_blocklist_search_song_failed" xml:space="preserve">
+    <value>Impossibile trovare quel brano su Spotify.</value>
+  </data>
+  <data name="window_cloudimport_revision_label" xml:space="preserve">
+    <value>Versione salvata</value>
+  </data>
+  <data name="window_cloudimport_schema_too_new" xml:space="preserve">
+    <value>Questo salvataggio su cloud è stato creato da una versione più recente di Songify. Aggiorna Songify per ripristinarlo.</value>
+  </data>
+  <data name="window_cloudimport_revision_invalid" xml:space="preserve">
+    <value>Impossibile leggere la versione salvata.</value>
+  </data>
+  <data name="window_cloudimport_unknown_revision" xml:space="preserve">
+    <value>Salvataggio sconosciuto</value>
+  </data>
+  <data name="window_cloudimport_latest_revision" xml:space="preserve">
+    <value>Ultimo salvataggio</value>
+  </data>
+  <data name="window_settings_cloud_restored" xml:space="preserve">
+    <value>Impostazioni ripristinate correttamente dal cloud.</value>
+  </data>
+  <data name="window_settings_cloud_empty" xml:space="preserve">
+    <value>Nessun salvataggio su cloud ancora disponibile.</value>
+  </data>
+  <data name="window_settings_cloud_need_update" xml:space="preserve">
+    <value>Questo salvataggio su cloud è stato creato da una versione più recente di Songify. Aggiorna Songify.</value>
+  </data>
+  <data name="window_settings_cloud_no_changes" xml:space="preserve">
+    <value>Non sono state rilevate modifiche, le impostazioni locali rimangono invariate.</value>
+  </data>
+  <data name="window_settings_cloud_cancelled" xml:space="preserve">
+    <value>Annullato dall'utente.</value>
+  </data>
+  <data name="window_settings_cloud_unavailable" xml:space="preserve">
+    <value>Errore durante la connessione al servizio Songify.</value>
+  </data>
+  <data name="window_settings_cloud_unprocessable" xml:space="preserve">
+    <value>Il server ha rifiutato il salvataggio nel cloud. Riprova.</value>
+  </data>
+  <data name="window_settings_cloud_bad_response" xml:space="preserve">
+    <value>Impossibile leggere le impostazioni cloud. Controlla il registro per i dettagli.</value>
+  </data>
+  <data name="window_backupimport_title" xml:space="preserve">
+    <value>Ripristina il backup</value>
+  </data>
+  <data name="window_backupimport_intro" xml:space="preserve">
+    <value>Scegli quali impostazioni di questo backup sovrascrivere. Gli elementi non selezionati rimarranno invariati.</value>
+  </data>
+  <data name="window_import_select_all" xml:space="preserve">
+    <value>Seleziona tutto</value>
+  </data>
+  <data name="window_import_select_none" xml:space="preserve">
+    <value>Seleziona nessuno</value>
+  </data>
+  <data name="window_import_selected_count" xml:space="preserve">
+    <value>{0} di {1} selezionati</value>
+  </data>
+  <data name="window_import_group_app" xml:space="preserve">
+    <value>Impostazioni dell'app</value>
+  </data>
+  <data name="window_import_group_bot" xml:space="preserve">
+    <value>Risposte del bot</value>
+  </data>
+  <data name="window_import_group_commands" xml:space="preserve">
+    <value>Comandi Twitch</value>
+  </data>
+  <data name="window_import_group_artists" xml:space="preserve">
+    <value>Artisti bloccati</value>
+  </data>
+  <data name="window_import_group_spotify" xml:space="preserve">
+    <value>Account Spotify</value>
+  </data>
+  <data name="window_import_group_twitch" xml:space="preserve">
+    <value>Conto Twitch</value>
+  </data>
+  <data name="window_settings_config_import_empty" xml:space="preserve">
+    <value>In quella cartella non è stato trovato alcun file di configurazione di Songify.</value>
+  </data>
+  <data name="player_group_song_requests" xml:space="preserve">
+    <value>Richieste di canzoni</value>
+  </data>
+  <data name="player_group_now_playing" xml:space="preserve">
+    <value>Ora in riproduzione solo</value>
+  </data>
+  <data name="setup_requests_title" xml:space="preserve">
+    <value>Richieste di canzoni</value>
+  </data>
+  <data name="setup_requests_body" xml:space="preserve">
+    <value>Gli spettatori possono richiedere brani tramite punti canale, comandi di chat o entrambi. Saltate questo passaggio se desiderate solo una sovrapposizione con il brano in riproduzione.</value>
+  </data>
+  <data name="setup_requests_reward" xml:space="preserve">
+    <value>Punti di canale</value>
+  </data>
+  <data name="setup_requests_reward_hint" xml:space="preserve">
+    <value>Gli spettatori possono riscattare un premio per richiedere una canzone. Successivamente, puoi creare un premio o sceglierne uno esistente. I rimborsi sono validi solo per i premi creati su Songify.</value>
+  </data>
+  <data name="setup_requests_command" xml:space="preserve">
+    <value>Comandi di chat</value>
+  </data>
+  <data name="setup_requests_command_hint" xml:space="preserve">
+    <value>Gli spettatori digitano !ssr seguito dal nome di una canzone. Questo abilita il comando di richiesta canzone. Modifica il trigger, i livelli utente e le risposte in seguito in Impostazioni → Comandi. Collega il bot dall'icona di stato di Twitch quando vai in diretta.</value>
+  </data>
+  <data name="setup_requests_create_reward" xml:space="preserve">
+    <value>Crea ricompensa</value>
+  </data>
+  <data name="setup_requests_open_rewards" xml:space="preserve">
+    <value>Impostazioni premi aperte</value>
+  </data>
+  <data name="setup_requests_open_commands" xml:space="preserve">
+    <value>Apri le impostazioni del comando</value>
+  </data>
+  <data name="setup_requests_need_twitch" xml:space="preserve">
+    <value>Collega prima Twitch per creare una ricompensa o abilitare i comandi della chat.</value>
+  </data>
+  <data name="setup_rewards_title" xml:space="preserve">
+    <value>Scegli i premi per la richiesta di canzoni</value>
+  </data>
+  <data name="setup_rewards_body" xml:space="preserve">
+    <value>Controlla ogni ricompensa in punti canale che dovrebbe aggiungere un brano. Puoi assegnare le ricompense salta o salta sondaggio in seguito in Impostazioni → Ricompense.</value>
+  </data>
+  <data name="setup_rewards_refund" xml:space="preserve">
+    <value>I rimborsi automatici funzionano solo se il premio è stato creato da Songify. I premi creati tramite la dashboard di Twitch non possono essere rimborsati da qui. I premi creati da Songify mostrano l'icona di Songify.</value>
+  </data>
+  <data name="setup_rewards_loading" xml:space="preserve">
+    <value>Caricamento premi in corso…</value>
+  </data>
+  <data name="setup_rewards_empty" xml:space="preserve">
+    <value>Nessun premio ancora. Creane uno qui sotto oppure creane uno su Twitch e tocca Aggiorna.</value>
+  </data>
+  <data name="setup_rewards_error" xml:space="preserve">
+    <value>Impossibile caricare i premi. Collega Twitch e prova ad aggiornare la pagina.</value>
+  </data>
+  <data name="setup_rewards_refresh" xml:space="preserve">
+    <value>Aggiorna</value>
+  </data>
+  <data name="setup_rewards_manageable" xml:space="preserve">
+    <value>Funzionalità di rimborso (create in Songify)</value>
+  </data>
+  <data name="setup_rewards_selected" xml:space="preserve">
+    <value>{0} selezionato per le richieste di canzoni</value>
+  </data>
+  <data name="setup_limits_title" xml:space="preserve">
+    <value>Regole di richiesta</value>
+  </data>
+  <data name="setup_limits_body" xml:space="preserve">
+    <value>Imposta chi può effettuare richieste tramite punti canale e quanti brani può avere in coda. Puoi modificare tutte queste impostazioni in seguito senza dover eseguire nuovamente la configurazione.</value>
+  </data>
+  <data name="setup_limits_who" xml:space="preserve">
+    <value>Chi può fare richiesta con punti canale</value>
+  </data>
+  <data name="setup_limits_who_hint" xml:space="preserve">
+    <value>I livelli di abbonamento e altre opzioni sono disponibili in Impostazioni → Richieste di brani.</value>
+  </data>
+  <data name="setup_limits_queue" xml:space="preserve">
+    <value>Numero massimo di brani in coda (per utente)</value>
+  </data>
+  <data name="setup_limits_queue_hint" xml:space="preserve">
+    <value>Si applica per ora a tutti i livelli utente. Impostazioni → Richieste di brani consente di impostare un limite diverso per ogni badge, oltre ai tempi di ricarica.</value>
+  </data>
+  <data name="setup_later_title" xml:space="preserve">
+    <value>Dove regolare questo in seguito</value>
+  </data>
+  <data name="setup_later_song_requests" xml:space="preserve">
+    <value>Impostazioni → Richieste di brani: chi può inviare richieste, limiti della coda, tempi di attesa.</value>
+  </data>
+  <data name="setup_later_rewards" xml:space="preserve">
+    <value>Impostazioni → Premi: scegli i premi, salta i premi e imposta le condizioni di rimborso.</value>
+  </data>
+  <data name="setup_later_commands" xml:space="preserve">
+    <value>Impostazioni → Comandi — abilita !ssr e altri comandi di chat, attiva i trigger e definisci chi può utilizzarli.</value>
+  </data>
+  <data name="setup_later_responses" xml:space="preserve">
+    <value>Impostazioni → Risposte: cosa dice il bot in chat.</value>
+  </data>
+  <data name="setup_widget_title" xml:space="preserve">
+    <value>Widget di streaming</value>
+  </data>
+  <data name="setup_widget_body" xml:space="preserve">
+    <value>Un widget del browser mostra il brano corrente in OBS con più opzioni di stile rispetto a un file di testo. I widget ospitati (inclusi quelli Premium) sono disponibili su songify.rocks. Salta questo passaggio se desideri solo Songify.txt.</value>
+  </data>
+  <data name="setup_widget_use" xml:space="preserve">
+    <value>Utilizzare un widget sovrapposto</value>
+  </data>
+  <data name="setup_widget_use_hint" xml:space="preserve">
+    <value>Attiva il caricamento dei brani in modo che i widget ospitati possano seguire la riproduzione. Puoi modificare questa impostazione in seguito in Impostazioni → Output.</value>
+  </data>
+  <data name="setup_widget_gallery" xml:space="preserve">
+    <value>Sfoglia i widget</value>
+  </data>
+  <data name="setup_widget_gallery_hint" xml:space="preserve">
+    <value>Galleria completa, inclusi i widget Premium. Copia un URL nella sorgente del browser di OBS.</value>
+  </data>
+  <data name="setup_widget_generator" xml:space="preserve">
+    <value>Generatore di widget</value>
+  </data>
+  <data name="setup_widget_generator_hint" xml:space="preserve">
+    <value>Semplice strumento di personalizzazione per una barra di riproduzione di base.</value>
+  </data>
+  <data name="setup_widget_local" xml:space="preserve">
+    <value>Sovrapposizione locale (server web)</value>
+  </data>
+  <data name="setup_widget_local_hint" xml:space="preserve">
+    <value>Per sovrapposizioni HTML personalizzate e l'API JSON. Avvia il server, quindi apri la pagina locale.</value>
+  </data>
+  <data name="setup_widget_open_local" xml:space="preserve">
+    <value>Apri la pagina locale</value>
+  </data>
+  <data name="setup_widget_port" xml:space="preserve">
+    <value>Porta del server Web</value>
+  </data>
+  <data name="setup_checklist_requests" xml:space="preserve">
+    <value>Scegli i punti canale o i comandi di chat</value>
+  </data>
+  <data name="setup_checklist_reward" xml:space="preserve">
+    <value>Scegli una ricompensa per la tua richiesta di canzone</value>
+  </data>
+  <data name="setup_checklist_widget" xml:space="preserve">
+    <value>Configura un widget di streaming</value>
+  </data>
+  <data name="menu_widget_gallery" xml:space="preserve">
+    <value>Galleria di widget</value>
+  </data>
+  <data name="menu_widget_generator" xml:space="preserve">
+    <value>Generatore di widget</value>
+  </data>
+  <data name="window_overview_widget_title" xml:space="preserve">
+    <value>Widget di streaming</value>
+  </data>
+  <data name="window_overview_widget_body" xml:space="preserve">
+    <value>Mostra il brano corrente in OBS con una sovrapposizione del browser. La galleria include widget Premium; il generatore è uno strumento di personalizzazione più semplice.</value>
+  </data>
+  <data name="window_overview_widget_open_gallery" xml:space="preserve">
+    <value>Sfoglia i widget</value>
+  </data>
+  <data name="window_overview_widget_open_generator" xml:space="preserve">
+    <value>Personalizzare</value>
+  </data>
+  <data name="window_overview_widget_open_local" xml:space="preserve">
+    <value>Anteprima locale</value>
+  </data>
+  <data name="window_overview_continue_setup" xml:space="preserve">
+    <value>Continua configurazione</value>
+  </data>
+  <data name="setup_tour_requests_title" xml:space="preserve">
+    <value>Regole per le richieste di canzoni</value>
+  </data>
+  <data name="setup_tour_requests_body" xml:space="preserve">
+    <value>Nella sezione Impostazioni → Richieste di brani puoi scegliere chi può riscattare le richieste, i limiti di coda per livello utente e i tempi di attesa. Le autorizzazioni per ciascun comando sono disponibili in Impostazioni → Comandi.</value>
+  </data>
+  <data name="setup_tour_rewards_title" xml:space="preserve">
+    <value>Premi e rimborsi</value>
+  </data>
+  <data name="setup_tour_rewards_body" xml:space="preserve">
+    <value>Scegli quali premi includono una canzone. I rimborsi sono validi solo per i premi creati da Songify (l'icona di Songify). Le condizioni per il rimborso sono indicate nella sezione "Rimborsi" di questa pagina.</value>
+  </data>
+  <data name="setup_tour_widget_title" xml:space="preserve">
+    <value>Widget</value>
+  </data>
+  <data name="setup_tour_widget_body" xml:space="preserve">
+    <value>Nella schermata Home è presente una scheda widget, e il pulsante Strumenti → Galleria widget apre l'elenco completo dei widget (inclusi quelli Premium). Passando il mouse sopra le icone a sinistra quando il menu è compresso, è possibile visualizzare la posizione di ciascuna pagina.</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width" xml:space="preserve">
+    <value>Sovrascrivi la dimensione minima</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width_hint" xml:space="preserve">
+    <value>Consente di ridimensionare la finestra principale al di sotto di 900×500. Ciò potrebbe compromettere il layout dell'interfaccia utente.</value>
+  </data>
+  <data name="window_queue_pop_out" xml:space="preserve">
+    <value>Spuntare</value>
+  </data>
+  <data name="window_queue_always_on_top" xml:space="preserve">
+    <value>Sempre al top</value>
+  </data>
+  <data name="window_queue_always_on_top_tooltip" xml:space="preserve">
+    <value>Mantieni la finestra della coda sempre sopra le altre finestre.</value>
+  </data>
+  <data name="window_queue_pop_out_tooltip" xml:space="preserve">
+    <value>Apri la coda in una finestra separata senza dimensione minima</value>
+  </data>
+  <data name="window_queue_open_window" xml:space="preserve">
+    <value>Finestra di coda</value>
+  </data>
+  <data name="window_queue_detached_title" xml:space="preserve">
+    <value>La coda si trova in un'altra finestra</value>
+  </data>
+  <data name="window_queue_detached_body" xml:space="preserve">
+    <value>La coda è aperta in una finestra separata, così puoi tenerla visibile mentre usi il resto di Songify. Chiudi quella finestra per riportarla qui.</value>
+  </data>
+  <data name="window_settings_ignore_bot_messages" xml:space="preserve">
+    <value>Utenti della chat ignorati</value>
+  </data>
+  <data name="window_settings_ignore_bot_messages_hint" xml:space="preserve">
+    <value>I comandi provenienti da questi nomi vengono ignorati, incluso il tuo. Aggiungi i bot conosciuti, quindi rimuovi qualsiasi account che utilizzi come ripetitore di richieste di brani (ad esempio SoundAlerts).</value>
+  </data>
+  <data name="window_settings_ignore_bot_placeholder" xml:space="preserve">
+    <value>Nome utente da ignorare</value>
+  </data>
+  <data name="window_settings_ignore_add_known_bots" xml:space="preserve">
+    <value>Aggiungi bot conosciuti</value>
+  </data>
+  <data name="window_settings_ignore_remove_all" xml:space="preserve">
+    <value>Rimuovi tutto</value>
+  </data>
+  <data name="window_help_subtitle" xml:space="preserve">
+    <value>Impostazioni, community, cartelle e registro in tempo reale.</value>
+  </data>
+  <data name="window_help_section_start" xml:space="preserve">
+    <value>Configura Songify</value>
+  </data>
+  <data name="window_help_section_community" xml:space="preserve">
+    <value>Comunità</value>
+  </data>
+  <data name="window_help_section_files" xml:space="preserve">
+    <value>File</value>
+  </data>
+  <data name="window_help_section_updates" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="window_help_setup_desc" xml:space="preserve">
+    <value>Collega account, richieste di brani e widget.</value>
+  </data>
+  <data name="window_help_patchnotes_desc" xml:space="preserve">
+    <value>Scopri le novità di questa versione.</value>
+  </data>
+  <data name="window_help_faq_desc" xml:space="preserve">
+    <value>Risposte su songify.rocks.</value>
+  </data>
+  <data name="window_help_github_desc" xml:space="preserve">
+    <value>Segnala bug e richiedi nuove funzionalità.</value>
+  </data>
+  <data name="window_help_discord_desc" xml:space="preserve">
+    <value>Chatta con altri streamer e con il team.</value>
+  </data>
+  <data name="window_help_log_desc" xml:space="preserve">
+    <value>Apri la cartella utilizzata per segnalare i problemi.</value>
+  </data>
+  <data name="window_help_app_desc" xml:space="preserve">
+    <value>File di configurazione, file di output e l'applicazione stessa.</value>
+  </data>
+  <data name="window_help_updates_desc" xml:space="preserve">
+    <value>Scarica l'ultima versione di Songify.</value>
+  </data>
+  <data name="window_help_console_subtitle" xml:space="preserve">
+    <value>Dati in tempo reale e metriche API. Stacca questa finestra per mantenerla visibile sullo schermo mentre utilizzi il resto di Songify.</value>
+  </data>
+  <data name="window_settings_appearance_accent" xml:space="preserve">
+    <value>Colore d'accento</value>
+  </data>
+  <data name="window_settings_appearance_accent_hint" xml:space="preserve">
+    <value>Fai clic sul colore per scegliere un colore di accento oppure lascia "Sistema" per utilizzare il colore di accento di Windows.</value>
+  </data>
+  <data name="window_settings_appearance_accent_system" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="window_settings_appearance_accent_system_hint" xml:space="preserve">
+    <value>Utilizzare il colore di accento di Windows</value>
+  </data>
+  <data name="window_settings_appearance_accent_recent" xml:space="preserve">
+    <value>Recente</value>
+  </data>
+  <data name="window_titlebar_up_next" xml:space="preserve">
+    <value>A seguire: {0}</value>
+  </data>
+  <data name="window_blocklist_search_list" xml:space="preserve">
+    <value>Cerca in questo elenco</value>
+  </data>
+  <data name="window_settings_pear_title" xml:space="preserve">
+    <value>API di Pear Desktop</value>
+  </data>
+  <data name="window_settings_pear_hint" xml:space="preserve">
+    <value>La richiesta di autorizzazione/rifiuto di Pear appare solo nella richiesta /auth, non quando si connette tramite WebSocket. Selezionando Pear o cliccando su Autorizza si avvia tale richiesta: autorizza Songify in Pear. Incolla qui un token solo se ne possiedi già uno.</value>
+  </data>
+  <data name="window_settings_pear_token" xml:space="preserve">
+    <value>token API</value>
+  </data>
+  <data name="window_settings_pear_authorize" xml:space="preserve">
+    <value>Autorizzare</value>
+  </data>
+  <data name="window_settings_pear_authorize_waiting" xml:space="preserve">
+    <value>In attesa di Pear Desktop… consenti Songify nel prompt.</value>
+  </data>
+  <data name="window_twitch_commands_paused_title" xml:space="preserve">
+    <value>Comandi di Twitch in pausa</value>
+  </data>
+  <data name="window_twitch_commands_paused_body" xml:space="preserve">
+    <value>I comandi e le richieste di brani vengono ignorati quando lo streaming è offline, poiché è attiva la modalità di trasmissione in diretta su Twitch.</value>
+  </data>
+  <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
+    <value>Un comando o una richiesta di brano musicale sono stati semplicemente ignorati perché lo streaming è offline e la trasmissione in diretta su Twitch è attiva.</value>
+  </data>
 </root>

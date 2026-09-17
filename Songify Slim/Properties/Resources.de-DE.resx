@@ -2728,4 +2728,298 @@ Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
     <value>Alle entfernen</value>
     <comment>Context: Settings → Twitch button that clears the ignored chat users list.</comment>
   </data>
+  <data name="window_cloudimport_revision_label" xml:space="preserve">
+    <value>Gespeicherte Version</value>
+  </data>
+  <data name="window_cloudimport_schema_too_new" xml:space="preserve">
+    <value>Dieser Cloud-Speicherstand wurde mit einer neueren Songify-Version erstellt. Aktualisieren Sie Songify, um ihn wiederherzustellen.</value>
+  </data>
+  <data name="window_cloudimport_revision_invalid" xml:space="preserve">
+    <value>Diese gespeicherte Version konnte nicht gelesen werden.</value>
+  </data>
+  <data name="window_cloudimport_unknown_revision" xml:space="preserve">
+    <value>Unbekannter Speicherstand</value>
+  </data>
+  <data name="window_cloudimport_latest_revision" xml:space="preserve">
+    <value>Letzte Speicherung</value>
+  </data>
+  <data name="window_settings_cloud_restored" xml:space="preserve">
+    <value>Einstellungen erfolgreich aus der Cloud wiederhergestellt</value>
+  </data>
+  <data name="window_settings_cloud_empty" xml:space="preserve">
+    <value>Noch keine Cloud-Speicherung.</value>
+  </data>
+  <data name="window_settings_cloud_need_update" xml:space="preserve">
+    <value>Dieser Cloud-Speicher wurde mit einer neueren Songify-Version erstellt. Bitte aktualisieren Sie Songify.</value>
+  </data>
+  <data name="window_settings_cloud_no_changes" xml:space="preserve">
+    <value>Es wurden keine Änderungen festgestellt, die lokalen Einstellungen bleiben erhalten.</value>
+  </data>
+  <data name="window_settings_cloud_cancelled" xml:space="preserve">
+    <value>Vom Nutzer storniert.</value>
+  </data>
+  <data name="window_settings_cloud_unavailable" xml:space="preserve">
+    <value>Fehler beim Verbinden mit dem Songify-Dienst.</value>
+  </data>
+  <data name="window_settings_cloud_unprocessable" xml:space="preserve">
+    <value>Der Server hat die Cloud-Speicherung abgelehnt. Bitte versuchen Sie es erneut.</value>
+  </data>
+  <data name="window_settings_cloud_bad_response" xml:space="preserve">
+    <value>Die Cloud-Einstellungen konnten nicht gelesen werden. Weitere Informationen finden Sie im Protokoll.</value>
+  </data>
+  <data name="setup_requests_title" xml:space="preserve">
+    <value>Song Requests</value>
+  </data>
+  <data name="setup_requests_body" xml:space="preserve">
+    <value>Zuschauer können mit Kanalpunkten, Chatbefehlen oder beidem Lieder anfordern. Überspringen Sie diesen Schritt, wenn Sie nur die aktuelle Wiedergabeanzeige sehen möchten.</value>
+  </data>
+  <data name="setup_requests_reward" xml:space="preserve">
+    <value>Kanalpunkte</value>
+  </data>
+  <data name="setup_requests_reward_hint" xml:space="preserve">
+    <value>Zuschauer lösen eine Prämie ein, um sich einen Song zu wünschen. Anschließend können Sie eine Prämie erstellen oder eine bestehende auswählen. Rückerstattungen sind nur für Prämien möglich, die über Songify erstellt wurden.</value>
+  </data>
+  <data name="setup_requests_command" xml:space="preserve">
+    <value>Chat-Befehle</value>
+  </data>
+  <data name="setup_requests_command_hint" xml:space="preserve">
+    <value>Zuschauer geben !ssr gefolgt vom Songtitel ein. Dadurch wird der Befehl zum Anfordern von Songs aktiviert. Auslöser, Benutzerlevel und Antworten können später unter Einstellungen → Befehle bearbeitet werden. Verbinde den Bot über das Twitch-Statussymbol, sobald du live gehst.</value>
+  </data>
+  <data name="setup_requests_create_reward" xml:space="preserve">
+    <value>Kanalpunktebelohnung erstellen</value>
+  </data>
+  <data name="setup_requests_open_rewards" xml:space="preserve">
+    <value>Belohnungseinstellungen öffnen</value>
+  </data>
+  <data name="setup_requests_open_commands" xml:space="preserve">
+    <value>Befehlseinstellungen öffnen</value>
+  </data>
+  <data name="setup_requests_need_twitch" xml:space="preserve">
+    <value>Verknüpfe zuerst Twitch, um eine Belohnung zu erstellen oder Chat-Befehle zu aktivieren.</value>
+  </data>
+  <data name="setup_rewards_title" xml:space="preserve">
+    <value>Wähle Belohnungen für Musikwünsche aus</value>
+  </data>
+  <data name="setup_rewards_body" xml:space="preserve">
+    <value>Überprüfen Sie alle Kanalpunkt-Belohnungen, die ein Lied hinzufügen sollen. Sie können Überspring- oder Überspring-Umfrage-Belohnungen später unter Einstellungen → Belohnungen zuweisen.</value>
+  </data>
+  <data name="setup_rewards_refund" xml:space="preserve">
+    <value>Automatische Rückerstattungen funktionieren nur, wenn die Belohnung von Songify erstellt wurde. Belohnungen, die über das Twitch-Dashboard erstellt wurden, können von hier aus nicht erstattet werden. Von Songify erstellte Belohnungen sind mit dem Songify-Symbol gekennzeichnet.</value>
+  </data>
+  <data name="setup_rewards_loading" xml:space="preserve">
+    <value>Belohnungen werden geladen…</value>
+  </data>
+  <data name="setup_rewards_empty" xml:space="preserve">
+    <value>Noch keine Belohnungen. Erstelle unten eine oder erstelle eine auf Twitch und tippe auf Aktualisieren.</value>
+  </data>
+  <data name="setup_rewards_error" xml:space="preserve">
+    <value>Belohnungen konnten nicht geladen werden. Verbinde Twitch und versuche, die Seite neu zu laden.</value>
+  </data>
+  <data name="setup_rewards_refresh" xml:space="preserve">
+    <value>Aktualisieren</value>
+  </data>
+  <data name="setup_rewards_manageable" xml:space="preserve">
+    <value>Rückerstattungen funktionieren (erstellt in Songify)</value>
+  </data>
+  <data name="setup_rewards_selected" xml:space="preserve">
+    <value>{0} wurde für Musikwünsche ausgewählt</value>
+  </data>
+  <data name="setup_limits_title" xml:space="preserve">
+    <value>Anforderungsregeln</value>
+  </data>
+  <data name="setup_limits_body" xml:space="preserve">
+    <value>Legen Sie fest, wer über Kanalpunkte Anfragen stellen darf und wie viele Songs sich jede Person in der Warteschlange befinden darf. Sie können all dies später ändern, ohne die Einrichtung erneut ausführen zu müssen.</value>
+  </data>
+  <data name="setup_limits_who" xml:space="preserve">
+    <value>Wer kann mit Kanalpunkten Anfragen stellen?</value>
+  </data>
+  <data name="setup_limits_who_hint" xml:space="preserve">
+    <value>Abonnementstufen und weitere Optionen finden Sie unter Einstellungen → Songwünsche.</value>
+  </data>
+  <data name="setup_limits_queue" xml:space="preserve">
+    <value>Maximale Anzahl an Songs in der Warteschlange (pro Benutzer)</value>
+  </data>
+  <data name="setup_limits_queue_hint" xml:space="preserve">
+    <value>Gilt vorerst für alle Benutzerstufen. Unter Einstellungen → Songanfragen können Sie ein individuelles Limit pro Abzeichen sowie Abklingzeiten festlegen.</value>
+  </data>
+  <data name="setup_later_title" xml:space="preserve">
+    <value>Wo kann man das später anpassen?</value>
+  </data>
+  <data name="setup_later_song_requests" xml:space="preserve">
+    <value>Einstellungen → Songwünsche – wer kann Wünsche äußern, Warteschlangenlimits, Wartezeiten.</value>
+  </data>
+  <data name="setup_later_rewards" xml:space="preserve">
+    <value>Einstellungen → Prämien — Prämien auswählen, Prämien überspringen und Rückerstattungsbedingungen.</value>
+  </data>
+  <data name="setup_later_commands" xml:space="preserve">
+    <value>Einstellungen → Befehle — Aktivieren von !ssr und anderen Chat-Befehlen, Auslösern und wer diese verwenden darf.</value>
+  </data>
+  <data name="setup_later_responses" xml:space="preserve">
+    <value>Einstellungen → Antworten — was der Bot im Chat sagt.</value>
+  </data>
+  <data name="setup_widget_title" xml:space="preserve">
+    <value>Stream-Widget</value>
+  </data>
+  <data name="setup_widget_body" xml:space="preserve">
+    <value>Ein Browser-Widget zeigt den aktuellen Song in OBS mit mehr Gestaltungsoptionen als eine Textdatei an. Gehostete Widgets (einschließlich Premium-Widgets) befinden sich auf songify.rocks. Überspringen Sie diesen Abschnitt, wenn Sie nur die Songify.txt-Datei benötigen.</value>
+  </data>
+  <data name="setup_widget_use" xml:space="preserve">
+    <value>Verwenden Sie ein Widget-Overlay</value>
+  </data>
+  <data name="setup_widget_use_hint" xml:space="preserve">
+    <value>Aktiviert den Song-Upload, damit gehostete Widgets die aktuelle Wiedergabe verfolgen können. Diese Einstellung kann später unter Einstellungen → Ausgabe geändert werden.</value>
+  </data>
+  <data name="setup_widget_gallery" xml:space="preserve">
+    <value>Widgets durchsuchen</value>
+  </data>
+  <data name="setup_widget_gallery_hint" xml:space="preserve">
+    <value>Vollständige Galerie, inklusive Premium-Widgets. Kopieren Sie eine URL in eine OBS-Browserquelle.</value>
+  </data>
+  <data name="setup_widget_generator" xml:space="preserve">
+    <value>Widget-Generator</value>
+  </data>
+  <data name="setup_widget_generator_hint" xml:space="preserve">
+    <value>Einfacher Konfigurator für eine einfache Wiedergabeleiste.</value>
+  </data>
+  <data name="setup_widget_local" xml:space="preserve">
+    <value>Lokales Overlay (Webserver)</value>
+  </data>
+  <data name="setup_widget_local_hint" xml:space="preserve">
+    <value>Für benutzerdefinierte HTML-Overlays und die JSON-API. Starten Sie den Server und öffnen Sie anschließend die lokale Seite.</value>
+  </data>
+  <data name="setup_widget_open_local" xml:space="preserve">
+    <value>Lokale Seite öffnen</value>
+  </data>
+  <data name="setup_widget_port" xml:space="preserve">
+    <value>Webserver-Port</value>
+  </data>
+  <data name="setup_checklist_requests" xml:space="preserve">
+    <value>Kanalpunkte oder Chatbefehle auswählen</value>
+  </data>
+  <data name="setup_checklist_reward" xml:space="preserve">
+    <value>Wähle eine Belohnung für einen Musikwunsch aus</value>
+  </data>
+  <data name="setup_checklist_widget" xml:space="preserve">
+    <value>Stream-Widget einrichten</value>
+  </data>
+  <data name="menu_widget_gallery" xml:space="preserve">
+    <value>Widget-Galerie</value>
+  </data>
+  <data name="menu_widget_generator" xml:space="preserve">
+    <value>Widget-Generator</value>
+  </data>
+  <data name="window_overview_widget_title" xml:space="preserve">
+    <value>Stream-Widget</value>
+  </data>
+  <data name="window_overview_widget_body" xml:space="preserve">
+    <value>Der aktuelle Song in OBS wird mit einem Browser-Overlay angezeigt. Die Galerie enthält Premium-Widgets; der Generator ist ein einfacherer Anpassungsassistent.</value>
+  </data>
+  <data name="window_overview_widget_open_gallery" xml:space="preserve">
+    <value>Widgets durchsuchen</value>
+  </data>
+  <data name="window_overview_widget_open_generator" xml:space="preserve">
+    <value>Anpassen</value>
+  </data>
+  <data name="window_overview_widget_open_local" xml:space="preserve">
+    <value>Lokale Vorschau</value>
+  </data>
+  <data name="window_overview_continue_setup" xml:space="preserve">
+    <value>Einrichtung fortsetzen</value>
+  </data>
+  <data name="setup_tour_requests_title" xml:space="preserve">
+    <value>Regeln für Songwünsche</value>
+  </data>
+  <data name="setup_tour_requests_body" xml:space="preserve">
+    <value>Unter Einstellungen → Songwünsche legen Sie fest, wer Wünsche einlösen darf, die Warteschlangenbegrenzungen pro Benutzerstufe und die Abklingzeiten. Die Befehlsberechtigungen finden Sie für jeden Befehl unter Einstellungen → Befehle.</value>
+  </data>
+  <data name="setup_tour_rewards_title" xml:space="preserve">
+    <value>Prämien und Rückerstattungen</value>
+  </data>
+  <data name="setup_tour_rewards_body" xml:space="preserve">
+    <value>Wählen Sie die Prämien aus, denen Sie einen Song hinzufügen möchten. Rückerstattungen sind nur für Prämien möglich, die von Songify erstellt wurden (erkennbar am Songify-Symbol). Die Rückerstattungsbedingungen finden Sie im Abschnitt „Rückerstattungen“ auf dieser Seite.</value>
+  </data>
+  <data name="setup_tour_widget_title" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="setup_tour_widget_body" xml:space="preserve">
+    <value>Auf der Startseite befindet sich eine Widget-Karte. Über „Tools → Widget-Galerie“ wird die vollständige Liste der Overlays (einschließlich Premium) angezeigt. Bewegen Sie den Mauszeiger über die Symbole auf der linken Seite, wenn das Menü minimiert ist, um die einzelnen Seiten anzuzeigen.</value>
+  </data>
+  <data name="window_help_subtitle" xml:space="preserve">
+    <value>Einrichtung, Community, Ordner und das Live-Protokoll.</value>
+  </data>
+  <data name="window_help_section_start" xml:space="preserve">
+    <value>Songify einrichten</value>
+  </data>
+  <data name="window_help_section_community" xml:space="preserve">
+    <value>Gemeinschaft</value>
+  </data>
+  <data name="window_help_section_files" xml:space="preserve">
+    <value>Dateien</value>
+  </data>
+  <data name="window_help_section_updates" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="window_help_setup_desc" xml:space="preserve">
+    <value>Verknüpfe Konten, Musikwünsche und Widgets.</value>
+  </data>
+  <data name="window_help_patchnotes_desc" xml:space="preserve">
+    <value>Sehen Sie, was sich in dieser Version geändert hat.</value>
+  </data>
+  <data name="window_help_faq_desc" xml:space="preserve">
+    <value>Antworten auf songify.rocks.</value>
+  </data>
+  <data name="window_help_github_desc" xml:space="preserve">
+    <value>Fehler melden und Funktionen anfordern.</value>
+  </data>
+  <data name="window_help_discord_desc" xml:space="preserve">
+    <value>Chatte mit anderen Streamern und dem Team.</value>
+  </data>
+  <data name="window_help_log_desc" xml:space="preserve">
+    <value>Öffnen Sie den Ordner, den Sie beim Melden von Problemen verwendet haben.</value>
+  </data>
+  <data name="window_help_app_desc" xml:space="preserve">
+    <value>Konfiguration, Ausgabedateien und die Anwendung selbst.</value>
+  </data>
+  <data name="window_help_updates_desc" xml:space="preserve">
+    <value>Lade die neueste Songify-Veröffentlichung herunter.</value>
+  </data>
+  <data name="window_help_console_subtitle" xml:space="preserve">
+    <value>Live-Protokoll und API-Metriken. Trennen Sie das Fenster, um es im Blick zu behalten, während Sie die übrigen Songify-Anwendungen nutzen.</value>
+  </data>
+  <data name="window_settings_appearance_accent" xml:space="preserve">
+    <value>Akzentfarbe</value>
+  </data>
+  <data name="window_settings_appearance_accent_hint" xml:space="preserve">
+    <value>Klicken Sie auf die Farbe, um eine Akzentfarbe auszuwählen, oder lassen Sie die Systemeinstellung aktiviert, um die Windows-Akzentfarbe zu verwenden.</value>
+  </data>
+  <data name="window_titlebar_up_next" xml:space="preserve">
+    <value>Als Nächstes: {0}</value>
+  </data>
+  <data name="window_blocklist_search_list" xml:space="preserve">
+    <value>Durchsuchen Sie diese Liste</value>
+  </data>
+  <data name="window_settings_pear_title" xml:space="preserve">
+    <value>Pear Desktop API</value>
+  </data>
+  <data name="window_settings_pear_hint" xml:space="preserve">
+    <value>Die Zustimmungs-/Verweigerungsabfrage von Pear erscheint nur bei der /auth-Anfrage, nicht beim Verbindungsaufbau über WebSocket. Durch Auswählen von Pear oder Klicken auf „Autorisieren“ wird diese Anfrage gestartet – erlauben Sie Songify in Pear. Fügen Sie hier nur dann ein Token ein, wenn Sie bereits eines besitzen.</value>
+  </data>
+  <data name="window_settings_pear_token" xml:space="preserve">
+    <value>API-Token</value>
+  </data>
+  <data name="window_settings_pear_authorize" xml:space="preserve">
+    <value>Autorisieren</value>
+  </data>
+  <data name="window_settings_pear_authorize_waiting" xml:space="preserve">
+    <value>Warten auf Pear Desktop… Songify in der Eingabeaufforderung zulassen.</value>
+  </data>
+  <data name="window_twitch_commands_paused_title" xml:space="preserve">
+    <value>Twitch-Befehle pausiert</value>
+  </data>
+  <data name="window_twitch_commands_paused_body" xml:space="preserve">
+    <value>Befehle und Musikwünsche werden ignoriert, solange der Stream offline ist, da nur Live-Twitch-Aktivitäten aktiv sind.</value>
+  </data>
+  <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
+    <value>Ein Befehl oder eine Musikanfrage wurde ignoriert, da der Stream offline ist und nur Live-Aktivitäten auf Twitch aktiv sind.</value>
+  </data>
 </root>

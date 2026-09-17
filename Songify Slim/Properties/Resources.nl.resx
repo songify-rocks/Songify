@@ -2579,4 +2579,451 @@ Je kunt Songify Premium nog steeds op elk moment openen via Home of Over.</value
   <data name="window_settings_appearance_scale_value" xml:space="preserve">
     <value>{0}%</value>
   </data>
+  <data name="window_settings_system_open_queue_pop_out" xml:space="preserve">
+    <value>Uitklappen als een zelfstandig venster</value>
+  </data>
+  <data name="window_blocklist_select_song" xml:space="preserve">
+    <value>Selecteer nummer</value>
+  </data>
+  <data name="window_blocklist_multiple_songs_match" xml:space="preserve">
+    <value>Er zijn meerdere nummers gevonden die overeenkomen met je zoekopdracht. Selecteer er één om te blokkeren.</value>
+  </data>
+  <data name="window_settings_spotify_enable_live_gate" xml:space="preserve">
+    <value>Schakel de live gate-/testmodus in.</value>
+  </data>
+  <data name="window_settings_spotify_enable_live_gate_tooltip" xml:space="preserve">
+    <value>Wanneer deze functie is ingeschakeld, haalt Songify alleen Spotify-afspeellijsten op terwijl je live bent op Twitch of de testmodus is ingeschakeld. Dit vermindert het API-gebruik wanneer de stream offline is. De testmodus verschijnt op het startscherm en in de statusbalk en wordt na 2 minuten uitgeschakeld.</value>
+  </data>
+  <data name="window_blocklist_search_song_placeholder" xml:space="preserve">
+    <value>Zoek naar een nummer op Spotify of plak een link...</value>
+  </data>
+  <data name="window_overview_test_mode" xml:space="preserve">
+    <value>Testmodus</value>
+  </data>
+  <data name="window_overview_test_mode_tooltip" xml:space="preserve">
+    <value>Haal tijdelijk de nummers op die je nu op Spotify afspeelt op terwijl je offline bent. Schakelt na 2 minuten automatisch uit.</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused" xml:space="preserve">
+    <value>Het ophalen van Spotify-gegevens is gepauzeerd.</value>
+  </data>
+  <data name="window_overview_spotify_fetch_paused_hint" xml:space="preserve">
+    <value>Ga live op Twitch of schakel de testmodus in om de afspeelfunctie te activeren. Je kunt live gating uitschakelen via Instellingen → Spotify.</value>
+  </data>
+  <data name="window_main_status_twitch_click_hint" xml:space="preserve">
+    <value>Klik hier voor inloggen, verbinden en live status.</value>
+  </data>
+  <data name="window_settings_appearance_nav_style" xml:space="preserve">
+    <value>Zijmenu</value>
+  </data>
+  <data name="window_settings_appearance_nav_style_hint" xml:space="preserve">
+    <value>Hoe de hoofdnavigatie wordt weergegeven: uitgevouwen zijmenu, boven of onder. De uitgevouwen of ingeklapte status van het zijmenu wordt onthouden.</value>
+  </data>
+  <data name="window_settings_appearance_nav_left" xml:space="preserve">
+    <value>Uitgebreid</value>
+  </data>
+  <data name="window_settings_appearance_nav_left_fluent" xml:space="preserve">
+    <value>Grote pictogrammen</value>
+  </data>
+  <data name="window_settings_appearance_nav_left_minimal" xml:space="preserve">
+    <value>Overlay</value>
+  </data>
+  <data name="window_settings_appearance_nav_top" xml:space="preserve">
+    <value>Bovenkant</value>
+  </data>
+  <data name="window_settings_appearance_nav_bottom" xml:space="preserve">
+    <value>Onderkant</value>
+  </data>
+  <data name="window_blocklist_song_not_found" xml:space="preserve">
+    <value>Ik kon geen nummer met die naam vinden op Spotify.</value>
+  </data>
+  <data name="window_blocklist_search_song_failed" xml:space="preserve">
+    <value>Het lukte niet om dat nummer op Spotify te vinden.</value>
+  </data>
+  <data name="window_cloudimport_revision_label" xml:space="preserve">
+    <value>Opgeslagen versie</value>
+  </data>
+  <data name="window_cloudimport_schema_too_new" xml:space="preserve">
+    <value>Deze cloudopslag is gemaakt door een nieuwere versie van Songify. Update Songify om deze te herstellen.</value>
+  </data>
+  <data name="window_cloudimport_revision_invalid" xml:space="preserve">
+    <value>Deze opgeslagen versie kon niet worden gelezen.</value>
+  </data>
+  <data name="window_cloudimport_unknown_revision" xml:space="preserve">
+    <value>Onbekende opslag</value>
+  </data>
+  <data name="window_cloudimport_latest_revision" xml:space="preserve">
+    <value>Laatste opslag</value>
+  </data>
+  <data name="window_settings_cloud_restored" xml:space="preserve">
+    <value>Instellingen succesvol hersteld vanuit de cloud.</value>
+  </data>
+  <data name="window_settings_cloud_empty" xml:space="preserve">
+    <value>Nog geen cloudopslag beschikbaar.</value>
+  </data>
+  <data name="window_settings_cloud_need_update" xml:space="preserve">
+    <value>Deze cloudopslag is gemaakt met een nieuwere versie van Songify. Update Songify.</value>
+  </data>
+  <data name="window_settings_cloud_no_changes" xml:space="preserve">
+    <value>Er zijn geen wijzigingen geconstateerd; de lokale instellingen blijven behouden.</value>
+  </data>
+  <data name="window_settings_cloud_cancelled" xml:space="preserve">
+    <value>Geannuleerd door gebruiker.</value>
+  </data>
+  <data name="window_settings_cloud_unavailable" xml:space="preserve">
+    <value>Fout bij het verbinden met de Songify-service.</value>
+  </data>
+  <data name="window_settings_cloud_unprocessable" xml:space="preserve">
+    <value>De server heeft de cloudopslag geweigerd. Probeer het opnieuw.</value>
+  </data>
+  <data name="window_settings_cloud_bad_response" xml:space="preserve">
+    <value>De cloudinstellingen konden niet worden gelezen. Raadpleeg het logboek voor meer informatie.</value>
+  </data>
+  <data name="window_backupimport_title" xml:space="preserve">
+    <value>Back-up herstellen</value>
+  </data>
+  <data name="window_backupimport_intro" xml:space="preserve">
+    <value>Kies welke instellingen uit deze back-up u wilt overschrijven. Niet-aangevinkte items blijven ongewijzigd.</value>
+  </data>
+  <data name="window_import_select_all" xml:space="preserve">
+    <value>Alles selecteren</value>
+  </data>
+  <data name="window_import_select_none" xml:space="preserve">
+    <value>Selecteer geen</value>
+  </data>
+  <data name="window_import_selected_count" xml:space="preserve">
+    <value>{0} van {1} geselecteerd</value>
+  </data>
+  <data name="window_import_group_app" xml:space="preserve">
+    <value>App-instellingen</value>
+  </data>
+  <data name="window_import_group_bot" xml:space="preserve">
+    <value>Botreacties</value>
+  </data>
+  <data name="window_import_group_commands" xml:space="preserve">
+    <value>Twitch-commando's</value>
+  </data>
+  <data name="window_import_group_artists" xml:space="preserve">
+    <value>Geblokkeerde artiesten</value>
+  </data>
+  <data name="window_import_group_spotify" xml:space="preserve">
+    <value>Spotify-account</value>
+  </data>
+  <data name="window_import_group_twitch" xml:space="preserve">
+    <value>Twitch-account</value>
+  </data>
+  <data name="window_settings_config_import_empty" xml:space="preserve">
+    <value>Er zijn geen Songify-configuratiebestanden in die map gevonden.</value>
+  </data>
+  <data name="player_group_song_requests" xml:space="preserve">
+    <value>Nummerverzoeken</value>
+  </data>
+  <data name="player_group_now_playing" xml:space="preserve">
+    <value>Nu alleen te zien</value>
+  </data>
+  <data name="setup_requests_title" xml:space="preserve">
+    <value>Nummerverzoeken</value>
+  </data>
+  <data name="setup_requests_body" xml:space="preserve">
+    <value>Kijkers kunnen nummers aanvragen met kanaalpunten, chatopdrachten of beide. Sla deze stap over als je alleen een overlay met het huidige nummer wilt zien.</value>
+  </data>
+  <data name="setup_requests_reward" xml:space="preserve">
+    <value>Kanaalpunten</value>
+  </data>
+  <data name="setup_requests_reward_hint" xml:space="preserve">
+    <value>Kijkers kunnen een beloning inwisselen om een nummer aan te vragen. Vervolgens kun je een beloning aanmaken of een bestaande beloning kiezen. Terugbetalingen zijn alleen mogelijk voor beloningen die via Songify zijn aangemaakt.</value>
+  </data>
+  <data name="setup_requests_command" xml:space="preserve">
+    <value>Chatopdrachten</value>
+  </data>
+  <data name="setup_requests_command_hint" xml:space="preserve">
+    <value>Kijkers typen !ssr gevolgd door de titel van een nummer. Hiermee wordt de functie voor het aanvragen van nummers geactiveerd. Je kunt de trigger, gebruikersniveaus en reacties later aanpassen in Instellingen → Commando's. Verbind de bot via het Twitch-statuspictogram wanneer je live gaat.</value>
+  </data>
+  <data name="setup_requests_create_reward" xml:space="preserve">
+    <value>Beloning creëren</value>
+  </data>
+  <data name="setup_requests_open_rewards" xml:space="preserve">
+    <value>Open de beloningsinstellingen</value>
+  </data>
+  <data name="setup_requests_open_commands" xml:space="preserve">
+    <value>Open de opdrachtinstellingen</value>
+  </data>
+  <data name="setup_requests_need_twitch" xml:space="preserve">
+    <value>Koppel eerst je Twitch-account om een beloning aan te bieden of chatopdrachten in te schakelen.</value>
+  </data>
+  <data name="setup_rewards_title" xml:space="preserve">
+    <value>Kies beloningen voor liedverzoeken</value>
+  </data>
+  <data name="setup_rewards_body" xml:space="preserve">
+    <value>Vink alle kanaalpuntenbeloningen aan die een nummer zouden moeten toevoegen. Je kunt later beloningen voor overslaan of polls overslaan toewijzen in Instellingen → Beloningen.</value>
+  </data>
+  <data name="setup_rewards_refund" xml:space="preserve">
+    <value>Automatische terugbetalingen werken alleen als de beloning door Songify is aangemaakt. Beloningen die via het Twitch-dashboard zijn aangemaakt, kunnen niet via dat dashboard worden terugbetaald. Door Songify aangemaakte beloningen zijn herkenbaar aan het Songify-icoon.</value>
+  </data>
+  <data name="setup_rewards_loading" xml:space="preserve">
+    <value>Beloningen worden geladen…</value>
+  </data>
+  <data name="setup_rewards_empty" xml:space="preserve">
+    <value>Nog geen beloningen. Maak er hieronder een aan, of maak er een aan op Twitch en tik op Vernieuwen.</value>
+  </data>
+  <data name="setup_rewards_error" xml:space="preserve">
+    <value>Beloningen konden niet worden geladen. Koppel Twitch en probeer Vernieuwen.</value>
+  </data>
+  <data name="setup_rewards_refresh" xml:space="preserve">
+    <value>Vernieuwen</value>
+  </data>
+  <data name="setup_rewards_manageable" xml:space="preserve">
+    <value>Refunds werken (gemaakt in Songify)</value>
+  </data>
+  <data name="setup_rewards_selected" xml:space="preserve">
+    <value>{0} geselecteerd voor songaanvragen</value>
+  </data>
+  <data name="setup_limits_title" xml:space="preserve">
+    <value>Regels voor aanvragen</value>
+  </data>
+  <data name="setup_limits_body" xml:space="preserve">
+    <value>Stel in wie via kanaalpunten nummers mag aanvragen en hoeveel nummers ze in de wachtrij mogen hebben. Je kunt dit later allemaal wijzigen zonder de installatie opnieuw te hoeven uitvoeren.</value>
+  </data>
+  <data name="setup_limits_who" xml:space="preserve">
+    <value>Wie kan een verzoek indienen met kanaalpunten?</value>
+  </data>
+  <data name="setup_limits_who_hint" xml:space="preserve">
+    <value>Abonnementsniveaus en meer opties vind je in Instellingen → Nummerverzoeken.</value>
+  </data>
+  <data name="setup_limits_queue" xml:space="preserve">
+    <value>Maximaal aantal nummers in de wachtrij (per gebruiker)</value>
+  </data>
+  <data name="setup_limits_queue_hint" xml:space="preserve">
+    <value>Dit geldt voorlopig voor alle gebruikersniveaus. Via Instellingen → Nummerverzoeken kun je per badge een andere limiet instellen, inclusief afkoelperiodes.</value>
+  </data>
+  <data name="setup_later_title" xml:space="preserve">
+    <value>Waar kan ik dit later aanpassen?</value>
+  </data>
+  <data name="setup_later_song_requests" xml:space="preserve">
+    <value>Instellingen → Nummerverzoeken — wie kan een verzoek indienen, wachtrijlimieten, afkoelperiodes.</value>
+  </data>
+  <data name="setup_later_rewards" xml:space="preserve">
+    <value>Instellingen → Beloningen — kies beloningen, sla beloningen over en pas de terugbetalingsvoorwaarden aan.</value>
+  </data>
+  <data name="setup_later_commands" xml:space="preserve">
+    <value>Instellingen → Commando's — schakel !ssr en andere chatcommando's, triggers en wie ze mag gebruiken in.</value>
+  </data>
+  <data name="setup_later_responses" xml:space="preserve">
+    <value>Instellingen → Reacties — wat de bot in de chat zegt.</value>
+  </data>
+  <data name="setup_widget_title" xml:space="preserve">
+    <value>Stream-widget</value>
+  </data>
+  <data name="setup_widget_body" xml:space="preserve">
+    <value>Een browserwidget toont het huidige nummer in OBS met meer stijlopties dan een tekstbestand. Gehoste widgets (inclusief Premium-widgets) zijn te vinden op songify.rocks. Sla dit over als je alleen Songify.txt wilt gebruiken.</value>
+  </data>
+  <data name="setup_widget_use" xml:space="preserve">
+    <value>Gebruik een widget-overlay.</value>
+  </data>
+  <data name="setup_widget_use_hint" xml:space="preserve">
+    <value>Schakelt het uploaden van nummers in, zodat gehoste widgets kunnen volgen wat er wordt afgespeeld. Je kunt dit later wijzigen in Instellingen → Uitvoer.</value>
+  </data>
+  <data name="setup_widget_gallery" xml:space="preserve">
+    <value>Widgets bekijken</value>
+  </data>
+  <data name="setup_widget_gallery_hint" xml:space="preserve">
+    <value>Volledige galerij, inclusief Premium widgets. Kopieer een URL naar een OBS Browser-bron.</value>
+  </data>
+  <data name="setup_widget_generator" xml:space="preserve">
+    <value>Widgetgenerator</value>
+  </data>
+  <data name="setup_widget_generator_hint" xml:space="preserve">
+    <value>Een eenvoudige aanpassingsoptie voor een standaard balk die het huidige nummer weergeeft.</value>
+  </data>
+  <data name="setup_widget_local" xml:space="preserve">
+    <value>Lokale overlay (webserver)</value>
+  </data>
+  <data name="setup_widget_local_hint" xml:space="preserve">
+    <value>Voor aangepaste HTML-overlays en de JSON API. Start de server en open vervolgens de lokale pagina.</value>
+  </data>
+  <data name="setup_widget_open_local" xml:space="preserve">
+    <value>Lokale pagina openen</value>
+  </data>
+  <data name="setup_widget_port" xml:space="preserve">
+    <value>Webserverpoort</value>
+  </data>
+  <data name="setup_checklist_requests" xml:space="preserve">
+    <value>Kies kanaalpunten of chatopdrachten.</value>
+  </data>
+  <data name="setup_checklist_reward" xml:space="preserve">
+    <value>Kies een beloning voor je songaanvraag.</value>
+  </data>
+  <data name="setup_checklist_widget" xml:space="preserve">
+    <value>Stel een streamwidget in.</value>
+  </data>
+  <data name="menu_widget_gallery" xml:space="preserve">
+    <value>Widgetgalerij</value>
+  </data>
+  <data name="menu_widget_generator" xml:space="preserve">
+    <value>Widgetgenerator</value>
+  </data>
+  <data name="window_overview_widget_title" xml:space="preserve">
+    <value>Stream-widget</value>
+  </data>
+  <data name="window_overview_widget_body" xml:space="preserve">
+    <value>Toon het huidige nummer in OBS met een browseroverlay. De galerij bevat Premium-widgets; de generator is een eenvoudigere aanpassingsoptie.</value>
+  </data>
+  <data name="window_overview_widget_open_gallery" xml:space="preserve">
+    <value>Widgets bekijken</value>
+  </data>
+  <data name="window_overview_widget_open_generator" xml:space="preserve">
+    <value>Aanpassen</value>
+  </data>
+  <data name="window_overview_widget_open_local" xml:space="preserve">
+    <value>Lokale preview</value>
+  </data>
+  <data name="window_overview_continue_setup" xml:space="preserve">
+    <value>Doorgaan met de installatie</value>
+  </data>
+  <data name="setup_tour_requests_title" xml:space="preserve">
+    <value>Regels voor het aanvragen van nummers</value>
+  </data>
+  <data name="setup_tour_requests_body" xml:space="preserve">
+    <value>Via Instellingen → Nummerverzoeken kunt u kiezen wie nummers kan inwisselen, de wachtrijlimieten per gebruikersniveau instellen en de afkoelperiodes bepalen. De machtigingen voor elk commando vindt u onder Instellingen → Commando's.</value>
+  </data>
+  <data name="setup_tour_rewards_title" xml:space="preserve">
+    <value>Beloningen en terugbetalingen</value>
+  </data>
+  <data name="setup_tour_rewards_body" xml:space="preserve">
+    <value>Kies welke beloningen een nummer toevoegen. Terugbetalingen zijn alleen mogelijk voor beloningen die door Songify zijn aangemaakt (het Songify-icoon). De voorwaarden voor terugbetalingen staan vermeld in het gedeelte 'Terugbetalingen' op deze pagina.</value>
+  </data>
+  <data name="setup_tour_widget_title" xml:space="preserve">
+    <value>Widgets</value>
+  </data>
+  <data name="setup_tour_widget_body" xml:space="preserve">
+    <value>Op de startpagina vind je een widgetkaart en via Extra → Widgetgalerij wordt de volledige lijst met overlays geopend (inclusief Premium). Beweeg de muis over de pictogrammen aan de linkerkant wanneer het menu is ingeklapt om te zien waar elke pagina zich bevindt.</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width" xml:space="preserve">
+    <value>Minimale grootte overrulen</value>
+  </data>
+  <data name="window_settings_appearance_overrule_min_width_hint" xml:space="preserve">
+    <value>Hiermee kunt u het hoofdvenster verkleinen tot onder de 900×500 pixels. Dit kan de lay-out van de gebruikersinterface verstoren.</value>
+  </data>
+  <data name="window_queue_pop_out" xml:space="preserve">
+    <value>Uitspringen</value>
+  </data>
+  <data name="window_queue_always_on_top" xml:space="preserve">
+    <value>Altijd aan de top</value>
+  </data>
+  <data name="window_queue_always_on_top_tooltip" xml:space="preserve">
+    <value>Houd het wachtrijvenster boven andere vensters.</value>
+  </data>
+  <data name="window_queue_pop_out_tooltip" xml:space="preserve">
+    <value>Open de wachtrij in een apart venster zonder minimale grootte.</value>
+  </data>
+  <data name="window_queue_open_window" xml:space="preserve">
+    <value>Wachtrijvenster</value>
+  </data>
+  <data name="window_queue_detached_title" xml:space="preserve">
+    <value>De wachtrij bevindt zich in een ander venster.</value>
+  </data>
+  <data name="window_queue_detached_body" xml:space="preserve">
+    <value>De wachtrij wordt in een apart venster weergegeven, zodat je deze zichtbaar kunt houden terwijl je de rest van Songify gebruikt. Sluit dat venster om de wachtrij hier terug te brengen.</value>
+  </data>
+  <data name="window_settings_ignore_bot_messages" xml:space="preserve">
+    <value>Genegeerde chatgebruikers</value>
+  </data>
+  <data name="window_settings_ignore_bot_messages_hint" xml:space="preserve">
+    <value>Opdrachten van deze namen worden overgeslagen, inclusief die van jezelf. Voeg bekende bots toe en verwijder vervolgens elk account dat je gebruikt als doorstuurkanaal voor muziekverzoeken (bijvoorbeeld SoundAlerts).</value>
+  </data>
+  <data name="window_settings_ignore_bot_placeholder" xml:space="preserve">
+    <value>Gebruikersnaam om te negeren</value>
+  </data>
+  <data name="window_settings_ignore_add_known_bots" xml:space="preserve">
+    <value>Voeg bekende bots toe</value>
+  </data>
+  <data name="window_settings_ignore_remove_all" xml:space="preserve">
+    <value>Alles verwijderen</value>
+  </data>
+  <data name="window_help_subtitle" xml:space="preserve">
+    <value>Instellingen, community, mappen en het live logboek.</value>
+  </data>
+  <data name="window_help_section_start" xml:space="preserve">
+    <value>Stel Songify in.</value>
+  </data>
+  <data name="window_help_section_community" xml:space="preserve">
+    <value>Gemeenschap</value>
+  </data>
+  <data name="window_help_section_files" xml:space="preserve">
+    <value>Bestanden</value>
+  </data>
+  <data name="window_help_section_updates" xml:space="preserve">
+    <value>App</value>
+  </data>
+  <data name="window_help_setup_desc" xml:space="preserve">
+    <value>Koppel accounts, verzoeknummers en widgets.</value>
+  </data>
+  <data name="window_help_patchnotes_desc" xml:space="preserve">
+    <value>Bekijk wat er in deze versie is veranderd.</value>
+  </data>
+  <data name="window_help_faq_desc" xml:space="preserve">
+    <value>Antwoorden op songify.rocks.</value>
+  </data>
+  <data name="window_help_github_desc" xml:space="preserve">
+    <value>Meld bugs en dien functieverzoeken in.</value>
+  </data>
+  <data name="window_help_discord_desc" xml:space="preserve">
+    <value>Chat met andere streamers en het team.</value>
+  </data>
+  <data name="window_help_log_desc" xml:space="preserve">
+    <value>Open de map die u gebruikt bij het melden van problemen.</value>
+  </data>
+  <data name="window_help_app_desc" xml:space="preserve">
+    <value>Configuratie, uitvoerbestanden en de app zelf.</value>
+  </data>
+  <data name="window_help_updates_desc" xml:space="preserve">
+    <value>Download de nieuwste release van Songify.</value>
+  </data>
+  <data name="window_help_console_subtitle" xml:space="preserve">
+    <value>Live logboek en API-statistieken. Koppel het los om het op het scherm te houden terwijl je de rest van Songify gebruikt.</value>
+  </data>
+  <data name="window_settings_appearance_accent" xml:space="preserve">
+    <value>Accentkleur</value>
+  </data>
+  <data name="window_settings_appearance_accent_hint" xml:space="preserve">
+    <value>Klik op de kleur om een accentkleur te kiezen, of laat 'Systeem' staan om de Windows-accentkleur te gebruiken.</value>
+  </data>
+  <data name="window_settings_appearance_accent_system" xml:space="preserve">
+    <value>Systeem</value>
+  </data>
+  <data name="window_settings_appearance_accent_system_hint" xml:space="preserve">
+    <value>Gebruik de accentkleur van Windows.</value>
+  </data>
+  <data name="window_settings_appearance_accent_recent" xml:space="preserve">
+    <value>Recent</value>
+  </data>
+  <data name="window_titlebar_up_next" xml:space="preserve">
+    <value>Volgende: {0}</value>
+  </data>
+  <data name="window_blocklist_search_list" xml:space="preserve">
+    <value>Doorzoek deze lijst</value>
+  </data>
+  <data name="window_settings_pear_title" xml:space="preserve">
+    <value>Pear Desktop API</value>
+  </data>
+  <data name="window_settings_pear_hint" xml:space="preserve">
+    <value>De 'Toestaan/Weigeren'-prompt van Pear verschijnt alleen bij het /auth-verzoek, niet wanneer de WebSocket-verbinding tot stand komt. Door Pear te selecteren of op 'Autoriseren' te klikken, start u dat verzoek — sta Songify toe in Pear. Plak hier alleen een token als u er al een hebt.</value>
+  </data>
+  <data name="window_settings_pear_token" xml:space="preserve">
+    <value>API-token</value>
+  </data>
+  <data name="window_settings_pear_authorize" xml:space="preserve">
+    <value>Autoriseren</value>
+  </data>
+  <data name="window_settings_pear_authorize_waiting" xml:space="preserve">
+    <value>Wachten op Pear Desktop… sta Songify toe in de prompt.</value>
+  </data>
+  <data name="window_twitch_commands_paused_title" xml:space="preserve">
+    <value>Twitch-opdrachten gepauzeerd</value>
+  </data>
+  <data name="window_twitch_commands_paused_body" xml:space="preserve">
+    <value>Commando's en muziekverzoeken worden genegeerd wanneer de stream offline is, omdat alleen live-activiteiten op Twitch actief zijn.</value>
+  </data>
+  <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
+    <value>Een commando of muziekverzoek werd genegeerd omdat de stream offline is en alleen live Twitch-activiteit actief is.</value>
+  </data>
 </root>
