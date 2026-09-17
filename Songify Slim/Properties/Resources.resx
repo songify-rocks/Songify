@@ -899,6 +899,10 @@
     <value>Command disabled response</value>
     <comment>Bot response when a known Songify command is disabled</comment>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Reply in chat when a disabled command is used</value>
+    <comment>When off, using a disabled Songify command is ignored with no chat message</comment>
+  </data>
   <data name="window_botresponses_command_on_cooldown" xml:space="preserve">
     <value>Response when the sr command is on cooldown</value>
     <comment>Command on Cooldown Response</comment>

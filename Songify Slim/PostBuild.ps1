@@ -6,8 +6,8 @@ $ErrorActionPreference = "Stop"
 
 if ([string]::IsNullOrWhiteSpace($PublishDir)) {
     $candidates = @(
-        "$PSScriptRoot\bin\Release\net10.0-windows10.0.19041.0\publish\win-x86",
         "$PSScriptRoot\bin\Release\net10.0-windows10.0.19041.0\publish\win-x64",
+        "$PSScriptRoot\bin\Release\net10.0-windows10.0.19041.0\publish\win-x86",
         "$PSScriptRoot\bin\Release\app.publish"
     )
     $PublishDir = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1

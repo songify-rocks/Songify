@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.APIs;
@@ -78,6 +79,10 @@ public static class AppStartup
                 await shell.StartSetupTourAsync();
             await shell.TryShowPremiumReminderAsync();
         }
+
+        // AutoUpdater.NET is WinForms. Give the WPF shell time to finish first-paint
+        // before it loads System.Windows.Forms (same ~10s crash window as before).
+        ScheduleDelayedUpdateCheck(owner);
     }
 
     /// <returns><c>false</c> if startup should abort (app shutting down).</returns>
@@ -332,7 +337,35 @@ public static class AppStartup
         }
 
         await OfferPatchNotesAfterUpdateAsync(owner);
-        AppActions.CheckForUpdates();
+    }
+
+    private static void ScheduleDelayedUpdateCheck(Window owner)
+    {
+        Dispatcher dispatcher = owner?.Dispatcher ?? Application.Current?.Dispatcher;
+        if (dispatcher == null)
+        {
+            AppActions.CheckForUpdates();
+            return;
+        }
+
+        DispatcherTimer timer = new(DispatcherPriority.Background, dispatcher)
+        {
+            Interval = TimeSpan.FromSeconds(10)
+        };
+        timer.Tick += (_, _) =>
+        {
+            timer.Stop();
+            try
+            {
+                Logger.Info(LogSource.Core, "Starting delayed update check.");
+                AppActions.CheckForUpdates();
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+            }
+        };
+        timer.Start();
     }
 
     private static async Task OfferPatchNotesAfterUpdateAsync(Window owner)

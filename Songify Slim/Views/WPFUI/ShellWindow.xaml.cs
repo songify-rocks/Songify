@@ -985,7 +985,7 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
 
     private void MenuAppFolder_OnClick(object sender, RoutedEventArgs e) => AppActions.OpenAppFolder();
 
-    private void MenuCheckUpdates_OnClick(object sender, RoutedEventArgs e) => AppActions.CheckForUpdates();
+    private void MenuCheckUpdates_OnClick(object sender, RoutedEventArgs e) => AppActions.CheckForUpdates(notifyIfCurrent: true);
 
     private void TitleBarNowPlaying_OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         => NavigateToQueue();

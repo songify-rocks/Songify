@@ -92,5 +92,5 @@ public partial class HelpPage : Page
 
     private void BtnAppFolder_Click(object sender, RoutedEventArgs e) => AppActions.OpenAppFolder();
 
-    private void BtnCheckUpdates_Click(object sender, RoutedEventArgs e) => AppActions.CheckForUpdates();
+    private void BtnCheckUpdates_Click(object sender, RoutedEventArgs e) => AppActions.CheckForUpdates(notifyIfCurrent: true);
 }

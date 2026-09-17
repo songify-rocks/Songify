@@ -29,7 +29,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -81,7 +80,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private readonly Dictionary<Enums.RefundCondition, ToggleSwitch> _toggleMap = new();
         private readonly bool _appIdInitialValue = Settings.UseOwnApp;
-        private readonly FolderBrowserDialog _fbd = new();
         private Window_ResponseParams _wRp;
         private bool _showPassword;
         private CancellationTokenSource _premiumRefreshCts;
@@ -450,6 +448,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             ToggleSwitchUnlimitedSr.IsChecked = Settings.TwSrUnlimitedSr;
             Tglsw_BitsForSr.IsChecked = Settings.SrForBits;
             TglInformChat.IsChecked = Settings.ChatLiveStatus;
+            TglReplyWhenCommandDisabled.IsChecked = Settings.ReplyWhenCommandDisabled;
             TglAddToPlaylist.IsChecked = Settings.AddSrToPlaylist;
             Tglsw_BlockAllExplicitSongs.IsChecked = Settings.BlockAllExplicitSongs;
             CbxAllowedUserLevelsExplicit.IsEnabled = Settings.BlockAllExplicitSongs;
@@ -887,33 +886,21 @@ namespace Songify_Slim.Views.WPFUI.Controls
         {
             // calls confighandler
 
-            FolderBrowserDialog fbd = new()
-            {
-                Site = null,
-                Tag = null,
-                ShowNewFolderButton = false,
-                SelectedPath = null,
-                RootFolder = Environment.SpecialFolder.Desktop,
-                Description = null
-            };
-            fbd.Description = Loc("window_settings_folder_save_config", "Select a folder to save the config file");
-            fbd.ShowNewFolderButton = true;
-            fbd.RootFolder = Environment.SpecialFolder.MyComputer;
-            if (fbd.ShowDialog() != DialogResult.OK) return;
-            ConfigHandler.WriteAllConfig(Settings.Export(), fbd.SelectedPath);
+            string folder = FolderPicker.PickFolder(
+                this,
+                Loc("window_settings_folder_save_config", "Select a folder to save the config file"));
+            if (string.IsNullOrEmpty(folder)) return;
+            ConfigHandler.WriteAllConfig(Settings.Export(), folder);
             await ShowMsgAsync(Loc("common_success", "Success"), Loc("window_settings_config_saved", "Config file saved successfully"));
         }
 
         private async void Btn_ImportConfig_Click(object sender, RoutedEventArgs e)
         {
-            // Open a dialog to select a folder to import the config files
-            using FolderBrowserDialog fbd = new();
-            fbd.Description = Loc("window_settings_folder_import_config", "Select the folder containing the config files");
-            fbd.ShowNewFolderButton = false; // Optional, prevents creating new folders
-            // set the apps directory as the default directory
-            fbd.SelectedPath = AppPaths.GetAppDirectory();
-            if (fbd.ShowDialog() != DialogResult.OK) return;
-            string selectedFolder = fbd.SelectedPath;
+            string selectedFolder = FolderPicker.PickFolder(
+                this,
+                Loc("window_settings_folder_import_config", "Select the folder containing the config files"),
+                AppPaths.GetAppDirectory());
+            if (string.IsNullOrEmpty(selectedFolder)) return;
             if (!ConfigHandler.HasImportableFiles(selectedFolder))
             {
                 await ShowMsgAsync(
@@ -1015,14 +1002,14 @@ namespace Songify_Slim.Views.WPFUI.Controls
 
         private void BtnOutputdirectoryClick(object sender, RoutedEventArgs e)
         {
-            // Where the user wants the text file to be saved in
-            _fbd.Description = Loc("window_settings_folder_song_output", "Path where the text file will be located.");
-            _fbd.SelectedPath = AppPaths.GetAppDirectory();
-
-            if (_fbd.ShowDialog() == DialogResult.Cancel)
+            string folder = FolderPicker.PickFolder(
+                this,
+                Loc("window_settings_folder_song_output", "Path where the text file will be located."),
+                string.IsNullOrEmpty(Settings.Directory) ? AppPaths.GetAppDirectory() : Settings.Directory);
+            if (string.IsNullOrEmpty(folder))
                 return;
-            TxtbxOutputdirectory.Text = _fbd.SelectedPath;
-            Settings.Directory = _fbd.SelectedPath;
+            TxtbxOutputdirectory.Text = folder;
+            Settings.Directory = folder;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -2107,6 +2094,13 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             Settings.ChatLiveStatus = TglInformChat.IsChecked == true;
+        }
+
+        private void Tgl_ReplyWhenCommandDisabled_Toggled(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            Settings.ReplyWhenCommandDisabled = TglReplyWhenCommandDisabled.IsChecked == true;
         }
 
         private void BtnLogInTwitchBot_OnClick(object sender, RoutedEventArgs e)

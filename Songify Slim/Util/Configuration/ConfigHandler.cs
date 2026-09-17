@@ -1222,6 +1222,8 @@ namespace Songify_Slim.Util.Configuration
         public bool BotCmdCommands { get; set; }
         public bool ChatLiveStatus { get; set; }
         public bool OnlyWorkWhenLive { get; set; }
+        /// <summary>When false, using a disabled Songify command is ignored with no chat reply.</summary>
+        public bool ReplyWhenCommandDisabled { get; set; } = true;
         public int BotCmdSkipVoteCount { get; set; } = 5;
         public string BotCmdPlayPauseTrigger { get; set; } = "!play, !pause";
         public string BotCmdSkipVoteTrigger { get; set; } = "!voteskip";

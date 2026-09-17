@@ -477,7 +477,7 @@ namespace Songify_Slim
 
         /// <summary>
         /// Crash UI must not use WPF MessageBox — with WPF-UI theme dictionaries loaded it can throw
-        /// while the app is already failing. WinForms MessageBox is native and more reliable here.
+        /// while the app is already failing. User32 MessageBoxW is native and does not load WinForms.
         /// </summary>
         private static void ShowCrashPromptAndMaybeRestart(Exception ex)
         {
@@ -487,16 +487,15 @@ namespace Songify_Slim
                 if (!string.IsNullOrWhiteSpace(ex?.Message))
                     detail += ": " + ex.Message;
 
-                System.Windows.Forms.DialogResult openLogs = System.Windows.Forms.MessageBox.Show(
+                bool openLogs = NativeMessageBox.YesNo(
                     "Songify ran into a problem and needs to close.\n\n" +
                     detail + "\n\n" +
                     "Would you like to open the log file directory?\n" +
                     "Feel free to submit the log file in our Discord.",
                     "Songify just crashed :(",
-                    System.Windows.Forms.MessageBoxButtons.YesNo,
-                    System.Windows.Forms.MessageBoxIcon.Error);
+                    errorIcon: true);
 
-                if (openLogs == System.Windows.Forms.DialogResult.Yes)
+                if (openLogs)
                 {
                     try
                     {
@@ -508,13 +507,12 @@ namespace Songify_Slim
                     }
                 }
 
-                System.Windows.Forms.DialogResult restart = System.Windows.Forms.MessageBox.Show(
+                bool restart = NativeMessageBox.YesNo(
                     "Restart Songify?",
                     "Songify",
-                    System.Windows.Forms.MessageBoxButtons.YesNo,
-                    System.Windows.Forms.MessageBoxIcon.Question);
+                    errorIcon: false);
 
-                if (restart == System.Windows.Forms.DialogResult.Yes)
+                if (restart)
                 {
                     try
                     {

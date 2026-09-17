@@ -1070,6 +1070,8 @@ public static class TwitchHandler
             {
                 Logger.Warning(LogSource.Twitch,
                     $"Command \"{commandToken}\" by {msg.ChatterUserName}: Not executed (registered but disabled).");
+                if (!Settings.ReplyWhenCommandDisabled)
+                    return;
                 string disabledTemplate = Settings.BotRespCommandDisabled;
                 if (!string.IsNullOrWhiteSpace(disabledTemplate))
                 {

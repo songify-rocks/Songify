@@ -15,7 +15,6 @@ using Songify_Slim.Views.WPFUI.Pages;
 using TwitchLib.Api.Helix.Models.ChannelPoints;
 using static Songify_Slim.Util.General.Enums;
 using Clipboard = System.Windows.Clipboard;
-using FolderBrowserDialog = System.Windows.Forms.FolderBrowserDialog;
 using PasswordBox = System.Windows.Controls.PasswordBox;
 using TextBox = System.Windows.Controls.TextBox;
 
@@ -38,7 +37,6 @@ public partial class WindowSetupWizard
         Done
     }
 
-    private readonly FolderBrowserDialog _folderBrowser = new();
     private readonly DispatcherTimer _statusTimer = new() { Interval = TimeSpan.FromSeconds(1.5) };
     private List<WizardStep> _steps = [];
     private int _index;
@@ -639,13 +637,13 @@ public partial class WindowSetupWizard
 
     private void BtnBrowseOutput_OnClick(object sender, RoutedEventArgs e)
     {
-        _folderBrowser.Description = Loc("window_settings_folder_song_output", "Path where the text file will be located.");
-        _folderBrowser.SelectedPath = string.IsNullOrEmpty(Settings.Directory)
-            ? AppPaths.GetAppDirectory()
-            : Settings.Directory;
-        if (_folderBrowser.ShowDialog() != System.Windows.Forms.DialogResult.OK)
+        string folder = FolderPicker.PickFolder(
+            this,
+            Loc("window_settings_folder_song_output", "Path where the text file will be located."),
+            string.IsNullOrEmpty(Settings.Directory) ? AppPaths.GetAppDirectory() : Settings.Directory);
+        if (string.IsNullOrEmpty(folder))
             return;
-        Settings.Directory = _folderBrowser.SelectedPath;
+        Settings.Directory = folder;
         RefreshOutputPath();
     }
 

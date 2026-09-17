@@ -3110,6 +3110,15 @@ namespace Songify_Slim.Properties {
                 return ResourceManager.GetString("window_settings_integration_stream_not_live_notification", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reply in chat when a disabled command is used.
+        /// </summary>
+        public static string window_settings_integration_reply_disabled_command {
+            get {
+                return ResourceManager.GetString("window_settings_integration_reply_disabled_command", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Listen to chat commands from shared chat.

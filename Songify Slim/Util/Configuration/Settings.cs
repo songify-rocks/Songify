@@ -656,6 +656,12 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool ChatLiveStatus { get => GetChatLiveStatus(); set => SetChatLiveStatus(value); }
 
+        public static bool ReplyWhenCommandDisabled
+        {
+            get => GetReplyWhenCommandDisabled();
+            set => SetReplyWhenCommandDisabled(value);
+        }
+
         public static int ChromeFetchRate
         {
             get => GetChromeFetchRate();
@@ -1457,6 +1463,7 @@ namespace Songify_Slim.Util.Configuration
                 BotRespVoteSkip = GetBot_Resp_VoteSkip(),
                 ChatLiveStatus = GetChatLiveStatus(),
                 OnlyWorkWhenLive = GetBotOnlyWorkWhenLive(),
+                ReplyWhenCommandDisabled = GetReplyWhenCommandDisabled(),
             };
 
             AppConfig appConfig = new()
@@ -2012,6 +2019,11 @@ namespace Songify_Slim.Util.Configuration
         private static bool GetChatLiveStatus()
         {
             return CurrentConfig.BotConfig.ChatLiveStatus;
+        }
+
+        private static bool GetReplyWhenCommandDisabled()
+        {
+            return CurrentConfig.BotConfig.ReplyWhenCommandDisabled;
         }
 
         private static int GetChromeFetchRate()
@@ -2864,6 +2876,12 @@ namespace Songify_Slim.Util.Configuration
         private static void SetChatLiveStatus(bool value)
         {
             CurrentConfig.BotConfig.ChatLiveStatus = value;
+            ConfigHandler.WriteConfig(ConfigTypes.BotConfig, CurrentConfig.BotConfig);
+        }
+
+        private static void SetReplyWhenCommandDisabled(bool value)
+        {
+            CurrentConfig.BotConfig.ReplyWhenCommandDisabled = value;
             ConfigHandler.WriteConfig(ConfigTypes.BotConfig, CurrentConfig.BotConfig);
         }
 

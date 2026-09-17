@@ -506,7 +506,7 @@
                                     <TextBox
                                         x:Name="TxtbxOutputdirectory"
                                         Grid.Column="0"
-                                        Margin="0,0,8,0"
+                                        Margin="0,0,6,0"
                                         IsReadOnly="True"
                                         TextWrapping="NoWrap" />
                                     <Button
@@ -515,6 +515,7 @@
                                         Width="32"
                                         Height="32"
                                         Margin="0,0,6,0"
+                                        Padding="0"
                                         d:ToolTip="{x:Static local:Resources.common_browse}"
                                         Click="BtnOutputdirectoryClick"
                                         Focusable="False"
@@ -1259,6 +1260,18 @@
                                         <TextBlock
                                             d:Text="{x:Static local:Resources.window_settings_integration_stream_not_live_notification}"
                                             Text="{DynamicResource window_settings_integration_stream_not_live_notification}"
+                                            TextWrapping="Wrap" />
+                                    </ui:ToggleSwitch.Content>
+                                </ui:ToggleSwitch>
+                                <ui:ToggleSwitch
+                                    x:Name="TglReplyWhenCommandDisabled"
+                                    Margin="0,0,0,8"
+                                    Checked="Tgl_ReplyWhenCommandDisabled_Toggled"
+                                    Unchecked="Tgl_ReplyWhenCommandDisabled_Toggled">
+                                    <ui:ToggleSwitch.Content>
+                                        <TextBlock
+                                            d:Text="{x:Static local:Resources.window_settings_integration_reply_disabled_command}"
+                                            Text="{DynamicResource window_settings_integration_reply_disabled_command}"
                                             TextWrapping="Wrap" />
                                     </ui:ToggleSwitch.Content>
                                 </ui:ToggleSwitch>
@@ -2895,9 +2908,7 @@
                                     Foreground="{DynamicResource TextFillColorSecondaryBrush}"
                                     Text="{DynamicResource window_settings_pear_hint}"
                                     TextWrapping="Wrap" />
-                                <TextBlock
-                                    Margin="0,0,0,8"
-                                    Text="{DynamicResource window_settings_pear_token}" />
+                                <TextBlock Margin="0,0,0,8" Text="{DynamicResource window_settings_pear_token}" />
                                 <PasswordBox
                                     x:Name="PasswordBox_PearToken"
                                     Margin="0,0,0,12"
