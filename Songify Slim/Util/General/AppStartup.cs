@@ -323,10 +323,7 @@ public static class AppStartup
         try
         {
             await SendTelemetryAsync();
-            Logger.Info(LogSource.Core, "Check Stream up");
-            Settings.IsLive = await TwitchHandler.CheckStreamIsUp();
-            Logger.Info(LogSource.Twitch, "Check Stream up done");
-
+            await AppActions.CheckTwitchOnlineStatusAsync();
             Logger.Info(LogSource.Core, "SetFetchTimer");
             AppFetchService.Start();
             Logger.Info(LogSource.Core, "SetFetchTimer done");

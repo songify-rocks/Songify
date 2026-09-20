@@ -616,7 +616,11 @@ namespace Songify_Slim.Util.Songify.Twitch
         private static Task EventSubWebsocketClientOnStreamOnline(object sender, StreamOnlineArgs args)
         {
             Settings.IsLive = true;
-            Logger.Info(LogSource.Twitch, "Stream live");
+            Settings.StreamId = args.Payload?.Event?.Id;
+            Logger.Info(LogSource.Twitch,
+                string.IsNullOrEmpty(Settings.StreamId)
+                    ? "Stream live"
+                    : $"Stream live (id {Settings.StreamId})");
             AppShellBridge.Current?.ClearTwitchCommandsPausedOffline();
             return Task.CompletedTask;
         }
@@ -624,6 +628,7 @@ namespace Songify_Slim.Util.Songify.Twitch
         private static Task EventSubWebsocketClientOnStreamOffline(object sender, StreamOfflineArgs args)
         {
             Settings.IsLive = false;
+            Settings.StreamId = null;
             Logger.Info(LogSource.Twitch, "Stream offline");
             return Task.CompletedTask;
         }

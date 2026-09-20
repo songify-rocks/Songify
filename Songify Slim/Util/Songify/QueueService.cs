@@ -65,6 +65,9 @@ namespace Songify_Slim.Util.Songify
                 Played = 0,
                 Albumcover = (string)x["queueItem"]?["Albumcover"],
                 PlayerType = playerType,
+                StreamId = (string)x["queueItem"]?["StreamId"]
+                           ?? (string)x["queueItem"]?["streamId"]
+                           ?? (string)x["streamId"],
                 FullRequester = x["queueItem"]?["FullRequester"]?.ToObject<SimpleTwitchUser>()
             });
 

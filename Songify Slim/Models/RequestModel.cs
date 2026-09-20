@@ -37,6 +37,9 @@ public class RequestObject
     [JsonProperty("playerType")]
     public string PlayerType { get; set; }
 
+    [JsonProperty("streamId")]
+    public string StreamId { get; set; }
+
     public bool IsLiked { get; set; } = false;
     public SimpleTwitchUser FullRequester { get; set; } = null;
 }

@@ -951,11 +951,13 @@ public static class TwitchHandler
             if (string.IsNullOrEmpty(Settings.TwitchAccessToken)) return false;
             GetStreamsResponse x = await TwitchApi.Helix.Streams.GetStreamsAsync(null, 20, null, null,
                 [Settings.TwitchUser.Id], null, Settings.TwitchAccessToken);
-            if (x.Streams.Length != 0)
+            if (x.Streams.Length != 0 && x.Streams[0].Type == "live")
             {
-                return x.Streams[0].Type == "live";
+                Settings.StreamId = x.Streams[0].Id;
+                return true;
             }
 
+            Settings.StreamId = null;
             return false;
         }
         catch (Exception e)
@@ -4976,9 +4978,12 @@ public static class TwitchHandler
             // upload to the queue
             //WebHelper.UpdateWebQueue(track.Id, artists, track.Name, length, displayName, "0", "i");
 
+            track.StreamId = Settings.StreamId;
+
             dynamic payload = new
             {
                 uuid = Settings.Uuid,
+                streamId = Settings.StreamId,
                 queueItem = track
             };
 

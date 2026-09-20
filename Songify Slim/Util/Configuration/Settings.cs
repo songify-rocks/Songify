@@ -721,6 +721,9 @@ namespace Songify_Slim.Util.Configuration
 
         public static bool IsLive { get; set; }
 
+        /// <summary>Current Twitch stream id. In-memory only; restored from Helix on startup while live.</summary>
+        public static string StreamId { get; set; }
+
         public static bool KeepAlbumCover { get => GetKeepAlubmCover(); set => SetKeepAlbumCover(value); }
 
         public static string Language
@@ -1158,6 +1161,7 @@ namespace Songify_Slim.Util.Configuration
 
         /// <summary>Pear Desktop API bearer token (stored as <see cref="YtmdToken"/>).</summary>
         public static string PearAccessToken { get => GetYtmdToken(); set => SetYtmdToken(value); }
+
         public static string BotCmdCommandsTrigger { get => GetBotCmdCommandsTrigger(); set => SetBotCmdCommandsTrigger(value); }
         public static string BotRespCommandDisabled { get => GetBotRespCommandDisabled(); set => SetBotRespCommandDisabled(value); }
         public static string BotRespPlayerOwnershipDenied { get => GetBotRespPlayerOwnershipDenied(); set => SetBotRespPlayerOwnershipDenied(value); }
@@ -1599,7 +1603,7 @@ namespace Songify_Slim.Util.Configuration
                 IgnoreBotMessages = GetIgnoreBotMessages(),
                 IgnoredChatUsers = GetIgnoredChatUsers(),
                 AccentColor = GetAccentColor(),
-                RecentAccentColors = [..GetRecentAccentColors()],
+                RecentAccentColors = [.. GetRecentAccentColors()],
                 SrForBitsKeyWord = GetSrForBitsKeyWord(),
             };
 
