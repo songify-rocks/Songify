@@ -11,7 +11,7 @@
     <Copyright>Copyright © 2026</Copyright>
     <NeutralLanguage>en</NeutralLanguage>
     <!-- Single source of truth for AssemblyVersion, FileVersion, and InformationalVersion. -->
-    <Version>2.0.2.0</Version>
+    <Version>2.0.3.0</Version>
     <!-- AutoUpdater.NET still needs WinForms. App UI uses WPF + OpenFolderDialog. -->
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
