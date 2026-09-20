@@ -2972,4 +2972,7 @@ Você ainda pode acessar o Songify Premium a qualquer momento na página inicial
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Um comando ou pedido de música foi simplesmente ignorado porque a transmissão está offline e a atividade do Twitch está ativa apenas para transmissões ao vivo.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Responda no chat quando um comando desativado for usado.</value>
+  </data>
 </root>

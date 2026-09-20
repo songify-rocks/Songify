@@ -2972,4 +2972,7 @@ Puoi comunque aprire Songify Premium in qualsiasi momento dalla schermata inizia
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Un comando o una richiesta di brano musicale sono stati semplicemente ignorati perché lo streaming è offline e la trasmissione in diretta su Twitch è attiva.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Rispondi in chat quando viene utilizzato un comando disabilitato</value>
+  </data>
 </root>

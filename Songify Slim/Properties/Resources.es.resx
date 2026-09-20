@@ -2973,4 +2973,7 @@ Puedes acceder a Songify Premium en cualquier momento desde la página de inicio
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Se ignoró una orden o solicitud de canción porque la transmisión está fuera de línea y solo está activada la actividad en vivo de Twitch.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Responder en el chat cuando se utilice un comando deshabilitado</value>
+  </data>
 </root>

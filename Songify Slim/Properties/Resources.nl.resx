@@ -3026,4 +3026,7 @@ Je kunt Songify Premium nog steeds op elk moment openen via Home of Over.</value
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Een commando of muziekverzoek werd genegeerd omdat de stream offline is en alleen live Twitch-activiteit actief is.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Reageer in de chat wanneer een uitgeschakelde opdracht wordt gebruikt.</value>
+  </data>
 </root>

@@ -2973,4 +2973,7 @@ gwyden - Hertz - karimawii
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Команда или запрос на песню были просто проигнорированы, потому что трансляция отключена, и на Twitch включена только прямая трансляция.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Отвечайте в чате при использовании отключенной команды.</value>
+  </data>
 </root>

@@ -3022,4 +3022,7 @@ Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Ein Befehl oder eine Musikanfrage wurde ignoriert, da der Stream offline ist und nur Live-Aktivitäten auf Twitch aktiv sind.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Antworte im Chat, wenn ein deaktivierter Befehl verwendet wird.</value>
+  </data>
 </root>

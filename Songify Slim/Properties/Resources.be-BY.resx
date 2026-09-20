@@ -3227,4 +3227,7 @@ gwyden - Hertz - karimawii
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Каманда або запыт на песню былі праігнараваны, бо трансляцыя не ў сетцы, і ўключаны толькі прамы эфір на Twitch.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Адказваць у чаце, калі выкарыстоўваецца адключаная каманда</value>
+  </data>
 </root>

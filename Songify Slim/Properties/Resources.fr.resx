@@ -2973,4 +2973,7 @@ Vous pouvez toujours accéder à Songify Premium à tout moment depuis l'accueil
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>La commande ou la demande de chanson a été ignorée car le flux est hors ligne et seule l'activité en direct est activée sur Twitch.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Répondez dans le chat lorsqu'une commande désactivée est utilisée.</value>
+  </data>
 </root>

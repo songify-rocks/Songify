@@ -2972,4 +2972,7 @@ Wciąż możesz otworzyć Songify Premium w dowolnym momencie z ekranu główneg
   <data name="window_twitch_commands_paused_body_again" xml:space="preserve">
     <value>Polecenie lub prośba o piosenkę została zignorowana, ponieważ transmisja jest offline, a w serwisie Twitch włączona jest transmisja wyłącznie na żywo.</value>
   </data>
+  <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
+    <value>Odpowiedz na czacie, gdy użyto wyłączonego polecenia</value>
+  </data>
 </root>
