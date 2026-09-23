@@ -46,6 +46,7 @@ public partial class WindowSetupWizard
     private bool _widgetReady;
     private bool _limitsReady;
     private bool _rewardsLoading;
+    private bool _syncingTokenBox;
 
     public bool StartTourRequested { get; private set; }
 
@@ -69,8 +70,7 @@ public partial class WindowSetupWizard
         BindLanguageCombo();
         BindPlayerCombo();
         TbClientId.Text = Settings.ClientId ?? "";
-        if (!string.IsNullOrEmpty(Settings.SongifyApiKey))
-            PwbToken.Password = Settings.SongifyApiKey;
+        SyncTokenBoxFromSettings();
         RefreshOutputPath();
         BindRequestChoices();
         BindWidgetChoices();
@@ -237,6 +237,8 @@ public partial class WindowSetupWizard
             }
         }
 
+        SyncTokenBoxFromSettings();
+
         if (TxtTokenStatus != null)
         {
             TxtTokenStatus.Text = AccountLinking.HasSongifyApiToken()
@@ -372,8 +374,30 @@ public partial class WindowSetupWizard
     private void BtnGetToken_OnClick(object sender, RoutedEventArgs e)
         => AccountLinking.OpenSongifyTokenPage();
 
+    private void SyncTokenBoxFromSettings()
+    {
+        if (_syncingTokenBox || PwbToken == null)
+            return;
+
+        string key = Settings.SongifyApiKey ?? "";
+        if (PwbToken.Password == key)
+            return;
+
+        _syncingTokenBox = true;
+        try
+        {
+            PwbToken.Password = key;
+        }
+        finally
+        {
+            _syncingTokenBox = false;
+        }
+    }
+
     private void PwbToken_OnPasswordChanged(object sender, RoutedEventArgs e)
     {
+        if (_syncingTokenBox)
+            return;
         if (sender is not PasswordBox box)
             return;
         string pwd = box.Password ?? "";

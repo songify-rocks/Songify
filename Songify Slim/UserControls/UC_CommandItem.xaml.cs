@@ -650,10 +650,10 @@ namespace Songify_Slim.UserControls
                     .ToList();
 
                 if (aliases is not { Count: > 0 }) return;
-                List<string> existingAliases = Command.Aliases ?? [];
+                Command.Aliases ??= [];
 
                 List<string> newAliases = aliases
-                    .Where(u => !existingAliases.Contains(u))
+                    .Where(alias => !Command.Aliases.Contains(alias, StringComparer.OrdinalIgnoreCase))
                     .ToList();
 
                 if (newAliases.Count > 0)

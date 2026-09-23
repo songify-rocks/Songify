@@ -712,7 +712,7 @@
                                     Content="{DynamicResource window_settings_keep_album_cover}"
                                     Unchecked="Tgl_KeepCover_OnToggled">
                                     <ui:ToggleSwitch.Style>
-                                        <Style TargetType="ui:ToggleSwitch">
+                                        <Style BasedOn="{StaticResource {x:Type ui:ToggleSwitch}}" TargetType="ui:ToggleSwitch">
                                             <Setter Property="IsEnabled" Value="True" />
                                             <Setter Property="Visibility" Value="Visible" />
                                             <Style.Triggers>

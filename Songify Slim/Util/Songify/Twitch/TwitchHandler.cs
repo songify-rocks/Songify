@@ -1698,6 +1698,7 @@ public static class TwitchHandler
         if (GlobalObjects.CurrentSong.IsSongrequest() && Settings.SkipOnlyNonSrSongs)
         {
             await CancelSkipRedemption(rewardId, redemptionId);
+            Logger.Log(LogLevel.Info, LogSource.Twitch, "Skip Reward blocked due to \"Disabled Skip Reward for Song Requests\" setting.");
             return true;
         }
 

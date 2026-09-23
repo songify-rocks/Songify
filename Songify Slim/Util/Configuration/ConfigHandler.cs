@@ -104,7 +104,6 @@ namespace Songify_Slim.Util.Configuration
             {
                 CommandType = CommandType.ToggleSr,
                 Trigger = "togglesr",
-                Aliases = null,
                 Response = "Song requests are now {state}",
                 IsEnabled = false,
                 AllowedUserLevels = [6],
@@ -552,6 +551,7 @@ namespace Songify_Slim.Util.Configuration
 
                                 // Ensure command has CustomProperties dictionary
                                 existingCommand.CustomProperties ??= new Dictionary<string, object>();
+                                existingCommand.Aliases ??= [];
 
                                 // For specific command types with expected custom properties, ensure they exist
                                 if (cmdType == CommandType.Voteskip)
@@ -695,6 +695,7 @@ namespace Songify_Slim.Util.Configuration
                 TwitchCommand existingCommand = twitchCommands.Commands.First(c => c.CommandType == cmdType);
                 TwitchCommand defaultCommand = DefaultCommands.First(c => c.CommandType == cmdType);
                 existingCommand.CustomProperties ??= new Dictionary<string, object>();
+                existingCommand.Aliases ??= [];
 
                 if (cmdType == CommandType.Voteskip && !existingCommand.CustomProperties.ContainsKey("SkipCount"))
                 {

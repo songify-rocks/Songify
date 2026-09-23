@@ -14,6 +14,7 @@ namespace Songify_Slim.Models.Twitch
             IsAnnouncement = false;
             AnnouncementColor = Enums.AnnouncementColor.Primary;
             AllowedUsers = [];
+            Aliases = [];
         }
 
         public Enums.CommandType CommandType { get; set; }
