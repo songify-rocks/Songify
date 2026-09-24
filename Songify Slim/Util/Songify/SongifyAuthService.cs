@@ -95,6 +95,7 @@ namespace Songify_Slim.Util.Songify
                     _accessToken = auth.AccessToken;
                     _expiresAtUtc = DateTime.UtcNow.AddSeconds(expiresIn);
                     _loggedAuthUnauthorized = false;
+                    ApplyCanonicalUuid(auth.Uuid);
                     Logger.Info(LogSource.Api, "Songify API authenticated.");
                     return _accessToken;
                 }
@@ -113,6 +114,24 @@ namespace Songify_Slim.Util.Songify
             {
                 AuthGate.Release();
             }
+        }
+
+        /// <summary>
+        /// The auth response UUID is the widget id stored with the account.
+        /// On a first login it matches the UUID the app sent. When a usage row
+        /// already exists, it is that row's UUID and must replace the local one.
+        /// </summary>
+        private static void ApplyCanonicalUuid(string canonicalUuid)
+        {
+            if (string.IsNullOrWhiteSpace(canonicalUuid))
+                return;
+
+            if (string.Equals(Settings.Uuid, canonicalUuid, StringComparison.Ordinal))
+                return;
+
+            Logger.Info(LogSource.Api,
+                $"Songify widget UUID updated from '{Settings.Uuid}' to '{canonicalUuid}'.");
+            Settings.Uuid = canonicalUuid;
         }
 
         private static bool HasValidToken()
@@ -171,6 +190,9 @@ namespace Songify_Slim.Util.Songify
 
             [JsonProperty("expires_in")]
             public int ExpiresIn { get; set; }
+
+            [JsonProperty("uuid")]
+            public string Uuid { get; set; }
         }
     }
 }

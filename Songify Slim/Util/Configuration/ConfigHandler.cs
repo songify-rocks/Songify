@@ -968,6 +968,12 @@ namespace Songify_Slim.Util.Configuration
                 }
 
                 await Settings.ApplySelectedImport(selectedConfig, selectedPaths, preserveSecrets: true);
+
+                // Restore can put an older UUID from the cloud snapshot back into settings.
+                // Re-auth after that so the account's canonical widget UUID wins.
+                SongifyAuthService.Invalidate();
+                await SongifyAuthService.EnsureAuthenticatedAsync().ConfigureAwait(true);
+
                 return new Tuple<bool, HttpStatusCode>(true, HttpStatusCode.OK);
             }
             catch (Exception ex)
