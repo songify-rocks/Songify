@@ -310,12 +310,11 @@
                                             Text="{Binding Queueid, StringFormat='#{0}'}"
                                             Visibility="Collapsed" />
                                         <TextBlock
-                                            Margin="8,0,0,0"
                                             VerticalAlignment="Center"
                                             FontSize="12"
                                             Foreground="{DynamicResource TextFillColorTertiaryBrush}"
                                             Text="{Binding Length}"
-                                            Visibility="Collapsed" />
+                                            Visibility="Visible" />
                                         <!--  Skipping pill (same size/style as requester)  -->
                                         <Border
                                             Padding="8,3"

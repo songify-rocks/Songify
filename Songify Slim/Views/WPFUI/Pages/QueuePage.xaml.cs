@@ -2,7 +2,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using Songify_Slim.Views.WPFUI.ViewModels;
@@ -12,7 +11,6 @@ namespace Songify_Slim.Views.WPFUI.Pages;
 public partial class QueuePage : Page
 {
     private QueueWindowViewModel _viewModel;
-    private DispatcherTimer _playPauseTimer;
     private bool _syncingAlwaysOnTop;
 
     public QueuePage()
@@ -43,28 +41,12 @@ public partial class QueuePage : Page
         ApplyHostLayout();
         UpdateDetachedUi();
         GlobalObjects.QueueUpdateQueueWindow();
-        _viewModel.RefreshPlayPauseState(); // refresh so "now playing" row shows (queue + CurrentSong fallback)
-        StopPlayPauseTimer();
-        _playPauseTimer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
-        _playPauseTimer.Tick += OnPlayPauseTick;
-        _playPauseTimer.Start();
+        _viewModel.RefreshPlayPauseState();
     }
 
     private void QueuePage_Unloaded(object sender, RoutedEventArgs e)
     {
         QueueWindow.DetachedChanged -= OnDetachedChanged;
-        StopPlayPauseTimer();
-    }
-
-    private void OnPlayPauseTick(object sender, EventArgs e) => _viewModel.RefreshPlayPauseState();
-
-    private void StopPlayPauseTimer()
-    {
-        if (_playPauseTimer == null)
-            return;
-        _playPauseTimer.Tick -= OnPlayPauseTick;
-        _playPauseTimer.Stop();
-        _playPauseTimer = null;
     }
 
     private void OnDetachedChanged()

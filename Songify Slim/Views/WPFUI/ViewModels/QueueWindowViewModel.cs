@@ -411,7 +411,6 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
     {
         CurrentQueueItem = QueueTracks?.FirstOrDefault(x => x.Played == -1);
         UpdateNowPlayingDisplay();
-        PendingQueueTracks?.Refresh();
     }
 
     private void UpdateNowPlayingDisplay()

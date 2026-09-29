@@ -690,6 +690,11 @@ namespace Songify_Slim.Util.Songify
 
                 if (_trackChanged || GlobalObjects.ForceUpdate)
                 {
+                    // Queue window reads Spotify's queue snapshot. Refresh it on a real track
+                    // change only. Pause/resume and is_playing flicker set ForceUpdate and must
+                    // not rebuild the list on every fetch interval. Song requests, skips, and
+                    // removals refresh the window themselves.
+                    bool refreshQueueWindow = _trackChanged;
                     _trackChanged = false;
                     GlobalObjects.ForceUpdate = false;
                     if (songInfo.SongId != null)
@@ -698,7 +703,8 @@ namespace Songify_Slim.Util.Songify
                     }
 
                     await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify);
-                    await GlobalObjects.QueueUpdateQueueWindow();
+                    if (refreshQueueWindow)
+                        await GlobalObjects.QueueUpdateQueueWindow();
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
                 }
 
