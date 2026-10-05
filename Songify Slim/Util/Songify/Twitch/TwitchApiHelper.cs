@@ -168,6 +168,9 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             foreach (string s in twRewardId)
             {
+                if (TwitchPowerUpClient.IsKnown(s))
+                    continue;
+
                 try
                 {
                     UpdateCustomRewardResponse result = await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, s,

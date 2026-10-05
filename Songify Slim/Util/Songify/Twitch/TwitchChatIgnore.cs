@@ -6,8 +6,7 @@ using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 namespace Songify_Slim.Util.Songify.Twitch;
 
 /// <summary>
-/// Skips chat commands from names on the ignore list (including the broadcaster)
-/// and from the linked Songify bot account.
+/// Skips chat commands from names on the ignore list (including the broadcaster).
 /// </summary>
 internal static class TwitchChatIgnore
 {
@@ -41,14 +40,7 @@ internal static class TwitchChatIgnore
         if (msg == null)
             return false;
 
-        if (IsOnCustomIgnoreList(msg))
-            return true;
-
-        // The connected Songify bot account posts announcements, not viewer requests.
-        if (IsLinkedSongifyBot(msg) && !msg.IsBroadcaster)
-            return true;
-
-        return false;
+        return IsOnCustomIgnoreList(msg);
     }
 
     /// <summary>Adds known bot logins that are not already on the list. Returns how many were added.</summary>
@@ -67,18 +59,6 @@ internal static class TwitchChatIgnore
         }
 
         return added;
-    }
-
-    private static bool IsLinkedSongifyBot(ChannelChatMessage msg)
-    {
-        if (Settings.TwitchBotUser == null)
-            return false;
-
-        if (!string.IsNullOrEmpty(Settings.TwitchBotUser.Id) &&
-            string.Equals(msg.ChatterUserId, Settings.TwitchBotUser.Id, StringComparison.Ordinal))
-            return true;
-
-        return string.Equals(msg.ChatterUserLogin, Settings.TwitchBotUser.Login, StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsOnCustomIgnoreList(ChannelChatMessage msg)

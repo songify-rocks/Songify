@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ using TwitchLib.EventSub.Core.Models.Polls;
 using TwitchLib.EventSub.Core.SubscriptionTypes.Channel;
 using TwitchLib.EventSub.Websockets;
 using TwitchLib.EventSub.Websockets.Core.EventArgs;
+using TwitchLib.EventSub.Websockets.Core.Models;
 
 namespace Songify_Slim.Util.Songify.Twitch
 {
@@ -92,6 +94,12 @@ namespace Songify_Slim.Util.Songify.Twitch
                 "channel.poll.end",
                 "1",
                 ManagedSubscriptionConditionKind.BroadcasterAndModerator),
+            // broadcaster_user_id. bits:read. TwitchLib does not type this event yet;
+            // redemptions arrive through UnknownEventSubNotification.
+            new ManagedWebsocketSubscriptionDefinition(
+                "channel.custom_power_up_redemption.add",
+                "1",
+                ManagedSubscriptionConditionKind.Broadcaster),
         };
 
         private static readonly HashSet<string> ManagedWebsocketSubscriptionTypes =
@@ -123,6 +131,7 @@ namespace Songify_Slim.Util.Songify.Twitch
             _eventSubWebsocketClient.ChannelPollBegin += _eventSubWebsocketClient_ChannelPollBegin;
             _eventSubWebsocketClient.ChannelPollProgress += EventSubWebsocketClientOnChannelPollProgress;
             _eventSubWebsocketClient.ChannelPollEnd += _eventSubWebsocketClient_ChannelPollEnd;
+            _eventSubWebsocketClient.UnknownEventSubNotification += OnUnknownEventSubNotification;
 
             _twitchApi.Settings.ClientId = TwitchHandler.ClientId;
             _twitchApi.Settings.AccessToken = Settings.TwitchAccessToken;
@@ -664,6 +673,52 @@ namespace Songify_Slim.Util.Songify.Twitch
 
             if (Settings.TwRewardSkipPoll.Any(id => id == eventData.Reward.Id))
                 await TwitchHandler.StartSkipPoll(eventData.Id, eventData.Reward.Id);
+        }
+
+        private async Task OnUnknownEventSubNotification(object sender, UnknownEventSubNotificationArgs e)
+        {
+            string subscriptionType = e.Payload?.Subscription?.Type;
+            if (string.IsNullOrWhiteSpace(subscriptionType) && e.Metadata is WebsocketEventSubMetadata metadata)
+                subscriptionType = metadata.SubscriptionType;
+
+            if (!string.Equals(subscriptionType, "channel.custom_power_up_redemption.add", StringComparison.OrdinalIgnoreCase))
+                return;
+
+            if (e.Payload?.Event is not JsonElement eventData || eventData.ValueKind != JsonValueKind.Object)
+                return;
+
+            string broadcasterId = ReadEventString(eventData, "broadcaster_user_id");
+            if (!string.IsNullOrEmpty(broadcasterId) && broadcasterId != Settings.TwitchUser.Id)
+                return;
+
+            if (!eventData.TryGetProperty("custom_power_up", out JsonElement powerUp) || powerUp.ValueKind != JsonValueKind.Object)
+                return;
+
+            string powerUpId = ReadEventString(powerUp, "id");
+            string title = ReadEventString(powerUp, "title");
+            string userName = ReadEventString(eventData, "user_name");
+            string redemptionId = ReadEventString(eventData, "id");
+
+            if (string.IsNullOrWhiteSpace(powerUpId))
+                return;
+
+            TwitchPowerUpClient.Remember(powerUpId);
+            TwitchPowerUpClient.DropSongRequestAssignments([powerUpId]);
+            Logger.Info(LogSource.Twitch, $"{userName} redeemed Power-up {title}");
+
+            if (Settings.TwRewardSkipId.Any(id => id == powerUpId))
+                await TwitchHandler.HandleSkipReward(redemptionId, powerUpId, userName);
+
+            if (Settings.TwRewardSkipPoll.Any(id => id == powerUpId))
+                await TwitchHandler.StartSkipPoll(redemptionId, powerUpId);
+        }
+
+        private static string ReadEventString(JsonElement item, string name)
+        {
+            if (!item.TryGetProperty(name, out JsonElement value) || value.ValueKind != JsonValueKind.String)
+                return "";
+
+            return value.GetString() ?? "";
         }
 
         private static Task _eventSubWebsocketClient_ChannelChatMessage(object sender, ChannelChatMessageArgs e)

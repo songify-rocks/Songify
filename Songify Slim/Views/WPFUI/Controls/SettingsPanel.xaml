@@ -1380,10 +1380,12 @@
                 d:Header="{x:Static local:Resources.window_settings_tab_rewards}"
                 Header="{DynamicResource window_settings_tab_rewards}"
                 Tag="TwitchRewards">
-                <Border Padding="4,0,0,0" Background="Transparent">
-                    <Grid x:Name="GrdTwitchReward" Margin="10,12,0,0">
+                <ui:Card VerticalAlignment="Stretch" VerticalContentAlignment="Stretch">
+                    <Grid
+                        x:Name="GrdTwitchReward"
+                        Margin="10,12,0,0"
+                        VerticalAlignment="Stretch">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="*" />
@@ -1392,7 +1394,6 @@
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
-
                         <TextBlock
                             Grid.Row="0"
                             Grid.Column="0"
@@ -1456,84 +1457,80 @@
                             Content="{DynamicResource window_settings_twitch_disable_skip_for_requests}"
                             Unchecked="TglOnlySkipNonSrRewards_OnToggled" />
 
-                        <Border
+                        <TabControl
                             Grid.Row="2"
                             Grid.Column="0"
                             Grid.ColumnSpan="2"
-                            Margin="0,0,0,10"
-                            Padding="4"
-                            HorizontalAlignment="Left"
-                            Background="{DynamicResource ControlFillColorDefaultBrush}"
-                            CornerRadius="8">
-                            <StackPanel Orientation="Horizontal">
-                                <ui:Button
-                                    x:Name="BtnRewardsSegmentChannel"
-                                    MinWidth="140"
-                                    Margin="0,0,4,0"
-                                    Appearance="Primary"
-                                    Click="BtnRewardsSegmentChannel_Click"
-                                    Content="{DynamicResource window_settings_tab_channel_rewards}"
-                                    Icon="{ui:SymbolIcon Gift24}" />
-                                <ui:Button
-                                    x:Name="BtnRewardsSegmentRefund"
-                                    MinWidth="140"
-                                    Appearance="Secondary"
-                                    Click="BtnRewardsSegmentRefund_Click"
-                                    Content="{DynamicResource window_settings_tab_refund_conditions}"
-                                    Icon="{ui:SymbolIcon Money24}" />
-                            </StackPanel>
-                        </Border>
-
-                        <Grid
-                            Grid.Row="3"
-                            Grid.Column="0"
-                            Grid.ColumnSpan="2">
-                            <ListBox
-                                x:Name="ListboxRewards"
-                                Margin="0,0,0,0"
-                                IsEnabled="True"
-                                ScrollViewer.CanContentScroll="True"
-                                SelectionMode="Single"
-                                VirtualizingPanel.IsVirtualizing="True"
-                                VirtualizingPanel.VirtualizationMode="Recycling"
-                                VirtualizingStackPanel.ScrollUnit="Item">
-                                <ListBox.ItemTemplate>
-                                    <DataTemplate DataType="{x:Type userControls:TwitchRewardListItem}">
-                                        <userControls:UcTwitchReward />
-                                    </DataTemplate>
-                                </ListBox.ItemTemplate>
-                                <ListBox.ItemContainerStyle>
-                                    <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
-                                        <Setter Property="OverridesDefaultStyle" Value="True" />
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="BorderBrush" Value="Transparent" />
-                                        <Setter Property="Template">
-                                            <Setter.Value>
-                                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
-                                                    <ContentPresenter />
-                                                </ControlTemplate>
-                                            </Setter.Value>
-                                        </Setter>
-                                    </Style>
-                                </ListBox.ItemContainerStyle>
-                            </ListBox>
-
-                            <StackPanel
-                                x:Name="PnlRefundConditions"
-                                Orientation="Vertical"
-                                Visibility="Collapsed">
-                                <TextBlock
-                                    Margin="0,0,0,6"
-                                    Text="{DynamicResource window_settings_refund_conditions_info}"
-                                    TextWrapping="Wrap" />
-                                <Grid
-                                    x:Name="RefundSwitchesPanel"
-                                    VerticalAlignment="Top"
-                                    SizeChanged="RefundSwitchesPanel_OnSizeChanged" />
-                            </StackPanel>
-                        </Grid>
+                            Margin="0,4,0,0"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            Background="{DynamicResource TabViewItemHeaderBackgroundSelected}">
+                            <TabItem d:Header="{x:Static local:Resources.window_settings_tab_channel_rewards}" Header="{DynamicResource window_settings_tab_channel_rewards}">
+                                <DockPanel Margin="8">
+                                    <TextBlock
+                                        Margin="0,0,0,8"
+                                        DockPanel.Dock="Top"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{DynamicResource window_settings_powerups_note}"
+                                        TextWrapping="Wrap" />
+                                    <ListBox
+                                        x:Name="ListboxRewards"
+                                        IsEnabled="True"
+                                        ScrollViewer.CanContentScroll="True"
+                                        SelectionMode="Single"
+                                        VirtualizingPanel.IsVirtualizing="True"
+                                        VirtualizingPanel.VirtualizationMode="Recycling"
+                                        VirtualizingStackPanel.ScrollUnit="Item">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type userControls:TwitchRewardListItem}">
+                                                <userControls:UcTwitchReward />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                        <ListBox.ItemContainerStyle>
+                                            <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
+                                                <Setter Property="OverridesDefaultStyle" Value="True" />
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                                            <ContentPresenter />
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </ListBox.ItemContainerStyle>
+                                    </ListBox>
+                                </DockPanel>
+                            </TabItem>
+                            <TabItem d:Header="{x:Static local:Resources.window_settings_tab_refund_conditions}" Header="{DynamicResource window_settings_tab_refund_conditions}">
+                                <Grid VerticalAlignment="Stretch">
+                                    <ScrollViewer
+                                        Margin="8"
+                                        VerticalAlignment="Stretch"
+                                        VerticalScrollBarVisibility="Auto">
+                                        <StackPanel
+                                            x:Name="PnlRefundConditions"
+                                            VerticalAlignment="Stretch"
+                                            Orientation="Vertical">
+                                            <TextBlock
+                                                Margin="0,0,0,6"
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                Text="{DynamicResource window_settings_refund_conditions_info}"
+                                                TextWrapping="Wrap" />
+                                            <Grid
+                                                x:Name="RefundSwitchesPanel"
+                                                VerticalAlignment="Top"
+                                                SizeChanged="RefundSwitchesPanel_OnSizeChanged" />
+                                        </StackPanel>
+                                    </ScrollViewer>
+                                </Grid>
+                            </TabItem>
+                        </TabControl>
                     </Grid>
-                </Border>
+                </ui:Card>
             </TabItem>
             <TabItem
                 x:Name="TabItemTwitchPoll"

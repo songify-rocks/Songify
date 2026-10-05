@@ -8,123 +8,157 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     Width="auto"
     mc:Ignorable="d">
-    <Grid Margin="12,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-            <ColumnDefinition Width="auto" />
-        </Grid.ColumnDefinitions>
-        <StackPanel
-            Grid.Column="0"
-            HorizontalAlignment="Left"
-            Orientation="Horizontal">
-            <Border
-                x:Name="ImgBorder"
-                Width="30"
-                Height="30"
-                CornerRadius="8">
+    <Grid Margin="0,0,6,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <TextBlock
+            x:Name="TxtGroupHeader"
+            Grid.Row="0"
+            Margin="12,14,12,8"
+            FontSize="13"
+            FontWeight="SemiBold"
+            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+            Visibility="Collapsed" />
+        <Grid Grid.Row="1" Margin="12,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+                <ColumnDefinition Width="auto" />
+            </Grid.ColumnDefinitions>
+            <StackPanel
+                Grid.Column="0"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
+                <Border
+                    x:Name="ImgBorder"
+                    Width="30"
+                    Height="30"
+                    CornerRadius="8">
+                    <Image
+                        x:Name="ImgReward"
+                        Width="20"
+                        Height="20"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Source="/Resources/img/default-1.png" />
+                </Border>
+
+                <TextBlock
+                    x:Name="TxtRewardname"
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    Text="Sample Reward" />
+            </StackPanel>
+            <StackPanel
+                Grid.Column="1"
+                Width="auto"
+                Margin="12,0,6,0"
+                HorizontalAlignment="Left"
+                Orientation="Horizontal">
                 <Image
-                    x:Name="ImgReward"
+                    x:Name="ImgCost"
                     Width="20"
                     Height="20"
-                    HorizontalAlignment="Center"
+                    HorizontalAlignment="Left"
                     VerticalAlignment="Center"
+                    RenderOptions.BitmapScalingMode="HighQuality"
                     Source="/Resources/img/default-1.png" />
-            </Border>
-
-            <TextBlock
-                x:Name="TxtRewardname"
-                Margin="12,0,0,0"
-                VerticalAlignment="Center"
-                Text="Sample Reward" />
-        </StackPanel>
-        <StackPanel
-            Grid.Column="1"
-            Width="100"
-            Margin="12,0,0,0"
-            HorizontalAlignment="Left"
-            Orientation="Horizontal">
+                <TextBox
+                    x:Name="TxtRewardcost"
+                    Width="80"
+                    Margin="12,0,0,0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    PreviewTextInput="TxtRewardcost_OnPreviewTextInput"
+                    Text="500"
+                    TextChanged="TxtRewardcost_OnTextChanged">
+                    <TextBox.Style>
+                        <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
+                            <Setter Property="Foreground" Value="White" />
+                            <Setter Property="BorderBrush" Value="White" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="TextBox">
+                                        <Grid>
+                                            <Border
+                                                x:Name="Border"
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="1"
+                                                CornerRadius="2" />
+                                            <ScrollViewer
+                                                x:Name="PART_ContentHost"
+                                                Margin="2"
+                                                VerticalAlignment="Center" />
+                                        </Grid>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
+                                                <Setter TargetName="Border" Property="Background" Value="Transparent" />
+                                                <Setter Property="Foreground" Value="White" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TextBox.Style>
+                </TextBox>
+            </StackPanel>
             <Image
-                x:Name="ImgCost"
+                x:Name="ImgManageable"
+                Grid.Column="2"
                 Width="20"
                 Height="20"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Center"
-                Source="/Resources/img/default-1.png" />
-            <TextBox
-                x:Name="TxtRewardcost"
-                Width="60"
+                Source="/Resources/songify.ico"
+                ToolTip="{DynamicResource uc_reward_created_by_songify}" />
+            <StackPanel
+                Grid.Column="3"
                 Margin="12,0,0,0"
-                HorizontalAlignment="Stretch"
                 VerticalAlignment="Center"
-                PreviewTextInput="TxtRewardcost_OnPreviewTextInput"
-                Text="500"
-                TextChanged="TxtRewardcost_OnTextChanged">
-                <TextBox.Style>
-                    <Style BasedOn="{StaticResource {x:Type TextBox}}" TargetType="TextBox">
-                        <Setter Property="Foreground" Value="White" />
-                        <Setter Property="BorderBrush" Value="White" />
-                        <Setter Property="Background" Value="Transparent" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="TextBox">
-                                    <Grid>
-                                        <Border
-                                            x:Name="Border"
-                                            Background="{TemplateBinding Background}"
-                                            BorderBrush="{TemplateBinding BorderBrush}"
-                                            BorderThickness="1"
-                                            CornerRadius="2" />
-                                        <ScrollViewer
-                                            x:Name="PART_ContentHost"
-                                            Margin="2"
-                                            VerticalAlignment="Center" />
-                                    </Grid>
-                                    <ControlTemplate.Triggers>
-                                        <Trigger Property="IsEnabled" Value="False">
-                                            <Setter TargetName="Border" Property="BorderBrush" Value="Transparent" />
-                                            <Setter TargetName="Border" Property="Background" Value="Transparent" />
-                                            <Setter Property="Foreground" Value="White" />
-                                        </Trigger>
-                                    </ControlTemplate.Triggers>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style>
-                </TextBox.Style>
-            </TextBox>
-        </StackPanel>
-        <Image
-            x:Name="ImgManageable"
-            Grid.Column="2"
-            Width="20"
-            Height="20"
-            Source="/Resources/songify.ico"
-            ToolTip="{DynamicResource uc_reward_created_by_songify}" />
-        <StackPanel
-            Grid.Column="3"
-            Margin="12,0,0,0"
-            VerticalAlignment="Center"
-            Orientation="Horizontal">
-            <ComboBox
-                x:Name="CbxAction"
-                Width="150"
-                SelectionChanged="CbxAction_OnSelectionChanged">
-                <ComboBoxItem Content="-" />
-                <ComboBoxItem Content="{DynamicResource uc_reward_song_request}" />
-                <ComboBoxItem Content="{DynamicResource uc_reward_skip_song}" />
-                <ComboBoxItem Content="{DynamicResource uc_reward_start_skip_poll}" />
-            </ComboBox>
-            <ui:ToggleSwitch
-                x:Name="TglRewardActive"
-                Width="45"
-                MinWidth="0"
-                Checked="TglRewardActive_Toggled"
-                Content=""
-                Unchecked="TglRewardActive_Toggled"
-                Visibility="Collapsed" />
-        </StackPanel>
+                Orientation="Horizontal">
+                <ComboBox
+                    x:Name="CbxAction"
+                    Width="150"
+                    SelectionChanged="CbxAction_OnSelectionChanged">
+                    <ComboBoxItem Content="-" />
+                    <ComboBoxItem x:Name="ItemSongRequest" Content="{DynamicResource uc_reward_song_request}" />
+                    <ComboBoxItem Content="{DynamicResource uc_reward_skip_song}" />
+                    <ComboBoxItem Content="{DynamicResource uc_reward_start_skip_poll}" />
+                </ComboBox>
+                <Button
+                    x:Name="BtnPowerUpNoSongRequest"
+                    Width="36"
+                    Height="36"
+                    Margin="6,0,0,0"
+                    Padding="0"
+                    VerticalAlignment="Center"
+                    Click="BtnPowerUpNoSongRequest_OnClick"
+                    Visibility="Collapsed">
+                    <Button.ToolTip>
+                        <ToolTip MaxWidth="360">
+                            <TextBlock Text="{DynamicResource uc_reward_powerup_no_song_request}" TextWrapping="Wrap" />
+                        </ToolTip>
+                    </Button.ToolTip>
+                    <ui:SymbolIcon
+                        Width="16"
+                        Height="16"
+                        Symbol="QuestionCircle24" />
+                </Button>
+                <ui:ToggleSwitch
+                    x:Name="TglRewardActive"
+                    Width="45"
+                    MinWidth="0"
+                    Checked="TglRewardActive_Toggled"
+                    Content=""
+                    Unchecked="TglRewardActive_Toggled"
+                    Visibility="Collapsed" />
+            </StackPanel>
+        </Grid>
     </Grid>
 </UserControl>

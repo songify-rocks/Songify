@@ -26,11 +26,43 @@ namespace Songify_Slim.UserControls
         public TwitchRewardListItem(CustomReward reward, bool manageable)
         {
             Reward = reward;
+            Id = reward.Id;
+            Title = reward.Title;
+            Cost = reward.Cost;
+            BackgroundColor = reward.BackgroundColor;
+            ImageUrl = reward.Image?.Url1x ?? reward.DefaultImage?.Url1x;
             Manageable = manageable;
         }
 
+        private TwitchRewardListItem()
+        {
+        }
+
+        internal static TwitchRewardListItem FromPowerUp(TwitchPowerUp powerUp)
+        {
+            return new TwitchRewardListItem
+            {
+                Id = powerUp.Id,
+                Title = powerUp.Title,
+                Cost = powerUp.Bits,
+                BackgroundColor = powerUp.BackgroundColor,
+                ImageUrl = powerUp.ImageUrl,
+                IsPowerUp = true,
+                Manageable = false
+            };
+        }
+
         public CustomReward Reward { get; }
-        public bool Manageable { get; }
+        public string Id { get; private init; }
+        public string Title { get; private init; }
+        public int Cost { get; private init; }
+        public string BackgroundColor { get; private init; }
+        public string ImageUrl { get; private init; }
+        public bool Manageable { get; private init; }
+        public bool IsPowerUp { get; private init; }
+
+        /// <summary>Resource key shown above the first row of a group. Empty for the other rows.</summary>
+        public string GroupHeaderKey { get; set; }
     }
 
     /// <summary>
@@ -39,6 +71,8 @@ namespace Songify_Slim.UserControls
     public partial class UcTwitchReward
     {
         private CustomReward _reward;
+        private string _rewardId;
+        private bool _isPowerUp;
         private bool _isApplying;
 
         // Place this as a class-level field:
@@ -52,34 +86,56 @@ namespace Songify_Slim.UserControls
 
         public UcTwitchReward(CustomReward reward, bool manageable) : this()
         {
-            Apply(reward, manageable);
+            Apply(new TwitchRewardListItem(reward, manageable));
         }
 
         private void TryBindFromDataContext()
         {
             if (DataContext is TwitchRewardListItem item)
-                Apply(item.Reward, item.Manageable);
+                Apply(item);
         }
 
-        private void Apply(CustomReward reward, bool manageable)
+        private void Apply(TwitchRewardListItem item)
         {
-            if (reward == null)
+            if (item == null || string.IsNullOrWhiteSpace(item.Id))
                 return;
 
             _isApplying = true;
             try
             {
-                _reward = reward;
-                TxtRewardname.Text = _reward.Title;
-                TxtRewardcost.Text = _reward.Cost.ToString();
-                TxtRewardcost.IsEnabled = manageable;
-                ImgManageable.Visibility = manageable ? Visibility.Visible : Visibility.Hidden;
+                _reward = item.IsPowerUp ? null : item.Reward;
+                _rewardId = item.Id;
+                _isPowerUp = item.IsPowerUp;
+                ItemSongRequest.Visibility = item.IsPowerUp ? Visibility.Collapsed : Visibility.Visible;
+                ItemSongRequest.IsEnabled = !item.IsPowerUp;
+                BtnPowerUpNoSongRequest.Visibility = item.IsPowerUp ? Visibility.Visible : Visibility.Collapsed;
+                if (item.IsPowerUp)
+                    TwitchPowerUpClient.DropSongRequestAssignments([item.Id]);
+                TxtRewardname.Text = item.Title;
+                TxtRewardcost.Text = item.Cost.ToString();
+                TxtRewardcost.IsEnabled = item.Manageable && !item.IsPowerUp;
+                ImgCost.Source = new BitmapImage(new Uri(
+                    item.IsPowerUp ? "/Resources/img/100.png" : "/Resources/img/default-1.png",
+                    UriKind.Relative));
+                if (string.IsNullOrEmpty(item.GroupHeaderKey))
+                {
+                    TxtGroupHeader.Visibility = Visibility.Collapsed;
+                }
+                else
+                {
+                    TxtGroupHeader.SetResourceReference(TextBlock.TextProperty, item.GroupHeaderKey);
+                    TxtGroupHeader.Visibility = Visibility.Visible;
+                }
+                ImgManageable.Visibility = item.Manageable ? Visibility.Visible : Visibility.Hidden;
+                ToolTip = item.IsPowerUp
+                    ? Application.Current?.TryFindResource("uc_reward_powerup_tooltip") as string
+                    : null;
 
-                if (_reward.BackgroundColor != null)
+                if (!string.IsNullOrWhiteSpace(item.BackgroundColor))
                 {
                     try
                     {
-                        ImgBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(_reward.BackgroundColor)!);
+                        ImgBorder.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString(item.BackgroundColor)!);
                     }
                     catch (Exception)
                     {
@@ -87,14 +143,11 @@ namespace Songify_Slim.UserControls
                     }
                 }
 
-                // Prefer custom image; most rewards only have default_image from Helix.
-                string imageUrl = _reward.Image?.Url1x ?? _reward.DefaultImage?.Url1x;
-                if (!string.IsNullOrEmpty(imageUrl) &&
-                    Uri.TryCreate(imageUrl, UriKind.Absolute, out Uri imageUri))
+                if (!string.IsNullOrEmpty(item.ImageUrl) &&
+                    Uri.TryCreate(item.ImageUrl, UriKind.Absolute, out Uri imageUri))
                 {
                     try
                     {
-                        // Default CacheOption downloads asynchronously (no DelayCreation/OnDemand).
                         var bitmap = new BitmapImage();
                         bitmap.BeginInit();
                         bitmap.UriSource = imageUri;
@@ -112,11 +165,11 @@ namespace Songify_Slim.UserControls
                     ImgReward.Source = new BitmapImage(new Uri("/Resources/img/default-1.png", UriKind.Relative));
                 }
 
-                if (Settings.TwRewardSkipId.Any(o => o == _reward.Id))
+                if (Settings.TwRewardSkipId.Any(o => o == item.Id))
                     CbxAction.SelectedIndex = 2;
-                else if (Settings.TwRewardId.Any(o => o == _reward.Id))
+                else if (Settings.TwRewardId.Any(o => o == item.Id))
                     CbxAction.SelectedIndex = 1;
-                else if (Settings.TwRewardSkipPoll.Any(o => o == _reward.Id))
+                else if (Settings.TwRewardSkipPoll.Any(o => o == item.Id))
                     CbxAction.SelectedIndex = 3;
                 else
                     CbxAction.SelectedIndex = 0;
@@ -130,7 +183,7 @@ namespace Songify_Slim.UserControls
         private void TglRewardActive_Toggled(object sender, RoutedEventArgs e)
         {
             List<string> tmp = Settings.TwRewardId;
-            string rewardId = _reward.Id;
+            string rewardId = _rewardId;
             if (TglRewardActive.IsChecked == true)
             {
                 // Only add if it's not already in the list
@@ -175,7 +228,7 @@ namespace Songify_Slim.UserControls
         private void CbxAction_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             // Ensure sender is a ComboBox and _reward is available
-            if (_isApplying || sender is not ComboBox comboBox || _reward == null)
+            if (_isApplying || sender is not ComboBox comboBox || string.IsNullOrWhiteSpace(_rewardId))
             {
                 return;
             }
@@ -188,7 +241,9 @@ namespace Songify_Slim.UserControls
 
             // Cast the selected index to our enum for clarity
             RewardAction action = (RewardAction)comboBox.SelectedIndex;
-            string rewardId = _reward.Id;
+            if (action == RewardAction.SongRequest && _isPowerUp)
+                action = RewardAction.Remove;
+            string rewardId = _rewardId;
 
             // Retrieve the reward lists; initialize if null to avoid null-reference issues
             List<string> songRequestRewards = (Settings.TwRewardId ?? []).ToList();
@@ -239,7 +294,7 @@ namespace Songify_Slim.UserControls
                 if (!IsLoaded)
                     return;
 
-                if (sender is not TextBox textBox || _reward == null)
+                if (sender is not TextBox textBox || _reward == null || string.IsNullOrWhiteSpace(_rewardId))
                     return;
 
                 // Cancel any previous debounce task
@@ -265,7 +320,7 @@ namespace Songify_Slim.UserControls
                 }
 
                 // Only update if not cancelled
-                await TwitchHandler.UpdateRewardCost(_reward.Id, cost);
+                await TwitchHandler.UpdateRewardCost(_rewardId, cost);
             }
             catch (Exception ex)
             {
@@ -276,6 +331,11 @@ namespace Songify_Slim.UserControls
         private void TxtRewardcost_OnPreviewTextInput(object sender, TextCompositionEventArgs e)
         {
             e.Handled = !int.TryParse(e.Text, out _);
+        }
+
+        private void BtnPowerUpNoSongRequest_OnClick(object sender, RoutedEventArgs e)
+        {
+            ShellHelper.OpenUrl("https://legal.twitch.com/legal/bits-acceptable-use/");
         }
     }
 }

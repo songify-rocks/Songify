@@ -1548,7 +1548,7 @@ namespace Songify_Slim.Util.Configuration
 
         /// <summary>
         /// Legacy: known bots were ignored automatically. Kept so existing configs can be migrated onto
-        /// <see cref="IgnoredChatUsers"/>. New logic ignores only that list (plus the linked Songify bot).
+        /// <see cref="IgnoredChatUsers"/>. New logic ignores only that list.
         /// </summary>
         public bool IgnoreBotMessages { get; set; } = true;
 

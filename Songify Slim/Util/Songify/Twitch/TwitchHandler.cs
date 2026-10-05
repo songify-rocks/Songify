@@ -1751,6 +1751,11 @@ public static class TwitchHandler
     {
         if (string.IsNullOrEmpty(rewardId) || string.IsNullOrEmpty(redemptionId) || TwitchApi == null)
             return;
+        if (TwitchPowerUpClient.IsKnown(rewardId))
+        {
+            Logger.Info(LogSource.Twitch, "Skip Power-up cannot be refunded. Twitch does not let apps return Bits.");
+            return;
+        }
         try
         {
             GetCustomRewardsResponse resp = await TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(
@@ -3292,11 +3297,21 @@ public static class TwitchHandler
         {
             foreach (string rewardId in Settings.TwRewardId)
             {
-                await TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, rewardId,
-                    new UpdateCustomRewardRequest
-                    {
-                        IsPaused = !isOn,
-                    }, Settings.TwitchAccessToken);
+                if (TwitchPowerUpClient.IsKnown(rewardId))
+                    continue;
+
+                try
+                {
+                    await TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, rewardId,
+                        new UpdateCustomRewardRequest
+                        {
+                            IsPaused = !isOn,
+                        }, Settings.TwitchAccessToken);
+                }
+                catch (Exception e)
+                {
+                    Logger.LogExc(e);
+                }
             }
         }
         catch (Exception e)
@@ -4700,6 +4715,13 @@ public static class TwitchHandler
     {
         try
         {
+            if (TwitchPowerUpClient.IsKnown(rewardId))
+            {
+                Logger.Info(LogSource.Twitch,
+                    "Custom Power-up cannot be refunded. Twitch does not let apps return Bits.");
+                return;
+            }
+
             if (TwitchApi != null)
             {
                 GetCustomRewardsResponse resp = await TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(

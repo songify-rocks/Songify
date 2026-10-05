@@ -725,11 +725,21 @@ namespace Songify_Slim.Util.General
         {
             foreach (string rewardId in Settings.TwRewardId)
             {
-                await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(
-                    Settings.TwitchUser.Id, rewardId, new UpdateCustomRewardRequest
-                    {
-                        IsPaused = true
-                    }, Settings.TwitchAccessToken);
+                if (TwitchPowerUpClient.IsKnown(rewardId))
+                    continue;
+
+                try
+                {
+                    await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(
+                        Settings.TwitchUser.Id, rewardId, new UpdateCustomRewardRequest
+                        {
+                            IsPaused = true
+                        }, Settings.TwitchAccessToken);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(LogSource.Twitch, $"Could not pause reward {rewardId}.", ex);
+                }
             }
             return "Song request rewards stopped.";
         }

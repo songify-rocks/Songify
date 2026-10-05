@@ -1830,6 +1830,26 @@
     <value>Created by Songify</value>
     <comment>Context: Tooltip on Twitch reward tile when reward was created via Songify.</comment>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Custom Power-up, paid with Bits. Twitch does not let apps refund these.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>Song request is not available for Power-ups. They are paid with Bits, and Twitch's Bits Acceptable Use Policy does not allow a specific pre-recorded song in exchange for Bits. Use a channel point reward for song requests. Skip and skip poll are still available. Click to open the policy.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-ups</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Channel Points</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Custom Power-ups (Bits) are listed with channel point rewards. Assign them to skip or skip poll. Song request stays on channel point rewards, because Twitch does not allow a pre-recorded song in exchange for Bits. Twitch does not let apps create or refund Power-ups.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Song Request</value>
     <comment>Context: ComboBox item in reward type selector (Twitch reward type).</comment>

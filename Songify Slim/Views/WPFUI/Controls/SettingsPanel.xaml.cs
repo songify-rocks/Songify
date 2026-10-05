@@ -1894,24 +1894,45 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 // Helix I/O off the UI thread; only assign ItemsSource on the dispatcher.
                 Task<List<CustomReward>> manageableTask = TwitchApiHelper.GetChannelRewards(true);
                 Task<List<CustomReward>> rewardsTask = TwitchApiHelper.GetChannelRewards(false);
-                await Task.WhenAll(manageableTask, rewardsTask).ConfigureAwait(false);
+                Task<List<TwitchPowerUp>> powerUpsTask = TwitchPowerUpClient.GetCustomPowerUpsAsync();
+                await Task.WhenAll(manageableTask, rewardsTask, powerUpsTask).ConfigureAwait(false);
 
                 List<CustomReward> managableRewards = await manageableTask.ConfigureAwait(false) ?? [];
                 List<CustomReward> rewards = await rewardsTask.ConfigureAwait(false);
+                List<TwitchPowerUp> powerUps = await powerUpsTask.ConfigureAwait(false);
                 if (rewards == null)
                     return;
 
                 HashSet<string> manageableIds = new(managableRewards.Select(r => r.Id));
-                List<TwitchRewardListItem> items = rewards
+                List<TwitchRewardListItem> items = [];
+                if (powerUps is { Count: > 0 })
+                {
+                    List<TwitchRewardListItem> powerUpItems = powerUps
+                        .OrderBy(p => p.Bits)
+                        .Select(TwitchRewardListItem.FromPowerUp)
+                        .ToList();
+                    powerUpItems[0].GroupHeaderKey = "window_settings_rewards_group_powerups";
+                    items.AddRange(powerUpItems);
+                }
+
+                List<TwitchRewardListItem> rewardItems = rewards
                     .OrderBy(o => o.Cost)
                     .Select(r => new TwitchRewardListItem(r, manageableIds.Contains(r.Id)))
                     .ToList();
+                if (rewardItems.Count > 0)
+                    rewardItems[0].GroupHeaderKey = "window_settings_rewards_group_channel_points";
+                items.AddRange(rewardItems);
 
                 await Dispatcher.InvokeAsync(() =>
                 {
-                    List<string> idsToRemove = Settings.TwRewardId.Where(s => rewards.All(o => o.Id != s)).ToList();
-                    foreach (string s in idsToRemove)
-                        Settings.TwRewardId.Remove(s);
+                    if (powerUps != null)
+                    {
+                        HashSet<string> liveIds = new(
+                            rewards.Select(r => r.Id).Concat(powerUps.Select(p => p.Id)),
+                            StringComparer.Ordinal);
+                        TwitchPowerUpClient.DropSongRequestAssignments(powerUps.Select(p => p.Id));
+                        PruneRewardAssignments(liveIds);
+                    }
 
                     ListboxRewards.ItemsSource = null;
                     ListboxRewards.ItemsSource = items;
@@ -1925,6 +1946,13 @@ namespace Songify_Slim.Views.WPFUI.Controls
             {
                 _rewardsLoading = false;
             }
+        }
+
+        private static void PruneRewardAssignments(HashSet<string> liveIds)
+        {
+            Settings.TwRewardId = (Settings.TwRewardId ?? []).Where(liveIds.Contains).ToList();
+            Settings.TwRewardSkipId = (Settings.TwRewardSkipId ?? []).Where(liveIds.Contains).ToList();
+            Settings.TwRewardSkipPoll = (Settings.TwRewardSkipPoll ?? []).Where(liveIds.Contains).ToList();
         }
 
         private void BtnLogInTwitch_Click(object sender, RoutedEventArgs e)
@@ -3215,25 +3243,6 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (IgnoreControlEvents)
                 return;
             Settings.SkipOnlyNonSrSongs = ((ToggleSwitch)sender).IsChecked == true;
-        }
-
-        private void BtnRewardsSegmentChannel_Click(object sender, RoutedEventArgs e)
-            => SetRewardsSegment(showChannelRewards: true);
-
-        private void BtnRewardsSegmentRefund_Click(object sender, RoutedEventArgs e)
-            => SetRewardsSegment(showChannelRewards: false);
-
-        private void SetRewardsSegment(bool showChannelRewards)
-        {
-            BtnRewardsSegmentChannel.Appearance = showChannelRewards
-                ? ControlAppearance.Primary
-                : ControlAppearance.Secondary;
-            BtnRewardsSegmentRefund.Appearance = showChannelRewards
-                ? ControlAppearance.Secondary
-                : ControlAppearance.Primary;
-
-            ListboxRewards.Visibility = showChannelRewards ? Visibility.Visible : Visibility.Collapsed;
-            PnlRefundConditions.Visibility = showChannelRewards ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void Tglsw_BitsForSr_OnToggled(object sender, RoutedEventArgs e)
