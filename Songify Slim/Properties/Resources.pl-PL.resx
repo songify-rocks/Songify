@@ -1397,6 +1397,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Utworzono przez Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Niestandardowy Power-up, opłacany Bitsami. Twitch nie pozwala aplikacjom ich zwracać.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>Prośba o utwór nie jest dostępna dla Power-upów. Opłaca się je Bitsami, a zasady dopuszczalnego użycia Bitsów na Twitchu nie pozwalają na konkretny nagrany utwór w zamian za Bitsy. Użyj nagrody za punkty kanału do próśb o utwory. Pomiń utwór i głosowanie pominięcia pozostają dostępne. Kliknij, aby otworzyć zasady.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-upy</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Punkty kanału</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Niestandardowe Power-upy (Bitsy) są na liście razem z nagrodami za punkty kanału. Przypisz je do Pomiń utwór albo do głosowania pominięcia. Prośba o utwór zostaje przy nagrodach za punkty kanału, bo Twitch nie pozwala na nagrany utwór w zamian za Bitsy. Twitch nie pozwala aplikacjom tworzyć ani zwracać Power-upów.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Prośba o utwór</value>
   </data>

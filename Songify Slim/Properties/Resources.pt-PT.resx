@@ -1397,6 +1397,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Criado pelo Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Power-up personalizado, pago com Bits. A Twitch não permite que as aplicações os reembolsem.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>O pedido de música não está disponível para Power-ups. São pagos com Bits, e a política de utilização aceitável de Bits da Twitch não permite uma música pré-gravada específica em troca de Bits. Use uma recompensa de pontos do canal para pedidos de música. Saltar música e a votação para saltar continuam disponíveis. Clique para abrir a política.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-ups</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Pontos do canal</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Os Power-ups personalizados (Bits) aparecem junto das recompensas de pontos do canal. Atribua-os a Saltar música ou à votação para saltar. O pedido de música fica nas recompensas de pontos do canal, porque a Twitch não permite uma música pré-gravada em troca de Bits. A Twitch não permite que as aplicações criem ou reembolsem Power-ups.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Pedido de música</value>
   </data>

@@ -1397,6 +1397,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Creato da Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Power-up personalizzato, pagato con Bits. Twitch non consente alle app di rimborsarli.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>La richiesta brano non è disponibile per i Power-up. Si pagano con Bits e le norme di utilizzo accettabile dei Bits di Twitch non consentono un brano preregistrato specifico in cambio di Bits. Usa una ricompensa in punti canale per le richieste. Salta brano e il sondaggio skip restano disponibili. Fai clic per aprire le norme.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-up</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Punti canale</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>I Power-up personalizzati (Bits) sono elencati insieme alle ricompense in punti canale. Assegnali a Salta brano o al sondaggio skip. La richiesta brano resta sulle ricompense in punti canale, perché Twitch non consente un brano preregistrato in cambio di Bits. Twitch non consente alle app di creare o rimborsare i Power-up.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Richiesta brano</value>
   </data>

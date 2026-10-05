@@ -1420,6 +1420,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Erstellt von Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Benutzerdefiniertes Power-up, bezahlt mit Bits. Twitch lässt Apps diese nicht erstatten.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>Musikwunsch ist für Power-ups nicht verfügbar. Sie werden mit Bits bezahlt, und die Richtlinie zur zulässigen Nutzung von Bits von Twitch erlaubt kein bestimmtes voraufgezeichnetes Lied im Tausch gegen Bits. Verwende eine Kanalpunkte-Belohnung für Musikwünsche. Lied überspringen und Skip-Umfrage bleiben verfügbar. Klicken, um die Richtlinie zu öffnen.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-ups</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Kanalpunkte</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Benutzerdefinierte Power-ups (Bits) stehen zusammen mit Kanalpunkte-Belohnungen in der Liste. Weise sie „Lied überspringen“ oder „Skip-Umfrage“ zu. Musikwunsch bleibt bei Kanalpunkte-Belohnungen, weil Twitch kein voraufgezeichnetes Lied im Tausch gegen Bits erlaubt. Twitch lässt Apps keine Power-ups erstellen oder erstatten.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Musikwunsch</value>
   </data>

@@ -1398,6 +1398,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Créé par Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Power-up personnalisé, payé avec des Bits. Twitch n'autorise pas les applications à les rembourser.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>La demande de chanson n'est pas disponible pour les Power-ups. Ils se paient avec des Bits, et la politique d'utilisation acceptable des Bits de Twitch n'autorise pas une chanson préenregistrée précise en échange de Bits. Utilisez une récompense en points de chaîne pour les demandes de chansons. Passer la chanson et le sondage de passage restent disponibles. Cliquez pour ouvrir la politique.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-ups</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Points de chaîne</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Les Power-ups personnalisés (Bits) sont affichés avec les récompenses en points de chaîne. Assignez-les à Passer la chanson ou au sondage de passage. La demande de chanson reste sur les récompenses en points de chaîne, car Twitch n'autorise pas une chanson préenregistrée en échange de Bits. Twitch n'autorise pas les applications à créer ou à rembourser des Power-ups.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Demande de chanson</value>
   </data>

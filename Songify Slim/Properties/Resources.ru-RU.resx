@@ -1398,6 +1398,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Создано Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Особый Power-up, оплачивается битами. Twitch не позволяет приложениям возвращать их.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>Запрос трека недоступен для Power-up. Они оплачиваются битами, а правила допустимого использования битов Twitch не разрешают конкретную заранее записанную песню в обмен на биты. Используйте награду за очки канала для запросов треков. Пропустить трек и голосование за пропуск по-прежнему доступны. Нажмите, чтобы открыть правила.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-up</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Очки канала</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Особые Power-up (биты) показаны вместе с наградами за очки канала. Назначьте их на «Пропустить трек» или на голосование за пропуск. Запрос трека остаётся у наград за очки канала, потому что Twitch не разрешает заранее записанную песню в обмен на биты. Twitch не позволяет приложениям создавать или возвращать Power-up.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Запрос трека</value>
   </data>

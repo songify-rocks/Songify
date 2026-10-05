@@ -1451,6 +1451,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Gemaakt door Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Aangepaste Power-up, betaald met Bits. Twitch laat apps deze niet terugbetalen.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>Nummer aanvragen is niet beschikbaar voor Power-ups. Ze worden betaald met Bits, en het beleid voor aanvaardbaar gebruik van Bits van Twitch staat geen specifiek vooraf opgenomen nummer toe in ruil voor Bits. Gebruik een beloning met kanaalpunten voor nummerverzoeken. Nummer overslaan en de skip-peiling blijven beschikbaar. Klik om het beleid te openen.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-ups</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Kanaalpunten</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Aangepaste Power-ups (Bits) staan bij de beloningen met kanaalpunten. Wijs ze toe aan Nummer overslaan of aan de skip-peiling. Nummer aanvragen blijft bij beloningen met kanaalpunten, omdat Twitch geen vooraf opgenomen nummer in ruil voor Bits toestaat. Twitch laat apps geen Power-ups aanmaken of terugbetalen.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Nummer aanvragen</value>
   </data>

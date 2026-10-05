@@ -1582,6 +1582,26 @@
   <data name="uc_reward_created_by_songify" xml:space="preserve">
     <value>Створана Songify</value>
   </data>
+  <data name="uc_reward_powerup_tooltip" xml:space="preserve">
+    <value>Асаблівы Power-up, аплачваецца Bits. Twitch не дазваляе праграмам вяртаць іх.</value>
+    <comment>Context: Tooltip on a Power-up row in Settings → Rewards.</comment>
+  </data>
+  <data name="uc_reward_powerup_no_song_request" xml:space="preserve">
+    <value>Запыт песні недаступны для Power-up. Яны аплачваюцца Bits, а правілы дапушчальнага выкарыстання Bits на Twitch не дазваляюць канкрэтную загадзя запісаную песню ў абмен на Bits. Выкарыстоўвайце ўзнагароду за ачкі канала для запытаў песень. Прапусціць песню і галасаванне за пропуск застаюцца даступнымі. Націсніце, каб адкрыць правілы.</value>
+    <comment>Context: Tooltip on the question mark beside a Power-up action dropdown in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_powerups" xml:space="preserve">
+    <value>Power-up</value>
+    <comment>Context: Header above custom Power-ups in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_rewards_group_channel_points" xml:space="preserve">
+    <value>Ачкі канала</value>
+    <comment>Context: Header above channel point rewards in Settings → Rewards.</comment>
+  </data>
+  <data name="window_settings_powerups_note" xml:space="preserve">
+    <value>Асаблівыя Power-up (Bits) паказаны разам з узнагародамі за ачкі канала. Прызначце іх на «Прапусціць песню» або на галасаванне за пропуск. Запыт песні застаецца на ўзнагародах за ачкі канала, бо Twitch не дазваляе загадзя запісаную песню ў абмен на Bits. Twitch не дазваляе праграмам ствараць або вяртаць Power-up.</value>
+    <comment>Context: Settings → Rewards note under the reward list.</comment>
+  </data>
   <data name="uc_reward_song_request" xml:space="preserve">
     <value>Запыт песні</value>
   </data>
