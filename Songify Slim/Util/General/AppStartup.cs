@@ -40,6 +40,9 @@ public static class AppStartup
                 return;
         }
 
+        await MaintenanceStatusService.RefreshAsync();
+        MaintenanceStatusService.Start();
+
         Task authTask = AuthenticateSongifyApiAsync();
 
         bool startTour = false;
@@ -399,7 +402,7 @@ public static class AppStartup
             dynamic telemetryPayload = new
             {
                 uuid = Settings.Uuid,
-                tst = DateTime.Now.ToUnixEpochDate(),
+                tst = DateTime.UtcNow.ToUnixEpochDate(),
                 twitch_id = Settings.TwitchUser == null ? "" : Settings.TwitchUser.Id,
                 twitch_name = Settings.TwitchUser == null ? "" : Settings.TwitchUser.DisplayName,
                 vs = GlobalObjects.AppVersion,

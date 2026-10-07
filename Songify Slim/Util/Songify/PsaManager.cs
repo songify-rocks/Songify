@@ -53,6 +53,10 @@ internal static class PsaManager
         if (!_timer.IsEnabled)
             _timer.Start();
 
+        MaintenanceStatusService.Changed -= OnMaintenanceChanged;
+        MaintenanceStatusService.Changed += OnMaintenanceChanged;
+        OnMaintenanceChanged();
+
         _ = RefreshAsync();
     }
 
@@ -72,11 +76,17 @@ internal static class PsaManager
             List<Psa> fetched = await PsaService.GetPsaAsync().ConfigureAwait(true);
             lock (Sync)
             {
-                List<Psa> debugKeep = _psas.Where(p => p.Id < 0).ToList();
-                _psas = fetched ?? [];
-                // Keep locally injected debug PSAs when the API has nothing to show.
-                if (_psas.Count == 0 && debugKeep.Count > 0)
-                    _psas = debugKeep;
+                // A failed fetch keeps the last good server list. Null used to clear it,
+                // which dropped a maintenance notice at the moment the API went away.
+                if (fetched != null)
+                {
+                    List<Psa> debugKeep = _psas.Where(p => p.Id < 0).ToList();
+                    _psas = fetched;
+                    if (_psas.Count == 0 && debugKeep.Count > 0)
+                        _psas = debugKeep;
+                }
+
+                SyncMaintenanceNotice();
             }
 
             MaybeShowHighSeverityToast();
@@ -249,6 +259,34 @@ internal static class PsaManager
         RaiseChanged();
     }
 #endif
+
+    private static void OnMaintenanceChanged()
+    {
+        bool removedNotice = false;
+        lock (Sync)
+        {
+            bool hadNotice = _psas.Any(MaintenanceStatusService.IsNotice);
+            SyncMaintenanceNotice();
+            bool hasNotice = _psas.Any(MaintenanceStatusService.IsNotice);
+            removedNotice = hadNotice && !hasNotice;
+        }
+
+        if (removedNotice && MaintenanceStatusService.IsNoticeId(Settings.LastShownMotdId))
+            Settings.LastShownMotdId = 0;
+
+        MaybeShowHighSeverityToast();
+        RaiseListUpdated();
+        RaiseChanged();
+    }
+
+    /// <summary>Caller must hold <see cref="Sync"/>.</summary>
+    private static void SyncMaintenanceNotice()
+    {
+        _psas = _psas.Where(p => !MaintenanceStatusService.IsNotice(p)).ToList();
+        Psa notice = MaintenanceStatusService.CreateNotice();
+        if (notice != null)
+            _psas.Insert(0, notice);
+    }
 
     private static void MaybeShowHighSeverityToast()
     {

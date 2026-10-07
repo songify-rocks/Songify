@@ -16,19 +16,19 @@ namespace Songify_Slim.Util.Songify
         {
             string result = await SongifyApi.GetMotdAsync().ConfigureAwait(false);
 
-            if (string.IsNullOrEmpty(result))
+            // Null means the request failed. An empty body is a successful "no notices" response.
+            if (result == null)
                 return null;
+
+            if (string.IsNullOrWhiteSpace(result))
+                return [];
 
             try
             {
-                List<Psa> psas = JsonConvert.DeserializeObject<List<Psa>>(result);
-                if (psas is not { Count: > 0 })
-                    return null;
-
+                List<Psa> psas = JsonConvert.DeserializeObject<List<Psa>>(result) ?? [];
                 string version = GlobalObjects.AppVersion;
                 string channel = Settings.ReleaseChannel.ToString();
-                List<Psa> relevant = psas.Where(p => p.AppliesTo(version, channel)).ToList();
-                return relevant.Count > 0 ? relevant : null;
+                return psas.Where(p => p.AppliesTo(version, channel)).ToList();
             }
             catch (Exception e)
             {

@@ -23,7 +23,14 @@ namespace Songify_Slim.Util.Songify
 
             if (string.IsNullOrEmpty(result))
             {
-                AddRequestLocally(payload);
+                // ReqList is an ObservableCollection. The online path already marshals;
+                // this fallback is the one that runs while the API is down.
+                System.Windows.Threading.Dispatcher dispatcher = Application.Current?.Dispatcher;
+                if (dispatcher == null || dispatcher.CheckAccess())
+                    AddRequestLocally(payload);
+                else
+                    await dispatcher.InvokeAsync(() => AddRequestLocally(payload));
+
                 await GlobalObjects.QueueUpdateQueueWindow();
                 return;
             }

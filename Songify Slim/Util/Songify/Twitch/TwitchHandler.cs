@@ -12,6 +12,7 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
 using Songify_Slim.Properties;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Songify.TwitchOAuth;
@@ -1505,9 +1506,15 @@ public static class TwitchHandler
             else
             {
                 if (string.IsNullOrEmpty(Settings.YoutubeApiKey))
-                    sr = await SongifyApi.GetYoutubeData(videoId);
+                {
+                    sr = await LookupYouTubeViaSongifyAsync(videoId, e, source, reward);
+                    if (sr == null)
+                        return;
+                }
                 else
+                {
                     sr = await YouTubeDataApiClient.GetMetaAsync(Settings.YoutubeApiKey, videoId);
+                }
             }
 
             if (!TryNormalizePearSearchResult(sr, out PearSearch normalizedSearch, out string invalidReason))
@@ -1646,6 +1653,48 @@ public static class TwitchHandler
         catch (Exception ex)
         {
             Logger.LogExc(ex);
+        }
+    }
+
+    /// <summary>
+    /// Songify API metadata for a video id. On maintenance or a failed call, tell chat
+    /// and refund a channel-point reward. Title search does not use this path.
+    /// </summary>
+    private static async Task<PearSearch> LookupYouTubeViaSongifyAsync(
+        string videoId, TwitchRequestUser requester, Enums.SongRequestSource source, RewardInfo reward)
+    {
+        if (MaintenanceStatusService.IsInMaintenance)
+        {
+            await NotifyYouTubeLookupUnavailableAsync(requester, source, reward, maintenance: true);
+            return null;
+        }
+
+        try
+        {
+            return await SongifyApi.GetYoutubeData(videoId);
+        }
+        catch (Exception ex)
+        {
+            Logger.Error(LogSource.Songrequest, "YouTube metadata lookup failed.", ex);
+            await NotifyYouTubeLookupUnavailableAsync(
+                requester, source, reward, MaintenanceStatusService.IsInMaintenance);
+            return null;
+        }
+    }
+
+    private static async Task NotifyYouTubeLookupUnavailableAsync(
+        TwitchRequestUser requester, Enums.SongRequestSource source, RewardInfo reward, bool maintenance)
+    {
+        string name = requester?.DisplayName ?? "";
+        string text = maintenance
+            ? $"@{name} Songify is in maintenance, so that YouTube link can't be looked up. Please request the song by title."
+            : $"@{name} That YouTube link couldn't be looked up right now. Please request the song by title.";
+        await SendChatMessage(text);
+
+        if (source == Enums.SongRequestSource.Reward && reward != null)
+        {
+            await RefundChannelPoints(
+                reward.RewardId, reward.RedemptionId, requester, Enums.RefundCondition.SongUnavailable);
         }
     }
 

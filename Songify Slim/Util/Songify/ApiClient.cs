@@ -205,6 +205,9 @@ namespace Songify_Slim.Util.Songify
             string query = null,
             bool isRetry = false)
         {
+            if (MaintenanceStatusService.IsInMaintenance)
+                return MaintenanceStatusService.CreateBlockedResponse();
+
             string url = string.IsNullOrEmpty(query)
                 ? $"{baseUrl}/{endpoint}"
                 : $"{baseUrl}/{endpoint}?{query}";
@@ -221,6 +224,13 @@ namespace Songify_Slim.Util.Songify
             }
 
             HttpResponseMessage response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+
+            if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
+            {
+                string body = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                MaintenanceStatusService.NoteTransportMaintenance(body);
+                response.Content = new StringContent(body ?? "", Encoding.UTF8, "application/json");
+            }
 
             if (requireAuth && response.StatusCode == HttpStatusCode.Unauthorized && !isRetry)
             {

@@ -19,7 +19,13 @@ namespace Songify_Slim.Util.Songify
         private const int RefreshSkewSeconds = 60;
         private const int DefaultExpiresInSeconds = 3600;
 
-        internal static readonly HttpClient HttpClient = new();
+        /// <summary>
+        /// Short timeout so a silent api.songify.rocks cannot hold now-playing for the 100s default.
+        /// </summary>
+        internal static readonly HttpClient HttpClient = new()
+        {
+            Timeout = TimeSpan.FromSeconds(5)
+        };
 
         private static readonly SemaphoreSlim AuthGate = new(1, 1);
 
@@ -27,6 +33,7 @@ namespace Songify_Slim.Util.Songify
         private static DateTime _expiresAtUtc = DateTime.MinValue;
         private static bool _loggedMissingCredentials;
         private static bool _loggedAuthUnauthorized;
+        private static bool _loggedMaintenanceSkip;
 
         public static void Invalidate()
         {
@@ -49,6 +56,19 @@ namespace Songify_Slim.Util.Songify
             {
                 if (HasValidToken())
                     return _accessToken;
+
+                if (MaintenanceStatusService.IsInMaintenance)
+                {
+                    if (!_loggedMaintenanceSkip)
+                    {
+                        _loggedMaintenanceSkip = true;
+                        Logger.Info(LogSource.Api, "Skipping Songify API /auth: maintenance mode is on.");
+                    }
+
+                    return null;
+                }
+
+                _loggedMaintenanceSkip = false;
 
                 string accountToken = Settings.SongifyApiKey;
                 string twitchId = Settings.TwitchUser?.Id;

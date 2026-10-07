@@ -313,6 +313,12 @@ namespace Songify_Slim.Util.Songify
             {
                 IoManager.WriteSplitOutput(trackinfo.Artists, trackinfo.Title, "");
             }
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                AppShellBridge.Current?.SetTextPreview(output);
+            });
+
             try
             {
                 string songText = output.Trim().Replace(@"\n", " - ").Replace("  ", " ");
@@ -345,11 +351,6 @@ namespace Songify_Slim.Util.Songify
                     AppShellBridge.Current?.SetStatusText("Error uploading Song information");
                 }));
             }
-
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                AppShellBridge.Current?.SetTextPreview(output);
-            });
         }
 
         private static async Task ExecutePauseActions()
@@ -599,6 +600,8 @@ namespace Songify_Slim.Util.Songify
 
             try
             {
+                bool syncMirror = false;
+                RequestObject playedRequest = null;
                 if (GlobalObjects.CurrentSong == null || (GlobalObjects.CurrentSong.SongId != songInfo.SongId && songInfo.SongId != null) || (songInfo.SongId == null && !string.IsNullOrEmpty(songInfo.Title)) || forceUpdate)
                 {
                     if (GlobalObjects.CurrentSkipPoll != null && GlobalObjects.CurrentSkipPoll.IsActive)
@@ -629,13 +632,23 @@ namespace Songify_Slim.Util.Songify
 
                     RequestObject previous = GlobalObjects.CurrentSong != null ? GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == GlobalObjects.CurrentSong.SongId) : null;
                     RequestObject current = GlobalObjects.ReqList.FirstOrDefault(o => o.Trackid == songInfo.SongId);
+                    bool songIdChanged = GlobalObjects.CurrentSong == null ||
+                                         GlobalObjects.CurrentSong.SongId != songInfo.SongId;
 
                     // Get Playlist info for current song if available
                     _playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
                     songInfo.Playlist = _playbackPlaylist;
                     GlobalObjects.CurrentSong = songInfo;
-                    _canvasResponse = await CanvasService.GetCanvasAsync(songInfo.SongId);
-                    GlobalObjects.Canvas = songInfo.SongId != null ? _canvasResponse : new Tuple<bool, string>(false, "");
+                    // Drop the previous canvas before local output. The new one is fetched
+                    // after Songify.txt is written, so a slow API cannot hold the file back.
+                    if (songIdChanged)
+                    {
+                        _canvasResponse = new Tuple<bool, string>(false, "");
+                        GlobalObjects.Canvas = _canvasResponse;
+                    }
+
+                    playedRequest = current;
+                    syncMirror = true;
                     //if current track is on skiplist, skip it
                     if (GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId) != null)
                     {
@@ -645,17 +658,6 @@ namespace Songify_Slim.Util.Songify
                                 GlobalObjects.SkipList.Find(o => o.Trackid == songInfo.SongId));
                             await SpotifyApiHandler.SkipSong();
                         });
-                    }
-
-                    //if current is not null, mark it as played in the database
-                    if (current != null)
-                    {
-                        dynamic payload = new
-                        {
-                            uuid = Settings.Uuid,
-                            queueid = current.Queueid,
-                        };
-                        await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
                     }
 
                     //if Previous is not null then try to remove it from the internal queue (ReqList)
@@ -697,10 +699,6 @@ namespace Songify_Slim.Util.Songify
                     bool refreshQueueWindow = _trackChanged;
                     _trackChanged = false;
                     GlobalObjects.ForceUpdate = false;
-                    if (songInfo.SongId != null)
-                    {
-                        await QueueService.CleanupServerQueueAsync();
-                    }
 
                     await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify);
                     if (refreshQueueWindow)
@@ -708,6 +706,50 @@ namespace Songify_Slim.Util.Songify
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
                 }
 
+                await UpdateWebServerResponse(songInfo);
+                if (syncMirror)
+                    await SyncSpotifyMirrorAsync(songInfo, playedRequest);
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        /// <summary>
+        /// Canvas, played-state, and server-queue cleanup. Runs after local files and the
+        /// websocket broadcast. Skipped entirely while maintenance mode is on.
+        /// </summary>
+        private static async Task SyncSpotifyMirrorAsync(TrackInfo songInfo, RequestObject playedRequest)
+        {
+            if (songInfo == null || MaintenanceStatusService.IsInMaintenance)
+                return;
+
+            try
+            {
+                if (string.IsNullOrEmpty(songInfo.SongId))
+                    return;
+
+                _canvasResponse = await CanvasService.GetCanvasAsync(songInfo.SongId);
+                GlobalObjects.Canvas = _canvasResponse ?? new Tuple<bool, string>(false, "");
+                if (Settings.DownloadCanvas && _canvasResponse is { Item1: true })
+                {
+                    IoManager.DownloadCanvas(
+                        _canvasResponse.Item2,
+                        Path.Combine(GlobalObjects.RootDirectory, "canvas.mp4"));
+                }
+
+                if (playedRequest != null)
+                {
+                    dynamic payload = new
+                    {
+                        uuid = Settings.Uuid,
+                        queueid = playedRequest.Queueid,
+                    };
+                    await SongifyApi.PatchQueueAsync(Json.Serialize(payload));
+                }
+
+                await QueueService.CleanupServerQueueAsync();
                 await UpdateWebServerResponse(songInfo);
             }
             catch (Exception e)
@@ -1322,33 +1364,6 @@ namespace Songify_Slim.Util.Songify
 
             IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/url.txt", songInfo.Url);
 
-            // if upload is enabled
-            try
-            {
-                RequestObject nextTrack = ResolveNextTrackFromQueue(songInfo.SongId);
-
-                SongUploadPayload payload = BuildSongUploadPayload(
-                    currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "),
-                    albumUrl,
-                    songInfo.SongId,
-                    songInfo.Artists,
-                    songInfo.Title,
-                    GlobalObjects.Requester,
-                    playerType,
-                    nextTrack);
-
-                await SongifyService.UploadSong(payload);
-            }
-            catch (Exception ex)
-            {
-                Logger.LogExc(ex);
-                // if error occurs write text to the status asynchronous
-                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
-                {
-                    AppShellBridge.Current?.SetStatusText("Error uploading Song information");
-                }));
-            }
-
             // Write local history (YAML, date-grouped)
             string historySongOutput = $"{songInfo.Artists} - {songInfo.Title}";
             if (Settings.SaveHistory && !string.IsNullOrEmpty(historySongOutput) &&
@@ -1393,6 +1408,32 @@ namespace Songify_Slim.Util.Songify
 
                 AppShellBridge.Current?.SetTextPreview(currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "));
             });
+
+            // After local files, cover, and the preview. A slow upload must not hold those back.
+            try
+            {
+                RequestObject nextTrack = ResolveNextTrackFromQueue(songInfo.SongId);
+
+                SongUploadPayload payload = BuildSongUploadPayload(
+                    currentSongOutput.Trim().Replace(@"\n", " - ").Replace("  ", " "),
+                    albumUrl,
+                    songInfo.SongId,
+                    songInfo.Artists,
+                    songInfo.Title,
+                    GlobalObjects.Requester,
+                    playerType,
+                    nextTrack);
+
+                await SongifyService.UploadSong(payload);
+            }
+            catch (Exception ex)
+            {
+                Logger.LogExc(ex);
+                Application.Current.MainWindow?.Dispatcher.Invoke(DispatcherPriority.Normal, new Action(() =>
+                {
+                    AppShellBridge.Current?.SetStatusText("Error uploading Song information");
+                }));
+            }
         }
 
         private static string CleanFormatString(string currentSongOutput)

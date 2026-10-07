@@ -63,6 +63,20 @@ namespace Songify_Slim.Views.WPFUI.Controls
         private static string Loc(string key, string fallback)
             => Application.Current?.TryFindResource(key) as string ?? fallback;
 
+        private static string CloudUnavailableText()
+        {
+            if (!MaintenanceStatusService.IsInMaintenance)
+                return Loc("window_settings_cloud_unavailable", "Error connecting to Songify service.");
+
+            string message = MaintenanceStatusService.Message;
+            if (!string.IsNullOrWhiteSpace(message))
+                return message;
+
+            return Loc(
+                "window_settings_cloud_maintenance",
+                "Songify is in maintenance. Cloud sync resumes when it's back.");
+        }
+
         private static string LocFormat(string key, string fallback, params object[] args)
         {
             try { return string.Format(Loc(key, fallback), args); }
@@ -3125,6 +3139,10 @@ namespace Songify_Slim.Views.WPFUI.Controls
                         case HttpStatusCode.InternalServerError:
                             TblError.Text = Loc("window_settings_cloud_server_error", "Internal server error. Please try again later.");
                             return;
+
+                        case HttpStatusCode.ServiceUnavailable:
+                            TblError.Text = CloudUnavailableText();
+                            return;
                     }
                 }
             }
@@ -3213,7 +3231,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                             break;
 
                         case HttpStatusCode.ServiceUnavailable:
-                            TblError.Text = Loc("window_settings_cloud_unavailable", "Error connecting to Songify service.");
+                            TblError.Text = CloudUnavailableText();
                             break;
                     }
                 }
