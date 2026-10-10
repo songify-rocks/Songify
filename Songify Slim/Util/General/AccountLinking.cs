@@ -75,7 +75,7 @@ internal static class AccountLinking
 
         try
         {
-            await SpotifyApiHandler.Auth();
+            await SpotifyApiHandler.LinkAccountAsync();
             return SpotifyLinkResult.Started;
         }
         catch (Exception ex)

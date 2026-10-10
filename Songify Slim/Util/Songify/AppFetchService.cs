@@ -79,6 +79,11 @@ public static class AppFetchService
 
         PearWebSocketClient.AutoConnectEnabled = selected == PlayerType.Pear;
 
+        if (selected == PlayerType.Spotify)
+            await SpotifyApiHandler.Auth().ConfigureAwait(true);
+        else
+            SpotifyApiHandler.ReleaseInactivePlayerSession();
+
         Stop();
         Start();
         SpotifyLiveGate.OnSettingsOrPlayerChanged();

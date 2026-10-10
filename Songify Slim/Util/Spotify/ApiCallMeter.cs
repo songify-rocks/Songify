@@ -6,8 +6,10 @@ using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
 using SpotifyAPI.Web;
+using static Songify_Slim.Util.General.Enums;
 
 namespace Songify_Slim.Util.Spotify;
 
@@ -61,6 +63,13 @@ public static class ApiCallMeter
         int? softLimitPerMinute = null,
         CancellationToken ct = default)
     {
+        if (Settings.Player != PlayerType.Spotify)
+        {
+            Logger.Debug(LogSource.Spotify,
+                $"Skipped Spotify request '{key}' because the selected player is {Settings.Player}.");
+            return default;
+        }
+
         Counter c = _perKey.GetOrAdd(key, _ => new Counter());
 
         while (true)
@@ -196,6 +205,13 @@ public static class ApiCallMeter
                 }
                 else if (SpotifyUserNotifier.IsAppOwnerPremiumRequired(ex))
                 {
+                    if (Settings.Player != PlayerType.Spotify)
+                    {
+                        Logger.Info(LogSource.Spotify,
+                            $"Spotify blocked '{key}' with an app-owner Premium error, but the selected player is {Settings.Player}. Notification suppressed.");
+                        break;
+                    }
+
                     Logger.Error(LogSource.Spotify,
                         $"Spotify blocked '{key}': the Developer Dashboard app owner needs Spotify Premium (not Songify Premium). {FormatApiExceptionDetails(ex)}");
                     try

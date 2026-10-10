@@ -51,10 +51,8 @@ public static class AppStartup
         else
             await RunUseOwnAppDialogAsync();
 
-        Logger.Info(LogSource.Spotify, "Starting Spotify init");
         await RunSpotifyInitAsync();
         Util.Spotify.SpotifyApiHandler.RefreshShellSpotifyIndicator();
-        Logger.Info(LogSource.Spotify, "Spotify init done");
 
         Logger.Info(LogSource.Twitch, "Starting Twitch init");
         await RunTwitchInitAsync(useShellWindow, owner);
@@ -283,8 +281,18 @@ public static class AppStartup
     {
         try
         {
+            if (Settings.Player != Enums.PlayerType.Spotify)
+            {
+                Logger.Info(LogSource.Spotify,
+                    $"Skipping Spotify API connect because the selected player is {Settings.Player}.");
+                SpotifyApiHandler.ReleaseInactivePlayerSession();
+                return;
+            }
+
+            Logger.Info(LogSource.Spotify, "Starting Spotify init");
             if (!string.IsNullOrEmpty(Settings.SpotifyAccessToken) || !string.IsNullOrEmpty(Settings.SpotifyRefreshToken))
                 await SpotifyApiHandler.Auth();
+            Logger.Info(LogSource.Spotify, "Spotify init done");
         }
         catch (Exception e)
         {

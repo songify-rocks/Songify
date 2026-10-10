@@ -563,6 +563,9 @@ namespace Songify_Slim.Util.Songify
 
         public async Task FetchSpotifyWeb(bool forceUpdate = false)
         {
+            if (Settings.Player != Enums.PlayerType.Spotify)
+                return;
+
             // If the spotify object hast been created (successfully authed)
             //if (_updating)
             //    return;

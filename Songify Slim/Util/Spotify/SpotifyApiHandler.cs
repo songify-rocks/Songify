@@ -84,8 +84,66 @@ namespace Songify_Slim.Util.Spotify
                 AuthTimer.Stop();
         }
 
-        public static async Task Auth()
+        /// <summary>
+        /// Spotify Web API is only used while Spotify is the selected player.
+        /// Other players (Pear, foobar2000, VLC, and so on) must not refresh tokens or open a client.
+        /// </summary>
+        public static bool IsSelectedPlayer => Settings.Player == PlayerType.Spotify;
+
+        /// <summary>
+        /// Drops the live Spotify client and token-refresh timer without clearing saved credentials.
+        /// Also removes Spotify API banners that only apply while Spotify is the selected player.
+        /// </summary>
+        public static void ReleaseInactivePlayerSession()
         {
+            Client = null;
+
+            try
+            {
+                if (AuthTimer.Enabled)
+                    AuthTimer.Stop();
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug(LogSource.Spotify, "Stopping Spotify auth timer failed", ex);
+            }
+
+            RefreshShellSpotifyIndicator();
+
+            try
+            {
+                SpotifyUserNotifier.ClearPersistentIssuesByKind(
+                    "app_owner_premium",
+                    "api_error",
+                    "unauthorized",
+                    "unexpected",
+                    "rate_limit",
+                    "quota");
+            }
+            catch (Exception ex)
+            {
+                Logger.Debug(LogSource.Spotify, "Clearing Spotify issues for inactive player failed", ex);
+            }
+        }
+
+        public static Task Auth() => AuthenticateAsync(requireSelectedPlayer: true);
+
+        /// <summary>
+        /// Settings and setup-wizard Link button. Saves the Spotify account even when another
+        /// player is selected, but does not call the Web API until Spotify is the selected player.
+        /// </summary>
+        public static Task LinkAccountAsync() => AuthenticateAsync(requireSelectedPlayer: false);
+
+        private static async Task AuthenticateAsync(bool requireSelectedPlayer)
+        {
+            if (requireSelectedPlayer && !IsSelectedPlayer)
+            {
+                Logger.Info(LogSource.Spotify,
+                    $"Skipping Spotify API connect because the selected player is {Settings.Player}.");
+                ReleaseInactivePlayerSession();
+                return;
+            }
+
             try
             {
                 AuthTimer.Elapsed -= AuthTimer_Elapsed;
@@ -535,6 +593,12 @@ namespace Songify_Slim.Util.Spotify
         {
             try
             {
+                if (!IsSelectedPlayer)
+                {
+                    ReleaseInactivePlayerSession();
+                    return;
+                }
+
                 if (IsTokenExpiringSoon())
                     await RefreshTokens();
             }
@@ -717,6 +781,28 @@ namespace Songify_Slim.Util.Spotify
 
         private static async Task ApplyAuthenticatedStateAsync(PKCETokenResponse tokenResponse)
         {
+            // Token exchange can finish after the user switched away from Spotify
+            // (or from an explicit Link click while another player is selected).
+            // Keep the saved tokens, but do not open the Web API client.
+            if (!IsSelectedPlayer)
+            {
+                Client = null;
+                try
+                {
+                    if (AuthTimer.Enabled)
+                        AuthTimer.Stop();
+                }
+                catch (Exception ex)
+                {
+                    Logger.Debug(LogSource.Spotify, "Stopping Spotify auth timer failed", ex);
+                }
+
+                Logger.Info(LogSource.Spotify,
+                    $"Spotify tokens saved. API client was not started because the selected player is {Settings.Player}.");
+                RefreshShellSpotifyIndicator();
+                return;
+            }
+
             SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
                 .WithAuthenticator(new PKCEAuthenticator(Settings.ClientId, tokenResponse));
 

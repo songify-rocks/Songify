@@ -528,6 +528,9 @@ public static class SpotifyUserNotifier
 
     internal static void NotifyAppOwnerPremiumRequired()
     {
+        if (Settings.Player != Enums.PlayerType.Spotify)
+            return;
+
         string title = Loc("window_main_spotify_app_owner_premium_title",
             "Spotify API app needs Premium");
         string body = Loc("window_main_spotify_app_owner_premium_body",

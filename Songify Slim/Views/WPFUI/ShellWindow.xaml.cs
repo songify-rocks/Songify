@@ -439,6 +439,8 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         }
 
         StateChanged += ShellWindow_OnStateChanged;
+        if (Settings.Player != PlayerType.Spotify)
+            SpotifyApiHandler.ReleaseInactivePlayerSession();
         SetupSpotifyPersistentIssueBanner();
         StartTitleBarNowPlayingTimer();
         AppFetchService.IdleBackoffChanged -= OnSpotifyIdleBackoffChanged;
@@ -753,6 +755,13 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
         if (!Dispatcher.CheckAccess())
         {
             Dispatcher.Invoke(() => UpdateSpotifyPersistentIssuesUi(issues, refreshOnly));
+            return;
+        }
+
+        if (Settings.Player != PlayerType.Spotify)
+        {
+            if (BrdSpotifyPersistentIssue != null)
+                BrdSpotifyPersistentIssue.Visibility = Visibility.Collapsed;
             return;
         }
 
@@ -1345,14 +1354,17 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
                 ? "Click indicator to connect"
                 : "Click indicator to refresh Spotify status";
 
-        string deviceName;
-        try
+        string deviceName = null;
+        if (indicatorState.IsSelected)
         {
-            deviceName = await SpotifyApiHandler.GetDeviceNameForId(Settings.SpotifyDeviceId);
-        }
-        catch
-        {
-            deviceName = "Unknown";
+            try
+            {
+                deviceName = await SpotifyApiHandler.GetDeviceNameForId(Settings.SpotifyDeviceId);
+            }
+            catch
+            {
+                deviceName = "Unknown";
+            }
         }
 
         return indicatorState.BuildRows(
