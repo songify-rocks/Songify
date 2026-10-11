@@ -41,6 +41,9 @@ public static class AppFetchService
     public static Task ForceFetchPearAsync(bool forceNow = true) =>
         Sf.FetchPear(forceNow);
 
+    public static Task RefreshPearNowPlayingAsync() =>
+        Sf.RefreshPearNowPlayingAsync();
+
     public static Task NotifyPearPlayerInactiveAsync() =>
         Sf.NotifyPearPlayerInactiveAsync();
 

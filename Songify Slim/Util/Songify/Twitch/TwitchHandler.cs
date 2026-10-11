@@ -1770,6 +1770,8 @@ public static class TwitchHandler
 
             case Enums.PlayerType.Pear:
                 skipSucceeded = await PearApi.SkipAsync();
+                if (skipSucceeded)
+                    await AppFetchService.RefreshPearNowPlayingAsync();
                 break;
 
             case Enums.PlayerType.FooBar2000:
@@ -2205,6 +2207,7 @@ public static class TwitchHandler
                             return;
                         }
 
+                        await AppFetchService.RefreshPearNowPlayingAsync();
                         break;
                     }
 
@@ -2345,7 +2348,13 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                await PearApi.SkipAsync();
+                if (!await PearApi.SkipAsync())
+                {
+                    cmdParams.SkipReason = "Pear skip failed";
+                    return;
+                }
+
+                await AppFetchService.RefreshPearNowPlayingAsync();
                 break;
 
             case Enums.PlayerType.WindowsPlayback:
@@ -2816,7 +2825,10 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                await PearApi.SkipAsync();
+                if (!await PearApi.SkipAsync())
+                    return;
+
+                await AppFetchService.RefreshPearNowPlayingAsync();
                 break;
 
             case Enums.PlayerType.FooBar2000:

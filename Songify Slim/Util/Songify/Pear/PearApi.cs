@@ -168,13 +168,21 @@ namespace Songify_Slim.Util.Songify.Pear
         /// </summary>
         public static async Task<bool> SkipAsync()
         {
-            HttpResponseMessage response = await _httpClient.PostAsync("next", null);
+            try
+            {
+                HttpResponseMessage response = await _httpClient.PostAsync("next", null);
 
-            if (response.IsSuccessStatusCode)
-                return true;
+                if (response.IsSuccessStatusCode)
+                    return true;
 
-            Logger.Error(LogSource.Pear, $"next failed with status code: {response.StatusCode}");
-            return false;
+                Logger.Error(LogSource.Pear, $"next failed with status code: {response.StatusCode}");
+                return false;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(LogSource.Pear, "next failed", e);
+                return false;
+            }
         }
 
         public static async Task<int> GetVolumeAsync()

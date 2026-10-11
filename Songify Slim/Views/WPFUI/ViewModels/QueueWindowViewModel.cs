@@ -17,6 +17,7 @@ using Songify_Slim.Models.Spotify;
 using Songify_Slim.Util.Youtube.YTMYHCH;
 using Songify_Slim.Util.Configuration;
 using Songify_Slim.Util.General;
+using Songify_Slim.Util.Songify;
 using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Spotify;
@@ -291,7 +292,10 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
                     return;
                 }
 
-                await PearApi.SkipAsync();
+                if (!await PearApi.SkipAsync())
+                    return;
+
+                await AppFetchService.RefreshPearNowPlayingAsync();
                 return;
             }
         }

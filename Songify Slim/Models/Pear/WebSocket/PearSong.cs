@@ -22,7 +22,7 @@ namespace Songify_Slim.Models.Pear.WebSocket
         public string? ArtistUrl { get; set; }
 
         [JsonPropertyName("views")]
-        public int Views { get; set; }
+        public long Views { get; set; }
 
         [JsonPropertyName("uploadDate")]
         public DateTime UploadDate { get; set; }

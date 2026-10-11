@@ -1705,6 +1705,30 @@ namespace Songify_Slim.Util.Songify
         }
 
         /// <summary>
+        /// Pull now-playing over HTTP after a skip. POST /next returns before playback moves, and
+        /// <c>VIDEO_CHANGED</c> never arrives while the WebSocket is down.
+        /// </summary>
+        public async Task RefreshPearNowPlayingAsync()
+        {
+            for (int attempt = 0; attempt < 2; attempt++)
+            {
+                await Task.Delay(attempt == 0 ? 300 : 700).ConfigureAwait(false);
+                try
+                {
+                    PearResponse seed = await PearApi.GetNowPlayingAsync().ConfigureAwait(false);
+                    if (!PearHttpResponseLooksLikeActiveTrack(seed))
+                        continue;
+
+                    await ApplyPearStateAsync(seed).ConfigureAwait(false);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Error(LogSource.Pear, "Failed to refresh Pear now-playing.", ex);
+                }
+            }
+        }
+
+        /// <summary>
         /// Pear's WebSocket pushes deltas (e.g. <c>VIDEO_CHANGED</c> on track change), not the full current state on connect.
         /// Use HTTP <c>song-info</c> (+ queue in <see cref="ApplyPearStateAsync"/>) until we have applied a meaningful snapshot.
         /// </summary>
