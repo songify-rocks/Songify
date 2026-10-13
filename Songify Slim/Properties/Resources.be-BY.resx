@@ -2142,7 +2142,7 @@ gwyden - Hertz - karimawii
     <comment>Context: Credits section body on About page (names may stay as-is).</comment>
   </data>
   <data name="window_queue_requested_by" xml:space="preserve">
-    <value>Запытаў ад {0}</value>
+    <value>Заказ ад {0}</value>
     <comment>Context: Queue row subtitle; {0} = requester name.</comment>
   </data>
   <data name="window_queue_decrease_font" xml:space="preserve">
