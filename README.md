@@ -87,6 +87,12 @@ Questions or ideas: [Discord](https://discord.gg/H8nd4T4). If Songify is useful,
 
 ---
 
+### Star History
+
+[![Star History Chart](https://api.star-history.com/chart?repos=songify-rocks/songify&type=timeline&legend=bottom-right)](https://www.star-history.com/?repos=songify-rocks%2Fsongify&type=timeline&releases=&legend=bottom-right)
+
+---
+
 ### Contributors
 
 <a href="https://github.com/songify-rocks/songify/graphs/contributors">
