@@ -1368,7 +1368,7 @@ public static class TwitchHandler
         if (!IsUserAllowed(Settings.UserLevelsReward, new TwitchCommandParams
         {
             ExistingUser = existingUser,
-            UserLevels = existingUser.UserLevels
+            UserLevels = userLevels
         }, isBroadcaster, null, userId))
         {
             // Send a message to the user that their user level is too low to request songs

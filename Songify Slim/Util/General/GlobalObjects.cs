@@ -234,7 +234,13 @@ namespace Songify_Slim.Util.General
             {
                 TwitchUser existing = TwitchUsers.FirstOrDefault(u => u.UserId == user.UserId);
                 if (existing != null)
+                {
+                    // A concurrent handler may have inserted first without roles (bits requests
+                    // don't resolve them); keep the canonical instance but don't lose ours.
+                    if (existing.UserLevels == null && user.UserLevels != null)
+                        existing.UserLevels = user.UserLevels;
                     return existing;
+                }
                 TwitchUsers.Add(user);
                 return user;
             }
