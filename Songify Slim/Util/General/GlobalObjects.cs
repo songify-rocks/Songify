@@ -220,6 +220,43 @@ namespace Songify_Slim.Util.General
             }
         }
 
+        /// <summary>
+        /// Adds a user to <see cref="TwitchUsers"/> on the UI thread (the collection is bound to the
+        /// viewer list). Returns the instance already in the list if one with the same UserId exists.
+        /// Never throws: the list is display/cache state and must not abort command handling.
+        /// </summary>
+        public static async Task<TwitchUser> AddTwitchUserAsync(TwitchUser user)
+        {
+            if (user == null)
+                return null;
+
+            TwitchUser AddOrGet()
+            {
+                TwitchUser existing = TwitchUsers.FirstOrDefault(u => u.UserId == user.UserId);
+                if (existing != null)
+                    return existing;
+                TwitchUsers.Add(user);
+                return user;
+            }
+
+            try
+            {
+                Application app = Application.Current;
+                if (app == null)
+                    return user;
+
+                if (app.Dispatcher.CheckAccess())
+                    return AddOrGet();
+
+                return await app.Dispatcher.InvokeAsync<TwitchUser>(AddOrGet);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Twitch, $"Failed to add user {user.DisplayName} ({user.UserId}) to the user list.", ex);
+                return user;
+            }
+        }
+
         public static async Task UpdateQueueWindow()
         {
             switch (Settings.Player)
