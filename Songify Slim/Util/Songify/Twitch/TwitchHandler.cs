@@ -1053,7 +1053,7 @@ public static class TwitchHandler
                     UserName = msg.ChatterUserLogin
                 };
                 Logger.Warning(LogSource.Twitch, $"User {msg.ChatterUserName} ({msg.ChatterUserId}) not found. Adding manually.");
-                GlobalObjects.TwitchUsers.Add(existingUser);
+                existingUser = await GlobalObjects.AddTwitchUserAsync(existingUser);
             }
             else
             {
@@ -1259,7 +1259,7 @@ public static class TwitchHandler
                 UserName = userName
             };
             Logger.Warning(LogSource.Twitch, $"User {userName} ({userId}) not found. Added manually");
-            GlobalObjects.TwitchUsers.Add(existingUser);
+            existingUser = await GlobalObjects.AddTwitchUserAsync(existingUser);
         }
 
         // Do nothing if the user is blocked, don't even reply
@@ -1361,14 +1361,14 @@ public static class TwitchHandler
                 UserName = userName
             };
             Logger.Warning(LogSource.Twitch, $"User {userName} ({userId}) not found. Adding manually.");
-            GlobalObjects.TwitchUsers.Add(existingUser);
+            existingUser = await GlobalObjects.AddTwitchUserAsync(existingUser);
         }
         // Check if the user level is lower than broadcaster or not allowed to request songs
 
         if (!IsUserAllowed(Settings.UserLevelsReward, new TwitchCommandParams
         {
             ExistingUser = existingUser,
-            UserLevels = existingUser.UserLevels
+            UserLevels = userLevels
         }, isBroadcaster, null, userId))
         {
             // Send a message to the user that their user level is too low to request songs
@@ -3285,8 +3285,7 @@ public static class TwitchHandler
                         UserLevels = userLevels
                     };
 
-                    GlobalObjects.TwitchUsers.Add(newUser);
-                    existingById[chatter.UserId] = newUser; // keep dict in sync
+                    existingById[chatter.UserId] = await GlobalObjects.AddTwitchUserAsync(newUser); // keep dict in sync
                 }
             }
         }
