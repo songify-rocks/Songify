@@ -33,9 +33,9 @@ If password protection is enabled, the handshake is rejected unless you pass the
 
 Send **JSON** messages with an `"action"` field (and optional `"data"`). Supported actions include queue, volume, skip, play/pause, blocklist actions, and more.
 
-Full control-command reference: [WebSocket commands](WebSocket-commands).
+Full control-command reference: [WebSocket commands](WebSocket-commands.md).
 
-To **subscribe** to live track/queue updates (instead of polling HTTP), see [WebSocket data stream](WebSocket-data).
+To **subscribe** to live track/queue updates (instead of polling HTTP), see [WebSocket data stream](WebSocket-data.md).
 
 ---
 
