@@ -292,10 +292,9 @@ public sealed class QueueWindowViewModel : INotifyPropertyChanged
                     return;
                 }
 
-                if (!await PearApi.SkipAsync())
+                if (!await AppFetchService.SkipPearAsync())
                     return;
 
-                await AppFetchService.RefreshPearNowPlayingAsync();
                 return;
             }
         }

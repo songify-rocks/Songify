@@ -112,6 +112,24 @@ namespace Songify_Slim.Util.General
             new WebSocketDocCommand
             {
                 Group = "playback",
+                Action = "previous",
+                Aliases = new[] { "prev" },
+                Description = "Goes back to the previous track.",
+                DataRequired = false,
+                ExampleJson = "{\"action\":\"previous\"}"
+            },
+            new WebSocketDocCommand
+            {
+                Group = "playback",
+                Action = "queue_clear",
+                Aliases = Array.Empty<string>(),
+                Description = "Clears the song request queue.",
+                DataRequired = false,
+                ExampleJson = "{\"action\":\"queue_clear\"}"
+            },
+            new WebSocketDocCommand
+            {
+                Group = "playback",
                 Action = "play_pause",
                 Aliases = new[] { "pause", "play" },
                 Description = "Toggles or forces play/pause depending on action name and current playback.",

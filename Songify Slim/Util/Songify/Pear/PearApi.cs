@@ -164,7 +164,7 @@ namespace Songify_Slim.Util.Songify.Pear
         }
 
         /// <summary>
-        /// Skip to the next track.
+        /// Skip to the next track. Pear returns 204 as soon as the command is sent, before playback moves.
         /// </summary>
         public static async Task<bool> SkipAsync()
         {
@@ -181,6 +181,35 @@ namespace Songify_Slim.Util.Songify.Pear
             catch (Exception e)
             {
                 Logger.Error(LogSource.Pear, "next failed", e);
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Move playback to a queue row. Used when <c>POST /next</c> is accepted but the current track does not change.
+        /// </summary>
+        public static async Task<bool> SetQueueIndexAsync(int index)
+        {
+            var payload = new
+            {
+                index
+            };
+
+            string json = JsonConvert.SerializeObject(payload);
+            using StringContent content = new(json, Encoding.UTF8, "application/json");
+
+            try
+            {
+                HttpResponseMessage response = await _httpClient.PatchAsync("queue", content);
+                if (response.IsSuccessStatusCode)
+                    return true;
+
+                Logger.Error(LogSource.Pear, $"set queue index {index} failed with status code: {response.StatusCode}");
+                return false;
+            }
+            catch (Exception e)
+            {
+                Logger.Error(LogSource.Pear, $"set queue index {index} failed", e);
                 return false;
             }
         }

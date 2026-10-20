@@ -103,6 +103,15 @@ namespace Songify_Slim.Util.Songify
         /// <summary>Earliest time at which <see cref="FetchPear"/> will attempt the next WebSocket connect.</summary>
         private DateTimeOffset _pearWsNextConnectAttemptAt;
 
+        /// <summary>Consecutive failed song-info polls. Backs off so a closed Pear is not hit every second.</summary>
+        private int _pearHttpFailCount;
+
+        /// <summary>Earliest time at which the fetch timer will poll Pear song-info again.</summary>
+        private DateTimeOffset _pearHttpNextPollAt;
+
+        /// <summary>Last song-info <c>videoId</c> applied. Pear can swap this id without changing the queue row.</summary>
+        private string _lastPearSongInfoVideoId;
+
         // Pear/YT Music quirk: now-playing VideoId can differ from the queued item's Id.
         // Track the Pear queue's current item id so we can correlate requests reliably.
         private string _lastPearQueueCurrentId;
@@ -1557,23 +1566,24 @@ namespace Songify_Slim.Util.Songify
                 return;
 
             // Respect exponential backoff for automatic checks; explicit user checks can bypass it.
-            if (!forceNow && DateTimeOffset.UtcNow < _pearWsNextConnectAttemptAt)
-                return;
+            bool wsBackoff = !forceNow && DateTimeOffset.UtcNow < _pearWsNextConnectAttemptAt;
+            if (!wsBackoff)
+                await EnsurePearWebSocketAsync().ConfigureAwait(false);
 
-            await EnsurePearWebSocketAsync().ConfigureAwait(false);
-
-            // If Pear is still not reachable after the connect attempt, skip HTTP calls.
-            if (!PearWebSocketClient.IsConnected)
-                return;
-
-            _fetchCounter += 1;
-            if (_fetchCounter >= 5)
+            if (PearWebSocketClient.IsConnected)
             {
-                await TwitchHandler.EnsureOrderAsync().ConfigureAwait(false);
-                _fetchCounter = 0;
+                _fetchCounter += 1;
+                if (_fetchCounter >= 5)
+                {
+                    await TwitchHandler.EnsureOrderAsync().ConfigureAwait(false);
+                    _fetchCounter = 0;
+                }
+
+                await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
             }
 
-            await TryPearHttpBootstrapSnapshotAsync().ConfigureAwait(false);
+            // POST /next and the websocket can both miss a track change. song-info still updates.
+            await ReconcilePearNowPlayingAsync().ConfigureAwait(false);
         }
 
         /// <summary>Disconnect Pear WebSocket and reset Pear-specific state when the user selects another player.</summary>
@@ -1705,27 +1715,150 @@ namespace Songify_Slim.Util.Songify
         }
 
         /// <summary>
+        /// Skip in Pear and wait until the current track actually changes.
+        /// <c>POST /next</c> returns 204 before playback moves, and on some setups it never moves playback at all.
+        /// </summary>
+        public async Task<bool> SkipPearAsync()
+        {
+            string previousId = _lastPearQueueCurrentId;
+            if (string.IsNullOrWhiteSpace(previousId))
+                previousId = GlobalObjects.CurrentSong?.SongId;
+
+            if (!await PearApi.SkipAsync().ConfigureAwait(false))
+                return false;
+
+            if (await WaitForPearTrackChangeAsync(previousId, TimeSpan.FromSeconds(2)).ConfigureAwait(false))
+                return true;
+
+            if (!await AdvancePearQueueIndexAsync(previousId).ConfigureAwait(false))
+            {
+                Logger.Warning(LogSource.Pear, "Pear skip did not change the current track.");
+                return false;
+            }
+
+            if (await WaitForPearTrackChangeAsync(previousId, TimeSpan.FromSeconds(3)).ConfigureAwait(false))
+                return true;
+
+            Logger.Warning(LogSource.Pear, "Pear queue index was set, but the current track did not change.");
+            return false;
+        }
+
+        /// <summary>
         /// Pull now-playing over HTTP after a skip. POST /next returns before playback moves, and
         /// <c>VIDEO_CHANGED</c> never arrives while the WebSocket is down.
         /// </summary>
         public async Task RefreshPearNowPlayingAsync()
         {
-            for (int attempt = 0; attempt < 2; attempt++)
+            string previousId = _lastPearQueueCurrentId;
+            if (string.IsNullOrWhiteSpace(previousId))
+                previousId = GlobalObjects.CurrentSong?.SongId;
+
+            await WaitForPearTrackChangeAsync(previousId, TimeSpan.FromSeconds(2)).ConfigureAwait(false);
+        }
+
+        private async Task<bool> WaitForPearTrackChangeAsync(string previousId, TimeSpan timeout)
+        {
+            DateTime deadline = DateTime.UtcNow + timeout;
+            while (DateTime.UtcNow < deadline)
             {
-                await Task.Delay(attempt == 0 ? 300 : 700).ConfigureAwait(false);
+                await Task.Delay(350).ConfigureAwait(false);
                 try
                 {
-                    PearResponse seed = await PearApi.GetNowPlayingAsync().ConfigureAwait(false);
-                    if (!PearHttpResponseLooksLikeActiveTrack(seed))
-                        continue;
-
-                    await ApplyPearStateAsync(seed).ConfigureAwait(false);
+                    if (await TryApplyPearTrackIfChangedAsync(previousId).ConfigureAwait(false))
+                        return true;
                 }
                 catch (Exception ex)
                 {
                     Logger.Error(LogSource.Pear, "Failed to refresh Pear now-playing.", ex);
                 }
             }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Apply song-info when its video id is new. Safe to call every fetch tick: an unchanged id returns immediately.
+        /// </summary>
+        private async Task ReconcilePearNowPlayingAsync()
+        {
+            if (DateTimeOffset.UtcNow < _pearHttpNextPollAt)
+                return;
+
+            PearResponse seed;
+            try
+            {
+                seed = await PearApi.GetNowPlayingAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Pear, "Failed to refresh Pear now-playing.", ex);
+                seed = null;
+            }
+
+            if (!PearHttpResponseLooksLikeActiveTrack(seed))
+            {
+                _pearHttpFailCount = Math.Min(_pearHttpFailCount + 1, 6);
+                _pearHttpNextPollAt = DateTimeOffset.UtcNow + GetPearConnectBackoffDelay(_pearHttpFailCount);
+                return;
+            }
+
+            _pearHttpFailCount = 0;
+            _pearHttpNextPollAt = default;
+
+            if (_pearColdHttpSynced &&
+                string.Equals(seed.VideoId, _lastPearSongInfoVideoId, StringComparison.Ordinal))
+                return;
+
+            await ApplyPearStateAsync(seed).ConfigureAwait(false);
+            _pearColdHttpSynced = true;
+        }
+
+        private async Task<bool> TryApplyPearTrackIfChangedAsync(string previousId)
+        {
+            PearResponse seed = await PearApi.GetNowPlayingAsync().ConfigureAwait(false);
+            if (!PearHttpResponseLooksLikeActiveTrack(seed))
+                return false;
+
+            List<Song> queue = null;
+            try
+            {
+                queue = await PearApi.GetQueueAsync().ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(LogSource.Pear, "Failed to read Pear queue while waiting for a skip.", ex);
+            }
+
+            Song playhead = PearApi.ResolvePlayhead(queue, seed.VideoId);
+            string canonical = !string.IsNullOrWhiteSpace(playhead?.Id) ? playhead.Id : seed.VideoId;
+            if (!string.IsNullOrWhiteSpace(previousId) &&
+                string.Equals(canonical, previousId, StringComparison.Ordinal))
+                return false;
+
+            await ApplyPearStateAsync(seed).ConfigureAwait(false);
+            _pearColdHttpSynced = true;
+            _pearHttpFailCount = 0;
+            _pearHttpNextPollAt = default;
+            return true;
+        }
+
+        /// <summary>
+        /// <c>POST /next</c> can return success without moving playback. Point the queue at the following row instead.
+        /// </summary>
+        private static async Task<bool> AdvancePearQueueIndexAsync(string previousId)
+        {
+            List<Song> queue = await PearApi.GetQueueAsync().ConfigureAwait(false);
+            Song playhead = PearApi.ResolvePlayhead(queue, previousId);
+            if (playhead == null || queue == null)
+                return false;
+
+            Song next = queue.FirstOrDefault(s => s.Pos > playhead.Pos);
+            if (next == null)
+                return false;
+
+            Logger.Info(LogSource.Pear,
+                $"POST /next left playback on {playhead.Id}. Setting queue index to {next.Pos} ({next.Artist} - {next.Title}).");
+            return await PearApi.SetQueueIndexAsync(next.Pos).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1805,6 +1938,7 @@ namespace Songify_Slim.Util.Songify
                 }
 
                 string canonicalId = !string.IsNullOrWhiteSpace(queueCurrent?.Id) ? queueCurrent.Id : data.VideoId;
+                _lastPearSongInfoVideoId = data.VideoId;
 
                 Song selected = pearQueue?.FirstOrDefault(s => s.IsCurrent);
                 if (selected != null &&
@@ -2002,6 +2136,7 @@ namespace Songify_Slim.Util.Songify
                 string type = typeEl.GetString();
                 switch (type)
                 {
+                    case "PLAYER_INFO":
                     case "VIDEO_CHANGED":
                         {
                             VideoChangedMessage vc = System.Text.Json.JsonSerializer.Deserialize<VideoChangedMessage>(msg);

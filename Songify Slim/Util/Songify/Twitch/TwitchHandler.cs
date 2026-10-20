@@ -1769,9 +1769,7 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                skipSucceeded = await PearApi.SkipAsync();
-                if (skipSucceeded)
-                    await AppFetchService.RefreshPearNowPlayingAsync();
+                skipSucceeded = await AppFetchService.SkipPearAsync();
                 break;
 
             case Enums.PlayerType.FooBar2000:
@@ -2200,14 +2198,13 @@ public static class TwitchHandler
                     {
                         Logger.Info(LogSource.Pear,
                             $"!remove queueid={reqObj.Queueid} track={reqObj.Trackid} playhead={playhead.Id}@{playhead.Pos} action=skip-current");
-                        if (!await PearApi.SkipAsync())
+                        if (!await AppFetchService.SkipPearAsync())
                         {
                             Logger.Warning(LogSource.Pear,
                                 $"!remove: failed to skip currently playing Pear track {reqObj.Trackid}");
                             return;
                         }
 
-                        await AppFetchService.RefreshPearNowPlayingAsync();
                         break;
                     }
 
@@ -2348,13 +2345,12 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                if (!await PearApi.SkipAsync())
+                if (!await AppFetchService.SkipPearAsync())
                 {
                     cmdParams.SkipReason = "Pear skip failed";
                     return;
                 }
 
-                await AppFetchService.RefreshPearNowPlayingAsync();
                 break;
 
             case Enums.PlayerType.WindowsPlayback:
@@ -2825,10 +2821,9 @@ public static class TwitchHandler
                 break;
 
             case Enums.PlayerType.Pear:
-                if (!await PearApi.SkipAsync())
+                if (!await AppFetchService.SkipPearAsync())
                     return;
 
-                await AppFetchService.RefreshPearNowPlayingAsync();
                 break;
 
             case Enums.PlayerType.FooBar2000:

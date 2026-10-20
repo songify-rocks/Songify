@@ -30,6 +30,7 @@ using System.Windows.Media;
 using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Pear;
 using Songify_Slim.Util.Configuration;
+using Songify_Slim.Util.Songify.APIs;
 using Songify_Slim.Util.Songify.Pear;
 using Songify_Slim.Util.Youtube.YTMYHCH.YtmDesktopApi;
 using TwitchLib.Api.Helix.Models.ChannelPoints.UpdateCustomReward;
@@ -67,11 +68,14 @@ namespace Songify_Slim.Util.General
             },
             ["skip"] = HandleSkipAsync,
             ["next"] = HandleSkipAsync,
+            ["previous"] = HandlePreviousAsync,
+            ["prev"] = HandlePreviousAsync,
             ["play_pause"] = HandlePlayPauseAsync,
             ["pause"] = HandlePlayPauseAsync,
             ["play"] = HandlePlayPauseAsync,
             ["stop_sr_reward"] = HandleStopSrRewardAsync,
             ["play_playlist"] = PlayPlaylist,
+            ["queue_clear"] = HandleQueueClearAsync,
             ["sr_enable"] = HandleSrEnableAsync,
             ["sr_disable"] = HandleSrDisableAsync,
             ["sr_open"] = HandleSrEnableAsync,
@@ -164,6 +168,8 @@ namespace Songify_Slim.Util.General
 
             Task<string> SkipAsync();
 
+            Task<string> PreviousAsync();
+
             Task<string> TogglePlayPauseAsync(string action); // "play", "pause", "play_pause"
 
             Task<string> SendToChatAsync();
@@ -197,6 +203,12 @@ namespace Songify_Slim.Util.General
             {
                 await SpotifyApiHandler.SkipSong();
                 return "Song skipped.";
+            }
+
+            public async Task<string> PreviousAsync()
+            {
+                await SpotifyApiHandler.SkipPrevious();
+                return "Playing previous song.";
             }
 
             public async Task<string> TogglePlayPauseAsync(string action)
@@ -271,6 +283,12 @@ namespace Songify_Slim.Util.General
             {
                 await YtmDesktopApi.NextAsync();
                 return "Song skipped.";
+            }
+
+            public async Task<string> PreviousAsync()
+            {
+                await YtmDesktopApi.PreviousAsync();
+                return "Playing previous song.";
             }
 
             public async Task<string> TogglePlayPauseAsync(string action)
@@ -707,6 +725,21 @@ namespace Songify_Slim.Util.General
         {
             IPlayerOps ops = GetPlayerOps();
             return await ops.SkipAsync();
+        }
+
+        private static async Task<string> HandlePreviousAsync(WebSocketCommand command)
+        {
+            IPlayerOps ops = GetPlayerOps();
+            return await ops.PreviousAsync();
+        }
+
+        private static async Task<string> HandleQueueClearAsync(WebSocketCommand command)
+        {
+            await Application.Current.Dispatcher.InvokeAsync(() => GlobalObjects.ReqList.Clear());
+            await SongifyApi.ClearQueueAsync(JsonConvert.SerializeObject(new { uuid = Settings.Uuid }));
+            await GlobalObjects.QueueUpdateQueueWindow();
+            await SongFetcher.RefreshWebServerPayloadAsync();
+            return "Queue cleared.";
         }
 
         private static async Task<string> HandlePlayPauseAsync(WebSocketCommand command)

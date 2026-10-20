@@ -13,6 +13,6 @@ namespace Songify_Slim.Models.Pear.WebSocket
         public PearSong Song { get; set; } = new();
 
         [JsonPropertyName("position")]
-        public int Position { get; set; }
+        public double Position { get; set; }
     }
 }
