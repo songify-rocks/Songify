@@ -121,9 +121,11 @@ public static class TwitchHandler
             _ = app.Dispatcher.BeginInvoke(Apply);
     }
 
-    public static async Task AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
+    /// <returns>True when the song was added to the player queue (or playlist in playlist-only mode).</returns>
+    public static async Task<bool> AddSong(string trackId, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
     {
         Stopwatch sw = new();
+        bool queued = false;
 
         try
         {
@@ -131,14 +133,14 @@ public static class TwitchHandler
 
             if (!await EnsureRequestOwnershipOrRespondAsync(e, Enums.RequestPlayerType.Spotify, source))
             {
-                return;
+                return false;
             }
 
             if (string.IsNullOrWhiteSpace(trackId))
             {
                 await SendChatMessage("No song found.");
                 await CheckAndRefund(source, reward, Enums.RefundCondition.NoSongFound, e);
-                return;
+                return false;
             }
 
             switch (trackId)
@@ -162,7 +164,7 @@ public static class TwitchHandler
 
                     await SendChatMessage(message);
                     await CheckAndRefund(source, reward, Enums.RefundCondition.NoSongFound, e);
-                    return;
+                    return false;
             }
 
             FullTrack track = await SpotifyApiHandler.GetTrack(trackId);
@@ -194,21 +196,21 @@ public static class TwitchHandler
                 });
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongBlocked, e);
-                return;
+                return false;
             }
 
             if (track == null)
             {
                 await SendChatMessage(CreateNoTrackFoundResponse(e));
                 await CheckAndRefund(source, reward, Enums.RefundCondition.NoSongFound, e);
-                return;
+                return false;
             }
 
             if (IsTrackExplicit(track, e, user?.UserLevels, out response))
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.TrackIsExplicit, e);
-                return;
+                return false;
             }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Explicit Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
@@ -216,7 +218,7 @@ public static class TwitchHandler
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongUnavailable, e);
-                return;
+                return false;
             }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Region lock Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
@@ -224,7 +226,7 @@ public static class TwitchHandler
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.ArtistBlocked, e);
-                return;
+                return false;
             }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Artist Block Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
@@ -232,7 +234,7 @@ public static class TwitchHandler
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongTooLong, e);
-                return;
+                return false;
             }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Track too long Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
@@ -240,7 +242,7 @@ public static class TwitchHandler
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongAlreadyInQueue, e);
-                return;
+                return false;
             }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Already in Queue Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
@@ -277,7 +279,7 @@ public static class TwitchHandler
                 {
                     await SendChatMessage(response);
                     await CheckAndRefund(source, reward, Enums.RefundCondition.QueueLimitReached, e);
-                    return;
+                    return false;
                 }
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"Max Songs Check after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
 
@@ -287,7 +289,7 @@ public static class TwitchHandler
                 {
                     await SendChatMessage("Could not add the song to the Spotify queue.");
                     await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
-                    return;
+                    return false;
                 }
                 Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Queue after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
             }
@@ -297,6 +299,8 @@ public static class TwitchHandler
                 await SpotifyApiHandler.AddToPlaylist(track.Id);
                 Logger.Log(LogLevel.Debug, LogSource.Debug, $"Add to Paylist after {TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds).TotalSeconds}s");
             }
+
+            queued = true;
 
             // this will take the first 4 artists and join their names with ", "
             string artists = string.Join(", ", track.Artists
@@ -373,6 +377,8 @@ public static class TwitchHandler
             sw.Stop();
             Logger.Log(LogLevel.Debug, LogSource.Debug, $"AddSong execution time: {sw.ElapsedMilliseconds} ms");
         }
+
+        return queued;
     }
 
     public static async Task<string> AddSongFromWebsocket(string trackId, string requester = "")
@@ -1488,13 +1494,15 @@ public static class TwitchHandler
         }
     }
 
-    private static async Task AddYtSong(string userInput, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
+    /// <returns>True when the song was added to the Pear queue.</returns>
+    private static async Task<bool> AddYtSong(string userInput, TwitchRequestUser e, Enums.SongRequestSource source, TwitchUser user, RewardInfo reward = null)
     {
+        bool queued = false;
         try
         {
             if (!await EnsureRequestOwnershipOrRespondAsync(e, Enums.RequestPlayerType.YouTube, source))
             {
-                return;
+                return false;
             }
 
             PearSearch sr;
@@ -1509,7 +1517,7 @@ public static class TwitchHandler
                 {
                     sr = await LookupYouTubeViaSongifyAsync(videoId, e, source, reward);
                     if (sr == null)
-                        return;
+                        return false;
                 }
                 else
                 {
@@ -1523,7 +1531,7 @@ public static class TwitchHandler
                     $"Pear search returned an unusable result for input '{userInput}'. Reason: {invalidReason}");
                 await SendChatMessage(CreateNoTrackFoundResponse(e));
                 await CheckAndRefund(source, reward, Enums.RefundCondition.NoSongFound, e);
-                return;
+                return false;
             }
 
             sr = normalizedSearch;
@@ -1532,14 +1540,14 @@ public static class TwitchHandler
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongTooLong, e);
-                return;
+                return false;
             }
 
             if (IsTrackAlreadyInQueue(sr, e, out response))
             {
                 await SendChatMessage(response);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongAlreadyInQueue, e);
-                return;
+                return false;
             }
 
             bool unlimitedSr = false;
@@ -1575,7 +1583,7 @@ public static class TwitchHandler
                 {
                     await SendChatMessage(response);
                     await CheckAndRefund(source, reward, Enums.RefundCondition.QueueLimitReached, e);
-                    return;
+                    return false;
                 }
 
             // this will take the first 4 artists and join their names with ", "
@@ -1610,7 +1618,7 @@ public static class TwitchHandler
             {
                 Logger.Log(LogLevel.Error, LogSource.Pear, "Command 'Song Request' not found.");
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
-                return;
+                return false;
             }
 
             bool ok = await PearApi.EnqueueAsync(req.Trackid, Enums.InsertPosition.InsertAfterCurrentVideo);
@@ -1619,9 +1627,10 @@ public static class TwitchHandler
                 Logger.Log(LogLevel.Error, LogSource.Pear, "Error adding the song to the Pear queue.");
                 SendOrAnnounceMessage("Error adding the song to the Pear queue.", cmd);
                 await CheckAndRefund(source, reward, Enums.RefundCondition.SongAddedButError, e);
-                return;
+                return false;
             }
 
+            queued = true;
             await UploadToQueue(req);
 
             string successResponse = cmd.Response;
@@ -1654,6 +1663,8 @@ public static class TwitchHandler
         {
             Logger.LogExc(ex);
         }
+
+        return queued;
     }
 
     /// <summary>
@@ -2288,8 +2299,6 @@ public static class TwitchHandler
             RequestObject firstRequest = GlobalObjects.ReqList.FirstOrDefault();
             if (firstRequest == null || firstRequest.Trackid != GlobalObjects.CurrentSong.SongId) return;
             name = firstRequest.Requester;
-            GlobalObjects.TwitchUsers.FirstOrDefault(o => o.DisplayName == name)
-                ?.UpdateCommandTime(true);
         });
 
         if (count > 0 && name.Equals(message.ChatterUserName, StringComparison.CurrentCultureIgnoreCase))
@@ -2525,8 +2534,6 @@ public static class TwitchHandler
             RequestObject firstRequest = GlobalObjects.ReqList.FirstOrDefault();
             if (firstRequest == null || firstRequest.Trackid != GlobalObjects.CurrentSong.SongId) return;
             name = firstRequest.Requester;
-            GlobalObjects.TwitchUsers.FirstOrDefault(o => o.DisplayName == name)
-                ?.UpdateCommandTime(true);
         });
 
         if (count > 0 && name.Equals(message.ChatterUserName, StringComparison.CurrentCultureIgnoreCase))
@@ -2681,18 +2688,19 @@ public static class TwitchHandler
             return;
         }
 
+        bool queued;
         switch (Settings.Player)
         {
             case Enums.PlayerType.Spotify:
                 Logger.Info(LogSource.Songrequest,
                     $"[Command] Dispatching request to Spotify handler (user={message.ChatterUserName})");
-                await HandleSpotifyRequest(message, requestInput, cmdParams, cmd);
+                queued = await HandleSpotifyRequest(message, requestInput, cmdParams, cmd);
                 break;
             //case PlayerType.YtmDesktop:
             case Enums.PlayerType.Pear:
                 Logger.Info(LogSource.Songrequest,
                     $"[Command] Dispatching request to Pear/YouTube handler (user={message.ChatterUserName})");
-                await HandleYtmRequest(message, requestInput, cmdParams, cmd);
+                queued = await HandleYtmRequest(message, requestInput, cmdParams, cmd);
                 break;
 
             case Enums.PlayerType.WindowsPlayback:
@@ -2708,7 +2716,9 @@ public static class TwitchHandler
 
         // start the command cooldown
         StartCooldown();
-        cmdParams.ExistingUser.UpdateCommandTime();
+        // per-user cooldown only counts requests that actually made it into the queue
+        if (queued)
+            cmdParams.ExistingUser.UpdateCommandTime();
     }
 
     private static async Task HandleVolumeCommand(ChannelChatMessage message, TwitchCommand cmd, TwitchCommandParams cmdParams)
@@ -2947,17 +2957,17 @@ public static class TwitchHandler
     /// <param name="cmdParams">Resolved user and command execution context.</param>
     /// <param name="cmd">The command definition that routed to this handler.</param>
     // ReSharper disable once UnusedParameter.Local
-    private static async Task HandleSpotifyRequest(ChannelChatMessage message, string requestInput, TwitchCommandParams cmdParams, TwitchCommand cmd)
+    private static async Task<bool> HandleSpotifyRequest(ChannelChatMessage message, string requestInput, TwitchCommandParams cmdParams, TwitchCommand cmd)
     {
         if (SpotifyApiHandler.Client == null)
         {
             await SendChatMessage("It seems that Spotify is not connected right now.");
-            return;
+            return false;
         }
 
         string trackId = await GetTrackIdFromInput(requestInput);
 
-        await AddSong(trackId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
+        return await AddSong(trackId, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
     }
 
     /// <summary>
@@ -2969,15 +2979,12 @@ public static class TwitchHandler
     /// <param name="cmdParams">Resolved user and command execution context.</param>
     /// <param name="cmd">The command definition that routed to this handler.</param>
     // ReSharper disable once UnusedParameter.Local
-    private static async Task HandleYtmRequest(ChannelChatMessage message, string requestInput, TwitchCommandParams cmdParams, TwitchCommand cmd)
+    private static async Task<bool> HandleYtmRequest(ChannelChatMessage message, string requestInput, TwitchCommandParams cmdParams, TwitchCommand cmd)
     {
         switch (Settings.Player)
         {
             case Enums.PlayerType.Pear:
-                {
-                    await AddYtSong(requestInput, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
-                    break;
-                }
+                return await AddYtSong(requestInput, TwitchRequestUser.FromChatmessage(message), Enums.SongRequestSource.Command, cmdParams.ExistingUser);
 
             case Enums.PlayerType.Spotify:
             case Enums.PlayerType.WindowsPlayback:
@@ -2986,7 +2993,7 @@ public static class TwitchHandler
             case Enums.PlayerType.Qobuz:
             case Enums.PlayerType.BrowserCompanion:
             default:
-                return;
+                return false;
         }
     }
 

@@ -424,6 +424,8 @@ namespace Songify_Slim.Views.WPFUI.Controls
             NudSpaces.Value = Settings.SpaceCount;
             NudCooldown.Value = Settings.TwSrCooldown;
             NudCooldownPerUser.Value = Settings.TwSrPerUserCooldown;
+            GlobalCooldownDisplay.Text = FormatCooldown(Settings.TwSrCooldown);
+            UserCooldownDisplay.Text = FormatCooldown(Settings.TwSrPerUserCooldown);
             NudMaxlength.Value = Settings.MaxSongLength;
             TbClientId.Text = Settings.ClientId;
             TbClientSecret.Password = Settings.ClientSecret;
@@ -1636,11 +1638,12 @@ namespace Songify_Slim.Views.WPFUI.Controls
             if (NudCooldown.Value == null)
                 return;
             Settings.TwSrCooldown = (int)NudCooldown.Value;
-            if (!NudCooldown.Value.HasValue) return;
-            int totalSeconds = (int)NudCooldown.Value.Value;
-            int minutes = totalSeconds / 60;
-            int seconds = totalSeconds % 60;
-            GlobalCooldownDisplay.Text = $"({minutes:D2}:{seconds:D2})";
+            GlobalCooldownDisplay.Text = FormatCooldown(Settings.TwSrCooldown);
+        }
+
+        private static string FormatCooldown(int totalSeconds)
+        {
+            return $"({totalSeconds / 60:D2}:{totalSeconds % 60:D2})";
         }
 
         private void NudMaxlength_ValueChanged(object sender, NumberBoxValueChangedEventArgs e)
@@ -2746,10 +2749,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 return;
             if (!NudCooldownPerUser.Value.HasValue) return;
             Settings.TwSrPerUserCooldown = (int)NudCooldownPerUser.Value;
-            int totalSeconds = (int)NudCooldownPerUser.Value.Value;
-            int minutes = totalSeconds / 60;
-            int seconds = totalSeconds % 60;
-            UserCooldownDisplay.Text = $"({minutes:D2}:{seconds:D2})";
+            UserCooldownDisplay.Text = FormatCooldown(Settings.TwSrPerUserCooldown);
         }
 
         private void Tgl_KeepCover_OnToggled(object sender, RoutedEventArgs e)
