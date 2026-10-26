@@ -236,6 +236,7 @@ namespace Songify_Slim.Util.Configuration
 
         public static int SpotifyFetchRate { get => GetSpotifyFetchRate(); set => SetSpotifyFetchRate(value); }
         public static bool EnableSpotifyLiveGate { get => GetEnableSpotifyLiveGate(); set => SetEnableSpotifyLiveGate(value); }
+        public static bool SpotifyLegacyApiPolling { get => GetSpotifyLegacyApiPolling(); set => SetSpotifyLegacyApiPolling(value); }
         public static bool ShowSpotifyToasts { get => GetShowSpotifyToasts(); set => SetShowSpotifyToasts(value); }
         public static bool ArtistBlocklistSyncEnabled { get => GetArtistBlocklistSyncEnabled(); set => SetArtistBlocklistSyncEnabled(value); }
         public static string ArtistBlocklistSyncUrl { get => GetArtistBlocklistSyncUrl(); set => SetArtistBlocklistSyncUrl(value); }
@@ -269,6 +270,17 @@ namespace Songify_Slim.Util.Configuration
         private static int GetSpotifyFetchRate()
         {
             return CurrentConfig.AppConfig.SpotifyFetchRate;
+        }
+
+        private static void SetSpotifyLegacyApiPolling(bool value)
+        {
+            CurrentConfig.AppConfig.SpotifyLegacyApiPolling = value;
+            ConfigHandler.WriteAllConfig(CurrentConfig);
+        }
+
+        private static bool GetSpotifyLegacyApiPolling()
+        {
+            return CurrentConfig.AppConfig.SpotifyLegacyApiPolling;
         }
 
         private static void SetEnableSpotifyLiveGate(bool value)
@@ -1536,6 +1548,7 @@ namespace Songify_Slim.Util.Configuration
                 SpotifySongLimitPlaylist = GetSpotifySongLimitPlaylist(),
                 SrForBits = GetSrForBits(),
                 SpotifyFetchRate = GetSpotifyFetchRate(),
+                SpotifyLegacyApiPolling = GetSpotifyLegacyApiPolling(),
                 EnableSpotifyLiveGate = GetEnableSpotifyLiveGate(),
                 BypassSpotifyFetchGate = !GetEnableSpotifyLiveGate(),
                 SpotifyLiveGateMigrated = true,

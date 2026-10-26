@@ -2762,6 +2762,13 @@
                                         ValueChanged="NudSpotifyFetchRate_OnValueChanged"
                                         Value="1" />
                                 </Grid>
+                                <ui:ToggleSwitch
+                                    x:Name="TglSpotifyLegacyApiPolling"
+                                    Margin="0,0,0,12"
+                                    Checked="TglSpotifyLegacyApiPolling_OnToggled"
+                                    Content="{DynamicResource window_settings_spotify_legacy_api_polling}"
+                                    ToolTip="{DynamicResource window_settings_spotify_legacy_api_polling_tooltip}"
+                                    Unchecked="TglSpotifyLegacyApiPolling_OnToggled" />
                                 <StackPanel x:Name="PnlFetchGating">
                                     <ui:ToggleSwitch
                                         x:Name="TglEnableSpotifyLiveGate"

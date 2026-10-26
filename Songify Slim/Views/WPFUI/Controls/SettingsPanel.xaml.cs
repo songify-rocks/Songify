@@ -469,6 +469,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Tglsw_BlockAllExplicitSongs.IsChecked = Settings.BlockAllExplicitSongs;
             CbxAllowedUserLevelsExplicit.IsEnabled = Settings.BlockAllExplicitSongs;
             NudSpotifyFetchRate.Value = Settings.SpotifyFetchRate;
+            TglSpotifyLegacyApiPolling.IsChecked = Settings.SpotifyLegacyApiPolling;
+            // The poll interval only applies to legacy polling. SMTC mode calls the API on track changes.
+            NudSpotifyFetchRate.IsEnabled = Settings.SpotifyLegacyApiPolling;
             TglEnableSpotifyLiveGate.IsChecked = Settings.EnableSpotifyLiveGate;
             TglShowSpotifyToasts.IsChecked = Settings.ShowSpotifyToasts;
             LoadArtistBlocklistSyncControls();
@@ -2287,6 +2290,18 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 AppFetchService.NotifySpotifyRelatedActivity("Spotify live gate disabled");
                 _ = AppFetchService.ForceFetchSpotifyAsync(true);
             }
+        }
+
+        private void TglSpotifyLegacyApiPolling_OnToggled(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            bool legacy = ((ToggleSwitch)sender).IsChecked == true;
+            if (Settings.SpotifyLegacyApiPolling == legacy)
+                return;
+            Settings.SpotifyLegacyApiPolling = legacy;
+            NudSpotifyFetchRate.IsEnabled = legacy;
+            AppFetchService.Restart();
         }
 
         private void TglShowSpotifyToasts_OnToggled(object sender, RoutedEventArgs e)

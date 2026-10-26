@@ -21,13 +21,26 @@ public static class AppFetchService
     private static bool _running;
     private static bool _forceSpotifyUpdate;
 
+    /// <summary>SMTC tick: local progress, fallback poll scheduling. No API call per tick.</summary>
+    private const int SmtcTickIntervalMs = 1000;
+
+    /// <summary>Non-null while Spotify now-playing is SMTC-driven (default on Windows).</summary>
+    private static NowPlayingCoordinator _nowPlaying;
+
+    /// <summary>Bumped on every Start/Stop so a slow SMTC start cannot attach to a stopped run.</summary>
+    private static int _runGeneration;
+
     /// <summary>Raised when Spotify idle backoff stage/interval may have changed (UI should refresh).</summary>
     public static event Action IdleBackoffChanged;
 
     /// <summary>Raised after the active player source changes (e.g. Spotify ↔ Pear).</summary>
     public static event Action PlayerSourceChanged;
 
-    public static bool IsSpotifyIdleBackoffActive => Sf.IsSpotifyIdleBackoffActive;
+    /// <summary>Idle backoff only applies to legacy polling; SMTC mode has no poll interval to restore.</summary>
+    public static bool IsSpotifyIdleBackoffActive => _nowPlaying == null && Sf.IsSpotifyIdleBackoffActive;
+
+    /// <summary>True while Spotify now-playing is driven by Windows media controls instead of polling.</summary>
+    public static bool IsSmtcNowPlayingActive => _nowPlaying != null;
 
     public static int GetEffectiveSpotifyFetchIntervalSeconds() =>
         Sf.GetEffectiveSpotifyFetchIntervalSeconds();
@@ -54,15 +67,28 @@ public static class AppFetchService
     {
         if (_running) return;
         _running = true;
+        int generation = ++_runGeneration;
         SyncPearAutoConnect();
         RunGetCurrentSongAsync();
         SetTimer();
         RaiseIdleBackoffChanged();
+
+        if (Settings.Player == PlayerType.Spotify && !Settings.SpotifyLegacyApiPolling)
+            _ = StartSmtcNowPlayingAsync(generation);
+    }
+
+    /// <summary>Stops and starts the fetch loop, e.g. after the "Legacy API polling" setting changed.</summary>
+    public static void Restart()
+    {
+        Stop();
+        Start();
     }
 
     public static void Stop()
     {
         _running = false;
+        _runGeneration++;
+        StopSmtcNowPlaying();
         try
         {
             _timer?.Stop();
@@ -110,6 +136,59 @@ public static class AppFetchService
         RaiseIdleBackoffChanged();
     }
 
+    /// <summary>
+    /// Switches Spotify to SMTC-driven now-playing. Until this completes (or if SMTC is unavailable)
+    /// the legacy API poll keeps running.
+    /// </summary>
+    private static async Task StartSmtcNowPlayingAsync(int generation)
+    {
+        Application app = Application.Current;
+        if (app == null)
+            return;
+
+        if (!app.Dispatcher.CheckAccess())
+        {
+            await app.Dispatcher.InvokeAsync(() => StartSmtcNowPlayingAsync(generation)).Task.Unwrap();
+            return;
+        }
+
+        NowPlayingCoordinator coordinator = new(Sf, new SpotifySmtcWatcher(app.Dispatcher));
+        try
+        {
+            await coordinator.StartAsync();
+        }
+        catch (Exception ex)
+        {
+            coordinator.Dispose();
+            Logger.Warning(LogSource.Spotify,
+                "Windows media controls (SMTC) are unavailable. Falling back to legacy Spotify API polling.", ex);
+            return;
+        }
+
+        if (!_running || generation != _runGeneration || Settings.Player != PlayerType.Spotify)
+        {
+            coordinator.Dispose();
+            return;
+        }
+
+        _nowPlaying = coordinator;
+        ApplySpotifyFetchTimerInterval();
+    }
+
+    private static void StopSmtcNowPlaying()
+    {
+        NowPlayingCoordinator coordinator = _nowPlaying;
+        _nowPlaying = null;
+        try
+        {
+            coordinator?.Dispose();
+        }
+        catch (Exception ex)
+        {
+            Logger.LogExc(ex);
+        }
+    }
+
     private static void SyncPearAutoConnect()
     {
         PearWebSocketClient.AutoConnectEnabled = Settings.Player == PlayerType.Pear;
@@ -149,7 +228,7 @@ public static class AppFetchService
                 break;
 
             case PlayerType.Spotify:
-                intervalMs = Sf.GetEffectiveSpotifyFetchIntervalMs();
+                intervalMs = _nowPlaying != null ? SmtcTickIntervalMs : Sf.GetEffectiveSpotifyFetchIntervalMs();
                 break;
 
             case PlayerType.BrowserCompanion:
@@ -170,7 +249,7 @@ public static class AppFetchService
         try
         {
             // Changing Interval while Enabled restarts the countdown with the restored rate.
-            _timer.Interval = Sf.GetEffectiveSpotifyFetchIntervalMs();
+            _timer.Interval = _nowPlaying != null ? SmtcTickIntervalMs : Sf.GetEffectiveSpotifyFetchIntervalMs();
         }
         catch (ObjectDisposedException)
         {
@@ -247,6 +326,13 @@ public static class AppFetchService
                     break;
 
                 case PlayerType.Spotify:
+                    if (_nowPlaying != null)
+                    {
+                        // Handles the live gate itself and republishes when it reopens.
+                        await _nowPlaying.TickAsync();
+                        break;
+                    }
+
                     if (!SpotifyLiveGate.AllowsSpotifyFetch)
                     {
                         _forceSpotifyUpdate = true;

@@ -1513,6 +1513,12 @@
   <data name="window_settings_spotify_enable_live_gate_tooltip" xml:space="preserve">
     <value>Wenn aktiviert, ruft Songify Spotify-Wiedergabe nur ab, während du auf Twitch live bist oder der Testmodus an ist. Das reduziert API-Aufrufe, wenn der Stream offline ist. Der Testmodus erscheint auf der Startseite und in der Statusleiste und schaltet sich nach 2 Minuten aus.</value>
   </data>
+  <data name="window_settings_spotify_legacy_api_polling" xml:space="preserve">
+    <value>Legacy-API-Abfrage</value>
+  </data>
+  <data name="window_settings_spotify_legacy_api_polling_tooltip" xml:space="preserve">
+    <value>Aus (empfohlen): Songify liest den aktuellen Song aus der Windows-Mediensteuerung und ruft die Spotify-API nur beim Titelwechsel auf. An: Songify fragt die Spotify-API im obigen Intervall ab, was deutlich mehr API-Kontingent verbraucht.</value>
+  </data>
   <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
     <value>Live-/Testmodus-Limitierung umgehen</value>
   </data>

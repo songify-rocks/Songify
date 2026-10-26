@@ -45,6 +45,19 @@ namespace Songify_Slim.Util.Songify
         public string DisplayName { get; set; }
     }
 
+    /// <summary>Where <see cref="SongFetcher"/> gets playlist info when a Spotify track changes.</summary>
+    internal enum SpotifyPlaylistResolve
+    {
+        /// <summary>Legacy poll: one extra playback call for the context.</summary>
+        FetchPlayback,
+
+        /// <summary>The track came from the API with its context playlist id already set.</summary>
+        FromTrack,
+
+        /// <summary>Cache hit or SMTC-only data: keep the last known playlist.</summary>
+        KeepCurrent
+    }
+
     public class SongFetcher
     {
         private YoutubeData _currentYoutubeData = new();
@@ -604,6 +617,84 @@ namespace Songify_Slim.Util.Songify
             {
                 return;
             }
+
+            await ApplySpotifyTrackAsync(songInfo, forceUpdate, SpotifyPlaylistResolve.FetchPlayback);
+        }
+
+        /// <summary>
+        /// SMTC mode: publishes a track resolved by <see cref="NowPlayingCoordinator"/> (API match, cache hit,
+        /// or SMTC-only data after the API never matched). Feeds the same consumers as the legacy poll.
+        /// </summary>
+        internal Task PublishSpotifyTrackAsync(TrackInfo songInfo, SpotifyPlaylistResolve playlistResolve) =>
+            ApplySpotifyTrackAsync(songInfo, false, playlistResolve);
+
+        /// <summary>
+        /// SMTC mode: shows SMTC-only data while the Web API still lags behind a skip. Writes the text
+        /// outputs, the shell preview and the web server payload only. Request bookkeeping, history,
+        /// chat announce, cover and the Songify upload wait for <see cref="PublishSpotifyTrackAsync"/>.
+        /// </summary>
+        internal async Task PreviewSpotifyTrackAsync(TrackInfo songInfo)
+        {
+            try
+            {
+                await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify, preview: true);
+                await UpdateWebServerResponse(songInfo);
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        /// <summary>
+        /// SMTC mode: play/pause and progress from Windows media controls. No Web API call.
+        /// Rewrites the outputs when the play state flips or a forced update is pending, and keeps
+        /// the web server payload's playback clock current.
+        /// </summary>
+        internal async Task ApplySpotifyPlaybackStateAsync(bool isPlaying, int progressMs, int durationFallbackMs)
+        {
+            TrackInfo current = GlobalObjects.CurrentSong;
+            if (current == null)
+                return;
+
+            bool stateChanged = current.IsPlaying != isPlaying;
+            int previousProgress = current.Progress;
+
+            current.IsPlaying = isPlaying;
+            if (current.DurationTotal <= 0 && durationFallbackMs > 0)
+                current.DurationTotal = durationFallbackMs;
+            current.Progress = current.DurationTotal > 0
+                ? Math.Min(Math.Max(0, progressMs), current.DurationTotal)
+                : Math.Max(0, progressMs);
+            current.DurationMs = Math.Max(0, current.DurationTotal - current.Progress);
+            current.DurationPercentage = current.DurationTotal > 0
+                ? (int)(100.0 * current.Progress / current.DurationTotal)
+                : 0;
+
+            try
+            {
+                if (stateChanged || GlobalObjects.ForceUpdate)
+                {
+                    GlobalObjects.ForceUpdate = false;
+                    await WriteSongInfo(current, Enums.RequestPlayerType.Spotify);
+                }
+                else if (!isPlaying && current.Progress == previousProgress)
+                {
+                    // Paused and not seeked: nothing new for the overlays.
+                    return;
+                }
+
+                await UpdateWebServerResponse(current);
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        private async Task ApplySpotifyTrackAsync(TrackInfo songInfo, bool forceUpdate, SpotifyPlaylistResolve playlistResolve)
+        {
+            string contextPlaylistId = songInfo.Playlist?.Id;
             songInfo.Playlist = _playbackPlaylist;
             if (GlobalObjects.CurrentSong != null && songInfo.IsPlaying != GlobalObjects.CurrentSong.IsPlaying)
             {
@@ -648,7 +739,10 @@ namespace Songify_Slim.Util.Songify
                                          GlobalObjects.CurrentSong.SongId != songInfo.SongId;
 
                     // Get Playlist info for current song if available
-                    _playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
+                    if (playlistResolve == SpotifyPlaylistResolve.FetchPlayback)
+                        _playbackPlaylist = await SpotifyApiHandler.GetPlaybackPlaylist();
+                    else if (playlistResolve == SpotifyPlaylistResolve.FromTrack)
+                        _playbackPlaylist = await SpotifyApiHandler.GetPlaylistInfoById(contextPlaylistId);
                     songInfo.Playlist = _playbackPlaylist;
                     GlobalObjects.CurrentSong = songInfo;
                     // Drop the previous canvas before local output. The new one is fetched
@@ -714,7 +808,15 @@ namespace Songify_Slim.Util.Songify
 
                     await WriteSongInfo(songInfo, Enums.RequestPlayerType.Spotify);
                     if (refreshQueueWindow)
-                        await GlobalObjects.QueueUpdateQueueWindow();
+                    {
+                        // SMTC mode: fetch Spotify's queue only when something needs it.
+                        if (playlistResolve == SpotifyPlaylistResolve.FetchPlayback
+                            || GlobalObjects.ReqList.Count > 0
+                            || GlobalObjects.DetachQueue)
+                            await GlobalObjects.QueueUpdateQueueWindow();
+                        else
+                            AdvanceQueueSnapshot(songInfo.SongId);
+                    }
                     await GlobalObjects.CheckInLikedPlaylist(songInfo);
                 }
 
@@ -726,6 +828,22 @@ namespace Songify_Slim.Util.Songify
             {
                 Logger.LogExc(e);
             }
+        }
+
+        /// <summary>
+        /// Without a queue refresh, keeps the snapshot roughly right for linear playback:
+        /// drops the previous current entry when the new track is the next one in it.
+        /// </summary>
+        private static void AdvanceQueueSnapshot(string songId)
+        {
+            if (string.IsNullOrEmpty(songId))
+                return;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                if (GlobalObjects.QueueTracks.Count > 1 && GlobalObjects.QueueTracks[1].Trackid == songId)
+                    GlobalObjects.QueueTracks.RemoveAt(0);
+            });
         }
 
         /// <summary>
@@ -1169,7 +1287,7 @@ namespace Songify_Slim.Util.Songify
             _lastChatAnnounceDisplayKey = GetChatAnnounceDisplayKey(songInfo);
         }
 
-        private static async Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other)
+        private static async Task WriteSongInfo(TrackInfo songInfo, Enums.RequestPlayerType playerType = Enums.RequestPlayerType.Other, bool preview = false)
         {
             // If no song info at all, bail out
             if (string.IsNullOrEmpty(songInfo.Artists) && string.IsNullOrEmpty(songInfo.Title))
@@ -1375,6 +1493,16 @@ namespace Songify_Slim.Util.Songify
                 GlobalObjects.RootDirectory + "/requester.png");
 
             IoManager.WriteOutput($"{GlobalObjects.RootDirectory}/url.txt", songInfo.Url);
+
+            // Preview (SMTC-only data while the Web API lags): text outputs only, the final publish does the rest.
+            if (preview)
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    AppShellBridge.Current?.SetTextPreview(currentSongOutput.Trim().TrimStart('-').Trim().Replace(@"\n", " - ").Replace("  ", " "));
+                });
+                return;
+            }
 
             // Write local history (YAML, date-grouped)
             string historySongOutput = $"{songInfo.Artists} - {songInfo.Title}";

@@ -1532,6 +1532,13 @@
   <data name="window_settings_spotify_enable_live_gate_tooltip" xml:space="preserve">
     <value>When enabled, Songify only fetches Spotify playback while you are live on Twitch or Test Mode is on. Reduces API usage when the stream is offline. Test Mode appears on Home and in the status bar, and turns off after 2 minutes.</value>
   </data>
+  <data name="window_settings_spotify_legacy_api_polling" xml:space="preserve">
+    <value>Legacy API polling</value>
+    <comment>Context: Settings → Spotify. Fallback: poll the Spotify Web API on the interval above instead of using Windows media controls.</comment>
+  </data>
+  <data name="window_settings_spotify_legacy_api_polling_tooltip" xml:space="preserve">
+    <value>Off (recommended): Songify reads the current song from Windows media controls and calls the Spotify API only when the track changes. On: Songify polls the Spotify API on the interval above, which uses much more of the API quota.</value>
+  </data>
   <data name="window_settings_spotify_bypass_fetch_gate" xml:space="preserve">
     <value>Bypass live/TestMode gating</value>
   </data>

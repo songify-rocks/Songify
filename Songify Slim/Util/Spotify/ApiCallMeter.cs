@@ -52,6 +52,12 @@ public static class ApiCallMeter
 
     private static readonly ConcurrentDictionary<string, Counter> _perKey = new();
 
+    // Per-endpoint totals for the hourly debug summary (verifies the SMTC call reduction).
+    private static readonly TimeSpan HourlySummaryWindow = TimeSpan.FromHours(1);
+    private static readonly Dictionary<string, int> _hourlyCounts = new();
+    private static DateTime _hourlyWindowStartUtc = DateTime.UtcNow;
+    private static readonly object HourlyLock = new();
+
     /// <summary>
     /// Mark + execute + surface 429 Retry-After automatically.
     /// Optionally soft-throttle if you set softLimitPerMinute.
@@ -111,6 +117,7 @@ public static class ApiCallMeter
             }
 
             c.MarkNow();
+            CountForHourlySummary(key);
 
             try
             {
@@ -364,6 +371,45 @@ public static class ApiCallMeter
         }
 
         return 1;
+    }
+
+    private static void CountForHourlySummary(string key)
+    {
+        lock (HourlyLock)
+        {
+            _hourlyCounts.TryGetValue(key, out int count);
+            _hourlyCounts[key] = count + 1;
+        }
+
+        LogHourlySummaryIfDue();
+    }
+
+    /// <summary>
+    /// Debug-logs the Spotify Web API calls per endpoint once per hour.
+    /// Called on every request and from the SMTC tick, so quiet hours are logged too.
+    /// </summary>
+    public static void LogHourlySummaryIfDue()
+    {
+        KeyValuePair<string, int>[] snapshot;
+        TimeSpan elapsed;
+        lock (HourlyLock)
+        {
+            elapsed = DateTime.UtcNow - _hourlyWindowStartUtc;
+            if (elapsed < HourlySummaryWindow)
+                return;
+
+            snapshot = _hourlyCounts.ToArray();
+            _hourlyCounts.Clear();
+            _hourlyWindowStartUtc = DateTime.UtcNow;
+        }
+
+        int total = snapshot.Sum(kv => kv.Value);
+        string perEndpoint = total == 0
+            ? "none"
+            : string.Join(", ", snapshot.OrderByDescending(kv => kv.Value).Select(kv => $"{kv.Key}={kv.Value}"));
+        string mode = Settings.SpotifyLegacyApiPolling ? "legacy API polling" : "SMTC";
+        Logger.Debug(LogSource.Spotify,
+            $"Spotify Web API calls in the last {elapsed.TotalMinutes:0} min: {total} ({perEndpoint}). Now-playing mode: {mode}.");
     }
 
     public static IDictionary<string, int> GetAllCountsPerMinute()

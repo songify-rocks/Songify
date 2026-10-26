@@ -1498,6 +1498,12 @@ namespace Songify_Slim.Util.Configuration
         public int SpotifyFetchRate { get; set; } = 2;
 
         /// <summary>
+        /// When true, Spotify now-playing polls the Web API every <see cref="SpotifyFetchRate"/> seconds (old behavior).
+        /// Default is off: Windows media controls (SMTC) drive now-playing and the API is called only on track changes.
+        /// </summary>
+        public bool SpotifyLegacyApiPolling { get; set; }
+
+        /// <summary>
         /// When true, Spotify now-playing fetch runs only while live on Twitch or Test Mode is on.
         /// Default is off: fetch continues while the stream is offline.
         /// </summary>

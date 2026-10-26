@@ -1371,9 +1371,11 @@ public partial class ShellWindow : IAppShell, INotifyPropertyChanged
             ("Linked", hasTokens ? "Yes" : "No"),
             ("User", Settings.SpotifyProfile?.DisplayName ?? "Unknown"),
             ("Device", string.IsNullOrWhiteSpace(deviceName) ? "Unknown" : deviceName),
-            ("Fetch rate", AppFetchService.IsSpotifyIdleBackoffActive
-                ? $"{AppFetchService.GetEffectiveSpotifyFetchIntervalSeconds()}s (idle — click status chip to restore)"
-                : $"{MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30)}s"),
+            ("Fetch rate", AppFetchService.IsSmtcNowPlayingActive
+                ? "Media controls (API on track change)"
+                : AppFetchService.IsSpotifyIdleBackoffActive
+                    ? $"{AppFetchService.GetEffectiveSpotifyFetchIntervalSeconds()}s (idle — click status chip to restore)"
+                    : $"{MathUtils.Clamp(Settings.SpotifyFetchRate, 1, 30)}s"),
             ("Action", action));
     }
 
