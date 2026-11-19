@@ -21,13 +21,23 @@
                 FontWeight="SemiBold"
                 Foreground="{DynamicResource TextFillColorPrimaryBrush}"
                 Text="{DynamicResource window_userlist_title}" />
-            <ui:Button
-                x:Name="BtnRefresh"
-                HorizontalAlignment="Right"
-                Appearance="Secondary"
-                Click="BtnRefresh_OnClick"
-                Content="{DynamicResource common_refresh}"
-                Icon="{ui:SymbolIcon ArrowSync24}" />
+            <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                <ui:TextBox
+                    x:Name="TbSearch"
+                    Width="220"
+                    Margin="0,0,8,0"
+                    VerticalAlignment="Center"
+                    ClearButtonEnabled="True"
+                    Icon="{ui:SymbolIcon Search24}"
+                    PlaceholderText="{DynamicResource window_userlist_search}"
+                    TextChanged="TbSearch_OnTextChanged" />
+                <ui:Button
+                    x:Name="BtnRefresh"
+                    Appearance="Secondary"
+                    Click="BtnRefresh_OnClick"
+                    Content="{DynamicResource common_refresh}"
+                    Icon="{ui:SymbolIcon ArrowSync24}" />
+            </StackPanel>
         </Grid>
 
         <DataGrid
@@ -54,6 +64,29 @@
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding PlacementTarget.SelectedItem.IsSrBlocked, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="False">
                                         <Setter Property="Header" Value="Block User from SR" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </MenuItem.Style>
+                    </MenuItem>
+                    <MenuItem
+                        Click="MenuItem_ResetCooldown_Click"
+                        Header="{DynamicResource window_userlist_reset_cooldown}"
+                        IsEnabled="{Binding PlacementTarget.SelectedItem.IsOnCooldown, RelativeSource={RelativeSource AncestorType=ContextMenu}, FallbackValue=False}">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon FontSize="16" Symbol="TimerOff24" />
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Click="MenuItem_ToggleCooldownExempt_Click">
+                        <MenuItem.Icon>
+                            <ui:SymbolIcon FontSize="16" Symbol="ShieldCheckmark24" />
+                        </MenuItem.Icon>
+                        <MenuItem.Style>
+                            <Style BasedOn="{StaticResource {x:Type MenuItem}}" TargetType="MenuItem">
+                                <Setter Property="Header" Value="{DynamicResource window_userlist_cooldown_exempt_toggle}" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding PlacementTarget.SelectedItem.IsCooldownExemptUser, RelativeSource={RelativeSource AncestorType=ContextMenu}}" Value="True">
+                                        <Setter Property="Header" Value="{DynamicResource window_userlist_cooldown_exempt_remove}" />
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -137,6 +170,19 @@
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
+                <DataGridTextColumn
+                    Width="Auto"
+                    MinWidth="80"
+                    Binding="{Binding CooldownRemaining, Mode=OneWay}"
+                    Header="{DynamicResource window_userlist_cooldown}">
+                    <DataGridTextColumn.ElementStyle>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="HorizontalAlignment" Value="Center" />
+                            <Setter Property="VerticalAlignment" Value="Center" />
+                            <Setter Property="FontFamily" Value="Consolas" />
+                        </Style>
+                    </DataGridTextColumn.ElementStyle>
+                </DataGridTextColumn>
             </DataGrid.Columns>
             <DataGrid.RowStyle>
                 <Style TargetType="DataGridRow">

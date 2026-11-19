@@ -1348,6 +1348,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Abo-Stufe</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Cooldown</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>SR-Cooldown zurücksetzen</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Benutzer suchen…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Vom Cooldown ausgenommene Benutzerlevel</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Vom Cooldown pro Benutzer ausgenommene Benutzer</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>Der Broadcaster ist immer ausgenommen. Benutzer können auch in der Zuschauerliste umgeschaltet werden.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Twitch-Benutzername</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Vom SR-Cooldown ausnehmen</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>SR-Cooldown-Ausnahme entfernen</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>ausgenommen</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Cloud-Einstellungs-Importer</value>
   </data>
@@ -3044,5 +3074,26 @@ Songify Premium kannst du weiterhin über Start oder Info öffnen.</value>
   </data>
   <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
     <value>Antworte im Chat, wenn ein deaktivierter Befehl verwendet wird.</value>
+  </data>
+  <data name="window_settings_spotify_proxy_title" xml:space="preserve">
+    <value>Proxy</value>
+  </data>
+  <data name="window_settings_spotify_proxy_hint" xml:space="preserve">
+    <value>Leitet den gesamten Spotify-Datenverkehr (Anmeldung, Web-API, Link-Auflösung) über einen Proxy-Server, z. B. wenn Spotify meldet, dass es in deinem Land nicht verfügbar ist. Unterstützte Formate: host:port, http://host:port, socks5://host:port. Änderungen gelten ab der nächsten Anfrage.</value>
+  </data>
+  <data name="window_settings_spotify_proxy_enable" xml:space="preserve">
+    <value>Proxy für Spotify verwenden</value>
+  </data>
+  <data name="window_settings_spotify_proxy_address" xml:space="preserve">
+    <value>Proxy-Adresse</value>
+  </data>
+  <data name="window_settings_spotify_proxy_username" xml:space="preserve">
+    <value>Benutzername (optional)</value>
+  </data>
+  <data name="window_settings_spotify_proxy_password" xml:space="preserve">
+    <value>Passwort (optional)</value>
+  </data>
+  <data name="window_settings_spotify_proxy_test" xml:space="preserve">
+    <value>Verbindung testen</value>
   </data>
 </root>

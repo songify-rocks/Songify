@@ -83,9 +83,10 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
             if (_disposed)
                 return;
 
+            // Set first so callbacks completed by Close() bail out instead of calling EndGetContext.
+            _disposed = true;
             StopListener(_redirectListener);
             StopListener(_fetchListener);
-            _disposed = true;
             GC.SuppressFinalize(this);
         }
 
@@ -175,7 +176,27 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         /// </summary>
         private void IncommingLocalRequest(IAsyncResult result)
         {
+            // Runs on a thread-pool I/O callback: any exception escaping here terminates the process.
+            try
+            {
+                HandleLocalRequest(result);
+            }
+            catch (Exception e) when (e is ObjectDisposedException or HttpListenerException)
+            {
+                // Listener was closed (OAuth disposed/restarted) while waiting for a request.
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        private void HandleLocalRequest(IAsyncResult result)
+        {
             HttpListener httpListener = (HttpListener)result.AsyncState;
+            if (_disposed || httpListener is not { IsListening: true })
+                return;
+
             HttpListenerContext httpContext = httpListener.EndGetContext(result);
             HttpListenerRequest httpRequest = httpContext.Request;
 
@@ -199,9 +220,29 @@ namespace Songify_Slim.Util.Songify.TwitchOAuth
         /// </summary>
         private void IncomingTwitchRequest(IAsyncResult result)
         {
+            // Runs on a thread-pool I/O callback: any exception escaping here terminates the process.
+            try
+            {
+                HandleTwitchRequest(result);
+            }
+            catch (Exception e) when (e is ObjectDisposedException or HttpListenerException)
+            {
+                // Listener was closed (OAuth disposed/restarted) while waiting for a request.
+            }
+            catch (Exception e)
+            {
+                Logger.LogExc(e);
+            }
+        }
+
+        private void HandleTwitchRequest(IAsyncResult result)
+        {
+            HttpListener httpListener = (HttpListener)result.AsyncState;
+            if (_disposed || httpListener is not { IsListening: true })
+                return;
+
             Logger.Info(LogSource.Twitch, "Incoming Twitch redirect request received.");
 
-            HttpListener httpListener = (HttpListener)result.AsyncState;
             HttpListenerContext httpContext = httpListener.EndGetContext(result);
             HttpListenerResponse httpResponse = httpContext.Response;
 

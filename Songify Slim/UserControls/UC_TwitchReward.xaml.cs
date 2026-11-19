@@ -73,6 +73,7 @@ namespace Songify_Slim.UserControls
         private CustomReward _reward;
         private string _rewardId;
         private bool _isPowerUp;
+        private bool _isManageable;
         private bool _isApplying;
 
         // Place this as a class-level field:
@@ -106,6 +107,9 @@ namespace Songify_Slim.UserControls
                 _reward = item.IsPowerUp ? null : item.Reward;
                 _rewardId = item.Id;
                 _isPowerUp = item.IsPowerUp;
+                _isManageable = item.Manageable && !item.IsPowerUp;
+                // A pending cost edit belongs to the previous reward; drop it when the row is re-bound.
+                _debounceTokenSource?.Cancel();
                 ItemSongRequest.Visibility = item.IsPowerUp ? Visibility.Collapsed : Visibility.Visible;
                 ItemSongRequest.IsEnabled = !item.IsPowerUp;
                 BtnPowerUpNoSongRequest.Visibility = item.IsPowerUp ? Visibility.Visible : Visibility.Collapsed;
@@ -291,11 +295,14 @@ namespace Songify_Slim.UserControls
         {
             try
             {
-                if (!IsLoaded)
+                // Apply() sets the text when a (virtualized) row is bound; that is not a user edit.
+                if (!IsLoaded || _isApplying || !_isManageable)
                     return;
 
                 if (sender is not TextBox textBox || _reward == null || string.IsNullOrWhiteSpace(_rewardId))
                     return;
+
+                string rewardId = _rewardId;
 
                 // Cancel any previous debounce task
                 _debounceTokenSource?.Cancel();
@@ -320,7 +327,10 @@ namespace Songify_Slim.UserControls
                 }
 
                 // Only update if not cancelled
-                await TwitchHandler.UpdateRewardCost(_rewardId, cost);
+                if (rewardId != _rewardId)
+                    return;
+
+                await TwitchHandler.UpdateRewardCost(rewardId, cost);
             }
             catch (Exception ex)
             {

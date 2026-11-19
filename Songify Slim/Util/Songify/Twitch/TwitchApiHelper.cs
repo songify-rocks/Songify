@@ -166,11 +166,8 @@ namespace Songify_Slim.Util.Songify.Twitch
                 IsPaused = !isEnabled
             };
 
-            foreach (string s in twRewardId)
+            foreach (string s in await TwitchManagedRewards.FilterManagedAsync(twRewardId))
             {
-                if (TwitchPowerUpClient.IsKnown(s))
-                    continue;
-
                 try
                 {
                     UpdateCustomRewardResponse result = await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, s,

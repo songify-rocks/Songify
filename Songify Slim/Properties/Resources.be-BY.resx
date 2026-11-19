@@ -1510,6 +1510,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Узровень падпіскі</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Кулдаўн</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>Скінуць кулдаўн SR</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Пошук карыстальнікаў…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Узроўні без кулдаўну</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Карыстальнікі без кулдаўну на карыстальніка</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>Стрымер заўсёды вызвалены. Карыстальнікаў таксама можна пераключаць у спісе гледачоў.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Імя карыстальніка Twitch</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Вызваліць ад кулдаўну SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>Адмяніць вызваленне ад кулдаўну SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>без кулдаўну</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Імпарт налад з воблака</value>
   </data>

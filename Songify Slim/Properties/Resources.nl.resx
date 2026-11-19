@@ -1379,6 +1379,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Abonnementsniveau</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Cooldown</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>SR-cooldown resetten</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Gebruikers zoeken…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Gebruikersniveaus zonder cooldown</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Gebruikers zonder cooldown per gebruiker</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>De streamer is altijd uitgezonderd. Je kunt gebruikers ook via de kijkerslijst omschakelen.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Twitch-gebruikersnaam</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Uitzonderen van SR-cooldown</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>SR-cooldown-uitzondering verwijderen</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>uitgezonderd</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Cloudinstellingen-importer</value>
   </data>

@@ -4271,6 +4271,96 @@ namespace Songify_Slim.Properties {
                 return ResourceManager.GetString("window_userlist_sub_tier", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cooldown.
+        /// </summary>
+        public static string window_userlist_cooldown {
+            get {
+                return ResourceManager.GetString("window_userlist_cooldown", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Reset SR cooldown.
+        /// </summary>
+        public static string window_userlist_reset_cooldown {
+            get {
+                return ResourceManager.GetString("window_userlist_reset_cooldown", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Search users….
+        /// </summary>
+        public static string window_userlist_search {
+            get {
+                return ResourceManager.GetString("window_userlist_search", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Cooldown-exempt user levels.
+        /// </summary>
+        public static string window_settings_sr_cooldown_exempt_levels {
+            get {
+                return ResourceManager.GetString("window_settings_sr_cooldown_exempt_levels", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Users exempt from the per-user cooldown.
+        /// </summary>
+        public static string window_settings_sr_cooldown_exempt_users {
+            get {
+                return ResourceManager.GetString("window_settings_sr_cooldown_exempt_users", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The broadcaster is always exempt. You can also toggle users from the viewer list..
+        /// </summary>
+        public static string window_settings_sr_cooldown_exempt_hint {
+            get {
+                return ResourceManager.GetString("window_settings_sr_cooldown_exempt_hint", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Twitch username.
+        /// </summary>
+        public static string window_settings_sr_cooldown_exempt_placeholder {
+            get {
+                return ResourceManager.GetString("window_settings_sr_cooldown_exempt_placeholder", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Exempt from SR cooldown.
+        /// </summary>
+        public static string window_userlist_cooldown_exempt_toggle {
+            get {
+                return ResourceManager.GetString("window_userlist_cooldown_exempt_toggle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Remove SR cooldown exemption.
+        /// </summary>
+        public static string window_userlist_cooldown_exempt_remove {
+            get {
+                return ResourceManager.GetString("window_userlist_cooldown_exempt_remove", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to exempt.
+        /// </summary>
+        public static string window_userlist_cooldown_exempt {
+            get {
+                return ResourceManager.GetString("window_userlist_cooldown_exempt", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Viewerlist.
@@ -4405,6 +4495,68 @@ namespace Songify_Slim.Properties {
                 return ResourceManager.GetString("window_settings_user_levels_none", resourceCulture);
             }
         }
-
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy.
+        /// </summary>
+        public static string window_settings_spotify_proxy_title {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_proxy_title", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Route all Spotify traffic (login, Web API, link lookups) through a proxy server,.
+        /// </summary>
+        public static string window_settings_spotify_proxy_hint {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_proxy_hint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Use proxy for Spotify.
+        /// </summary>
+        public static string window_settings_spotify_proxy_enable {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_proxy_enable", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Proxy address.
+        /// </summary>
+        public static string window_settings_spotify_proxy_address {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_proxy_address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Username (optional).
+        /// </summary>
+        public static string window_settings_spotify_proxy_username {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_proxy_username", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Password (optional).
+        /// </summary>
+        public static string window_settings_spotify_proxy_password {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_proxy_password", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Test connection.
+        /// </summary>
+        public static string window_settings_spotify_proxy_test {
+            get {
+                return ResourceManager.GetString("window_settings_spotify_proxy_test", resourceCulture);
+            }
+        }
     }
 }

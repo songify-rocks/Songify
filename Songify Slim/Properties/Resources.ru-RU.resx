@@ -1326,6 +1326,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Уровень подписки</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Кулдаун</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>Сбросить кулдаун SR</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Поиск пользователей…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Уровни без кулдауна</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Пользователи без кулдауна на пользователя</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>Стример всегда освобождён. Пользователей также можно переключать в списке зрителей.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Имя пользователя Twitch</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Освободить от кулдауна SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>Отменить освобождение от кулдауна SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>без кулдауна</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Импорт настроек из облака</value>
   </data>

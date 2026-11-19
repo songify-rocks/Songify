@@ -1325,6 +1325,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Nível de subscrição</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Recarga</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>Repor recarga de SR</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Pesquisar utilizadores…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Níveis isentos da recarga</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Utilizadores isentos da recarga por utilizador</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>O streamer está sempre isento. Também pode alternar utilizadores na lista de espectadores.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Nome de utilizador da Twitch</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Isentar da recarga de SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>Remover isenção da recarga de SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>isento</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Importador de definições da nuvem</value>
   </data>

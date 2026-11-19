@@ -1,3 +1,4 @@
+using Songify_Slim.Models.Blocklist;
 using Songify_Slim.Models.Pear;
 using Songify_Slim.Models.Spotify;
 using Songify_Slim.Models.Twitch;
@@ -428,6 +429,11 @@ namespace Songify_Slim.Views.WPFUI.Controls
             UserCooldownDisplay.Text = FormatCooldown(Settings.TwSrPerUserCooldown);
             NudMaxlength.Value = Settings.MaxSongLength;
             TbClientId.Text = Settings.ClientId;
+            TglSpotifyProxy.IsChecked = Settings.SpotifyProxyEnabled;
+            TbSpotifyProxyAddress.Text = Settings.SpotifyProxyAddress ?? "";
+            TbSpotifyProxyUsername.Text = Settings.SpotifyProxyUsername ?? "";
+            PbSpotifyProxyPassword.Password = Settings.SpotifyProxyPassword ?? "";
+            PnlSpotifyProxy.IsEnabled = Settings.SpotifyProxyEnabled;
             TbClientSecret.Password = Settings.ClientSecret;
             TglAnnounceInChat.IsChecked = Settings.AnnounceInChat;
             TglswSpotify.IsChecked = true;
@@ -435,6 +441,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
             Tglsw_OnlyAddToPlaylist.IsChecked = Settings.AddSrtoPlaylistOnly;
             TglSharedChat.IsChecked = Settings.SharedChatEnabled;
             RefreshIgnoredChatUsers();
+            RefreshCdExemptUsers();
             TextBox.Text = Settings.SongifyApiKey;
             PasswordBox.Password = Settings.SongifyApiKey;
             UpdateSongifyTokenStatus();
@@ -549,6 +556,14 @@ namespace Songify_Slim.Views.WPFUI.Controls
             ChckUnlimitedRewardVip.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(5);
             ChckUnlimitedRewardMod.IsChecked = Settings.UnlimitedSrUserlevelsReward.Contains(6);
 
+            ChckCdExemptViewer.IsChecked = Settings.CooldownExemptUserlevels.Contains(0);
+            ChckCdExemptFollower.IsChecked = Settings.CooldownExemptUserlevels.Contains(1);
+            ChckCdExemptSub.IsChecked = Settings.CooldownExemptUserlevels.Contains(2);
+            ChckCdExemptSubT2.IsChecked = Settings.CooldownExemptUserlevels.Contains(3);
+            ChckCdExemptSubT3.IsChecked = Settings.CooldownExemptUserlevels.Contains(4);
+            ChckCdExemptVip.IsChecked = Settings.CooldownExemptUserlevels.Contains(5);
+            ChckCdExemptMod.IsChecked = Settings.CooldownExemptUserlevels.Contains(6);
+
             RefreshUserLevelComboSummaries();
         }
 
@@ -594,6 +609,9 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 if (CbiUnlimitedRewardSummary != null)
                     CbiUnlimitedRewardSummary.Content =
                         FormatUserLevelsSummary(Settings.UnlimitedSrUserlevelsReward, none);
+                if (CbiCdExemptSummary != null)
+                    CbiCdExemptSummary.Content =
+                        FormatUserLevelsSummary(Settings.CooldownExemptUserlevels, none);
             }
             catch
             {
@@ -1743,6 +1761,57 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 PopAccentPicker.IsOpen = false;
         }
 
+        private void TglSpotifyProxy_OnToggled(object sender, RoutedEventArgs e)
+        {
+            bool enabled = TglSpotifyProxy.IsChecked == true;
+            PnlSpotifyProxy.IsEnabled = enabled;
+            if (IgnoreControlEvents)
+                return;
+            Settings.SpotifyProxyEnabled = enabled;
+            TbSpotifyProxyTestResult.Text = "";
+        }
+
+        private void TbSpotifyProxyAddress_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            Settings.SpotifyProxyAddress = TbSpotifyProxyAddress.Text.Trim();
+            TbSpotifyProxyTestResult.Text = "";
+        }
+
+        private void TbSpotifyProxyUsername_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            Settings.SpotifyProxyUsername = TbSpotifyProxyUsername.Text;
+        }
+
+        private void PbSpotifyProxyPassword_OnPasswordChanged(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            Settings.SpotifyProxyPassword = PbSpotifyProxyPassword.Password;
+        }
+
+        private async void BtnSpotifyProxyTest_Click(object sender, RoutedEventArgs e)
+        {
+            BtnSpotifyProxyTest.IsEnabled = false;
+            TbSpotifyProxyTestResult.Foreground = TryFindResource("TextFillColorSecondaryBrush") as Brush ?? Brushes.Gray;
+            TbSpotifyProxyTestResult.Text = "…";
+            try
+            {
+                (bool success, string message) = await SpotifyProxy.TestAsync();
+                TbSpotifyProxyTestResult.Foreground = success
+                    ? TryFindResource("SystemFillColorSuccessBrush") as Brush ?? Brushes.ForestGreen
+                    : TryFindResource("SystemFillColorCriticalBrush") as Brush ?? Brushes.IndianRed;
+                TbSpotifyProxyTestResult.Text = message;
+            }
+            finally
+            {
+                BtnSpotifyProxyTest.IsEnabled = true;
+            }
+        }
+
         private void Tb_ClientID_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (IgnoreControlEvents)
@@ -1914,9 +1983,13 @@ namespace Songify_Slim.Views.WPFUI.Controls
                 Task<List<TwitchPowerUp>> powerUpsTask = TwitchPowerUpClient.GetCustomPowerUpsAsync();
                 await Task.WhenAll(manageableTask, rewardsTask, powerUpsTask).ConfigureAwait(false);
 
-                List<CustomReward> managableRewards = await manageableTask.ConfigureAwait(false) ?? [];
+                List<CustomReward> managableRewards = await manageableTask.ConfigureAwait(false);
                 List<CustomReward> rewards = await rewardsTask.ConfigureAwait(false);
                 List<TwitchPowerUp> powerUps = await powerUpsTask.ConfigureAwait(false);
+                // null = request failed; don't overwrite the managed set with an empty one.
+                if (managableRewards != null)
+                    TwitchManagedRewards.Set(managableRewards.Select(r => r.Id));
+                managableRewards ??= [];
                 if (rewards == null)
                     return;
 
@@ -2846,6 +2919,27 @@ namespace Songify_Slim.Views.WPFUI.Controls
             RefreshUserLevelComboSummaries();
         }
 
+        private void CbxCdExemptChecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (Settings.CooldownExemptUserlevels.Contains(value)) return;
+            List<int> list = [.. Settings.CooldownExemptUserlevels, value];
+            Settings.CooldownExemptUserlevels = list;
+            RefreshUserLevelComboSummaries();
+        }
+
+        private void CbxCdExemptUnchecked(object sender, RoutedEventArgs e)
+        {
+            if (sender is not CheckBox checkBox) return;
+            int value = Convert.ToInt32(checkBox.Tag);
+            if (!Settings.CooldownExemptUserlevels.Contains(value)) return;
+            List<int> list = [.. Settings.CooldownExemptUserlevels];
+            list.Remove(value);
+            Settings.CooldownExemptUserlevels = list;
+            RefreshUserLevelComboSummaries();
+        }
+
         private void CbxUnlimitedCommandChecked(object sender, RoutedEventArgs e)
         {
             if (sender is not CheckBox checkBox) return;
@@ -3626,6 +3720,98 @@ namespace Songify_Slim.Views.WPFUI.Controls
             IcIgnoredChatUsers.ItemsSource = (Settings.IgnoredChatUsers ?? []).ToList();
             if (BtnRemoveAllIgnoredChatUsers != null)
                 BtnRemoveAllIgnoredChatUsers.IsEnabled = (Settings.IgnoredChatUsers ?? []).Count > 0;
+        }
+
+        private void TbCdExemptUser_OnPreviewKeyDown(object sender, System.Windows.Input.KeyEventArgs e)
+        {
+            if (e.Key != System.Windows.Input.Key.Enter)
+                return;
+            e.Handled = true;
+            AddCdExemptUserFromInput();
+        }
+
+        private void BtnAddCdExemptUser_Click(object sender, RoutedEventArgs e)
+            => AddCdExemptUserFromInput();
+
+        private async void AddCdExemptUserFromInput()
+        {
+            if (IgnoreControlEvents)
+                return;
+            string name = TwitchChatIgnore.NormalizeIgnoreName(TbCdExemptUser?.Text);
+            if (name.Length == 0)
+                return;
+
+            BtnAddCdExemptUser.IsEnabled = false;
+            try
+            {
+                BlockedUser entry = await ResolveCdExemptUserAsync(name);
+                List<BlockedUser> list = [.. Settings.CooldownExemptUsers];
+                bool exists = list.Any(u =>
+                    (!string.IsNullOrEmpty(entry.Id) && u.Id == entry.Id) ||
+                    string.Equals(u.Username, entry.Username, StringComparison.OrdinalIgnoreCase));
+                if (!exists)
+                {
+                    list.Add(entry);
+                    Settings.CooldownExemptUsers = list;
+                }
+
+                TbCdExemptUser.Text = "";
+                RefreshCdExemptUsers();
+            }
+            finally
+            {
+                BtnAddCdExemptUser.IsEnabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Looks the name up to store the Twitch user id (survives renames): first in the
+        /// viewer list, then via Helix. Falls back to name-only when Twitch is unreachable.
+        /// </summary>
+        private static async Task<BlockedUser> ResolveCdExemptUserAsync(string name)
+        {
+            TwitchUser known = GlobalObjects.TwitchUsers.FirstOrDefault(u =>
+                string.Equals(u.UserName, name, StringComparison.OrdinalIgnoreCase) ||
+                string.Equals(u.DisplayName, name, StringComparison.OrdinalIgnoreCase));
+            if (known != null && !string.IsNullOrEmpty(known.UserId))
+                return new BlockedUser { Id = known.UserId, Username = known.DisplayName ?? name };
+
+            try
+            {
+                if (TwitchHandler.TwitchApi != null && !string.IsNullOrEmpty(Settings.TwitchAccessToken))
+                {
+                    User[] users = await TwitchApiHelper.GetTwitchUsersAsync([name]);
+                    if (users.Length > 0)
+                        return new BlockedUser { Id = users[0].Id, Username = users[0].DisplayName };
+                }
+            }
+            catch (Exception ex)
+            {
+                Logger.Log(LogLevel.Warning, LogSource.Twitch, $"Could not resolve Twitch user '{name}' for the cooldown exempt list.", ex);
+            }
+
+            return new BlockedUser { Id = null, Username = name };
+        }
+
+        private void BtnRemoveCdExemptUser_Click(object sender, RoutedEventArgs e)
+        {
+            if (IgnoreControlEvents)
+                return;
+            if (sender is not System.Windows.Controls.Button { Tag: BlockedUser user })
+                return;
+
+            List<BlockedUser> list = [.. Settings.CooldownExemptUsers];
+            list.Remove(user);
+            Settings.CooldownExemptUsers = list;
+            RefreshCdExemptUsers();
+        }
+
+        private void RefreshCdExemptUsers()
+        {
+            if (IcCdExemptUsers == null)
+                return;
+            IcCdExemptUsers.ItemsSource = null;
+            IcCdExemptUsers.ItemsSource = Settings.CooldownExemptUsers.ToList();
         }
 
         private void TbBitsKeyword_OnTextChanged(object sender, TextChangedEventArgs e)

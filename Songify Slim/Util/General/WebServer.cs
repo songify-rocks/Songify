@@ -756,11 +756,11 @@ namespace Songify_Slim.Util.General
 
         private static async Task<string> HandleStopSrRewardAsync(WebSocketCommand command)
         {
-            foreach (string rewardId in Settings.TwRewardId)
-            {
-                if (TwitchPowerUpClient.IsKnown(rewardId))
-                    continue;
+            if (TwitchHandler.TwitchApi == null)
+                return "Twitch is not connected.";
 
+            foreach (string rewardId in await TwitchManagedRewards.FilterManagedAsync(Settings.TwRewardId))
+            {
                 try
                 {
                     await TwitchHandler.TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(

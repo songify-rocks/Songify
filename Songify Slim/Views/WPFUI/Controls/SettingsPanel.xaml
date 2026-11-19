@@ -2079,6 +2079,170 @@
                                             Padding="0"
                                             HorizontalAlignment="Left"
                                             VerticalAlignment="Center"
+                                            Content="{DynamicResource window_settings_sr_cooldown_exempt_levels}" />
+                                        <ComboBox
+                                            x:Name="CbxCdExemptUserLevels"
+                                            Width="185"
+                                            HorizontalAlignment="Right"
+                                            DockPanel.Dock="Right"
+                                            IsReadOnly="True"
+                                            SelectedIndex="0"
+                                            SelectionChanged="Selector_OnSelectionChanged">
+                                            <ComboBoxItem x:Name="CbiCdExemptSummary">
+                                                <ComboBoxItem.Style>
+                                                    <Style BasedOn="{StaticResource {x:Type ComboBoxItem}}" TargetType="ComboBoxItem">
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding IsDropDownOpen, ElementName=CbxCdExemptUserLevels}" Value="True">
+                                                                <Setter Property="Visibility" Value="Collapsed" />
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </ComboBoxItem.Style>
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckCdExemptViewer"
+                                                    Width="180"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxCdExemptChecked"
+                                                    Content="{DynamicResource common_viewer}"
+                                                    Tag="0"
+                                                    Unchecked="CbxCdExemptUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckCdExemptFollower"
+                                                    Width="180"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxCdExemptChecked"
+                                                    Content="{DynamicResource common_follower}"
+                                                    Tag="1"
+                                                    Unchecked="CbxCdExemptUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckCdExemptSub"
+                                                    Width="180"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxCdExemptChecked"
+                                                    Content="{DynamicResource common_subscriber}"
+                                                    Tag="2"
+                                                    Unchecked="CbxCdExemptUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckCdExemptSubT2"
+                                                    Width="180"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxCdExemptChecked"
+                                                    Content="{DynamicResource window_settings_subscriber_t2}"
+                                                    Tag="3"
+                                                    Unchecked="CbxCdExemptUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckCdExemptSubT3"
+                                                    Width="180"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxCdExemptChecked"
+                                                    Content="{DynamicResource window_settings_subscriber_t3}"
+                                                    Tag="4"
+                                                    Unchecked="CbxCdExemptUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckCdExemptVip"
+                                                    Width="180"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxCdExemptChecked"
+                                                    Content="{DynamicResource common_vip}"
+                                                    Tag="5"
+                                                    Unchecked="CbxCdExemptUnchecked" />
+                                            </ComboBoxItem>
+                                            <ComboBoxItem Margin="0" Padding="0">
+                                                <CheckBox
+                                                    x:Name="ChckCdExemptMod"
+                                                    Width="180"
+                                                    Margin="1,0,0,0"
+                                                    Checked="CbxCdExemptChecked"
+                                                    Content="{DynamicResource common_moderator}"
+                                                    Tag="6"
+                                                    Unchecked="CbxCdExemptUnchecked" />
+                                            </ComboBoxItem>
+                                        </ComboBox>
+                                    </DockPanel>
+                                    <StackPanel Margin="0,6,0,0">
+                                        <TextBlock
+                                            Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                            Text="{DynamicResource window_settings_sr_cooldown_exempt_users}"
+                                            TextWrapping="Wrap" />
+                                        <TextBlock
+                                            Margin="0,0,0,6"
+                                            FontSize="12"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{DynamicResource window_settings_sr_cooldown_exempt_hint}"
+                                            TextWrapping="Wrap" />
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                                <ColumnDefinition Width="Auto" />
+                                            </Grid.ColumnDefinitions>
+                                            <ui:TextBox
+                                                x:Name="TbCdExemptUser"
+                                                Margin="0,0,8,0"
+                                                Icon="{ui:SymbolIcon Person28}"
+                                                PlaceholderText="{DynamicResource window_settings_sr_cooldown_exempt_placeholder}"
+                                                PreviewKeyDown="TbCdExemptUser_OnPreviewKeyDown" />
+                                            <ui:Button
+                                                x:Name="BtnAddCdExemptUser"
+                                                Grid.Column="1"
+                                                Appearance="Secondary"
+                                                Click="BtnAddCdExemptUser_Click"
+                                                Content="{DynamicResource common_add}"
+                                                Icon="{ui:SymbolIcon Add24}" />
+                                        </Grid>
+                                        <ItemsControl x:Name="IcCdExemptUsers" Margin="0,8,0,0">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border
+                                                        Margin="0,0,8,8"
+                                                        Padding="8,4"
+                                                        Background="{DynamicResource ControlFillColorSecondaryBrush}"
+                                                        CornerRadius="8">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <ui:SymbolIcon
+                                                                Margin="0,0,6,0"
+                                                                VerticalAlignment="Center"
+                                                                FontSize="12"
+                                                                Symbol="TimerOff24" />
+                                                            <TextBlock
+                                                                Margin="0,0,6,0"
+                                                                VerticalAlignment="Center"
+                                                                Text="{Binding Username}" />
+                                                            <ui:Button
+                                                                Padding="4"
+                                                                Appearance="Transparent"
+                                                                Click="BtnRemoveCdExemptUser_Click"
+                                                                Tag="{Binding}"
+                                                                ToolTip="{DynamicResource common_remove}">
+                                                                <ui:SymbolIcon FontSize="12" Symbol="Dismiss24" />
+                                                            </ui:Button>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </StackPanel>
+                                    <DockPanel Margin="0,6,0,0">
+                                        <Label
+                                            Padding="0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
                                             d:Content="{x:Static local:Resources.window_settings_spotify_sr_max_length}"
                                             Content="{DynamicResource window_settings_spotify_sr_max_length}" />
                                         <ui:NumberBox
@@ -2770,6 +2934,66 @@
                                         ToolTip="{DynamicResource window_settings_spotify_enable_live_gate_tooltip}"
                                         Unchecked="TglEnableSpotifyLiveGate_OnToggled" />
                                 </StackPanel>
+                            </StackPanel>
+                        </ui:Card>
+
+                        <ui:Card Margin="0,0,0,12" Padding="16">
+                            <StackPanel>
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontSize="14"
+                                    FontWeight="SemiBold"
+                                    Text="{DynamicResource window_settings_spotify_proxy_title}" />
+                                <TextBlock
+                                    Margin="0,0,0,12"
+                                    FontSize="12"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    Text="{DynamicResource window_settings_spotify_proxy_hint}"
+                                    TextWrapping="Wrap" />
+                                <ui:ToggleSwitch
+                                    x:Name="TglSpotifyProxy"
+                                    Margin="0,0,0,12"
+                                    Checked="TglSpotifyProxy_OnToggled"
+                                    Content="{DynamicResource window_settings_spotify_proxy_enable}"
+                                    Unchecked="TglSpotifyProxy_OnToggled" />
+                                <StackPanel x:Name="PnlSpotifyProxy">
+                                    <TextBlock Margin="0,0,0,4" Text="{DynamicResource window_settings_spotify_proxy_address}" />
+                                    <ui:TextBox
+                                        x:Name="TbSpotifyProxyAddress"
+                                        Margin="0,0,0,12"
+                                        PlaceholderText="socks5://127.0.0.1:1080"
+                                        TextChanged="TbSpotifyProxyAddress_OnTextChanged" />
+                                    <Grid Margin="0,0,0,12">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*" />
+                                            <ColumnDefinition Width="12" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Grid.Column="0">
+                                            <TextBlock Margin="0,0,0,4" Text="{DynamicResource window_settings_spotify_proxy_username}" />
+                                            <TextBox x:Name="TbSpotifyProxyUsername" TextChanged="TbSpotifyProxyUsername_OnTextChanged" />
+                                        </StackPanel>
+                                        <StackPanel Grid.Column="2">
+                                            <TextBlock Margin="0,0,0,4" Text="{DynamicResource window_settings_spotify_proxy_password}" />
+                                            <PasswordBox x:Name="PbSpotifyProxyPassword" PasswordChanged="PbSpotifyProxyPassword_OnPasswordChanged" />
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                                <DockPanel LastChildFill="True">
+                                    <ui:Button
+                                        x:Name="BtnSpotifyProxyTest"
+                                        MinWidth="110"
+                                        VerticalAlignment="Center"
+                                        Click="BtnSpotifyProxyTest_Click"
+                                        Content="{DynamicResource window_settings_spotify_proxy_test}"
+                                        DockPanel.Dock="Left"
+                                        Icon="{ui:SymbolIcon PlugConnected24}" />
+                                    <TextBlock
+                                        x:Name="TbSpotifyProxyTestResult"
+                                        Margin="12,0,0,0"
+                                        VerticalAlignment="Center"
+                                        TextWrapping="Wrap" />
+                                </DockPanel>
                             </StackPanel>
                         </ui:Card>
 

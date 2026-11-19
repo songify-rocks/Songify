@@ -1326,6 +1326,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Niveau d'abonnement</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Délai</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>Réinitialiser le délai SR</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Rechercher des utilisateurs…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Niveaux exemptés du délai</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Utilisateurs exemptés du délai par utilisateur</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>Le diffuseur est toujours exempté. Vous pouvez aussi basculer les utilisateurs depuis la liste des spectateurs.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Nom d'utilisateur Twitch</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Exempter du délai SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>Retirer l'exemption du délai SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>exempté</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Importateur de paramètres cloud</value>
   </data>

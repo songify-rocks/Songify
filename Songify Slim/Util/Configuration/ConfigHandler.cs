@@ -1195,6 +1195,10 @@ namespace Songify_Slim.Util.Configuration
         public List<SpotifyPlaylistCache> PlaylistCache { get; set; } = new();
         public string RedirectUri { get; set; } = "localhost";
         public long SpotifyTokenExpiresAt { get; set; }
+        public bool ProxyEnabled { get; set; }
+        public string ProxyAddress { get; set; } = "";
+        public string ProxyUsername { get; set; } = "";
+        public string ProxyPassword { get; set; } = "";
     }
 
     public class TwitchCredentials
@@ -1489,6 +1493,10 @@ namespace Songify_Slim.Util.Configuration
         public bool ShowUserLevelBadges { get; set; } = true;
         public List<int> UnlimitedSrUserlevelsReward { get; set; } = [];
         public List<int> UnlimitedSrUserlevelsCommand { get; set; } = [];
+        /// <summary>User levels that skip the per-user SR command cooldown.</summary>
+        public List<int> CooldownExemptUserlevels { get; set; } = [];
+        /// <summary>Individual users (matched by Twitch user id, name as fallback) that skip the per-user SR command cooldown.</summary>
+        public List<BlockedUser> CooldownExemptUsers { get; set; } = [];
         public bool HideSpotifyPremiumWarning { get; set; }
         public bool LongBadgeNames { get; set; }
         public bool AddSrtoPlaylistOnly { get; set; } = false;

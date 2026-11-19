@@ -61,7 +61,8 @@ public static class ApiCallMeter
         string key,
         Func<Task<T>> action,
         int? softLimitPerMinute = null,
-        CancellationToken ct = default)
+        CancellationToken ct = default,
+        Action<APIException> onApiError = null)
     {
         if (Settings.Player != PlayerType.Spotify)
         {
@@ -181,6 +182,7 @@ public static class ApiCallMeter
             }
             catch (APIUnauthorizedException ex)
             {
+                onApiError?.Invoke(ex);
                 Logger.Error(LogSource.Spotify,
                     $"Spotify unauthorized on '{key}'. Access token may be invalid or expired. {FormatApiExceptionDetails(ex)}");
                 try
@@ -198,6 +200,7 @@ public static class ApiCallMeter
             }
             catch (APIException ex)
             {
+                onApiError?.Invoke(ex);
                 if (key == "Playlists.Get" && ex.Message == "Resource not found")
                 {
                     Logger.Error(LogSource.Spotify,

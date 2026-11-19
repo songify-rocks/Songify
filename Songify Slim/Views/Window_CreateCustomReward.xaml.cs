@@ -89,6 +89,7 @@ public partial class WindowCreateCustomReward
                 return;
             }
 
+            TwitchManagedRewards.Remember(response.Data[0].Id);
             Settings.TwRewardId.Add(response.Data[0].Id);
             Settings.TwRewardId = Settings.TwRewardId;
             await SettingsUi.RefreshAsync(fullReload: false, loadRewards: true);

@@ -1325,6 +1325,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Livello abbonamento</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Cooldown</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>Azzera cooldown SR</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Cerca utenti…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Livelli esenti dal cooldown</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Utenti esenti dal cooldown per utente</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>Lo streamer è sempre esente. Puoi anche attivarlo dall'elenco spettatori.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Nome utente Twitch</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Esenta dal cooldown SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>Rimuovi l'esenzione dal cooldown SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>esente</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Importatore impostazioni cloud</value>
   </data>

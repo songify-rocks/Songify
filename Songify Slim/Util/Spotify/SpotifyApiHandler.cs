@@ -631,7 +631,7 @@ namespace Songify_Slim.Util.Spotify
             if (string.IsNullOrWhiteSpace(Settings.SpotifyRefreshToken))
                 throw new InvalidOperationException("No Spotify refresh token available.");
 
-            OAuthClient oauth = new();
+            OAuthClient oauth = SpotifyProxy.CreateOAuthClient();
 
             Logger.Info(LogSource.Spotify, "Requesting refreshed PKCE token");
 
@@ -697,7 +697,7 @@ namespace Songify_Slim.Util.Spotify
                 if (!string.Equals(response.State, _state, StringComparison.Ordinal))
                     throw new Exception("Spotify OAuth state mismatch.");
 
-                OAuthClient oauth = new();
+                OAuthClient oauth = SpotifyProxy.CreateOAuthClient();
 
                 Logger.Debug(LogSource.Spotify, "Sending PKCE token request");
 
@@ -803,7 +803,7 @@ namespace Songify_Slim.Util.Spotify
                 return;
             }
 
-            SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
+            SpotifyClientConfig config = SpotifyProxy.CreateClientConfig()
                 .WithAuthenticator(new PKCEAuthenticator(Settings.ClientId, tokenResponse));
 
             Client = new SpotifyClient(config);
@@ -1132,51 +1132,51 @@ namespace Songify_Slim.Util.Spotify
                     LogSource.Spotify,
                     $"Queue device selected for Player.AddToQueue: requestDeviceId='{requestDeviceId}', songUri='{songUri}'");
 
-                await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
+                // ApiCallMeter swallows API errors and returns default (false), so the result
+                // must be checked and the error captured via onApiError to react to 404/503.
+                APIException apiError = null;
+                bool queued = await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
                     new PlayerAddToQueueRequest(songUri)
                     {
                         DeviceId = requestDeviceId
-                    }, cts.Token), softLimitPerMinute: SoftLimitPerminute, ct: cts.Token);
-                return true;
-            }
-            catch (APIException ex)
-            {
-                Logger.Error(LogSource.Spotify, "Error Adding song to queue", ex);
+                    }, cts.Token), softLimitPerMinute: SoftLimitPerminute, ct: cts.Token, onApiError: ex => apiError = ex);
+                if (queued)
+                    return true;
 
-                int statusCode = ex.Response != null ? (int)ex.Response.StatusCode : 0;
+                int statusCode = apiError?.Response != null ? (int)apiError.Response.StatusCode : 0;
 
                 // 404 = no active/found device. Clear the stale device id so next playback tick re-detects it.
                 if (statusCode == 404)
                 {
                     Logger.Warning(LogSource.Spotify,
-                        $"Player.AddToQueue received 404 Device not found for deviceId='{Settings.SpotifyDeviceId}'. " +
+                        $"Player.AddToQueue received 404 Device not found for deviceId='{requestDeviceId}'. " +
                         "Clearing stored device id so it will be re-detected on next playback update. " +
                         "Ensure Spotify is open and active on a device before requesting songs.");
                     Settings.SpotifyDeviceId = string.Empty;
                     return false;
                 }
 
-                if (statusCode != 503) return false;
+                if (statusCode != 503)
+                    return false;
+
                 for (int i = 0; i < 5; i++)
                 {
                     await Task.Delay(1000);
-                    try
-                    {
-                        Logger.Info(
-                            LogSource.Spotify,
-                            $"Retrying Player.AddToQueue after 503 (attempt {i + 1}/5) with deviceId='{Settings.SpotifyDeviceId}' and songUri='{songUri}'");
-                        await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
-                            new PlayerAddToQueueRequest(songUri)
-                            {
-                                DeviceId = Settings.SpotifyDeviceId
-                            }), softLimitPerMinute: SoftLimitPerminute);
+                    Logger.Info(
+                        LogSource.Spotify,
+                        $"Retrying Player.AddToQueue after 503 (attempt {i + 1}/5) with deviceId='{requestDeviceId}' and songUri='{songUri}'");
+
+                    apiError = null;
+                    queued = await ApiCallMeter.RunAsync("Player.AddToQueue", () => Client.Player.AddToQueue(
+                        new PlayerAddToQueueRequest(songUri)
+                        {
+                            DeviceId = requestDeviceId
+                        }), softLimitPerMinute: SoftLimitPerminute, onApiError: ex => apiError = ex);
+                    if (queued)
                         return true;
-                    }
-                    catch (APIException retryEx)
-                    {
-                        if (retryEx.Response != null && (int)retryEx.Response.StatusCode != 503)
-                            break;
-                    }
+
+                    if (apiError?.Response == null || (int)apiError.Response.StatusCode != 503)
+                        break;
                 }
                 return false;
             }
@@ -1332,7 +1332,7 @@ namespace Songify_Slim.Util.Spotify
 
             string encodedUris = string.Join(",", cleanUris.Select(WebUtility.UrlEncode));
 
-            using HttpClient http = new();
+            HttpClient http = SpotifyProxy.HttpClient;
 
             using HttpRequestMessage request = new(
                 HttpMethod.Put,

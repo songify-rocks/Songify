@@ -83,12 +83,12 @@ namespace Songify_Slim.Util.Spotify
             if (!string.Equals(state, _state, StringComparison.Ordinal))
                 throw new Exception("Invalid OAuth state.");
 
-            PKCETokenResponse tokenResponse = await new OAuthClient().RequestToken(
+            PKCETokenResponse tokenResponse = await SpotifyProxy.CreateOAuthClient().RequestToken(
                 new PKCETokenRequest(_clientId, code, new Uri(_redirectUri), _verifier), cancellationToken).ConfigureAwait(false);
 
             PKCEAuthenticator authenticator = new(_clientId, tokenResponse);
 
-            SpotifyClientConfig config = SpotifyClientConfig.CreateDefault()
+            SpotifyClientConfig config = SpotifyProxy.CreateClientConfig()
                 .WithAuthenticator(authenticator);
 
             SpotifyClient spotify = new(config);
@@ -105,7 +105,7 @@ namespace Songify_Slim.Util.Spotify
             if (string.IsNullOrWhiteSpace(refreshToken))
                 throw new ArgumentNullException(nameof(refreshToken));
 
-            return await new OAuthClient().RequestToken(
+            return await SpotifyProxy.CreateOAuthClient().RequestToken(
                 new PKCETokenRefreshRequest(_clientId, refreshToken)
             ).ConfigureAwait(false);
         }

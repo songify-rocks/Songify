@@ -395,7 +395,9 @@ public static class TwitchHandler
                     if (!valid)
                         return message;
 
-                    await SpotifyApiHandler.AddToQueue("spotify:track:" + track.Id);
+                    if (!Settings.AddSrtoPlaylistOnly &&
+                        !await SpotifyApiHandler.AddToQueue("spotify:track:" + track.Id))
+                        return "Could not add the song to the Spotify queue. Make sure Spotify is open and playing on a device.";
 
                     if (Settings.AddSrToPlaylist)
                         await SpotifyApiHandler.AddToPlaylist(track.Id);
@@ -723,10 +725,11 @@ public static class TwitchHandler
 
             // Release any previous listeners so retries don't hit "prefix already registered".
             _activeOAuth?.Dispose();
-            _activeOAuth = new ImplicitOAuth(salt);
+            ImplicitOAuth oAuth = new(salt);
+            _activeOAuth = oAuth;
             _pendingOAuthAccount = account;
 
-            _activeOAuth.OnRevcievedValues += async (state, token) =>
+            oAuth.OnRevcievedValues += async (state, token) =>
             {
                 try
                 {
@@ -785,15 +788,20 @@ public static class TwitchHandler
                 }
                 finally
                 {
-                    _activeOAuth?.Dispose();
-                    _activeOAuth = null;
-                    _pendingOAuthState = null;
-                    _pendingOAuthAccount = null;
+                    // Only release our own listeners: a newer ApiConnect may have replaced _activeOAuth
+                    // while this handler was awaiting, and its listeners/state must stay intact.
+                    oAuth.Dispose();
+                    if (ReferenceEquals(_activeOAuth, oAuth))
+                    {
+                        _activeOAuth = null;
+                        _pendingOAuthState = null;
+                        _pendingOAuthAccount = null;
+                    }
                     await RefreshSettingsWindowAsync();
                 }
             };
 
-            _pendingOAuthState = _activeOAuth.RequestClientAuthorization();
+            _pendingOAuthState = oAuth.RequestClientAuthorization();
             _currentState = _pendingOAuthState;
 
             Logger.Info(
@@ -823,11 +831,13 @@ public static class TwitchHandler
         SetApiInstance(twitchAccount, api);
 
         ValidateAccessTokenResponse validatedToken = null;
+        Stopwatch sw = Stopwatch.StartNew();
 
         try
         {
             validatedToken = await api.Auth.ValidateAccessTokenAsync(GetAccessToken(twitchAccount));
             SetTokenCheck(twitchAccount, validatedToken);
+            Logger.Info(LogSource.Twitch, $"Twitch token validation ({twitchAccount}) took {sw.ElapsedMilliseconds} ms.");
         }
         catch (HttpRequestException ex)
         {
@@ -848,6 +858,8 @@ public static class TwitchHandler
 
         if (validatedToken == null)
         {
+            // Without this the expired-token dialog below is invisible in the log while it waits for the user.
+            Logger.Warning(LogSource.Twitch, $"Twitch token for {twitchAccount} is invalid or expired; asking the user to log in again.");
             SetTokenExpiredFlag(twitchAccount, true);
             await ShowExpiredTokenDialogAndReconnectAsync(twitchAccount);
             return;
@@ -898,7 +910,9 @@ public static class TwitchHandler
             ConfigHandler.WriteAllConfig(Settings.Export());
 
             InitTwitchUserSyncTimer();
+            long beforeSyncMs = sw.ElapsedMilliseconds;
             await RunTwitchUserSync();
+            Logger.Info(LogSource.Twitch, $"Twitch user sync took {sw.ElapsedMilliseconds - beforeSyncMs} ms.");
         }
 
         RefreshSelectedChatAccount();
@@ -1818,13 +1832,7 @@ public static class TwitchHandler
         }
         try
         {
-            GetCustomRewardsResponse resp = await TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(
-                broadcasterId: Settings.TwitchUser.Id,
-                rewardIds: [rewardId],
-                onlyManageableRewards: true,
-                accessToken: Settings.TwitchAccessToken
-            );
-            if (resp.Data == null || !resp.Data.Any())
+            if (!await TwitchManagedRewards.IsManagedAsync(rewardId))
             {
                 Logger.Warning(LogSource.Twitch, "Skip reward: cannot cancel — reward not managed by Songify.");
                 return;
@@ -2635,7 +2643,8 @@ public static class TwitchHandler
         }
 
         TimeSpan cooldown = TimeSpan.FromSeconds(Settings.TwSrPerUserCooldown);
-        if (!cmdParams.ExistingUser.IsCooldownExpired(cooldown))
+        if (!IsSrCooldownExempt(cmdParams.ExistingUser, cmdParams.UserLevels, message.IsBroadcaster) &&
+            !cmdParams.ExistingUser.IsCooldownExpired(cooldown))
         {
             if (cmdParams.ExistingUser.LastCommandTime == null)
                 return;
@@ -2999,6 +3008,40 @@ public static class TwitchHandler
 
     #endregion CommandHandlers
 
+    /// <summary>
+    /// Whether the per-user SR command cooldown is skipped for this user: always for the
+    /// broadcaster, otherwise by exempt user level or by the individual exempt list.
+    /// </summary>
+    public static bool IsSrCooldownExempt(TwitchUser user, List<int> userLevels, bool isBroadcaster)
+    {
+        if (isBroadcaster)
+            return true;
+
+        userLevels ??= user?.UserLevels;
+        if (userLevels != null)
+        {
+            if (userLevels.Contains((int)Enums.TwitchUserLevels.Broadcaster))
+                return true;
+            if (Settings.CooldownExemptUserlevels.Intersect(userLevels).Any())
+                return true;
+        }
+
+        return IsCooldownExemptUser(user);
+    }
+
+    /// <summary>Whether the user is on the individual cooldown-exempt list (by id, name as fallback).</summary>
+    public static bool IsCooldownExemptUser(TwitchUser user)
+    {
+        if (user == null)
+            return false;
+
+        return Settings.CooldownExemptUsers.Any(u =>
+            !string.IsNullOrEmpty(u.Id)
+                ? u.Id == user.UserId
+                : string.Equals(u.Username, user.UserName, StringComparison.OrdinalIgnoreCase) ||
+                  string.Equals(u.Username, user.DisplayName, StringComparison.OrdinalIgnoreCase));
+    }
+
     public static void InitTwitchUserSyncTimer()
     {
         if (_syncTimerHooked) return;               // <-- prevents duplicates
@@ -3357,11 +3400,8 @@ public static class TwitchHandler
             return;
         try
         {
-            foreach (string rewardId in Settings.TwRewardId)
+            foreach (string rewardId in await TwitchManagedRewards.FilterManagedAsync(Settings.TwRewardId))
             {
-                if (TwitchPowerUpClient.IsKnown(rewardId))
-                    continue;
-
                 try
                 {
                     await TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, rewardId,
@@ -3382,18 +3422,27 @@ public static class TwitchHandler
         }
     }
 
-    public static async Task StartOrRestartAsync()
+    // Host build/start has synchronous parts (assembly loading, DI, hosted-service construction) that took
+    // ~40s on a cold start on some machines. Always run it on the thread pool so it can never freeze the UI.
+    public static Task StartOrRestartAsync() => Task.Run(StartOrRestartCoreAsync);
+
+    public static Task StopAsync() => Task.Run(StopCoreAsync);
+
+    private static async Task StartOrRestartCoreAsync()
     {
-        await Lock.WaitAsync();
+        Stopwatch total = Stopwatch.StartNew();
+        await Lock.WaitAsync().ConfigureAwait(false);
         try
         {
+            long lockWaitMs = total.ElapsedMilliseconds;
+
             // If there's an old host, stop & dispose it first
             if (_host is not null)
             {
                 try
                 {
                     _cts?.Cancel();
-                    await _host.StopAsync(TimeSpan.FromSeconds(5));
+                    await _host.StopAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
                 }
                 catch { /* swallow or log */ }
                 finally
@@ -3406,10 +3455,21 @@ public static class TwitchHandler
                 }
             }
 
+            long stopMs = total.ElapsedMilliseconds;
+
             // Create and start a fresh host (non-blocking)
             _cts = new CancellationTokenSource();
             _host = CreateHostBuilder([]).Build();
-            await _host.StartAsync(_cts.Token); // runs hosted services in background
+            long buildMs = total.ElapsedMilliseconds;
+
+            await _host.StartAsync(_cts.Token).ConfigureAwait(false); // runs hosted services in background
+
+            Logger.Info(LogSource.Twitch,
+                $"EventSub host started in {total.ElapsedMilliseconds} ms (lock {lockWaitMs} ms, stop old {stopMs - lockWaitMs} ms, build {buildMs - stopMs} ms, start {total.ElapsedMilliseconds - buildMs} ms).");
+        }
+        catch (Exception e)
+        {
+            Logger.Error(LogSource.Twitch, $"EventSub host failed to start after {total.ElapsedMilliseconds} ms.", e);
         }
         finally
         {
@@ -3417,9 +3477,9 @@ public static class TwitchHandler
         }
     }
 
-    public static async Task StopAsync()
+    private static async Task StopCoreAsync()
     {
-        await Lock.WaitAsync();
+        await Lock.WaitAsync().ConfigureAwait(false);
         try
         {
             if (_host is null) return;
@@ -3427,7 +3487,7 @@ public static class TwitchHandler
             try
             {
                 _cts?.Cancel();
-                await _host.StopAsync(TimeSpan.FromSeconds(5));
+                await _host.StopAsync(TimeSpan.FromSeconds(5)).ConfigureAwait(false);
             }
             finally
             {
@@ -3437,6 +3497,10 @@ public static class TwitchHandler
                 _cts?.Dispose();
                 _cts = null;
             }
+        }
+        catch (Exception e)
+        {
+            Logger.Error(LogSource.Twitch, "EventSub host failed to stop.", e);
         }
         finally
         {
@@ -3450,6 +3514,9 @@ public static class TwitchHandler
             return;
         try
         {
+            if (!await TwitchManagedRewards.IsManagedAsync(rewardId))
+                return;
+
             await TwitchApi.Helix.ChannelPoints.UpdateCustomRewardAsync(Settings.TwitchUser.Id, rewardId,
                 new UpdateCustomRewardRequest
                 {
@@ -3943,9 +4010,9 @@ public static class TwitchHandler
 
     private static async Task<string> GetFullSpotifyUrl(string input)
     {
-        using HttpClient httpClient = new();
-        HttpRequestMessage request = new(HttpMethod.Get, input);
-        HttpResponseMessage response = await httpClient.SendAsync(request);
+        // Short links resolve via Spotify, so honor the Spotify proxy setting.
+        using HttpRequestMessage request = new(HttpMethod.Get, input);
+        using HttpResponseMessage response = await SpotifyProxy.HttpClient.SendAsync(request);
         return response.RequestMessage.RequestUri != null ? response.RequestMessage.RequestUri.AbsoluteUri : "";
     }
 
@@ -4786,14 +4853,7 @@ public static class TwitchHandler
 
             if (TwitchApi != null)
             {
-                GetCustomRewardsResponse resp = await TwitchApi.Helix.ChannelPoints.GetCustomRewardAsync(
-                    broadcasterId: Settings.TwitchUser.Id,
-                    rewardIds: [rewardId],
-                    onlyManageableRewards: true,
-                    accessToken: Settings.TwitchAccessToken
-                );
-
-                if (resp.Data == null || !resp.Data.Any())
+                if (!await TwitchManagedRewards.IsManagedAsync(rewardId))
                 {
                     Logger.Warning(LogSource.Twitch,
                         $"TWITCH API: Cannot refund reward {rewardId} because it was not created through Songify. Create the song-request reward in Songify (Settings → Rewards) so failed requests can be refunded.");
@@ -5126,6 +5186,12 @@ public static class TwitchHandler
         if (string.IsNullOrWhiteSpace(poll.RewardId) || string.IsNullOrWhiteSpace(poll.RedemptionId))
             return;
 
+        if (!await TwitchManagedRewards.IsManagedAsync(poll.RewardId))
+        {
+            Logger.Warning(LogSource.Twitch, "TWITCH API: Cannot refund because the reward is not created through Songify.");
+            return;
+        }
+
         // Refund the user who did the Channel Point redemption (reward-started polls only).
         UpdateRedemptionStatusResponse updateRedemptionStatus = await TwitchApi.Helix.ChannelPoints.UpdateRedemptionStatusAsync(
             Settings.TwitchUser.Id, poll.RewardId,
@@ -5336,6 +5402,64 @@ public class TwitchUser : INotifyPropertyChanged
             if (_lastCommandTime == value) return;
             _lastCommandTime = value;
             OnPropertyChanged(nameof(LastCommandTime));
+            RefreshCooldown();
+        }
+    }
+
+    private string _cooldownRemaining = "-";
+    private bool _isOnCooldown;
+    private bool _isCooldownExemptUser;
+
+    /// <summary>Remaining per-user SR cooldown as mm:ss, "-" when not on cooldown, or the exempt label.</summary>
+    public string CooldownRemaining => _cooldownRemaining;
+
+    public bool IsOnCooldown => _isOnCooldown;
+
+    /// <summary>Whether this user is on the individual cooldown-exempt list.</summary>
+    public bool IsCooldownExemptUser => _isCooldownExemptUser;
+
+    /// <summary>
+    /// Recomputes <see cref="CooldownRemaining"/> and only raises PropertyChanged when the
+    /// displayed value changed, so a periodic tick over all users stays cheap.
+    /// </summary>
+    public void RefreshCooldown()
+    {
+        bool exemptUser = TwitchHandler.IsCooldownExemptUser(this);
+        bool exempt = exemptUser || TwitchHandler.IsSrCooldownExempt(this, UserLevels, false);
+        bool onCooldown = false;
+        string value = "-";
+
+        if (exempt)
+        {
+            value = Properties.Resources.window_userlist_cooldown_exempt;
+        }
+        else if (LastCommandTime != null)
+        {
+            TimeSpan remaining = TimeSpan.FromSeconds(Settings.TwSrPerUserCooldown) - (DateTime.UtcNow - LastCommandTime.Value);
+            if (remaining > TimeSpan.Zero)
+            {
+                int totalSeconds = (int)Math.Ceiling(remaining.TotalSeconds);
+                value = $"{totalSeconds / 60:D2}:{totalSeconds % 60:D2}";
+                onCooldown = true;
+            }
+        }
+
+        if (value != _cooldownRemaining)
+        {
+            _cooldownRemaining = value;
+            OnPropertyChanged(nameof(CooldownRemaining));
+        }
+
+        if (onCooldown != _isOnCooldown)
+        {
+            _isOnCooldown = onCooldown;
+            OnPropertyChanged(nameof(IsOnCooldown));
+        }
+
+        if (exemptUser != _isCooldownExemptUser)
+        {
+            _isCooldownExemptUser = exemptUser;
+            OnPropertyChanged(nameof(IsCooldownExemptUser));
         }
     }
 

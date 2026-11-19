@@ -1325,6 +1325,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Poziom subskrypcji</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Odnowienie</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>Zresetuj odnowienie SR</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Szukaj użytkowników…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Poziomy zwolnione z odnowienia</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Użytkownicy zwolnieni z odnowienia na użytkownika</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>Nadawca jest zawsze zwolniony. Użytkowników można też przełączać z listy widzów.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Nazwa użytkownika Twitch</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Zwolnij z odnowienia SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>Usuń zwolnienie z odnowienia SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>zwolniony</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Importer ustawień z chmury</value>
   </data>

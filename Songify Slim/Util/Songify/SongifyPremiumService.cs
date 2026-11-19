@@ -121,7 +121,7 @@ internal static class SongifyPremiumService
             request.Headers.Authorization =
                 new AuthenticationHeaderValue("Bearer", Settings.SongifyApiKey);
 
-            using HttpResponseMessage response = await SongifyAuthService.HttpClient
+            using HttpResponseMessage response = await SongifyAuthService.BackgroundHttpClient
                 .SendAsync(request)
                 .ConfigureAwait(false);
 

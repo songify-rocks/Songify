@@ -40,8 +40,11 @@ namespace Songify_Slim.Util.Songify
             return null;
         }
 
-        public async Task<string> Get(string endpoint, string uuid, IReadOnlyDictionary<string, string> extraQuery = null)
+        /// <param name="background">Use the longer-timeout client; for requests nothing is waiting on.</param>
+        public async Task<string> Get(string endpoint, string uuid, IReadOnlyDictionary<string, string> extraQuery = null,
+            bool background = false)
         {
+            HttpClient client = background ? SongifyAuthService.BackgroundHttpClient : _httpClient;
             try
             {
                 List<string> parts = [];
@@ -59,7 +62,7 @@ namespace Songify_Slim.Util.Songify
 
                 string query = parts.Count == 0 ? null : string.Join("&", parts);
                 using HttpResponseMessage response = await SendAsync(
-                    HttpMethod.Get, endpoint, requireAuth: false, query: query).ConfigureAwait(false);
+                    HttpMethod.Get, endpoint, requireAuth: false, query: query, client: client).ConfigureAwait(false);
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.InternalServerError:
@@ -72,9 +75,14 @@ namespace Songify_Slim.Util.Songify
                         return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
             }
+            catch (TaskCanceledException)
+            {
+                // No token is passed, so this is HttpClient.Timeout: a network condition, not a bug.
+                Logger.Warning(LogSource.Api, $"GET {endpoint} timed out after {client.Timeout.TotalSeconds:0}s.");
+            }
             catch (Exception e)
             {
-                Logger.Error(LogSource.Api, "Error in GET request", e);
+                Logger.Error(LogSource.Api, $"Error in GET request ({endpoint})", e);
             }
 
             return null;
@@ -203,8 +211,10 @@ namespace Songify_Slim.Util.Songify
             string payload = null,
             bool requireAuth = false,
             string query = null,
-            bool isRetry = false)
+            bool isRetry = false,
+            HttpClient client = null)
         {
+            client ??= _httpClient;
             if (MaintenanceStatusService.IsInMaintenance)
                 return MaintenanceStatusService.CreateBlockedResponse();
 
@@ -223,7 +233,7 @@ namespace Songify_Slim.Util.Songify
                     request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
             }
 
-            HttpResponseMessage response = await _httpClient.SendAsync(request).ConfigureAwait(false);
+            HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
 
             if (response.StatusCode == HttpStatusCode.ServiceUnavailable)
             {
@@ -237,7 +247,7 @@ namespace Songify_Slim.Util.Songify
                 response.Dispose();
                 SongifyAuthService.Invalidate();
                 await SongifyAuthService.EnsureAuthenticatedAsync().ConfigureAwait(false);
-                return await SendAsync(method, endpoint, payload, requireAuth, query, isRetry: true)
+                return await SendAsync(method, endpoint, payload, requireAuth, query, isRetry: true, client: client)
                     .ConfigureAwait(false);
             }
 

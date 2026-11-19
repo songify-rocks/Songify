@@ -481,7 +481,10 @@ public partial class WindowSetupWizard
 
             List<CustomReward> all = await allTask.ConfigureAwait(true) ?? [];
             List<TwitchPowerUp> powerUps = await powerUpsTask.ConfigureAwait(true) ?? [];
-            HashSet<string> manageable = new((await manageableTask.ConfigureAwait(true) ?? []).Select(r => r.Id));
+            List<CustomReward> manageableRewards = await manageableTask.ConfigureAwait(true);
+            if (manageableRewards != null)
+                TwitchManagedRewards.Set(manageableRewards.Select(r => r.Id));
+            HashSet<string> manageable = new((manageableRewards ?? []).Select(r => r.Id));
 
             if (powerUps.Count > 0)
                 TwitchPowerUpClient.DropSongRequestAssignments(powerUps.Select(p => p.Id));

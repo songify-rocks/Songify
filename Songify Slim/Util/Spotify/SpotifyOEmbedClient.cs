@@ -29,10 +29,7 @@ namespace Songify_Slim.Util.Spotify
             }
             else
             {
-                _http = new HttpClient(new HttpClientHandler
-                {
-                    AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-                })
+                _http = new HttpClient(SpotifyProxy.CreateHandler(), disposeHandler: false)
                 {
                     BaseAddress = new Uri("https://open.spotify.com/")
                 };

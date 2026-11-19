@@ -14,10 +14,7 @@ namespace Songify_Slim.Util.Spotify
 {
     public static class SpotifyEmbedNextData
     {
-        private static readonly HttpClient Http = new(new HttpClientHandler
-        {
-            AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-        });
+        private static HttpClient Http => SpotifyProxy.HttpClient;
 
         // Extracts the JSON content of the __NEXT_DATA__ script tag
         private static readonly Regex NextDataRegex = new(

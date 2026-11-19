@@ -30,18 +30,31 @@ public static class AppStartup
     /// </summary>
     public static async Task RunAsync(Window owner, bool useShellWindow)
     {
+        Stopwatch startup = Stopwatch.StartNew();
+        Stopwatch phase = Stopwatch.StartNew();
+
+        // Logs how long the previous phase took so slow startups can be pinned down from a user's log.
+        void EndPhase(string name)
+        {
+            Logger.Info(LogSource.Core, $"Startup: {name} took {phase.ElapsedMilliseconds} ms (total {startup.ElapsedMilliseconds} ms).");
+            phase.Restart();
+        }
+
         EnsureAppVersionSet();
         if (!await CheckAndNotifyConfigurationIssuesAsync())
             return;
+        EndPhase("config check");
 
         if (!await WaitForInternetConnectionAsync())
         {
             if (!await RunInternetCheckDialogAsync(owner))
                 return;
         }
+        EndPhase("internet check");
 
         await MaintenanceStatusService.RefreshAsync();
         MaintenanceStatusService.Start();
+        EndPhase("maintenance status");
 
         Task authTask = AuthenticateSongifyApiAsync();
 
@@ -50,17 +63,21 @@ public static class AppStartup
             startTour = await GuidedSetup.ShowWizardAsync(owner);
         else
             await RunUseOwnAppDialogAsync();
+        EndPhase("setup wizard / dialogs (waits for user)");
 
         await RunSpotifyInitAsync();
         Util.Spotify.SpotifyApiHandler.RefreshShellSpotifyIndicator();
+        EndPhase("Spotify init");
 
         Logger.Info(LogSource.Twitch, "Starting Twitch init");
         await RunTwitchInitAsync(useShellWindow, owner);
         Logger.Info(LogSource.Twitch, "Twitch init done");
+        EndPhase("Twitch init");
 
         Logger.Info(LogSource.Core, "Starting Final Setup");
         await RunFinalSetupAsync(owner);
         Logger.Info(LogSource.Core, "Final Setup done");
+        EndPhase("final setup");
 
         ArtistBlocklistSyncService.Start();
 
@@ -176,11 +193,12 @@ public static class AppStartup
 
     private static async Task<bool> WaitForInternetConnectionAsync()
     {
+        Stopwatch sw = Stopwatch.StartNew();
         for (int attempt = 1; attempt <= 2; attempt++)
         {
             if (await ProbeInternetAsync())
             {
-                Logger.Info(LogSource.Core, "Internet Connection Established");
+                Logger.Info(LogSource.Core, $"Internet Connection Established (attempt {attempt}, {sw.ElapsedMilliseconds} ms)");
                 return true;
             }
 
@@ -188,7 +206,7 @@ public static class AppStartup
                 await Task.Delay(500);
         }
 
-        Logger.Warning(LogSource.Core, "Internet connection check failed.");
+        Logger.Warning(LogSource.Core, $"Internet connection check failed after {sw.ElapsedMilliseconds} ms.");
         return false;
     }
 
@@ -238,9 +256,11 @@ public static class AppStartup
     {
         try
         {
+            Stopwatch sw = Stopwatch.StartNew();
             using HttpResponseMessage response = await httpClient.GetAsync(
                 url, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
             // Any HTTP response means the network is up (403/redirects still count).
+            Logger.Debug(LogSource.Core, $"Internet probe reached {url} in {sw.ElapsedMilliseconds} ms.");
             return true;
         }
         catch (Exception ex)
@@ -323,10 +343,19 @@ public static class AppStartup
             await SongifyApi.ClearQueueAsync(Json.Serialize(payload));
         }
 
+        Stopwatch sw = Stopwatch.StartNew();
         if (!string.IsNullOrWhiteSpace(Settings.TwitchAccessToken))
+        {
             await TwitchHandler.InitializeApi(Enums.TwitchAccount.Main);
+            Logger.Info(LogSource.Twitch, $"Startup: Twitch API init (Main) took {sw.ElapsedMilliseconds} ms.");
+        }
+
+        sw.Restart();
         if (!string.IsNullOrWhiteSpace(Settings.TwitchBotToken))
+        {
             await TwitchHandler.InitializeApi(Enums.TwitchAccount.Bot);
+            Logger.Info(LogSource.Twitch, $"Startup: Twitch API init (Bot) took {sw.ElapsedMilliseconds} ms.");
+        }
     }
 
     private static async Task RunFinalSetupAsync(Window owner)

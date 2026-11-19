@@ -51,7 +51,7 @@ namespace Songify_Slim.Util.Songify.APIs
                 query["version"] = version;
 
             query["channel"] = Settings.ReleaseChannel.ToString().ToLowerInvariant();
-            return ApiClient.Get("motd", "", query);
+            return ApiClient.Get("motd", "", query, background: true);
         }
 
         public static Task<string> GetCanvasRawAsync(string id) => ApiClient.GetCanvas(id);

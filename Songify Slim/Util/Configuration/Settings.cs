@@ -674,6 +674,46 @@ namespace Songify_Slim.Util.Configuration
             set => SetClientId(value);
         }
 
+        public static bool SpotifyProxyEnabled
+        {
+            get => CurrentConfig.SpotifyCredentials.ProxyEnabled;
+            set
+            {
+                CurrentConfig.SpotifyCredentials.ProxyEnabled = value;
+                ConfigHandler.WriteConfig(ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
+            }
+        }
+
+        public static string SpotifyProxyAddress
+        {
+            get => CurrentConfig.SpotifyCredentials.ProxyAddress;
+            set
+            {
+                CurrentConfig.SpotifyCredentials.ProxyAddress = value;
+                ConfigHandler.WriteConfig(ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
+            }
+        }
+
+        public static string SpotifyProxyUsername
+        {
+            get => CurrentConfig.SpotifyCredentials.ProxyUsername;
+            set
+            {
+                CurrentConfig.SpotifyCredentials.ProxyUsername = value;
+                ConfigHandler.WriteConfig(ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
+            }
+        }
+
+        public static string SpotifyProxyPassword
+        {
+            get => CurrentConfig.SpotifyCredentials.ProxyPassword;
+            set
+            {
+                CurrentConfig.SpotifyCredentials.ProxyPassword = value;
+                ConfigHandler.WriteConfig(ConfigTypes.SpotifyCredentials, CurrentConfig.SpotifyCredentials);
+            }
+        }
+
         public static string ClientSecret
         {
             get => GetClientSecret();
@@ -1264,6 +1304,32 @@ namespace Songify_Slim.Util.Configuration
 
         public static List<int> UnlimitedSrUserlevelsCommand { get => GetUnlimitedSrUserlevelsCommand(); set => SetUnlimitedSrUserlevelsCommand(value); }
 
+        public static List<int> CooldownExemptUserlevels { get => GetCooldownExemptUserlevels(); set => SetCooldownExemptUserlevels(value); }
+
+        private static void SetCooldownExemptUserlevels(List<int> value)
+        {
+            CurrentConfig.AppConfig.CooldownExemptUserlevels = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static List<int> GetCooldownExemptUserlevels()
+        {
+            return CurrentConfig.AppConfig.CooldownExemptUserlevels ??= [];
+        }
+
+        public static List<BlockedUser> CooldownExemptUsers { get => GetCooldownExemptUsers(); set => SetCooldownExemptUsers(value); }
+
+        private static void SetCooldownExemptUsers(List<BlockedUser> value)
+        {
+            CurrentConfig.AppConfig.CooldownExemptUsers = value;
+            ConfigHandler.WriteConfig(ConfigTypes.AppConfig, CurrentConfig.AppConfig);
+        }
+
+        private static List<BlockedUser> GetCooldownExemptUsers()
+        {
+            return CurrentConfig.AppConfig.CooldownExemptUsers ??= [];
+        }
+
         private static void SetUnlimitedSrUserlevelsCommand(List<int> value)
         {
             CurrentConfig.AppConfig.UnlimitedSrUserlevelsCommand = value;
@@ -1392,6 +1458,10 @@ namespace Songify_Slim.Util.Configuration
                 Profile = GetSpotifyProfile(),
                 RedirectUri = GetSpotifyRedirectUri(),
                 SpotifyTokenExpiresAt = GetSpotifyTokenExpiresAt(),
+                ProxyEnabled = CurrentConfig.SpotifyCredentials.ProxyEnabled,
+                ProxyAddress = CurrentConfig.SpotifyCredentials.ProxyAddress,
+                ProxyUsername = CurrentConfig.SpotifyCredentials.ProxyUsername,
+                ProxyPassword = CurrentConfig.SpotifyCredentials.ProxyPassword,
                 RefreshToken = GetSpotifyRefreshToken(),
             };
 
@@ -1577,6 +1647,8 @@ namespace Songify_Slim.Util.Configuration
                 TwSrUnlimitedSr = GetTwSrUnlimitedSr(),
                 TwSrUserLevel = GetTwSrUserLevel(),
                 UnlimitedSrUserlevelsCommand = GetUnlimitedSrUserlevelsCommand(),
+                CooldownExemptUserlevels = GetCooldownExemptUserlevels(),
+                CooldownExemptUsers = GetCooldownExemptUsers(),
                 UnlimitedSrUserlevelsReward = GetUnlimitedSrUserlevelsReward(),
                 UpdateRequired = GetUpdateRequired(),
                 Upload = GetUpload(),

@@ -1326,6 +1326,36 @@
   <data name="window_userlist_sub_tier" xml:space="preserve">
     <value>Nivel de suscripción</value>
   </data>
+  <data name="window_userlist_cooldown" xml:space="preserve">
+    <value>Enfriamiento</value>
+  </data>
+  <data name="window_userlist_reset_cooldown" xml:space="preserve">
+    <value>Restablecer enfriamiento de SR</value>
+  </data>
+  <data name="window_userlist_search" xml:space="preserve">
+    <value>Buscar usuarios…</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_levels" xml:space="preserve">
+    <value>Niveles exentos del enfriamiento</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_users" xml:space="preserve">
+    <value>Usuarios exentos del enfriamiento por usuario</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_hint" xml:space="preserve">
+    <value>El streamer siempre está exento. También puedes cambiarlo desde la lista de espectadores.</value>
+  </data>
+  <data name="window_settings_sr_cooldown_exempt_placeholder" xml:space="preserve">
+    <value>Nombre de usuario de Twitch</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_toggle" xml:space="preserve">
+    <value>Eximir del enfriamiento de SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt_remove" xml:space="preserve">
+    <value>Quitar exención del enfriamiento de SR</value>
+  </data>
+  <data name="window_userlist_cooldown_exempt" xml:space="preserve">
+    <value>exento</value>
+  </data>
   <data name="window_cloudimport_title" xml:space="preserve">
     <value>Importador de configuración en la nube</value>
   </data>

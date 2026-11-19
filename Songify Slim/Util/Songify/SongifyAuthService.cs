@@ -27,6 +27,15 @@ namespace Songify_Slim.Util.Songify
             Timeout = TimeSpan.FromSeconds(5)
         };
 
+        /// <summary>
+        /// Longer timeout for background requests nothing waits on (PSA/MOTD, premium status).
+        /// On some networks the first connection to a host takes over 5s, which made these fail on every launch.
+        /// </summary>
+        internal static readonly HttpClient BackgroundHttpClient = new()
+        {
+            Timeout = TimeSpan.FromSeconds(20)
+        };
+
         private static readonly SemaphoreSlim AuthGate = new(1, 1);
 
         private static string _accessToken;
