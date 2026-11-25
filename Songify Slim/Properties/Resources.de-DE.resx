@@ -697,9 +697,6 @@
   <data name="language_pt_br" xml:space="preserve">
     <value>Brasilianisches Portugiesisch</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Unterstütz uns auf Ko-Fi!</value>
-  </data>
   <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Broadcaster-/Moderator-Check ignorieren</value>
   </data>
@@ -1260,9 +1257,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Unterstützt uns auf Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2292,8 +2286,8 @@ Das ist nicht Songify Premium und nicht das in Songify verknüpfte Wiedergabe-Ko
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Zugriff verweigert. Diese Funktion ist nur für Ko-Fi-Mitglieder.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Zugriff verweigert. Diese Funktion ist nur mit Songify Premium verfügbar.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Interner Serverfehler. Bitte später erneut versuchen.</value>
@@ -2686,7 +2680,7 @@ Das ist nicht Songify Premium und nicht das in Songify verknüpfte Wiedergabe-Ko
     <value>Token gespeichert. Songify Premium ist aktiv.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Token gespeichert. Verknüpfe Ko-fi auf der Kontoseite, um Recap, Stats und Cloud-Sync freizuschalten.</value>
+    <value>Token gespeichert. Hol dir Premium auf songify.rocks/pricing, um Recap, Stats und Cloud-Sync freizuschalten.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Dieses Token ist ungültig. Bitte auf der Kontoseite ein neues erzeugen.</value>

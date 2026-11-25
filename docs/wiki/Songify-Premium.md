@@ -2,9 +2,7 @@
 
 Songify Premium adds **optional** hosted extras and helps fund development. The core app stays **free**; Premium does not remove free functionality.
 
-Any [Ko-fi](https://ko-fi.com/S6S167PLK) membership tier (Orbit, Titan, Cosmos, or Singularity) unlocks the **same** Premium. Higher tiers are extra support, not extra product.
-
-A public comparison lives on [songify.rocks/pricing](https://songify.rocks/pricing).
+Premium costs **€4.99/month** or **€49.90/year**, billed through Stripe on [songify.rocks/pricing](https://songify.rocks/pricing). You can cancel any time, and a **7-day free trial** is available from your account page.
 
 ---
 
@@ -21,15 +19,13 @@ The desktop app, song requests, Twitch commands, local history, local files, and
 
 ## Activate Premium
 
-1. Become a [Ko-fi](https://ko-fi.com/S6S167PLK) member (any tier).
-2. Visit [songify.rocks](https://songify.rocks) and log in with Twitch.
-3. Open your account page → **Link Ko-Fi**.
-4. Use the **same email** as on Ko-fi.
-5. Generate your **Songify token** and add it in the app.
+1. Visit [songify.rocks](https://songify.rocks) and log in with Twitch.
+2. Subscribe on [songify.rocks/pricing](https://songify.rocks/pricing) (secure checkout by Stripe), or start the free trial from your account page.
+3. Generate your **Songify token** and add it in the app.
 
 **Settings → Config → Songify Token**, or use **Import to Songify** on the website when offered.
 
-In the app, **Home** and the status-bar **Premium** indicator show whether membership is active. You can refresh status from the token card if you just linked Ko-fi.
+In the app, **Home** and the status-bar **Premium** indicator show whether membership is active. You can refresh status from the token card if you just subscribed.
 
 ---
 
@@ -55,7 +51,7 @@ Free widgets remain available, including:
 
 ## Privacy
 
-Ko-fi membership is validated via webhooks. Emails used for matching are handled in line with the privacy policy on the Songify site.
+Payments are processed by Stripe; Songify does not store your card details. Account data is handled in line with the privacy policy on the Songify site.
 
 ---
 

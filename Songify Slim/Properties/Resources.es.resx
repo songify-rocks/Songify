@@ -684,9 +684,6 @@
   <data name="language_pt_br" xml:space="preserve">
     <value>Portugués Brasileño</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>¡Apóyanos en Ko-Fi!</value>
-  </data>
   <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Ignorar verificación de emisor/moderador</value>
   </data>
@@ -1238,9 +1235,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Apóyanos en Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2178,8 +2172,8 @@ No es Songify Premium ni la cuenta de Spotify vinculada en Songify para la repro
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Acceso denegado. Solo disponible para miembros de Ko-Fi.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Acceso denegado. Solo disponible con Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Error interno del servidor. Inténtalo más tarde.</value>
@@ -2530,7 +2524,7 @@ No es Songify Premium ni la cuenta de Spotify vinculada en Songify para la repro
     <value>Token guardado. Songify Premium está activo.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Token guardado. Vincula Ko-fi en la página de tu cuenta para desbloquear el resumen, las estadísticas y la sincronización en la nube.</value>
+    <value>Token guardado. Consigue Premium en songify.rocks/pricing para desbloquear el resumen, las estadísticas y la sincronización en la nube.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Este token no es válido. Genera uno nuevo en la página de tu cuenta.</value>

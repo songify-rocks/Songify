@@ -367,15 +367,6 @@ namespace Songify_Slim.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Support us on Ko-Fi!.
-        /// </summary>
-        public static string cta_support {
-            get {
-                return ResourceManager.GetString("cta_support", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Bot Account.
         /// </summary>
         public static string dialog_bot_account {
@@ -2244,15 +2235,6 @@ namespace Songify_Slim.Properties {
         public static string window_main_pubsub_disabled {
             get {
                 return ResourceManager.GetString("window_main_pubsub_disabled", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Support us on Ko-Fi.
-        /// </summary>
-        public static string window_main_support_kofi {
-            get {
-                return ResourceManager.GetString("window_main_support_kofi", resourceCulture);
             }
         }
         

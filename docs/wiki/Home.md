@@ -4,7 +4,7 @@
 
 **Download:** [Latest release](https://github.com/songify-rocks/Songify/releases/latest) — use **`Songify.zip`** for the ready-to-run app (other release assets may be source-only).
 
-**Community:** [Discord](https://discord.gg/H8nd4T4) · **Support:** [Ko-fi](https://ko-fi.com/S6S167PLK) · **Translations:** [Weblate](https://translate.songify.rocks/projects/songify/songify/)
+**Community:** [Discord](https://discord.gg/H8nd4T4) · **Premium:** [songify.rocks/pricing](https://songify.rocks/pricing) · **Translations:** [Weblate](https://translate.songify.rocks/projects/songify/songify/)
 
 The in-app version is shown in the main window. Release history: [GitHub Releases](https://github.com/songify-rocks/Songify/releases).
 

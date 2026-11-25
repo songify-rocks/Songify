@@ -859,10 +859,6 @@
   <data name="window_settings_integration_refund_song_added" xml:space="preserve">
     <value>Песня дададзена ў чаргу</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Падтрымайце нас на Ko-Fi!</value>
-    <comment>Menu Header for "Buy Us A Coffee"</comment>
-  </data>
   <data name="window_main_link_spotify" xml:space="preserve">
     <value>Калі ласка, прывяжыце ваш ул.запіс Spotify. Налады -&gt; Spotify</value>
     <comment>Textblock content for "Please link your Spotify account Settings -&gt; Spotify"</comment>
@@ -1422,9 +1418,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Падтрымайце нас на Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2362,8 +2355,8 @@ gwyden - Hertz - karimawii
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Доступ забаронены. Функцыянал даступны толькі чальцам Ko-Fi.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Доступ забаронены. Функцыянал даступны толькі з Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Унутраная памылка сервера. Паспрабуйце пазней.</value>
@@ -2636,7 +2629,7 @@ gwyden - Hertz - karimawii
     <value>Токен API Songify</value>
   </data>
   <data name="setup_token_body" xml:space="preserve">
-    <value>Для такіх вэб-сэрвісаў, як загрузка бягучай песні і чарга запытаў, патрабуецца токен API Songify. Увайдзіце ў songify.rocks з дапамогай свайго ўліковага запісу Twitch, стварыце токен, а затым устаўце яго сюды. Той жа токен разблакуе функцыі Прэміум-падпіскі, такія як падсумоўванне, статыстыка і воблачная сінхранізацыя пасля падлучэння Ko-fi.</value>
+    <value>Для такіх вэб-сэрвісаў, як загрузка бягучай песні і чарга запытаў, патрабуецца токен API Songify. Увайдзіце ў songify.rocks з дапамогай свайго ўліковага запісу Twitch, стварыце токен, а затым устаўце яго сюды. Той жа токен разблакуе функцыі Прэміум-падпіскі, такія як падсумоўванне, статыстыка і воблачная сінхранізацыя пасля афармлення падпіскі на songify.rocks/pricing.</value>
   </data>
   <data name="setup_token_get" xml:space="preserve">
     <value>Атрымаць токен</value>
@@ -2648,7 +2641,7 @@ gwyden - Hertz - karimawii
     <value>Токен захаваны. Калі вам трэба яго замяніць, стварыце новы на старонцы вашага ўліковага запісу.</value>
   </data>
   <data name="window_settings_songify_api_token_help" xml:space="preserve">
-    <value>Патрабуецца для вэб-даных аб песнях і чаргі запытаў. Той жа токен разблакуе Прэміум-падпіску (падсумоўванне, статыстыка і воблачная сінхранізацыя) пасля падлучэння Ko-fi на старонцы вашага ўліковага запісу.</value>
+    <value>Патрабуецца для вэб-даных аб песнях і чаргі запытаў. Той жа токен разблакуе Прэміум-падпіску (падсумоўванне, статыстыка і воблачная сінхранізацыя) пасля афармлення падпіскі на songify.rocks/pricing.</value>
   </data>
   <data name="window_overview_api_token_title" xml:space="preserve">
     <value>Патрабуецца токен API Songify</value>
@@ -2714,7 +2707,7 @@ gwyden - Hertz - karimawii
     <value>Токен захаваны. Прэміум-падпіска Songify актывавана.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Токен захаваны. Прывяжыце Ko-fi на старонцы вашага ўліковага запісу, каб разблакіраваць падсумоўванне, статыстыку і воблачную сінхранізацыю.</value>
+    <value>Токен захаваны. Аформіце Premium на songify.rocks/pricing, каб разблакіраваць падсумоўванне, статыстыку і воблачную сінхранізацыю.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Гэты токен несапраўдны. Згенеруйце новы на старонцы вашага ўліковага запісу.</value>

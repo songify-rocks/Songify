@@ -31,7 +31,7 @@ internal static class AccountLinking
 
     public const string SongifyStatsUrl = "https://songify.rocks/stats";
 
-    public const string SongifyKofiUrl = "https://ko-fi.com/overcodetv";
+    public const string SongifyPricingUrl = "https://songify.rocks/pricing";
 
     /// <summary>
     /// Website route that should log in with Twitch, mint a token, and redirect to

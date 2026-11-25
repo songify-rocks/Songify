@@ -28,7 +28,7 @@ interactive song requests, Twitch integration, and powerful customization.
 [![License](https://img.shields.io/badge/license-GPLv3-16a349)](https://github.com/songify-rocks/Songify/blob/master/LICENSE)
 
 [![Discord](https://img.shields.io/discord/117032577977679873?logo=discord&logoColor=white&label=Discord&color=5865F2)](https://discord.gg/H8nd4T4)
-[![Ko-fi](https://img.shields.io/badge/Support_on-Ko--fi-FF5E5B?logo=kofi&logoColor=white)](https://ko-fi.com/S6S167PLK)
+[![Premium](https://img.shields.io/badge/Songify-Premium-16a349)](https://songify.rocks/pricing)
 
 </div>
 
@@ -322,13 +322,13 @@ Contributions of all kinds are welcome.
 
 Songify is developed and maintained with a passion for music, streaming, and open-source software.
 
-If you enjoy using Songify and want to support its continued development, consider becoming a supporter.
+If you enjoy using Songify and want to support its continued development, consider subscribing to [Songify Premium](https://songify.rocks/pricing).
 
 Your support helps cover infrastructure costs and makes it possible to keep improving Songify.
 
 <div align="center">
 
-[![Support on Ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/S6S167PLK)
+[![Get Songify Premium](https://img.shields.io/badge/Get-Songify_Premium-16a349?style=for-the-badge)](https://songify.rocks/pricing)
 
 <br>
 
@@ -400,6 +400,6 @@ Development of Songify is supported by JetBrains through their Open Source Suppo
 [Download](https://github.com/songify-rocks/Songify/releases/latest) ·
 [Documentation](https://github.com/songify-rocks/Songify/wiki) ·
 [Discord](https://discord.gg/H8nd4T4) ·
-[Support](https://ko-fi.com/S6S167PLK)
+[Premium](https://songify.rocks/pricing)
 
 </div>

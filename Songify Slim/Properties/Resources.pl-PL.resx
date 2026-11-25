@@ -683,9 +683,6 @@
   <data name="language_pt_br" xml:space="preserve">
     <value>brazylijski portugalski</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Wesprzyj nas na Ko-Fi!</value>
-  </data>
   <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Ignoruj kontrolę nadawcy/moderatora</value>
   </data>
@@ -1237,9 +1234,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Wesprzyj nas na Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2177,8 +2171,8 @@ To nie jest Songify Premium ani konto Spotify powiązane w Songify do odtwarzani
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Brak dostępu. Funkcja tylko dla członków Ko-Fi.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Brak dostępu. Funkcja dostępna tylko w Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Wewnętrzny błąd serwera. Spróbuj później.</value>
@@ -2529,7 +2523,7 @@ To nie jest Songify Premium ani konto Spotify powiązane w Songify do odtwarzani
     <value>Token zapisany. Usługa Songify Premium jest aktywna.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Token zapisany. Dodaj link do Ko-fi na stronie swojego konta, aby odblokować podsumowanie, statystyki i synchronizację z chmurą.</value>
+    <value>Token zapisany. Wykup Premium na songify.rocks/pricing, aby odblokować podsumowanie, statystyki i synchronizację z chmurą.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Ten token jest nieprawidłowy. Wygeneruj nowy na stronie swojego konta.</value>

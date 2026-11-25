@@ -683,9 +683,6 @@
   <data name="language_pt_br" xml:space="preserve">
     <value>Portugues do Brasil</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Apoie-nos no Ko-Fi!</value>
-  </data>
   <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Ignorar verificação de Emissora/Moderador</value>
   </data>
@@ -1237,9 +1234,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Apoie-nos no Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2177,8 +2171,8 @@ Isto não é Songify Premium nem a conta Spotify ligada no Songify para reprodu�
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Acesso proibido. Só disponível para membros Ko-Fi.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Acesso proibido. Só disponível com o Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Erro interno do servidor. Tente mais tarde.</value>
@@ -2529,7 +2523,7 @@ Isto não é Songify Premium nem a conta Spotify ligada no Songify para reprodu�
     <value>Token salvo. Songify Premium está ativo.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Token salvo. Vincule sua conta Ko-fi na página da sua conta para desbloquear resumo, estatísticas e sincronização na nuvem.</value>
+    <value>Token salvo. Assine o Premium em songify.rocks/pricing para desbloquear resumo, estatísticas e sincronização na nuvem.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Este token é inválido. Gere um novo na página da sua conta.</value>

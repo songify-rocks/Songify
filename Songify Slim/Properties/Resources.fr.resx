@@ -684,9 +684,6 @@
   <data name="language_pt_br" xml:space="preserve">
     <value>portugais brésilien</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Soutenez-nous sur Ko-Fi !</value>
-  </data>
   <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Ignorer la vérification du diffuseur/modérateur</value>
   </data>
@@ -1238,9 +1235,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Soutenez-nous sur Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2178,8 +2172,8 @@ Ce n’est pas Songify Premium, ni le compte Spotify lié dans Songify pour la l
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Accès refusé. Fonction réservée aux membres Ko-Fi.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Accès refusé. Fonction réservée à Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Erreur serveur interne. Réessayez plus tard.</value>
@@ -2530,7 +2524,7 @@ Ce n’est pas Songify Premium, ni le compte Spotify lié dans Songify pour la l
     <value>Jeton enregistré. Songify Premium est actif.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Jeton enregistré. Liez votre compte Ko-fi sur votre page de compte pour débloquer le récapitulatif, les statistiques et la synchronisation cloud.</value>
+    <value>Jeton enregistré. Passez à Premium sur songify.rocks/pricing pour débloquer le récapitulatif, les statistiques et la synchronisation cloud.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Ce jeton est invalide. Veuillez en générer un nouveau sur votre page de compte.</value>

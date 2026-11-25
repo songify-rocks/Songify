@@ -638,10 +638,6 @@
     <value>View</value>
     <comment>Menu Header for "View"</comment>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Support us on Ko-Fi!</value>
-    <comment>Menu Header for "Buy Us A Coffee"</comment>
-  </data>
   <data name="common_now_playing_placeholder" xml:space="preserve">
     <value>Artist - Title</value>
     <comment>Textblock placeholder "Artist - Title"</comment>
@@ -1610,10 +1606,6 @@
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
     <comment>Context: Main application window title.</comment>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Support us on Ko-Fi</value>
-    <comment>Context: Label/link in main window for Ko-Fi support (may be overridden by cta_support per language).</comment>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2601,8 +2593,8 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Forbidden access. This feature is only available for Ko-Fi members.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Forbidden access. This feature is only available with Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Internal server error. Please try again later.</value>
@@ -3072,7 +3064,7 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <comment>Context: Setup wizard step title for Songify API token.</comment>
   </data>
   <data name="setup_token_body" xml:space="preserve">
-    <value>Web services such as uploading the current song and the request queue need a Songify API token. Log in on songify.rocks with your Twitch account, generate a token, then paste it here. The same token unlocks Premium features such as recap, stats, and cloud sync after you link Ko-fi.</value>
+    <value>Web services such as uploading the current song and the request queue need a Songify API token. Log in on songify.rocks with your Twitch account, generate a token, then paste it here. The same token unlocks Premium features such as recap, stats, and cloud sync once you subscribe on songify.rocks/pricing.</value>
     <comment>Context: Setup wizard explanation of how to get and import a Songify API token.</comment>
   </data>
   <data name="setup_token_get" xml:space="preserve">
@@ -3088,7 +3080,7 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <comment>Context: Status when a Songify API token is already stored.</comment>
   </data>
   <data name="window_settings_songify_api_token_help" xml:space="preserve">
-    <value>Required for web song data and the request queue. The same token unlocks Premium (recap, stats, cloud sync) after you link Ko-fi on your account page.</value>
+    <value>Required for web song data and the request queue. The same token unlocks Premium (recap, stats, cloud sync) once you subscribe on songify.rocks/pricing.</value>
     <comment>Context: Help text under Settings → Config → Songify API token.</comment>
   </data>
   <data name="window_overview_api_token_title" xml:space="preserve">
@@ -3236,7 +3228,7 @@ This is not Songify Premium, and not the Spotify account linked in Songify for p
     <value>Token saved. Songify Premium is active.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Token saved. Link Ko-fi on your account page to unlock recap, stats, and cloud sync.</value>
+    <value>Token saved. Get Premium on songify.rocks/pricing to unlock recap, stats, and cloud sync.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>This token is invalid. Generate a new one on your account page.</value>

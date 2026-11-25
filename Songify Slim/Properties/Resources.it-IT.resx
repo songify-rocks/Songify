@@ -683,9 +683,6 @@
   <data name="language_pt_br" xml:space="preserve">
     <value>Portoghese Brasiliano</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Sostienici su Ko-Fi!</value>
-  </data>
   <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Ignora il controllo dell'emittente/moderatore</value>
   </data>
@@ -1237,9 +1234,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Supportaci su Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2177,8 +2171,8 @@ Non è Songify Premium né l’account Spotify collegato in Songify per la ripro
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Accesso negato. Disponibile solo per i membri Ko-Fi.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Accesso negato. Disponibile solo con Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Errore interno del server. Riprova più tardi.</value>
@@ -2529,7 +2523,7 @@ Non è Songify Premium né l’account Spotify collegato in Songify per la ripro
     <value>Token salvato. Songify Premium è attivo.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Token salvato. Collega Ko-fi alla pagina del tuo account per sbloccare riepilogo, statistiche e sincronizzazione cloud.</value>
+    <value>Token salvato. Passa a Premium su songify.rocks/pricing per sbloccare riepilogo, statistiche e sincronizzazione cloud.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Questo token non è valido. Generane uno nuovo nella pagina del tuo account.</value>

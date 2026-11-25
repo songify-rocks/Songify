@@ -22,7 +22,7 @@ internal enum SongifyPremiumState
 
 /// <summary>
 /// Resolves Songify Premium from the website token, with cloud-sync status as a fallback.
-/// Polls every 5 minutes after <see cref="Start"/> so Ko-fi activation shows up without a restart.
+/// Polls every 5 minutes after <see cref="Start"/> so a new Premium subscription shows up without a restart.
 /// </summary>
 internal static class SongifyPremiumService
 {

@@ -167,7 +167,7 @@ Included when active:
 
 When subscribed, the window title becomes **Songify Premium**. Open recap or your account from Home, About, or History. The optional startup reminder can be turned off under **Settings → Behavior**.
 
-**Activate:** Ko-fi → [songify.rocks](https://songify.rocks) → link Ko-fi with the **same email** → generate token → paste in Songify.
+**Activate:** subscribe on [songify.rocks/pricing](https://songify.rocks/pricing) → generate token → paste in Songify.
 
 > **Screenshot:** `premium-home.png`  
 > Home/About Premium area when subscribed (title “Songify Premium”).  
@@ -291,11 +291,11 @@ Drop files in `screenshots/2.0/` (or your CDN) and replace the `./screenshots/2.
 
 ## Support
 
-Songify stays free. Premium and [Ko-fi](https://ko-fi.com/overcodetv) keep recap, cloud sync, and the site running.
+Songify stays free. [Premium](https://songify.rocks/pricing) keeps recap, cloud sync, and the site running.
 
 Upgrading from 1.8.13: **[Migrating from 1.8](https://github.com/songify-rocks/Songify/wiki/Migrating-from-1.8)**
 
 - App: [songify.rocks](https://songify.rocks)
 - Wiki: [Getting started](https://github.com/songify-rocks/Songify/wiki/Getting-Started)
 - Discord: [discord.gg/H8nd4T4](https://discord.gg/H8nd4T4)
-- Ko-fi: [ko-fi.com/overcodetv](https://ko-fi.com/overcodetv)
+- Premium: [songify.rocks/pricing](https://songify.rocks/pricing)

@@ -3453,7 +3453,7 @@ namespace Songify_Slim.Views.WPFUI.Controls
                     return;
                 case SongifyPremiumState.Inactive:
                     TblSongifyTokenStatus.Text = Loc("setup_token_premium_inactive",
-                        "Token saved. Link Ko-fi on your account page to unlock recap, stats, and cloud sync.");
+                        "Token saved. Get Premium on songify.rocks/pricing to unlock recap, stats, and cloud sync.");
                     TblSongifyTokenStatus.Foreground = new SolidColorBrush(Colors.DarkOrange);
                     return;
                 case SongifyPremiumState.InvalidToken:

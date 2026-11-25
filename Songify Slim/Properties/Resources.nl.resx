@@ -620,9 +620,6 @@
   <data name="menu_view" xml:space="preserve">
     <value>Weergave</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Steun ons op Ko-Fi!</value>
-  </data>
   <data name="common_now_playing_placeholder" xml:space="preserve">
     <value>Kunstenaar - Titel</value>
   </data>
@@ -1291,9 +1288,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Steun ons op Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2231,8 +2225,8 @@ Dit is niet Songify Premium, en niet het Spotify-account dat in Songify is gekop
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Geen toegang. Deze functie is alleen voor Ko-Fi-leden.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Geen toegang. Deze functie is alleen beschikbaar met Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Interne serverfout. Probeer later opnieuw.</value>
@@ -2583,7 +2577,7 @@ Dit is niet Songify Premium, en niet het Spotify-account dat in Songify is gekop
     <value>Token opgeslagen. Songify Premium is geactiveerd.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Token opgeslagen. Koppel Ko-fi aan je accountpagina om samenvattingen, statistieken en cloudsynchronisatie te ontgrendelen.</value>
+    <value>Token opgeslagen. Neem Premium op songify.rocks/pricing om samenvattingen, statistieken en cloudsynchronisatie te ontgrendelen.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Dit token is ongeldig. Genereer een nieuw token op uw accountpagina.</value>

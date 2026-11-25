@@ -684,9 +684,6 @@
   <data name="language_pt_br" xml:space="preserve">
     <value>Бразильский Португальский</value>
   </data>
-  <data name="cta_support" xml:space="preserve">
-    <value>Поддержите нас на Ko-Fi!</value>
-  </data>
   <data name="window_botresponses_cmd_vol_ignore_mod" xml:space="preserve">
     <value>Игнорировать проверку вещателя/модератора</value>
   </data>
@@ -1238,9 +1235,6 @@
   </data>
   <data name="window_main_title" xml:space="preserve">
     <value>Songify</value>
-  </data>
-  <data name="window_main_support_kofi" xml:space="preserve">
-    <value>Поддержите нас на Ko-Fi</value>
   </data>
   <data name="menu_faq" xml:space="preserve">
     <value>FAQ</value>
@@ -2178,8 +2172,8 @@ gwyden - Hertz - karimawii
     <comment>Context: Cloud sync HTTP 401 message.</comment>
   </data>
   <data name="window_settings_cloud_forbidden" xml:space="preserve">
-    <value>Доступ запрещён. Только для участников Ko-Fi.</value>
-    <comment>Context: Cloud sync HTTP 403 message (Ko-Fi members).</comment>
+    <value>Доступ запрещён. Только с Songify Premium.</value>
+    <comment>Context: Cloud sync HTTP 403 message (Premium only).</comment>
   </data>
   <data name="window_settings_cloud_server_error" xml:space="preserve">
     <value>Внутренняя ошибка сервера. Попробуйте позже.</value>
@@ -2530,7 +2524,7 @@ gwyden - Hertz - karimawii
     <value>Токен сохранен. Songify Premium активен.</value>
   </data>
   <data name="setup_token_premium_inactive" xml:space="preserve">
-    <value>Токен сохранен. Привяжите Ko-fi на странице своего аккаунта, чтобы разблокировать сводку, статистику и облачную синхронизацию.</value>
+    <value>Токен сохранен. Оформите Premium на songify.rocks/pricing, чтобы разблокировать сводку, статистику и облачную синхронизацию.</value>
   </data>
   <data name="setup_token_invalid" xml:space="preserve">
     <value>Этот токен недействителен. Сгенерируйте новый на странице своего аккаунта.</value>
