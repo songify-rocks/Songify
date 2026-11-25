@@ -3020,4 +3020,25 @@ gwyden - Hertz - karimawii
   <data name="window_settings_integration_reply_disabled_command" xml:space="preserve">
     <value>Отвечайте в чате при использовании отключенной команды.</value>
   </data>
+  <data name="window_settings_spotify_proxy_title" xml:space="preserve">
+    <value>Прокси</value>
+  </data>
+  <data name="window_settings_spotify_proxy_enable" xml:space="preserve">
+    <value>Использовать прокси для Spotify</value>
+  </data>
+  <data name="window_settings_spotify_proxy_address" xml:space="preserve">
+    <value>Адрес прокси-сервера</value>
+  </data>
+  <data name="window_settings_spotify_proxy_username" xml:space="preserve">
+    <value>Имя пользователя (необязательно)</value>
+  </data>
+  <data name="window_settings_spotify_proxy_password" xml:space="preserve">
+    <value>Пароль (необязательно)</value>
+  </data>
+  <data name="window_settings_spotify_proxy_test" xml:space="preserve">
+    <value>Проверить соединение</value>
+  </data>
+  <data name="window_settings_spotify_proxy_hint" xml:space="preserve">
+    <value>Перенаправляет весь трафик Spotify (вход в учётную запись, Web API, поиск ссылок) через прокси-сервер, например в случаях, если API Spotify возвращает ошибку о недоступности в вашей стране. Поддерживаемые форматы: host:port, http://host:port, socks5://host:port. Изменения применяются при следующем запросе.</value>
+  </data>
 </root>
